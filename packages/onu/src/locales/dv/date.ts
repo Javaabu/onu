@@ -1,4 +1,116 @@
 import type { MessageDict } from "../../i18n/types"
 import type { date as en } from "../en/date"
 
-export const date = {} satisfies Record<keyof typeof en, MessageDict[string]> & MessageDict
+export const date = {
+  // Placeholders
+  selectDate: "ތާރީޚެއް ހޮއްވަވާ",
+  selectTime: "ވަގުތެއް ހޮއްވަވާ",
+  selectDateTime: "ތާރީޚާއި ވަގުތު ހޮއްވަވާ",
+  selectMonth: "މަހެއް ހޮއްވަވާ",
+  selectYear: "އަހަރެއް ހޮއްވަވާ",
+  selectWeek: "ހަފްތާއެއް ހޮއްވަވާ",
+  selectDates: "ތާރީޚުތައް ހޮއްވަވާ",
+  selectPeriod: "މުއްދަތެއް ހޮއްވަވާ",
+  selectHijriDate: "ހިޖްރީ ތާރީޚެއް ހޮއްވަވާ",
+
+  // Panels
+  chooseDate: "ތާރީޚު ހޮވުން",
+  chooseTime: "ވަގުތު ހޮވުން",
+  chooseDateTime: "ތާރީޚާއި ވަގުތު ހޮވުން",
+  chooseMonth: "މަސް ހޮވުން",
+  chooseYear: "އަހަރު ހޮވުން",
+  chooseWeek: "ހަފްތާ ހޮވުން",
+  chooseDates: "ތާރީޚުތައް ހޮވުން",
+  choosePeriod: "މުއްދަތު ހޮވުން",
+
+  // Calendar navigation
+  previousMonth: "ކުރީ މަސް",
+  nextMonth: "ދެން އަންނަ މަސް",
+  previousYear: "ކުރީ އަހަރު",
+  nextYear: "ދެން އަންނަ އަހަރު",
+  previousYears: "ކުރީގެ {count} އަހަރު",
+  nextYears: "ދެން އަންނަ {count} އަހަރު",
+  showMonths: "{label}: މަހެއް ހޮއްވަވާ",
+  showYears: "{label}: އަހަރެއް ހޮއްވަވާ",
+  showDecades: "{label}: އަހަރުތަކުގެ ދައުރެއް ހޮއްވަވާ",
+  calendar: "ކެލެންޑަރު",
+  months: "މަސްތައް",
+  years: "އަހަރުތައް",
+  decades: "އަހަރުތަކުގެ ދައުރުތައް",
+  today: "މިއަދު",
+  weekend: "ބަންދު ދުވަސް",
+  selected: "ހޮވިފައި: {value}",
+  cleared: "ފޮހެލެވިއްޖެ",
+
+  // Time
+  time: "ވަގުތު",
+  hour: "ގަޑި",
+  minute: "މިނެޓު",
+  hours: "ގަޑިތައް",
+  minutes: "މިނެޓުތައް",
+  increaseHour: "ދެން އަންނަ ގަޑި",
+  decreaseHour: "ކުރީ ގަޑި",
+  increaseMinute: "ދެން އަންނަ މިނެޓު",
+  decreaseMinute: "ކުރީ މިނެޓު",
+  chooseHour: "ގަޑި ހޮއްވަވާ",
+  chooseMinute: "މިނެޓު ހޮއްވަވާ",
+  am: "މކ",
+  pm: "މފ",
+  period: "މކ ނުވަތަ މފ",
+  changeTime: "ވަގުތު ބަދަލުކުރައްވާ، {time}",
+  backToCalendar: "ކެލެންޑަރަށް އެނބުރި",
+  clearTime: "ވަގުތު ފޮހެލާ",
+
+  // Ranges
+  from: "ފެށޭ ތާރީޚު",
+  to: "ނިމޭ ތާރީޚު",
+  dateRange: "ތާރީޚުގެ މުއްދަތު",
+  endBeforeStart: "ނިމޭ ތާރީޚަކީ ފެށޭ ތާރީޚުގެ ކުރީގެ ތާރީޚެއް",
+  datesSelected: { one: "{count} ތާރީޚު ހޮވިފައި", other: "{count} ތާރީޚު ހޮވިފައި" },
+
+  // Weeks
+  week: "ހަފްތާ",
+  weekLabel: "{year} ގެ {week} ވަނަ ހަފްތާ",
+  weekNumber: "{week} ވަނަ ހަފްތާ",
+
+  // Reporting periods
+  periodType: "މުއްދަތުގެ ބާވަތް",
+  monthly: "މަހުން މަހަށް",
+  quarterly: "ކުއާޓަރުން ކުއާޓަރަށް",
+  yearly: "އަހަރުން އަހަރަށް",
+  custom: "ޚާއްޞަ މުއްދަތެއް",
+  quarter: "{quarter} ވަނަ ކުއާޓަރ",
+  quarterLabel: "{year} ގެ {quarter} ވަނަ ކުއާޓަރ",
+  quarters: "ކުއާޓަރުތައް",
+  fiscalYear: "{year} މާލީ އަހަރު",
+  fiscalYears: "މާލީ އަހަރުތައް",
+
+  // Hijri
+  hijri: "ހިޖްރީ",
+  hijriEra: "ހ",
+  hijriMonth1: "މުޙައްރަމް",
+  hijriMonth2: "ޞަފަރު",
+  hijriMonth3: "ރަބީޢުލްއައްވަލް",
+  hijriMonth4: "ރަބީޢުލްއާޚިރު",
+  hijriMonth5: "ޖުމާދަލްއޫލާ",
+  hijriMonth6: "ޖުމާދަލްއާޚިރާ",
+  hijriMonth7: "ރަޖަބު",
+  hijriMonth8: "ޝަޢުބާން",
+  hijriMonth9: "ރަމަޟާން",
+  hijriMonth10: "ޝައްވާލް",
+  hijriMonth11: "ޛުލްޤަޢިދާ",
+  hijriMonth12: "ޛުލްޙިއްޖާ",
+
+  // Full calendar
+  monthView: "މަސް",
+  weekView: "ހަފްތާ",
+  dayView: "ދުވަސް",
+  agendaView: "ލިސްޓު",
+  calendarView: "ކެލެންޑަރު ބެލުމުގެ ގޮތް",
+  previousPeriod: "ކުރީގެ",
+  nextPeriod: "ދެން އަންނަ",
+  allDay: "މުޅި ދުވަހު",
+  noEvents: "ދައްކާނެ އެއްވެސް ހަރަކާތެއް ނެތް",
+  moreEvents: "+{count} އިތުރަށް",
+  weekShort: "ހ",
+} satisfies Record<keyof typeof en, MessageDict[string]> & MessageDict
