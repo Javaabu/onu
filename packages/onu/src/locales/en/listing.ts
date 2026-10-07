@@ -1,3 +1,220 @@
 import type { MessageDict } from "../../i18n/types"
 
-export const listing = {} satisfies MessageDict
+export const listing = {
+  // Nouns used when a component is given none
+  recordOne: "record",
+  recordOther: "records",
+
+  // Search
+  search: "Search",
+  searchPlaceholder: "Search…",
+  clearSearchInput: "Clear search box",
+
+  // Sorting
+  sortBy: "Sort by",
+  sortAscending: "ascending",
+  sortDescending: "descending",
+  sortedBy: "Sorted by {column}, {direction}",
+  sortByColumn: "Sort by {column}",
+  sortDirection: "Direction",
+  sortNone: "Default order",
+
+  // Selection
+  selectRow: "Select {name}",
+  selectAllOnPage: "Select all rows on this page",
+  selectAll: "Select all",
+  selectedCount: { one: "{count} selected", other: "{count} selected" },
+  clearSelection: "Clear selection",
+  selectionCleared: "Selection cleared",
+
+  // Bulk actions
+  bulkActions: "Bulk actions",
+  bulkConfirmTitle: "{action} {count} selected {noun}?",
+  bulkDeleteTitle: "Delete {count} selected {noun}?",
+  bulkConfirmDescription: "This can't be undone.",
+  bulkRunning: "Working…",
+  bulkDone: "{action}: {count} {noun} done",
+  bulkDeleted: "{count} {noun} deleted",
+  bulkFailed: "That didn't work. Please try again.",
+  bulkApply: "Apply",
+  dismiss: "Dismiss",
+
+  // Row actions
+  actions: "Actions",
+  actionsFor: "Actions for {name}",
+  deleteRecordTitle: "Delete {name}?",
+  deleteRecordDescription: "This can't be undone.",
+  restore: "Restore",
+  deletePermanently: "Delete permanently",
+  deletePermanentlyTitle: "Permanently delete {name}?",
+  deletePermanentlyDescription: "This will delete it for good. This can't be undone.",
+  moreActions: "More actions",
+  open: "Open {name}",
+
+  // Pagination
+  showingRange: "Showing {from}–{to} of {total} {noun}",
+  showingCount: "Showing {count} {noun}",
+  showingNone: "No {noun} to show",
+  rowsPerPage: "Rows per page",
+  pageOf: "Page {page} of {pages}",
+  page: "Page {page}",
+  goToPage: "Go to page {page}",
+  currentPage: "Page {page}, current page",
+  previous: "Previous",
+  next: "Next",
+  firstPage: "First page",
+  lastPage: "Last page",
+
+  // Load more
+  loadMore: "Load more",
+  loadingMore: "Loading more…",
+  loadedMore: { one: "Loaded {count} more {noun}", other: "Loaded {count} more {noun}" },
+  allLoaded: "All {total} {noun} shown",
+
+  // Empty states
+  emptyTitle: "No {noun} yet",
+  emptyDescription: "When {noun} are added, they'll show up here.",
+  noResultsTitle: "No {noun} match your search",
+  noResultsSearch: "Nothing matches “{search}”.",
+  noResultsFilters: "Nothing matches the filters {filters}.",
+  noResultsSearchAndFilters: "Nothing matches “{search}” with the filters {filters}.",
+  noResultsHint: "Try different words or fewer filters.",
+  clearSearch: "Clear search",
+  clearFilters: "Clear filters",
+  trashEmptyTitle: "Trash is empty",
+  trashEmptyDescription: "Deleted {noun} show up here.",
+
+  // Trash link
+  trash: "Trash",
+  trashNotEmpty: "Trash has items",
+
+  // Filters
+  filters: "Filters",
+  filtersCount: { one: "Filters, {count} applied", other: "Filters, {count} applied" },
+  filtersTitle: "Filters",
+  applyFilters: "Apply",
+  clearFilter: "Clear",
+  clearFilterNamed: "Clear {name}",
+  clearAllFilters: "Clear all",
+  cancel: "Cancel",
+  removeFilter: "Remove filter {filter}",
+  activeFilters: "Active filters",
+  filtersApplied: { zero: "Filters cleared", one: "{count} filter applied", other: "{count} filters applied" },
+  selectOptions: "Select…",
+  selectedOptions: { one: "{count} selected", other: "{count} selected" },
+  searchOptions: "Search options…",
+  noOptions: "No options found",
+  any: "Any",
+  yes: "Yes",
+  no: "No",
+  dateField: "Date",
+  dateFrom: "From",
+  dateTo: "To",
+  pickDate: "Pick a date",
+  dateRangeBoth: "{from} → {to}",
+  dateRangeFrom: "from {from}",
+  dateRangeTo: "until {to}",
+  deletedRecords: "Deleted records",
+  trashedHide: "Hide",
+  trashedInclude: "Include",
+  trashedOnly: "Only",
+  filterSubmit: "Filter",
+  filterReset: "Reset",
+
+  // Filter tabs
+  filterTabs: "Filter by status",
+  tabWithCount: "{label} ({count})",
+
+  // Views
+  view: "View",
+  viewTable: "Table",
+  viewList: "List",
+  viewGrid: "Grid",
+  viewKanban: "Board",
+
+  // Columns
+  columns: "Columns",
+  toggleColumns: "Show or hide columns",
+
+  // Export
+  export: "Export",
+  exporting: "Exporting…",
+  exportCsv: "CSV",
+  exportExcel: "Excel",
+  exportPdf: "PDF",
+  exportAs: "Export as {format}",
+  exported: "Export ready",
+
+  // Search results
+  searchResults: "Search results",
+  resultsFor: {
+    zero: "No results for “{query}”",
+    one: "{count} result for “{query}”",
+    other: "{count} results for “{query}”",
+  },
+  resultsInGroup: { one: "{count} result", other: "{count} results" },
+
+  // Kanban / sortable
+  dragHandle: "Drag to reorder {name}",
+  reorder: "Reorder",
+  moveTo: "Move to…",
+  moveToColumn: "Move to {column}",
+  moveUp: "Move up",
+  moveDown: "Move down",
+  moved: "{name} moved to {column}",
+  movedToPosition: "{name} moved to position {position} of {total}",
+  dragInstructions:
+    "To pick up an item, press Space or Enter. Use the arrow keys to move it, then press Space or Enter to drop it, or Escape to cancel.",
+  dragStart: "Picked up {name}.",
+  dragOver: "{name} is over {target}.",
+  dragEnd: "{name} dropped.",
+  dragCancel: "Moving cancelled. {name} was put back.",
+  columnItems: { zero: "No items", one: "{count} item", other: "{count} items" },
+  emptyColumn: "Nothing here",
+
+  // Tree
+  tree: "Tree",
+  expand: "Expand",
+  collapse: "Collapse",
+
+  // Editable grid
+  editCell: "Edit {column}",
+  cellInvalid: "{column}: {message}",
+  cellRequired: "Required",
+  cellNumber: "Enter a number",
+  cellSaved: "Saved",
+  gridInstructions:
+    "Use the arrow keys to move between cells. Press Enter to edit and Enter again to save, Escape to cancel, or Tab to save and move on.",
+
+  // Condition builder
+  addRule: "Add condition",
+  addGroup: "Add group",
+  removeRule: "Remove condition",
+  removeGroup: "Remove group",
+  combinator: "Match",
+  combinatorAnd: "All (and)",
+  combinatorOr: "Any (or)",
+  field: "Field",
+  operator: "Operator",
+  value: "Value",
+  not: "Not",
+  opEquals: "is",
+  opNotEquals: "is not",
+  opContains: "contains",
+  opNotContains: "does not contain",
+  opBeginsWith: "starts with",
+  opEndsWith: "ends with",
+  opLess: "is less than",
+  opLessOrEqual: "is at most",
+  opGreater: "is greater than",
+  opGreaterOrEqual: "is at least",
+  opNull: "is empty",
+  opNotNull: "is not empty",
+  opIn: "is one of",
+  opNotIn: "is not one of",
+  opBetween: "is between",
+  opNotBetween: "is not between",
+
+  // Loading
+  loading: "Loading…",
+} satisfies MessageDict

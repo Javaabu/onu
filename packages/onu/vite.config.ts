@@ -21,6 +21,7 @@ const entries = {
   "editor/index": "src/editor/index.ts",
   "calendar/index": "src/calendar/index.ts",
   "media/index": "src/media/index.ts",
+  "query-builder/index": "src/query-builder/index.ts",
   "icons/iconify/index": "src/icons/iconify/index.tsx",
   "icons/fontawesome/index": "src/icons/fontawesome/index.tsx",
 }
