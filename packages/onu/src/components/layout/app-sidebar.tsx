@@ -3,6 +3,7 @@
 import * as React from "react"
 
 import { Icon } from "../../icons/icon"
+import { cn } from "../../lib/utils"
 import { useOnu, useTranslation } from "../../providers/onu-provider"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../../ui/collapsible"
 import {
@@ -98,6 +99,28 @@ function Badge({ item, ctx }: { item: NavItem; ctx: Ctx }) {
   )
 }
 
+function hasBadge(item: NavItem) {
+  return !(item.badge === undefined || item.badge === null || item.badge === false || item.badge === 0)
+}
+
+/**
+ * A parent item's badge, laid out inside the button before the chevron (the
+ * absolutely placed `SidebarMenuBadge` would sit on top of the chevron or the
+ * submenu toggle).
+ */
+function InlineBadge({ item, ctx }: { item: NavItem; ctx: Ctx }) {
+  if (!hasBadge(item)) return null
+  return (
+    <NavBadge
+      badge={item.badge}
+      className={cn(
+        "h-5 min-w-5 px-1 text-xs font-medium ms-auto flex shrink-0 items-center justify-center rounded-md tabular-nums group-data-[collapsible=icon]:hidden",
+        ctx.classNames?.badge,
+      )}
+    />
+  )
+}
+
 function LeafItem({ item, ctx }: { item: NavItem; ctx: Ctx }) {
   const active = isSelfActive(item, ctx.activeHref)
   const content = (
@@ -188,10 +211,12 @@ function ParentItem({ item, ctx }: { item: NavItem; ctx: Ctx }) {
   }
 
   // Points to the inline end when closed (mirrors in RTL) and down when open.
+  // With a badge, the badge takes the free space and the chevron follows it.
+  const badged = hasBadge(item)
   const chevron = (
     <>
-      <Icon name="chevron-right" className="ms-auto [[data-state=open]>&]:hidden" />
-      <Icon name="chevron-down" className="ms-auto hidden [[data-state=open]>&]:block" />
+      <Icon name="chevron-right" className={cn(!badged && "ms-auto", "[[data-state=open]>&]:hidden")} />
+      <Icon name="chevron-down" className={cn(!badged && "ms-auto", "hidden [[data-state=open]>&]:block")} />
     </>
   )
 
@@ -213,7 +238,8 @@ function ParentItem({ item, ctx }: { item: NavItem; ctx: Ctx }) {
                 onClick={(e) => ctx.navigate(item, e)}
               >
                 <NavIcon icon={item.icon} />
-                <span>{item.label}</span>
+                <span className="min-w-0 truncate">{item.label}</span>
+                <InlineBadge item={item} ctx={ctx} />
               </NavLink>
             </SidebarMenuButton>
             <CollapsibleTrigger asChild>
@@ -229,12 +255,12 @@ function ParentItem({ item, ctx }: { item: NavItem; ctx: Ctx }) {
           <CollapsibleTrigger asChild>
             <SidebarMenuButton isActive={false} tooltip={plainLabel(item.label)} className="touch:min-h-11">
               <NavIcon icon={item.icon} />
-              <span>{item.label}</span>
+              <span className="min-w-0 truncate">{item.label}</span>
+              <InlineBadge item={item} ctx={ctx} />
               {chevron}
             </SidebarMenuButton>
           </CollapsibleTrigger>
         )}
-        {!item.href ? <Badge item={item} ctx={ctx} /> : null}
         <CollapsibleContent>
           <SidebarMenuSub>
             {children.map((child, i) => {
