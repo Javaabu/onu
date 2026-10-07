@@ -258,11 +258,18 @@ export function MediaLister({
                     <FileIcon kind={kind} />
                   )}
                   <span className="min-w-0 gap-0.5 flex flex-1 flex-col">
-                    <span className={cn("text-sm font-medium truncate", classNames?.name)}>
+                    {/* `dir="auto"` truncates a Latin name at its own end, also on an RTL page. */}
+                    <span
+                      dir="auto"
+                      title={item.name}
+                      className={cn("text-sm font-medium truncate [text-align:match-parent]", classNames?.name)}
+                    >
                       <bdi>{item.name}</bdi>
                     </span>
                     {typeof item.size === "number" ? (
-                      <span className="text-xs text-muted-foreground tabular-nums">{format(item.size)}</span>
+                      <span dir="ltr" className="text-xs text-muted-foreground tabular-nums [text-align:match-parent]">
+                        {format(item.size)}
+                      </span>
                     ) : null}
                   </span>
                 </button>

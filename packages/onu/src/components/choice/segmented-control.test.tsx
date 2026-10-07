@@ -68,6 +68,18 @@ describe("SegmentedControl", () => {
     expect(grid).not.toHaveTextContent("Grid")
   })
 
+  it("never truncates labels and scrolls when space runs out", () => {
+    renderWithOnu(<SegmentedControl aria-label="Side" options={["Side by side", "Tabs", "Ends"]} />)
+    const group = screen.getByRole("radiogroup", { name: "Side" })
+    expect(group).toHaveClass("overflow-x-auto", "max-w-full")
+    for (const radio of screen.getAllByRole("radio")) {
+      expect(radio).toHaveClass("shrink-0", "whitespace-nowrap")
+      expect(radio).not.toHaveClass("min-w-0")
+      expect(radio.querySelector(".truncate")).toBeNull()
+    }
+    expect(screen.getByRole("radio", { name: "Side by side" })).toHaveTextContent("Side by side")
+  })
+
   it("is labelled by a FormField and submits its name", async () => {
     renderWithOnu(
       <FormField label="Frequency" name="frequency" required>
