@@ -177,6 +177,7 @@ export const map = {
 
   // Heatmap and viewport markers
   heatmapSummary: "ޕޮއިންޓް {count} ގެ ހީޓްމެޕް، ޖުމްލަ ވަޒަން {total}",
+  clusterLabel: "ތަން {count}، ބޮޑުކޮށްލާ",
   markerMap: "ތަންތަނުގެ މެޕް",
   loadingMarkers: "ތަންތަން ލޯޑުވަނީ…",
   markersError: "މި ސަރަހައްދުގެ ތަންތަން ލޯޑް ނުކުރެވުނު.",

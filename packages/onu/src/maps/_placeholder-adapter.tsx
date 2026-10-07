@@ -46,6 +46,8 @@ interface Viewport {
   toLatLng: (clientX: number, clientY: number) => LatLng
   /** Pixels per metre at a latitude. */
   pixelsPerMeter: (lat: number) => number
+  /** Move the camera. */
+  moveTo: (center: LatLng, zoom: number) => void
 }
 
 const ViewportContext = React.createContext<Viewport | null>(null)
@@ -127,7 +129,8 @@ function PlaceholderMap({
     }
     const pixelsPerMeter = (lat: number) =>
       (256 * 2 ** camera.zoom) / (40_075_016.686 * Math.cos((lat * Math.PI) / 180))
-    return { width: size.width, height: size.height, camera, toPoint, toLatLng, pixelsPerMeter }
+    const moveTo = (center: LatLng, zoom: number) => setCamera({ center, zoom: clampZoom(zoom) })
+    return { width: size.width, height: size.height, camera, toPoint, toLatLng, pixelsPerMeter, moveTo }
   }, [camera, centerPx, size])
 
   React.useImperativeHandle(
@@ -621,19 +624,52 @@ function PlaceholderTrail({ path, tone = "primary", width = 4 }: AdapterTrailPro
   return <PlaceholderPolyline path={path} tone={tone} width={width} />
 }
 
+const CLUSTER_CELL = 56
+
 function PlaceholderClusters({ markers, selectedId, onMarkerClick }: AdapterClusterProps) {
+  const { t } = useTranslation()
+  const { toPoint, camera, moveTo } = useViewport()
+  // Simple grid clustering in screen space, like markerclusterer's default.
+  const cells = new Map<string, typeof markers>()
+  for (const m of markers) {
+    const p = toPoint(m.position)
+    const key = `${Math.floor(p.x / CLUSTER_CELL)}:${Math.floor(p.y / CLUSTER_CELL)}`
+    cells.set(key, [...(cells.get(key) ?? []), m])
+  }
   return (
     <>
-      {markers.map((m) => (
-        <PlaceholderMarker
-          key={m.id}
-          position={m.position}
-          title={m.title}
-          tone={m.tone}
-          selected={m.id === selectedId}
-          onClick={onMarkerClick ? () => onMarkerClick(m.id) : undefined}
-        />
-      ))}
+      {[...cells.entries()].map(([key, group]) => {
+        if (group.length === 1 || camera.zoom >= MAX_ZOOM || group.some((m) => m.id === selectedId)) {
+          return group.map((m) => (
+            <PlaceholderMarker
+              key={m.id}
+              position={m.position}
+              title={m.title}
+              tone={m.tone}
+              selected={m.id === selectedId}
+              onClick={onMarkerClick ? () => onMarkerClick(m.id) : undefined}
+            />
+          ))
+        }
+        const center = {
+          lat: group.reduce((n, m) => n + m.position.lat, 0) / group.length,
+          lng: group.reduce((n, m) => n + m.position.lng, 0) / group.length,
+        }
+        const { x, y } = toPoint(center)
+        return (
+          <button
+            key={key}
+            type="button"
+            data-slot="map-cluster"
+            aria-label={t("map.clusterLabel", { count: group.length })}
+            className="size-9 text-xs font-semibold shadow-md absolute z-20 flex -translate-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground ring-4 ring-background outline-none focus-visible:ring-4 focus-visible:ring-ring/60"
+            style={{ left: x, top: y }}
+            onClick={() => moveTo(center, camera.zoom + 2)}
+          >
+            {group.length}
+          </button>
+        )
+      })}
     </>
   )
 }

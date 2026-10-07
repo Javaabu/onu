@@ -177,6 +177,7 @@ export const map = {
     one: "Heatmap of 1 point, total weight {total}",
     other: "Heatmap of {count} points, total weight {total}",
   },
+  clusterLabel: { one: "1 place, zoom in", other: "{count} places, zoom in" },
   markerMap: "Map of places",
   loadingMarkers: "Loading places…",
   markersError: "Couldn't load places for this area.",

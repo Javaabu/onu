@@ -103,7 +103,21 @@ describe("ViewportMarkerMap", () => {
     await flush()
     await screen.findByText("2 places in view")
     expect(screen.queryByRole("list", { name: "Markers" })).not.toBeInTheDocument()
+    // Close markers are grouped; a cluster zooms in when activated.
+    const cluster = screen.getByRole("button", { name: "2 places, zoom in" })
+    expect(cluster).toHaveTextContent("2")
+    await userEvent.click(cluster)
+    expect(screen.getByText(/places in view|Loading places/)).toBeInTheDocument()
+  })
+
+  it("shows separate markers that are far apart", async () => {
+    const far: ViewportMarker[] = [markers[0]!, { ...markers[1]!, position: { lat: 4.2, lng: 73.54 } }]
+    const onSelect = vi.fn()
+    renderWithOnu(<ViewportMarkerMap fetcher={async () => far} list={false} zoom={14} onSelect={onSelect} />)
+    await flush()
+    await screen.findByText("2 places in view")
     await userEvent.click(screen.getByRole("button", { name: "Clinic" }))
+    expect(onSelect).toHaveBeenLastCalledWith("a", far[0])
     expect(screen.getByRole("button", { name: "Clinic" })).toHaveAttribute("aria-pressed", "true")
   })
 
