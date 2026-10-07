@@ -38,7 +38,15 @@ export default function HeatmapLayerDemo() {
         </MapView>
         <div className="gap-2 max-w-xs grid">
           <Label htmlFor={id}>Radius: {radius}px</Label>
-          <Slider id={id} min={10} max={60} step={5} value={[radius]} onValueChange={([v]) => setRadius(v ?? 30)} />
+          <Slider
+            id={id}
+            aria-label="Heat radius"
+            min={10}
+            max={60}
+            step={5}
+            value={[radius]}
+            onValueChange={([v]) => setRadius(v ?? 30)}
+          />
         </div>
       </DemoSection>
     </DemoPage>

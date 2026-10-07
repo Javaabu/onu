@@ -114,14 +114,14 @@ const COLOR_VARS: Record<CalendarEventColor, [string, string]> = {
   warning: ["var(--warning)", "var(--warning-foreground)"],
   destructive: ["var(--destructive)", "var(--destructive-foreground)"],
   info: ["var(--info)", "var(--info-foreground)"],
-  "chart-1": ["var(--chart-1)", "var(--background)"],
-  "chart-2": ["var(--chart-2)", "var(--background)"],
-  "chart-3": ["var(--chart-3)", "var(--background)"],
-  "chart-4": ["var(--chart-4)", "var(--background)"],
-  "chart-5": ["var(--chart-5)", "var(--background)"],
-  "chart-6": ["var(--chart-6)", "var(--background)"],
-  "chart-7": ["var(--chart-7)", "var(--background)"],
-  "chart-8": ["var(--chart-8)", "var(--background)"],
+  "chart-1": ["color-mix(in oklab, var(--chart-1) 22%, var(--background))", "var(--foreground)"],
+  "chart-2": ["color-mix(in oklab, var(--chart-2) 22%, var(--background))", "var(--foreground)"],
+  "chart-3": ["color-mix(in oklab, var(--chart-3) 22%, var(--background))", "var(--foreground)"],
+  "chart-4": ["color-mix(in oklab, var(--chart-4) 22%, var(--background))", "var(--foreground)"],
+  "chart-5": ["color-mix(in oklab, var(--chart-5) 22%, var(--background))", "var(--foreground)"],
+  "chart-6": ["color-mix(in oklab, var(--chart-6) 22%, var(--background))", "var(--foreground)"],
+  "chart-7": ["color-mix(in oklab, var(--chart-7) 22%, var(--background))", "var(--foreground)"],
+  "chart-8": ["color-mix(in oklab, var(--chart-8) 22%, var(--background))", "var(--foreground)"],
 }
 
 /** Maps an Onu event onto FullCalendar's input, resolving theme colours. */
@@ -163,6 +163,8 @@ const THEME = [
   "[&_.fc-daygrid-day-number]:p-1.5 [&_.fc-daygrid-day-number]:text-xs [&_.fc-daygrid-day-number]:tabular-nums",
   "[&_.fc-day-today_.fc-daygrid-day-number]:m-1 [&_.fc-day-today_.fc-daygrid-day-number]:rounded-full [&_.fc-day-today_.fc-daygrid-day-number]:bg-primary [&_.fc-day-today_.fc-daygrid-day-number]:text-primary-foreground [&_.fc-day-today_.fc-daygrid-day-number]:font-semibold",
   "[&_.fc-day-other]:text-muted-foreground",
+  // FullCalendar dims other-month day numbers to 30% opacity, which fails contrast.
+  "[&_.fc-day-other_.fc-daygrid-day-top]:opacity-100!",
   "[&_.onu-weekend]:bg-muted/40",
   "[&_.fc-event]:rounded-md [&_.fc-event]:px-1 [&_.fc-event]:text-xs [&_.fc-event]:shadow-none",
   "[&_.fc-event:focus-visible]:outline-none [&_.fc-event:focus-visible]:ring-3 [&_.fc-event:focus-visible]:ring-ring/50",

@@ -212,13 +212,13 @@ export function HijriCalendar({
                         "gap-0.5 text-sm inline-flex size-(--cell-size) flex-col items-center justify-center rounded-(--cell-radius) leading-none tabular-nums outline-none",
                         "hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 aria-disabled:cursor-not-allowed aria-disabled:opacity-40",
                         weekend && !outside && "text-destructive",
-                        outside && "text-muted-foreground opacity-60",
+                        outside && "text-muted-foreground",
                         isToday && "font-semibold underline decoration-primary decoration-2 underline-offset-4",
                         isSelected && "bg-primary text-primary-foreground opacity-100 hover:bg-primary/90",
                       )}
                     >
                       <span>{h.day}</span>
-                      {showGregorian ? <span className="text-[0.6rem] opacity-70">{d.getDate()}</span> : null}
+                      {showGregorian ? <span className="text-[0.6rem]">{d.getDate()}</span> : null}
                     </button>
                   </td>
                 )

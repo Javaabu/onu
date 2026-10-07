@@ -214,21 +214,13 @@ export const Embed = Node.create({
     if (!embedUrl) {
       return ["div", attrs, ["a", { href: isSafeUrl(src) ? src : null, rel: "noopener noreferrer nofollow" }, title]]
     }
+    // In the editor, a static preview card: nothing is loaded from YouTube/Vimeo while editing.
+    // Published content renders the click-to-load VideoEmbed (BlockRenderer).
     return [
       "div",
-      attrs,
-      [
-        "iframe",
-        {
-          src: embedUrl,
-          title,
-          loading: "lazy",
-          allowfullscreen: "true",
-          referrerpolicy: "strict-origin-when-cross-origin",
-          sandbox: "allow-scripts allow-same-origin allow-presentation allow-popups",
-          allow: "encrypted-media; picture-in-picture; fullscreen",
-        },
-      ],
+      { ...attrs, "data-embed-preview": "", class: "rounded-lg border bg-muted p-4 text-sm" },
+      ["p", { class: "font-medium" }, `▶ ${title}`],
+      ["p", { class: "text-muted-foreground break-all", dir: "ltr" }, src ?? ""],
     ]
   },
 

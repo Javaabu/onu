@@ -54,6 +54,7 @@ export function FileRow({
     <Comp
       data-slot="file-row"
       data-kind={kind}
+      data-inactive={struck || undefined}
       className={cn("gap-3 p-2 flex items-start rounded-lg border border-border bg-card", className)}
       {...props}
     >

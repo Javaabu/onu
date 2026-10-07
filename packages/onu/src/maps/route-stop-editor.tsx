@@ -92,95 +92,93 @@ function StopRow({
   const name = stop.label || t("map.stopNumber", { index: number })
   const panelId = React.useId()
   return (
-    <li
-      ref={ref}
-      data-slot="route-stop"
-      data-dragging={isDragging || undefined}
-      className={cn("gap-2 p-2 grid rounded-md border bg-card", isDragging && "shadow-md opacity-60", className)}
-    >
-      <div className="gap-2 flex items-center">
-        {disabled ? null : (
-          <button
-            ref={handleRef}
-            type="button"
-            aria-label={t("map.reorderStop", { name })}
-            className="size-7 touch:size-11 flex shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 active:cursor-grabbing"
+    // The sortable ref sits on an inner element: dnd-kit gives it a role, and the <li> must stay a list item.
+    <li data-slot="route-stop" data-dragging={isDragging || undefined} className={className}>
+      <div ref={ref} className={cn("gap-2 p-2 grid rounded-md border bg-card", isDragging && "shadow-md opacity-60")}>
+        <div className="gap-2 flex items-center">
+          {disabled ? null : (
+            <button
+              ref={handleRef}
+              type="button"
+              aria-label={t("map.reorderStop", { name })}
+              className="size-7 touch:size-11 flex shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 active:cursor-grabbing"
+            >
+              <Icon name="grip-vertical" />
+            </button>
+          )}
+          <span
+            aria-hidden
+            className="size-6 text-xs font-semibold flex shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground tabular-nums"
           >
-            <Icon name="grip-vertical" />
-          </button>
-        )}
-        <span
-          aria-hidden
-          className="size-6 text-xs font-semibold flex shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground tabular-nums"
-        >
-          {number}
-        </span>
-        <TextInput
-          aria-label={t("map.stopNameLabel", { index: number })}
-          value={stop.label}
-          placeholder={t("map.stopNumber", { index: number })}
-          onChange={(e) => onRename(e.target.value)}
-          disabled={disabled}
-          thaana={thaana}
-          dir={thaana ? undefined : "auto"}
-          className="min-w-0 flex-1"
-        />
-        {disabled ? null : (
-          <div className="gap-0.5 flex shrink-0">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              disabled={index === 0}
-              aria-label={t("map.moveStopUp", { name })}
-              onClick={() => onMove(index - 1)}
-            >
-              <Icon name="arrow-up" />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              disabled={index === count - 1}
-              aria-label={t("map.moveStopDown", { name })}
-              onClick={() => onMove(index + 1)}
-            >
-              <Icon name="arrow-down" />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("map.removeStop", { name })}
-              onClick={onRemove}
-            >
-              <Icon name="trash" />
-            </Button>
-          </div>
-        )}
-      </div>
-      <div className="gap-2 ps-9 text-xs flex items-center text-muted-foreground">
-        <span className="min-w-0 flex-1 truncate tabular-nums">
-          {stop.position ? formatLatLng(stop.position, t, locale.numberLocale, 5) : t("map.notPlaced")}
-        </span>
-        {disabled ? null : (
-          <Button
-            type="button"
-            variant="link"
-            size="xs"
-            aria-expanded={expanded}
-            aria-controls={panelId}
-            onClick={onToggle}
-          >
-            {t("map.editCoordinates")}
-          </Button>
-        )}
-      </div>
-      {expanded && !disabled ? (
-        <div id={panelId} className="ps-9">
-          <CoordinateFields value={stop.position} onChange={onPosition} />
+            {number}
+          </span>
+          <TextInput
+            aria-label={t("map.stopNameLabel", { index: number })}
+            value={stop.label}
+            placeholder={t("map.stopNumber", { index: number })}
+            onChange={(e) => onRename(e.target.value)}
+            disabled={disabled}
+            thaana={thaana}
+            dir={thaana ? undefined : "auto"}
+            className="min-w-0 flex-1"
+          />
+          {disabled ? null : (
+            <div className="gap-0.5 flex shrink-0">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                disabled={index === 0}
+                aria-label={t("map.moveStopUp", { name })}
+                onClick={() => onMove(index - 1)}
+              >
+                <Icon name="arrow-up" />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                disabled={index === count - 1}
+                aria-label={t("map.moveStopDown", { name })}
+                onClick={() => onMove(index + 1)}
+              >
+                <Icon name="arrow-down" />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                aria-label={t("map.removeStop", { name })}
+                onClick={onRemove}
+              >
+                <Icon name="trash" />
+              </Button>
+            </div>
+          )}
         </div>
-      ) : null}
+        <div className="gap-2 ps-9 text-xs flex items-center text-muted-foreground">
+          <span className="min-w-0 flex-1 truncate tabular-nums">
+            {stop.position ? formatLatLng(stop.position, t, locale.numberLocale, 5) : t("map.notPlaced")}
+          </span>
+          {disabled ? null : (
+            <Button
+              type="button"
+              variant="link"
+              size="xs"
+              aria-expanded={expanded}
+              aria-controls={panelId}
+              onClick={onToggle}
+            >
+              {t("map.editCoordinates")}
+            </Button>
+          )}
+        </div>
+        {expanded && !disabled ? (
+          <div id={panelId} className="ps-9">
+            <CoordinateFields value={stop.position} onChange={onPosition} />
+          </div>
+        ) : null}
+      </div>
     </li>
   )
 }

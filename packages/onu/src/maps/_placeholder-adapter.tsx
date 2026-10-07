@@ -361,7 +361,8 @@ function PlaceholderMarker({
     "absolute z-20 -translate-x-1/2 rounded-full outline-none",
     arrow ? "-translate-y-1/2" : "-translate-y-full",
     selected && "z-25",
-    (onClick || draggable) && "cursor-pointer focus-visible:ring-3 focus-visible:ring-ring/60",
+    (onClick || draggable) &&
+      "min-h-6 min-w-6 grid cursor-pointer place-items-center focus-visible:ring-3 focus-visible:ring-ring/60",
     draggable && "cursor-grab touch-none active:cursor-grabbing",
   )
   const style = { left: x, top: y, zIndex }

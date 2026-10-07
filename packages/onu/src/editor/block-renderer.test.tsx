@@ -1,5 +1,5 @@
 import type { JSONContent } from "@tiptap/core"
-import { screen } from "@testing-library/react"
+import { fireEvent, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../test/utils"
@@ -66,9 +66,10 @@ describe("BlockRenderer", () => {
     const note = screen.getByRole("note")
     expect(note).toHaveAttribute("data-variant", "warning")
     expect(note.querySelector("[data-icon-name=warning]")).toBeInTheDocument()
-    const iframe = screen.getByTitle("Reef video")
-    expect(iframe).toHaveAttribute("src", "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ")
-    expect(iframe).toHaveAttribute("sandbox")
+    // Embeds are click-to-load: no iframe until the reader presses play.
+    expect(container.querySelector("iframe")).toBeNull()
+    fireEvent.click(screen.getByRole("button", { name: /Reef video/ }))
+    expect(container.querySelector("iframe")?.getAttribute("src")).toContain("youtube-nocookie.com/embed/dQw4w9WgXcQ")
     expect(container.querySelector("[data-slot=code-block]")).toHaveAttribute("data-language", "php")
     expect(container.querySelector(".tableWrapper table")).toBeInTheDocument()
     expect(screen.getByRole("columnheader", { name: "Island" })).toBeInTheDocument()
@@ -140,9 +141,9 @@ describe("BlockRenderer", () => {
       />,
       { dir, locale: "dv" },
     )
-    expect(screen.getByTitle("އެމްބެޑްކުރެވިފައިވާ ކޮންޓެންޓް")).toHaveAttribute(
-      "src",
-      "https://player.vimeo.com/video/123456",
+    fireEvent.click(screen.getByRole("button", { name: /އެމްބެޑްކުރެވިފައިވާ ކޮންޓެންޓް/ }))
+    expect(screen.getByTitle("އެމްބެޑްކުރެވިފައިވާ ކޮންޓެންޓް").getAttribute("src")).toContain(
+      "player.vimeo.com/video/123456",
     )
     await axeWithoutFrames()
   })

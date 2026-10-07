@@ -25,7 +25,9 @@ export default function LoadMoreDemo() {
         />
       </DemoSection>
       <DemoSection title="Loads as you scroll" className="gap-2 grid">
-        <div className="max-h-48 p-2 overflow-auto rounded-lg border">
+        {/* Scrollable regions must be keyboard-reachable (WCAG 2.1.1). */}
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
+        <div tabIndex={0} role="region" aria-label="Results" className="max-h-48 p-2 overflow-auto rounded-lg border">
           <ul className="gap-1 text-sm grid">
             {people.slice(0, auto).map((p) => (
               <li key={p.id}>{p.nameDv}</li>

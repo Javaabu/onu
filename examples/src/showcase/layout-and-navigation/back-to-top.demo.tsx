@@ -22,7 +22,15 @@ export default function BackToTopDemo() {
   return (
     <DemoPage>
       <DemoSection title="Inside a scroll container" description="Scroll the box." className="block">
-        <div ref={box} className="h-72 p-4 text-sm relative overflow-y-auto rounded-xl border">
+        <div
+          ref={box}
+          // Scrollable regions must be keyboard-reachable (WCAG 2.1.1).
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          tabIndex={0}
+          role="region"
+          aria-label="Scrollable article"
+          className="h-72 p-4 text-sm relative overflow-y-auto rounded-xl border"
+        >
           {paragraphs.map((p) => (
             <p key={p} className="mb-3">
               {p}

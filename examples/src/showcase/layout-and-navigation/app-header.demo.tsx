@@ -64,7 +64,7 @@ export default function AppHeaderDemo() {
       <DemoSection title="Primary variant" className="block">
         <DemoFrame>
           <AppHeader sticky={false} variant="primary" logo={<span className="font-semibold">gov.mv</span>}>
-            <span className="text-sm opacity-80">{dv ? "ދިވެހިރާއްޖޭގެ ސަރުކާރު" : "Government of Maldives"}</span>
+            <span className="text-sm">{dv ? "ދިވެހިރާއްޖޭގެ ސަރުކާރު" : "Government of Maldives"}</span>
           </AppHeader>
         </DemoFrame>
       </DemoSection>

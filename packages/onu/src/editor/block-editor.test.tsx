@@ -189,7 +189,9 @@ describe("BlockEditor", () => {
       await user.type(url, "https://youtu.be/dQw4w9WgXcQ")
       await user.click(within(dialog).getByRole("button", { name: "Insert" }))
       await waitFor(() => expect(blocks(editor)).toContain("embed"))
-      expect(editor.getHTML()).toContain("youtube-nocookie.com/embed/dQw4w9WgXcQ")
+      // The editor shows a preview card (no third-party iframe while editing).
+      expect(editor.getHTML()).toContain('data-src="https://youtu.be/dQw4w9WgXcQ"')
+      expect(editor.getHTML()).not.toContain("<iframe")
     })
 
     it("does not open inside code blocks", async () => {

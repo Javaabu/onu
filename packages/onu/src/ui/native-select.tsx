@@ -4,6 +4,7 @@ import * as React from "react"
 import { cn } from "../lib/utils"
 
 import { Icon } from "../icons/icon"
+import { useFormFieldControl } from "../components/form/form-field"
 
 type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
   size?: "sm" | "default"
@@ -12,8 +13,10 @@ type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
 function NativeSelect({
   className,
   size = "default",
-  ...props
+  ...rest
 }: NativeSelectProps) {
+  // onu: wire id/name/aria to an enclosing FormField.
+  const props = useFormFieldControl(rest)
   return (
     <div
       className={cn(

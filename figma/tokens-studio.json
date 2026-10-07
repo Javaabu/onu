@@ -43,7 +43,7 @@
       "type": "color"
     },
     "muted-foreground": {
-      "value": "oklch(0.556 0 0)",
+      "value": "oklch(0.52 0 0)",
       "type": "color"
     },
     "accent": {
@@ -55,7 +55,7 @@
       "type": "color"
     },
     "destructive": {
-      "value": "oklch(0.577 0.245 27.325)",
+      "value": "oklch(0.51 0.21 27)",
       "type": "color"
     },
     "destructive-foreground": {
@@ -63,7 +63,7 @@
       "type": "color"
     },
     "success": {
-      "value": "oklch(0.6 0.15 155)",
+      "value": "oklch(0.5 0.13 155)",
       "type": "color"
     },
     "success-foreground": {
@@ -79,7 +79,7 @@
       "type": "color"
     },
     "info": {
-      "value": "oklch(0.6 0.15 245)",
+      "value": "oklch(0.5 0.14 245)",
       "type": "color"
     },
     "info-foreground": {
@@ -193,7 +193,7 @@
       "type": "color"
     },
     "destructive": {
-      "value": "oklch(0.704 0.191 22.216)",
+      "value": "oklch(0.74 0.17 22)",
       "type": "color"
     },
     "destructive-foreground": {

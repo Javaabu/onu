@@ -189,15 +189,15 @@ export function MediaPlayer({
       )}
       <MediaControlBar dir="ltr" className={cn("w-full", classNames?.controlBar)}>
         <MediaPlayButton className="touch:min-w-11 touch:min-h-11" />
-        <MediaSeekBackwardButton seekOffset={seekOffset} className="touch:min-w-11" />
-        <MediaSeekForwardButton seekOffset={seekOffset} className="touch:min-w-11" />
+        <MediaSeekBackwardButton seekOffset={seekOffset} className="min-h-6 min-w-6 touch:min-w-11" />
+        <MediaSeekForwardButton seekOffset={seekOffset} className="min-h-6 min-w-6 touch:min-w-11" />
         <MediaTimeRange className="min-w-0 flex-1" />
         <MediaTimeDisplay showDuration className="tabular-nums" />
-        <MediaMuteButton className="touch:min-w-11" />
+        <MediaMuteButton className="min-h-6 min-w-6 touch:min-w-11" />
         <MediaVolumeRange className="@max-sm:hidden" />
-        {tracks.length ? <MediaCaptionsButton className="touch:min-w-11" /> : null}
-        <MediaPlaybackRateButton rates={playbackRates} className="touch:min-w-11" />
-        {!audio ? <MediaFullscreenButton className="touch:min-w-11" /> : null}
+        {tracks.length ? <MediaCaptionsButton className="min-h-6 min-w-6 touch:min-w-11" /> : null}
+        <MediaPlaybackRateButton rates={playbackRates} className="min-h-6 min-w-6 touch:min-w-11" />
+        {!audio ? <MediaFullscreenButton className="min-h-6 min-w-6 touch:min-w-11" /> : null}
       </MediaControlBar>
     </MediaController>
   )

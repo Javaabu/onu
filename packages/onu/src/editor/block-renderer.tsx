@@ -12,6 +12,7 @@ import { proseVariants } from "./_prose"
 import { CALLOUT_VARIANTS, createSchemaExtensions, isSafeImageUrl, isSafeUrl, toEmbedUrl } from "./_schema"
 import { parseJsonContent } from "./_value"
 import { CodeBlock, type CodeBlockProps } from "./code-block"
+import { VideoEmbed } from "../components/files/video-embed"
 
 type NodeRenderer = (props: { node: PMNode; children?: React.ReactNode }) => React.ReactNode
 type MarkRenderer = (props: { mark: PMMark; children?: React.ReactNode }) => React.ReactNode
@@ -87,17 +88,10 @@ export function BlockRenderer({
             </p>
           ) : null
         }
+        // Click-to-load: nothing is fetched from YouTube/Vimeo until the reader presses play.
         return (
           <div data-type="embed" data-src={src ?? undefined}>
-            <iframe
-              src={url}
-              title={title}
-              loading="lazy"
-              allowFullScreen
-              referrerPolicy="strict-origin-when-cross-origin"
-              sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
-              allow="encrypted-media; picture-in-picture; fullscreen"
-            />
+            <VideoEmbed url={src ?? undefined} title={title} />
           </div>
         )
       },
