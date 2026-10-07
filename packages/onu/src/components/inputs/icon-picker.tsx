@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useVirtualizer } from "@tanstack/react-virtual"
+import { observeElementRect, useVirtualizer } from "@tanstack/react-virtual"
 import { iconNames } from "lucide-react/dynamic"
 
 import { DynamicIcon, parseIconId } from "../../icons/dynamic-icon"
@@ -154,6 +154,9 @@ export function IconPicker({
     estimateSize: () => CELL,
     overscan: 4,
     initialRect: { width: columns * CELL, height: CELL * 6 },
+    // Before layout (or in an unmeasured sheet) the scroller reports 0×0; render a few rows anyway.
+    observeElementRect: (instance, cb) =>
+      observeElementRect(instance, (rect) => cb(rect.height ? rect : { width: rect.width, height: CELL * 6 })),
   })
 
   const setScrollEl = React.useCallback((el: HTMLDivElement | null) => {
@@ -226,6 +229,7 @@ export function IconPicker({
   }
 
   const activeIndex = Math.min(active, ids.length - 1)
+  const activeRendered = virtualizer.getVirtualItems().some((row) => row.index === Math.floor(activeIndex / columns))
   const optionId = (i: number) => `${listId}-${i}`
   const valueName = value ? parseIconId(value).name : null
   const recentShown = !query && recent.length > 0
@@ -282,7 +286,7 @@ export function IconPicker({
               aria-expanded="true"
               aria-controls={listId}
               aria-autocomplete="list"
-              aria-activedescendant={ids.length ? optionId(activeIndex) : undefined}
+              aria-activedescendant={ids.length && activeRendered ? optionId(activeIndex) : undefined}
               aria-label={t("input.searchIcons")}
               placeholder={t("input.searchIcons")}
               autoComplete="off"

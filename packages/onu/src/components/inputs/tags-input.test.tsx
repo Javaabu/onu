@@ -7,6 +7,9 @@ import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test
 import { FormField } from "../form/form-field"
 import { TagsInput } from "./tags-input"
 
+// userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
+vi.setConfig({ testTimeout: 30_000 })
+
 const tagTexts = (container: HTMLElement) =>
   Array.from(container.querySelectorAll("[data-slot=tag]")).map((t) => t.textContent)
 

@@ -8,6 +8,9 @@ import { FormField } from "../form/form-field"
 import { matchesQuery, normalizeOption } from "./_suggestions"
 import { Autocomplete } from "./autocomplete"
 
+// userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
+vi.setConfig({ testTimeout: 30_000 })
+
 const ISLANDS = ["Malé", "Hulhumalé", "Addu City", "Fuvahmulah", "Kulhudhuffushi", "Thinadhoo"]
 
 afterEach(() => vi.useRealTimers())

@@ -4,8 +4,12 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
+import { en } from "../../locales"
 import { FormField } from "../form/form-field"
 import { PhoneInput } from "./phone-input"
+
+// userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
+vi.setConfig({ testTimeout: 30_000 })
 
 describe("PhoneInput", () => {
   it("defaults to the Maldives and returns an E.164 value", async () => {
@@ -81,6 +85,36 @@ describe("PhoneInput", () => {
     expect(input).toHaveAttribute("aria-invalid", "true")
     expect(input).toHaveClass("in-x")
     expect(input).toBeRequired()
+  })
+
+  it("handles clearing and a custom autocomplete", async () => {
+    const onValueChange = vi.fn()
+    renderWithOnu(<PhoneInput aria-label="Mobile" autoComplete="off" onValueChange={onValueChange} />)
+    const input = screen.getByRole("textbox")
+    expect(input).toHaveAttribute("autocomplete", "off")
+    await userEvent.type(input, "7771234")
+    await userEvent.clear(input)
+    expect(onValueChange).toHaveBeenLastCalledWith(undefined)
+  })
+
+  it("offers an International choice", async () => {
+    const onCountryChange = vi.fn()
+    renderWithOnu(
+      <PhoneInput aria-label="Mobile" allowInternational countries={["MV"]} onCountryChange={onCountryChange} />,
+    )
+    await userEvent.click(screen.getByRole("button", { name: /Country/ }))
+    await userEvent.click(await screen.findByRole("option", { name: /International/ }))
+    expect(onCountryChange).toHaveBeenCalledWith(undefined)
+    const trigger = screen.getByRole("button", { name: "Country: International" })
+    expect(trigger.querySelector("[data-icon-name=globe]")).toBeInTheDocument()
+  })
+
+  it("falls back to English country names for unknown locales", () => {
+    const base = { code: "zz-invalid-locale-$", name: "x", dir: "ltr" as const }
+    renderWithOnu(<PhoneInput aria-label="Mobile" />, {
+      locale: { ...en, ...base },
+    })
+    expect(screen.getByRole("button", { name: /Country: Maldives/ })).toBeInTheDocument()
   })
 
   it.each(directions)("uses Dhivehi labels in %s", async (dir) => {

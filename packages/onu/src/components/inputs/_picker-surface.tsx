@@ -38,7 +38,7 @@ export function PickerSurface({
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
         <DrawerTrigger asChild>{trigger}</DrawerTrigger>
-        <DrawerContent aria-describedby={undefined} data-slot="picker-sheet">
+        <DrawerContent aria-describedby={undefined} data-picker="sheet">
           <DrawerHeader>
             <DrawerTitle>{title}</DrawerTitle>
           </DrawerHeader>
@@ -53,7 +53,7 @@ export function PickerSurface({
       <PopoverContent
         align="start"
         aria-label={title}
-        data-slot="picker-popover"
+        data-picker="popover"
         onOpenAutoFocus={onOpenAutoFocus}
         className={cn("gap-3 grid", className)}
       >

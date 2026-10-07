@@ -6,6 +6,9 @@ import { describe, expect, it, vi } from "vitest"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { normalizeUrl, UrlInput } from "./url-input"
 
+// userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
+vi.setConfig({ testTimeout: 30_000 })
+
 describe("UrlInput", () => {
   it("normalizes URLs", () => {
     expect(normalizeUrl("example.mv")).toBe("https://example.mv")

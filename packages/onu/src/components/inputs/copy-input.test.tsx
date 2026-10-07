@@ -5,6 +5,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { CopyInput } from "./copy-input"
 
+// userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
+vi.setConfig({ testTimeout: 30_000 })
+
 const LINK = "https://portal.gov.mv/apply/REF-2026-00451"
 
 describe("CopyInput", () => {

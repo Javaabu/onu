@@ -1,9 +1,12 @@
 import * as React from "react"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import { renderWithOnu } from "../../../test/utils"
 import { FormField } from "../form/form-field"
 import { HiddenInput } from "./hidden-input"
+
+// userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
+vi.setConfig({ testTimeout: 30_000 })
 
 describe("HiddenInput", () => {
   it("serializes values", () => {

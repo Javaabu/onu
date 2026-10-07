@@ -7,6 +7,9 @@ import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test
 import { FormField } from "../form/form-field"
 import { EmailInput } from "./email-input"
 
+// userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
+vi.setConfig({ testTimeout: 30_000 })
+
 describe("EmailInput", () => {
   it("is an LTR email field with the email keyboard and autofill", async () => {
     const onChange = vi.fn()

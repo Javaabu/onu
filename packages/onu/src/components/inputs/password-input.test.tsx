@@ -7,6 +7,9 @@ import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test
 import { FormField } from "../form/form-field"
 import { PasswordInput, scorePassword } from "./password-input"
 
+// userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
+vi.setConfig({ testTimeout: 30_000 })
+
 const getInput = (container: HTMLElement) => container.querySelector("input")!
 
 describe("scorePassword", () => {

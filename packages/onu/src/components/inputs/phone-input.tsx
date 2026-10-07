@@ -35,6 +35,8 @@ export interface PhoneInputProps extends Omit<
   countries?: Country[]
   /** Show the country select. Default `true`. */
   countrySelect?: boolean
+  /** Add an "International" choice to the country list for numbers of any country. Default `false`. */
+  allowInternational?: boolean
   /** Always show and require the international format (`+960 777 1234`). */
   international?: boolean
   onCountryChange?: (country?: Country) => void
@@ -188,6 +190,7 @@ export function PhoneInput({
   defaultCountry = "MV",
   countries,
   countrySelect = true,
+  allowInternational = false,
   international,
   onCountryChange,
   className,
@@ -210,7 +213,7 @@ export function PhoneInput({
       onCountryChange={onCountryChange}
       labels={labels}
       flags={flags}
-      addInternationalOption={false}
+      addInternationalOption={allowInternational}
       countrySelectComponent={countrySelect ? CountrySelect : NoCountrySelect}
       countrySelectProps={{ classNames }}
       containerComponent={Container}

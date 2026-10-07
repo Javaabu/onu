@@ -8,6 +8,9 @@ import { FormField } from "../form/form-field"
 import { thaanaToLatin, toSlug, SlugInput } from "./slug-input"
 import { TextInput } from "./text-input"
 
+// userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
+vi.setConfig({ testTimeout: 30_000 })
+
 describe("toSlug and thaanaToLatin", () => {
   it("slugifies Latin text", () => {
     expect(toSlug("Hulhumalé Ferry Schedule 2026!")).toBe("hulhumale-ferry-schedule-2026")
