@@ -7,7 +7,7 @@ export interface ListingSort {
 }
 
 /** Value of a date range filter. Dates are `yyyy-MM-dd` strings so they survive the URL. */
-export interface DateRangeValue {
+export interface DateRangeFilterValue {
   /** Which date to filter on (e.g. `created_at`), when the filter offers a choice. */
   field?: string
   from?: string
@@ -15,7 +15,7 @@ export interface DateRangeValue {
 }
 
 /** A filter value: text, one option, several options or a date range. */
-export type FilterValue = string | string[] | DateRangeValue
+export type FilterValue = string | string[] | DateRangeFilterValue
 
 /** Applied filters keyed by filter key. Empty values are dropped. */
 export type FilterValues = Record<string, FilterValue | undefined>

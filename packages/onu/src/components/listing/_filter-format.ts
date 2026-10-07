@@ -2,7 +2,7 @@ import { format, isValid, parseISO } from "date-fns"
 import type { Locale as DateFnsLocale } from "date-fns"
 
 import type { Translate } from "../../i18n/types"
-import type { DateRangeValue, FilterDefinition, FilterOption, FilterValue } from "./listing-types"
+import type { DateRangeFilterValue, FilterDefinition, FilterOption, FilterValue } from "./listing-types"
 import { isFilterValueEmpty } from "./use-listing-state"
 
 export function optionText(option: FilterOption | undefined, fallback: string) {
@@ -54,7 +54,7 @@ export function formatFilter(
       return { label: definition.label, text }
     }
     case "date-range": {
-      const range = (typeof value === "object" && !Array.isArray(value) ? value : {}) as DateRangeValue
+      const range = (typeof value === "object" && !Array.isArray(value) ? value : {}) as DateRangeFilterValue
       const field = definition.fields?.find((f) => f.value === range.field) ?? definition.fields?.[0]
       const label = field ? optionText(field, definition.label) : definition.label
       const from = range.from ? formatFilterDate(range.from, dateLocale) : undefined

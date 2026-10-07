@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import type { DateRangeValue, FilterValue, FilterValues, ListingSort } from "./listing-types"
+import type { DateRangeFilterValue, FilterValue, FilterValues, ListingSort } from "./listing-types"
 
 /** Everything that decides which rows an index page shows (§25.6). */
 export interface ListingState {
@@ -171,7 +171,7 @@ export function parseListingSearchParams(
     } else if (sub === "field" || sub === "from" || sub === "to") {
       const range = (
         filters[key] && typeof filters[key] === "object" && !Array.isArray(filters[key]) ? filters[key] : {}
-      ) as DateRangeValue
+      ) as DateRangeFilterValue
       filters[key] = { ...range, [sub]: value }
     }
   }

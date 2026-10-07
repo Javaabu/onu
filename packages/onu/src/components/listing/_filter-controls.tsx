@@ -19,7 +19,7 @@ import { formatFilterDate, optionText } from "./_filter-format"
 import type {
   BooleanFilterDefinition,
   DateRangeFilterDefinition,
-  DateRangeValue,
+  DateRangeFilterValue,
   FilterDefinition,
   FilterRenderProps,
   FilterValue,
@@ -210,9 +210,9 @@ function DatePickerButton({
 
 function DateRangeControl({ definition, value, onChange, id, labelId }: ControlProps<DateRangeFilterDefinition>) {
   const { t } = useTranslation()
-  const range = (value && typeof value === "object" && !Array.isArray(value) ? value : {}) as DateRangeValue
+  const range = (value && typeof value === "object" && !Array.isArray(value) ? value : {}) as DateRangeFilterValue
   const fields = definition.fields
-  const set = (patch: Partial<DateRangeValue>) => {
+  const set = (patch: Partial<DateRangeFilterValue>) => {
     const next = { ...range, ...patch }
     if (fields?.length && !next.field) next.field = fields[0]?.value
     onChange(next.from || next.to ? next : undefined)
