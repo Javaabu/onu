@@ -117,10 +117,50 @@ Onu is used mainly for admin panels, but the same system has to work for public 
 - **R3.12** **Tokens are defined once, in code**: a W3C Design Tokens (DTCG) `tokens.json` in the repo. It generates the CSS variables (§9) and is synced to **Figma Variables** (via Tokens Studio or the Figma Variables REST API). Neither side is edited by hand on its own.
   - Variable modes cover light/dark and the density modes, and the primary colour is a single variable, just as in code.
 - **R3.13** Every component in the build list (§22) has a Figma component whose properties and variants match the React props and `cva` variants (size, variant, state, density), using the same names.
-- **R3.14** The kit includes LTR and RTL versions of components where layout differs, Thaana typography styles, the default Lucide icon set, and text styles for Inter / Noto Sans Thaana / JetBrains Mono (§7).
+- **R3.14** The kit includes LTR and RTL versions of components where layout differs, Thaana typography styles, the default Lucide icon set, and text styles for Inter / MV Waheed / JetBrains Mono (§7).
 - **R3.15** **Figma Code Connect** links each Figma component to its React component and import, so Dev Mode shows real Onu code snippets.
 - **R3.16** The sample pages (§23) also exist as Figma frames, built only from kit components.
 - **R3.17** The kit may start from a community shadcn/ui Figma kit if its licence allows. It is versioned alongside the npm package: each release notes the matching kit version, and changes to tokens or components land in both in the same release.
+
+### Responsive design
+
+- **R3.18** **Every component and sample page is responsive** from 320px wide phones up to large desktop screens (≥ 1920px), mobile-first, using Tailwind breakpoints (`sm` 640, `md` 768, `lg` 1024, `xl` 1280, `2xl` 1536).
+- **R3.19** Components adapt to the space they are in, not only the viewport. Container queries (`@container`) are used for cards, forms, tables, filters and widgets that may sit in a sidebar or a narrow column.
+- **R3.20** Responsive patterns are built in, not left to each project:
+  - tables become labelled cards on phones (§25.6);
+  - dropdown panels become bottom sheets on phones (e.g. filters, §25.7);
+  - sidebars collapse to an off-canvas drawer; top navigation collapses to a menu;
+  - save bars become fixed bottom bars (§25.9);
+  - dialogs become full-screen or bottom sheets on small screens where that reads better;
+  - multi-column forms stack to one column.
+- **R3.21** No horizontal page scrolling at any width. Wide content (tables, code, charts) scrolls inside its own container with visible affordance.
+- **R3.22** Text and layout survive 200% zoom and 400% reflow (WCAG 1.4.4 / 1.4.10).
+- **R3.23** Visual regression tests run at phone (375px), tablet (768px) and desktop (1280px) widths (§17).
+
+### Touch support
+
+- **R3.24** All interactive components work with touch, mouse, pen and keyboard. Pointer events are used, not mouse-only events.
+- **R3.25** Touch targets are at least 44×44px on coarse pointers (`@media (pointer: coarse)`), even in `compact` density.
+- **R3.26** Nothing depends on hover alone. Anything revealed on hover (tooltips, row actions, relative date details) also has a tap or always-visible equivalent on touch devices (see §25.5).
+- **R3.27** Gestures where they help, always with a button alternative:
+  - swipe for carousel, gallery, lightbox and media lister;
+  - drag-to-dismiss for bottom sheets and drawers;
+  - pull/drag handles for kanban, sortable lists and row reordering (touch sensors with a press delay so scrolling still works);
+  - pinch-zoom and drag for image cropper, lightbox and maps;
+  - drawing with finger or pen on the signature pad and map drawing tools.
+- **R3.28** Pickers (date, time, select, colour) open in a touch-friendly bottom sheet on phones, with large cells, and never trigger the on-screen keyboard unless text entry is needed.
+- **R3.29** Correct mobile keyboards via `inputmode` / `type` / `autocomplete` (numeric for OTP and numbers, tel for phone, email, url).
+- **R3.30** Safe-area insets (`env(safe-area-inset-*)`) respected for fixed bars, bottom navigation and sheets on notched devices. `touch-action` is set so gestures don't fight page scrolling.
+
+### Form label layouts
+
+- **R3.31** Every form input supports two label layouts:
+  - **stacked** (default): label above the input, help text and errors below;
+  - **inline** (horizontal): label beside the input in a fixed-width column, input, help and errors in the second column.
+- **R3.32** Layout is set per field (`labelLayout="stacked" | "inline"`) or for a whole form/fieldset via `Form` / `FormGroup` / context, with per-field override. The inline label column width is configurable (`--onu-label-width`).
+- **R3.33** Inline layout automatically falls back to stacked on narrow containers (container query, R3.19), so it is always responsive.
+- **R3.34** In RTL, inline labels sit on the right; label alignment (start / end) is configurable. Checkboxes, radios and switches keep their own label-beside-control pattern in both layouts.
+- **R3.35** Both layouts keep correct label association, required markers, help text and error wiring (R14.7).
 
 ## 4. Dependency policy
 
@@ -161,7 +201,7 @@ Governance:
 | Primitives | Radix UI; React Aria where Radix has gaps |
 | Styling | Tailwind CSS v4, `class-variance-authority`, `tailwind-merge`, `clsx`, `tw-animate-css` |
 | Icons | Lucide (default), Iconify (wide set), FontAwesome Free/Pro adapter (see §6) |
-| Fonts | Inter, Noto Sans Thaana, JetBrains Mono via Fontsource (see §7) |
+| Fonts | Inter and JetBrains Mono via Fontsource; MV Waheed for Thaana (see §7) |
 | Build | Vite library mode (or `tsup`) emitting ESM + `.d.ts` |
 | Forms | `react-hook-form` (components also work uncontrolled or plain controlled) |
 | Validation | Schema-agnostic; `zod` used in examples |
@@ -182,7 +222,7 @@ What each build-list group is based on. "In-house" means composed from shadcn pr
 | Date and time | `calendar`, `popover`, date-picker pattern | `react-day-picker`, `date-fns`, React Aria `DateField`/`TimeField` + `@internationalized/date` (Hijri), FullCalendar (standard plugins) | Week picker, reporting-period picker |
 | Choice inputs | `select`, `combobox`, `command`, `checkbox`, `radio-group`, `switch`, `toggle-group`, `slider` | `cmdk`, TanStack Query (API select caching and request de-duplication) | Rating, dual listbox, image select, payment method selector, account switcher, dependent/API selects, quick-create |
 | Files and media | `avatar`, `progress`, `carousel`, `dialog`, `aspect-ratio` | `react-dropzone`, `react-easy-crop`, `embla-carousel-react`, `yet-another-react-lightbox`, Media Chrome (media player) | Upload progress, media lister, attachment preview, document download, click-to-load embed |
-| Rich content | none (shadcn has no editor) | [Plate](https://platejs.org) (shadcn-native editor on Slate, MIT) for the WYSIWYG editor, block editor and static block renderer; Shiki for code highlighting | Translations editor, custom attribute fields |
+| Rich content | none (shadcn has no editor) | [Tiptap](https://tiptap.dev) (ProseMirror) for the WYSIWYG and block editors; `@tiptap/static-renderer` for the block renderer; Shiki for code highlighting. Only MIT-licensed Tiptap packages may be used, never paid Pro/Cloud extensions | Translations editor, custom attribute fields |
 | Maps | none | **Google Maps (default)** via `@vis.gl/react-google-maps`; `terra-draw` + its Google Maps adapter (radius/polygon/route drawing); `@googlemaps/markerclusterer`; deck.gl `GoogleMapsOverlay` (heatmap, replay trails); `@turf/turf`. MapLibre via `react-map-gl` as an optional secondary adapter | Location card, info panel, legend swatch, replay controls, route stop editor |
 | Charts | `chart` | `recharts`; map chart as a choropleth on Google Maps (deck.gl `GeoJsonLayer`) | Stat tiles, period comparison |
 | Listing pages | `table`, data-table pattern, `pagination`, `dropdown-menu`, `checkbox`, `empty`, `toggle-group` | TanStack Table, TanStack Virtual, `@dnd-kit`, React Aria `Tree`, `react-querybuilder` (filter condition builder) | Kanban, filter panel/chips/tabs, bulk actions, view switcher, load more |
@@ -216,21 +256,25 @@ These picks were made against §4. A library may be replaced during implementati
 
 ## 7. Typography & fonts
 
-Recommended font pack. Everything is open-licensed (OFL) and **self-hosted via [Fontsource](https://fontsource.org) npm packages**, so there are no third-party CDN calls and fonts work offline, on intranets and on kiosks.
+Recommended font pack. Latin and mono fonts are open-licensed (OFL) and **self-hosted via [Fontsource](https://fontsource.org) npm packages**, so there are no third-party CDN calls and fonts work offline, on intranets and on kiosks.
 
 | Role | Font | Why | Package |
 |---|---|---|---|
 | UI sans (default) | **Inter** (variable) | The de-facto modern UI typeface. Excellent legibility at small admin sizes, tabular figures, wide language coverage, optical-size axis for display headings | `@fontsource-variable/inter` |
-| Thaana | **Noto Sans Thaana** (variable, 100–900) | The well-maintained, openly-licensed Thaana family with a full weight range, so Thaana bold/medium never falls back to faux bold. Designed to sit alongside Latin sans fonts | `@fontsource-variable/noto-sans-thaana` |
+| Thaana | **MV Waheed** | The familiar, highly legible Thaana face used across Maldivian government and media sites, so Dhivehi text looks the way readers expect | Bundled `woff2` in `@javaabu/onu/fonts` (subject to redistribution rights, see R7.3) |
 | Monospace | **JetBrains Mono** (variable) | Code blocks, API keys, IDs, keyboard keys | `@fontsource-variable/jetbrains-mono` |
 | Alternative UI sans | **Geist** (variable) | A slightly more geometric, contemporary option. Shipped as a preset for products that want a different feel | `@fontsource-variable/geist` |
 | Serif (optional) | **Source Serif 4** (variable) | Long-form reading: news articles, the laws and regulations reader, certificates | `@fontsource-variable/source-serif-4` |
 
 - **R7.1** Fonts are not bundled into the JS. They are an optional CSS entry, `@javaabu/onu/fonts.css`, which imports the recommended Fontsource packages (optional peer dependencies). Projects can skip it and set the `--onu-font-*` tokens to their own fonts.
 - **R7.2** Font stacks rely on per-script `unicode-range`, so mixed Dhivehi/English text automatically renders each script in the right font:
-  `--onu-font-sans: "Inter Variable", "Noto Sans Thaana Variable", ui-sans-serif, system-ui, sans-serif;`
+  `--onu-font-sans: "Inter Variable", "MV Waheed", "Faruma", ui-sans-serif, system-ui, sans-serif;`
   Under `lang="dv"`, Thaana-specific metrics (line-height, size-adjust) apply.
-- **R7.3** Popular Maldivian fonts (Faruma, MV Waheed, MV Typewriter, etc.) are **not bundled** because their licensing is unclear. The docs show how to register them with `@font-face` and `--onu-font-thaana`.
+- **R7.3** **MV Waheed is the default Thaana font.**
+  - It is self-hosted as `woff2`, subset to the Thaana Unicode range and served with `unicode-range`, so it only downloads when Thaana text appears.
+  - Before it is bundled, Javaabu must confirm the right to redistribute it. Until then, `fonts.css` declares the `@font-face` and projects supply the font file themselves.
+  - MV Waheed has a single weight. Bold Thaana uses a font-synthesis-safe approach: headings use size and colour for emphasis rather than faux bold. A heavier companion Thaana face can be configured via `--onu-font-thaana-bold`.
+  - Fallback chain: `"MV Waheed", "Faruma", "Noto Sans Thaana", sans-serif`. Other Thaana fonts can be swapped in via `--onu-font-thaana`.
 - **R7.4** `font-display: swap`, metric-matched fallbacks (`size-adjust`, `ascent-override`) to minimise layout shift, and preload guidance in the docs.
 - **R7.5** Tabular figures (`font-variant-numeric: tabular-nums`) in tables, stat tiles, pagination, countdowns and any column of numbers.
 - **R7.6** Typography tokens: `--onu-font-sans`, `--onu-font-thaana`, `--onu-font-mono`, `--onu-font-serif`, plus a type-scale and line-height token per density mode.
@@ -280,7 +324,7 @@ Recommended font pack. Everything is open-licensed (OFL) and **self-hosted via [
 
 - **R12.1** Dhivehi (`dv`) and English (`en`) are built-in locales. All built-in strings (e.g. "Close", "Next", "No results", "Required", pagination labels, date picker labels, aria-labels) come from a locale dictionary — no hard-coded English.
 - **R12.2** `<OnuProvider locale="dv">` sets locale, direction (auto RTL for `dv`) and fonts in one place. Consumers can override or add locales and individual strings.
-- **R12.3** Thaana font stack configured via `--onu-font-thaana`. The default is Noto Sans Thaana; other Thaana fonts can be plugged in (see §7).
+- **R12.3** Thaana font stack configured via `--onu-font-thaana`. The default is MV Waheed; other Thaana fonts can be plugged in (see §7).
 - **R12.4** Typography tuned for Thaana: adjusted line-height and letter-spacing, no faux italics, correct baseline alignment of Thaana next to Latin text and icons.
 - **R12.5** Dates in Dhivehi: Dhivehi month and weekday names, Dhivehi relative-time strings ("2 ދުވަސް ކުރިން"), and optional Hijri display (see Hijri date component).
 - **R12.6** Numbers use Western Arabic digits by default (as is standard in the Maldives), with formatting via `Intl` and the active locale.
@@ -298,6 +342,7 @@ Javaabu currently uses the JTK (JavaScript Thaana Keyboard) approach for typing 
 - **R13.2** React bindings:
   - `useThaanaInput(ref, options)` hook that can be attached to any `<input>`, `<textarea>` or `contenteditable`.
   - `<ThaanaInput>` and `<ThaanaTextarea>` components.
+  - A Tiptap extension (`ThaanaKeyboard`) so the WYSIWYG and block editors type Thaana through ProseMirror transactions rather than raw DOM edits.
 - **R13.3** **Every component that accepts free text** exposes a `thaana` prop (`boolean | ThaanaOptions`), including: Text input, Textarea, Search box, Autocomplete, Searchable select / Multi-select search field, Tags input, Inline edit, Editable select, Combobox-style inputs, Command palette, Translations editor, Notes, Comment thread composer, WYSIWYG and Block editor. Inputs whose content must be Latin (email, password, URL, number, phone, OTP, slug, colour) do **not** offer it.
 - **R13.4** When `thaana` is on, the field sets `dir="rtl"`, `lang="dv"` and the Thaana font automatically.
 - **R13.5** Optional per-field toggle (button and keyboard shortcut) to switch between Thaana and Latin while typing; the current mode is announced to screen readers.
@@ -372,9 +417,9 @@ Javaabu currently uses the JTK (JavaScript Thaana Keyboard) approach for typing 
 
 ## 17. Testing, CI & coverage
 
-- **R17.1** Every component has tests covering: rendering, variants, controlled/uncontrolled behaviour, keyboard interaction, RTL, dark mode class application, `className`/`classNames` overrides, and axe accessibility.
+- **R17.1** Every component has tests covering: rendering, responsive behaviour, touch interaction where relevant, variants, controlled/uncontrolled behaviour, keyboard interaction, RTL, dark mode class application, `className`/`classNames` overrides, and axe accessibility.
 - **R17.2** Coverage thresholds enforced in CI (initial target: **90% lines/statements/functions, 85% branches**; 100% for the Thaana engine). CI fails below threshold.
-- **R17.3** Playwright tests run against the examples app (Chromium, Firefox, WebKit) for interaction-heavy components and sample pages, including visual regression snapshots in light/dark × LTR/RTL.
+- **R17.3** Playwright tests run against the examples app (Chromium, Firefox, WebKit) for interaction-heavy components and sample pages, including visual regression snapshots in light/dark × LTR/RTL × phone/tablet/desktop widths, plus touch emulation on mobile device profiles.
 - **R17.4** GitHub Actions workflows:
   - `ci.yml` (PRs + `main`): install → lint (ESLint, incl. logical-property rule) → format check (Prettier) → typecheck → unit tests with coverage → build package → build examples → build docs → size check.
   - `e2e.yml`: Playwright across browsers.
@@ -465,6 +510,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Works in LTR and RTL, and with `locale="dv"`
 - [ ] `thaana` prop supported (if it accepts free text)
 - [ ] Themed only through tokens (re-colours with `--onu-primary`)
+- [ ] Responsive (phone, tablet, desktop) and touch-friendly (§3 R3.18–R3.30)
 - [ ] Looks right in every density mode it supports, and outside admin contexts where relevant
 - [ ] Built on the shadcn component / approved library per §4–§5; any in-house build is justified in the PR
 - [ ] Uses semantic icon names so it follows the configured icon set
@@ -847,7 +893,7 @@ To be resolved before (or while) building the affected components:
 
 1. **Licence** — MIT like other Javaabu packages, or private/internal?
 2. **Google Maps billing**: whose Google Cloud project/API key is used for the examples app and CI, and is a Map ID set up for vector maps?
-3. **Thaana fonts**: does Javaabu hold licences for any Maldivian fonts (e.g. Faruma) that could ship as an optional pack, or do we stay with Noto Sans Thaana only?
+3. **MV Waheed licence**: can Onu redistribute the MV Waheed font files in the npm package, and who supplies the canonical files? Is there a preferred heavier Thaana face for bold text?
 4. **FontAwesome Pro**: which Pro licence/Kit should CI use (needs a `FONTAWESOME_NPM_AUTH_TOKEN` secret)?
 5. **Figma**: which Figma team/workspace hosts the library, and is a paid plan with Dev Mode available for Code Connect?
 6. **Default primary colour** — exact Javaabu/Onu brand colour value.
