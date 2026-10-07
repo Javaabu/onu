@@ -161,7 +161,7 @@ export function InlineEdit({
       ref={rootRef}
       data-slot="inline-edit"
       data-state={editing ? "editing" : "viewing"}
-      className={cn("min-w-0 inline-grid max-w-full", className)}
+      className={cn("min-w-0 inline-block max-w-full align-top", className)}
       {...props}
     >
       {editing ? (
@@ -249,7 +249,7 @@ export function InlineEdit({
           aria-label={`${t("form.edit", { label })}: ${value || t("form.emptyValue")}`}
           {...(thaana && value ? { lang: "dv", dir: "rtl" } : {})}
           className={cn(
-            "group/inline-edit gap-2 -mx-1.5 px-1.5 py-1 min-h-8 touch:min-h-11 inline-flex max-w-full items-center rounded-md text-start outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50",
+            "group/inline-edit gap-2 px-1.5 py-1 min-h-8 touch:min-h-11 inline-flex max-w-full items-center rounded-md text-start outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50",
             thaana && value && "font-thaana",
             classNames?.display,
           )}
