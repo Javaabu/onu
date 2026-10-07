@@ -121,7 +121,13 @@ function MapPickerInner(props: MapPickerProps) {
     )
   }
 
-  const showClear = (clearable ?? !required) && value !== null
+  // Follow a new `center` (e.g. the island chosen in an address) until a point is picked.
+  const hasValue = value !== null
+  React.useEffect(() => {
+    if (!hasValue) mapRef.current?.panTo(center, zoom)
+  }, [center.lat, center.lng, zoom, hasValue]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const showClear = !disabled && (clearable ?? !required) && value !== null
 
   return (
     <div

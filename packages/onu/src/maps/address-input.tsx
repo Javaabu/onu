@@ -204,8 +204,6 @@ export function AddressInput({
           className={classNames?.map}
         >
           <MapPicker
-            // Re-centre on the chosen island until a pin is placed.
-            key={value.location ? "pinned" : `${value.atoll ?? ""}-${value.island ?? ""}`}
             value={value.location ?? null}
             onChange={(location) => set({ location })}
             center={pinCenter}
