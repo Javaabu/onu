@@ -33,7 +33,7 @@ Without a Google Maps API key the map renders a labelled **schematic preview** (
 | `multiple`                            | `boolean`                               | `true`         | Allow several polygons           |
 | `name`                                | `string`                                | from FormField | Hidden input with the JSON       |
 | `tone`                                | `MapTone`                               | `"primary"`    | Colour                           |
-| `center` / `zoom` / `label`           |                                         |                | Map setup (fits existing shapes) |
+| `center` / `zoom` / `label`           |                                         |                | Map setup (without `center`/`zoom`, fits the shapes) |
 | `disabled`, `required`, `id`          |                                         |                | Wired from `FormField`           |
 | `className`, `classNames`             | `{ root, toolbar, map, list, summary }` |                | Overrides                        |
 

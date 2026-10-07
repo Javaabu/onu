@@ -30,7 +30,7 @@ const events: CalendarEvent[] = [
 ```
 
 - `color` takes a theme colour (`primary`, `success`, `warning`, `destructive`, `info`, `secondary`, `chart-1`…`chart-8`), so events follow dark mode and `--onu-primary`. Any other FullCalendar event field (`backgroundColor`, `extendedProps`, `url`, …) passes through.
-- The toolbar (‹ Today › · title · view switch) wraps on narrow containers; on phones the calendar opens on the agenda.
+- The toolbar (‹ Today › · title · view switch) wraps on narrow containers; on phones the calendar opens on the agenda. No view scrolls the page sideways at 375px, in LTR or RTL: the agenda's screen-reader header is hidden in place (FullCalendar's `left: -10000px` would otherwise add 10,000px of overflow in RTL) and month events clip inside their day cell.
 - Weekend days (Friday and Saturday by default) are shaded; today is marked.
 - `apiRef` gives FullCalendar's `CalendarApi`; `options` passes any other FullCalendar option (Onu's props win); `hideToolbar` lets you build your own.
 

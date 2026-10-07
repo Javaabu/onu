@@ -26,7 +26,7 @@ Without a Google Maps API key the map renders a labelled **schematic preview** (
 | `value` / `defaultValue` / `onChange` | `RouteFeature \| null`                  |                | GeoJSON LineString feature |
 | `onDistanceChange`                    | `(meters: number) => void`              |                | Length after each change   |
 | `name`                                | `string`                                | from FormField | Hidden input with the JSON |
-| `tone`, `center`, `zoom`, `label`     |                                         |                | Appearance and map setup   |
+| `tone`, `center`, `zoom`, `label`     |                                         |                | Appearance and map setup; without `center`/`zoom` the map fits the route |
 | `disabled`, `required`, `id`          |                                         |                | Wired from `FormField`     |
 | `className`, `classNames`             | `{ root, toolbar, map, list, summary }` |                | Overrides                  |
 

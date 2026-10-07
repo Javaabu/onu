@@ -194,3 +194,43 @@ describe("MapRoute", () => {
     expect(onChange).toHaveBeenLastCalledWith(null)
   })
 })
+
+describe("Initial fit of shapes", () => {
+  const adduRoute: RouteFeature = {
+    type: "Feature",
+    id: "r",
+    properties: {},
+    geometry: {
+      type: "LineString",
+      coordinates: [
+        [73.15, -0.69],
+        [73.09, -0.6],
+      ],
+    },
+  }
+  /** Every point of the drawn paths, in map pixels. */
+  const drawnPoints = (container: HTMLElement) =>
+    [...container.querySelectorAll("[data-slot=map-placeholder] svg.overflow-visible path")]
+      .map((p) => p.getAttribute("d") ?? "")
+      .filter((d) => !d.startsWith("M 32 0"))
+      .flatMap((d) => [...d.matchAll(/(-?[\d.]+)[ ,](-?[\d.]+)/g)].map((m) => ({ x: +m[1]!, y: +m[2]! })))
+
+  it("fits a route that loads after the first render", () => {
+    const { container, rerender } = renderWithOnu(<MapRoute value={null} />)
+    rerender(<MapRoute value={adduRoute} />)
+    const points = drawnPoints(container)
+    expect(points.length).toBeGreaterThan(0)
+    // The jsdom preview is 640×360; the whole route is in view.
+    for (const p of points) {
+      expect(p.x).toBeGreaterThanOrEqual(0)
+      expect(p.x).toBeLessThanOrEqual(640)
+      expect(p.y).toBeGreaterThanOrEqual(0)
+      expect(p.y).toBeLessThanOrEqual(360)
+    }
+  })
+
+  it("keeps an explicit centre instead of fitting", () => {
+    const { container } = renderWithOnu(<MapRoute defaultValue={adduRoute} center={{ lat: 4.17, lng: 73.5 }} />)
+    expect(drawnPoints(container).some((p) => p.y > 360)).toBe(true)
+  })
+})

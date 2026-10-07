@@ -25,11 +25,35 @@ const unsafe = {
   ],
 }
 
+const t = (text: string) => ({ type: "text", text })
+const para = (text: string) => ({ type: "paragraph", content: [t(text)] })
+const items = (...texts: string[]) => texts.map((text) => ({ type: "listItem", content: [para(text)] }))
+
+/** Lists and quotes take their direction from their text, whatever the page direction. */
+const dhivehiArticle = {
+  type: "doc",
+  content: [
+    { type: "heading", attrs: { level: 2 }, content: [t("ރާއްޖޭގެ ރީފުތައް")] },
+    para("ރާއްޖޭގައި 1,192 ރަށް ހުރެއެވެ. Coral reefs protect every island."),
+    { type: "bulletList", content: items("ހުޅުމާލެ", "އައްޑޫ ސިޓީ", "ފުވައްމުލައް") },
+    { type: "orderedList", content: items("2024 ގައި ފެށުނު", "ދެވަނަ ބައި") },
+    { type: "blockquote", content: [para("« ރީފުތައް ރައްކާތެރިކުރުމަކީ އަޅުގަނޑުމެންގެ ޒިންމާއެކެވެ. »")] },
+    { type: "bulletList", content: items("An English list inside a Dhivehi article", "keeps its own direction") },
+  ],
+}
+
 export default function BlockRendererDemo() {
   return (
     <DemoPage>
       <DemoSection title="Published page" className="block">
         <BlockRenderer content={pageJson} className="max-w-3xl" />
+      </DemoSection>
+      <DemoSection
+        title="Dhivehi article"
+        description="Lists and quotes follow their own text: bullets, numbers and the quote border sit at the inline start."
+        className="block"
+      >
+        <BlockRenderer content={dhivehiArticle} className="max-w-3xl" />
       </DemoSection>
       <DemoSection title="Sizes" className="gap-6 md:grid-cols-2 grid">
         <BlockRenderer size="sm" content={{ type: "doc", content: pageJson.content!.slice(0, 4) }} />

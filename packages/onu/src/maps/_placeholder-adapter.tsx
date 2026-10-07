@@ -8,7 +8,17 @@ import { useTranslation } from "../providers/onu-provider"
 import { Button } from "../ui/button"
 import { toneVar } from "./_colors"
 import { MarkerArrow, MarkerPin } from "./_marker-glyphs"
-import { boundsCenter, boundsForView, formatLatLng, project, unproject, zoomForBounds } from "./geo"
+import {
+  boundsCenter,
+  boundsForView,
+  formatLatLng,
+  INITIAL_FIT_PADDING,
+  isPointBounds,
+  project,
+  SINGLE_POINT_ZOOM,
+  unproject,
+  zoomForBounds,
+} from "./geo"
 import type {
   AdapterCircleProps,
   AdapterClusterProps,
@@ -67,7 +77,8 @@ function clampZoom(z: number) {
   return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, z))
 }
 
-function fit(bounds: LatLngBounds, width: number, height: number, padding = 56): Camera {
+function fit(bounds: LatLngBounds, width: number, height: number, padding = INITIAL_FIT_PADDING): Camera {
+  if (isPointBounds(bounds)) return { center: boundsCenter(bounds), zoom: SINGLE_POINT_ZOOM }
   return { center: boundsCenter(bounds), zoom: clampZoom(zoomForBounds(bounds, width, height, padding, 17)) }
 }
 
@@ -92,6 +103,13 @@ function PlaceholderMap({
       : { center: defaultCenter, zoom: defaultZoom },
   )
   const pendingFit = React.useRef<LatLngBounds | undefined>(defaultBounds)
+  // Bounds that arrive after the first render (points loaded later) are fitted once too.
+  const fitted = React.useRef(!!defaultBounds)
+  React.useEffect(() => {
+    if (fitted.current || !defaultBounds) return
+    fitted.current = true
+    setCamera(fit(defaultBounds, size.width, size.height))
+  }, [defaultBounds, size])
 
   React.useEffect(() => {
     const el = rootRef.current

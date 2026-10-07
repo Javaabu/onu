@@ -18,6 +18,7 @@ const h = vi.hoisted(() => {
   const map = {
     panTo: vi.fn(),
     setZoom: vi.fn(),
+    setCenter: vi.fn(),
     fitBounds: vi.fn(),
     getCenter: vi.fn(() => latLng(4.17, 73.5)),
     getBounds: vi.fn(() => ({ toJSON: () => ({ north: 5, south: 4, east: 74, west: 73 }) })),
@@ -228,6 +229,22 @@ describe("Google Maps adapter", () => {
     expect(ref.current!.getView()!.zoom).toBe(12)
     h.map.getZoom.mockReturnValueOnce(undefined)
     expect(ref.current!.getView()!.zoom).toBe(0)
+  })
+
+  it("fits initial bounds once, also when they arrive later, and centres a single point", () => {
+    const { rerender } = renderGoogle(<MapView />)
+    expect(last("Map")).not.toHaveProperty("defaultBounds")
+    expect(h.map.fitBounds).not.toHaveBeenCalled()
+    const bounds = { north: 4.3, south: 0.6, east: 73.6, west: 73 }
+    rerender(<MapView bounds={bounds} />)
+    expect(h.map.fitBounds).toHaveBeenCalledWith(bounds, 48)
+    rerender(<MapView bounds={{ north: 5, south: 4, east: 74, west: 73 }} />)
+    expect(h.map.fitBounds).toHaveBeenCalledTimes(1)
+
+    renderGoogle(<MapView bounds={{ north: 0.69, south: 0.69, east: 73.15, west: 73.15 }} />)
+    expect(h.map.setCenter).toHaveBeenCalledWith({ lat: 0.69, lng: 73.15 })
+    expect(h.map.setZoom).toHaveBeenCalledWith(15)
+    expect(h.map.fitBounds).toHaveBeenCalledTimes(1)
   })
 
   it("renders markers and shapes with theme colours", () => {

@@ -40,7 +40,7 @@ const CALLOUT_ICONS: Record<string, string> = { info: "info", success: "success"
  * Renders block editor JSON to React without loading the editor (Tiptap's
  * static renderer, sharing the editors' node definitions). Safe by default:
  * no raw HTML is injected, unsafe links and image sources are dropped, and only
- * YouTube/Vimeo are embedded. Every block keeps `dir="auto"`.
+ * YouTube/Vimeo are embedded. Every block keeps `dir="auto"`; lists and quotes get the direction of their first strong character.
  */
 export function BlockRenderer({
   content,

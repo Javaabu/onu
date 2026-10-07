@@ -27,7 +27,10 @@ export interface MapViewProps {
   center?: LatLng
   /** Initial zoom. */
   zoom?: number
-  /** Fit these bounds initially (wins over `center` / `zoom`). */
+  /**
+   * Fit these bounds once, as soon as they are set: on first render, or later when the
+   * points load (wins over `center` / `zoom`). A single point is centred at zoom 15.
+   */
   bounds?: LatLngBounds | null
   /** Called with the clicked point. */
   onMapClick?: (position: LatLng) => void

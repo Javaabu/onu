@@ -20,6 +20,8 @@ import { LiveMap } from "@javaabu/onu/maps"
 
 Each marker: `{ id, position, title, heading?, tone?, status?, updatedAt? }`. Updates from `subscribe` merge into `markers` by `id`.
 
+When the selection changes from the built-in list or from outside the map (a controlled `selectedId`, e.g. picking a vessel in your own table), the map pans to centre that marker. It does not turn on follow mode, and a tap on the marker itself does not move the map. Without `center` or `zoom`, the map fits all the markers once (also when they arrive after the first render, e.g. from a stream).
+
 :::info No API key?
 Without a Google Maps API key the map renders a labelled **schematic preview** (no tiles, no network) instead of crashing. Everything else, including the text alternative, keeps working. See [MapProvider](./map-provider).
 :::
@@ -35,7 +37,7 @@ Without a Google Maps API key the map renders a labelled **schematic preview** (
 | `animationDuration`                               | `number`                    | `1000`  | Glide time in ms (`0` jumps; reduced motion always jumps) |
 | `list`                                            | `boolean`                   | `true`  | Marker list (text alternative)                            |
 | `overlay`                                         | `ReactNode`                 |         | Over the map, e.g. `MapInfoPanel`                         |
-| `center`, `zoom`, `label`                         |                             |         | Map setup (fits the markers when no centre)               |
+| `center`, `zoom`, `label`                         |                             |         | Map setup (fits the markers when neither is set)             |
 | `className`, `classNames`                         | `{ root, map, list, item }` |         | Overrides                                                 |
 
 ## Accessibility

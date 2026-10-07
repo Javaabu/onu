@@ -168,9 +168,14 @@ const THEME = [
   "[&_.onu-weekend]:bg-muted/40",
   "[&_.fc-event]:rounded-md [&_.fc-event]:px-1 [&_.fc-event]:text-xs [&_.fc-event]:shadow-none",
   "[&_.fc-event:focus-visible]:outline-none [&_.fc-event:focus-visible]:ring-3 [&_.fc-event:focus-visible]:ring-ring/50",
+  // Narrow day cells on phones: events clip inside their own cell instead of spilling into the next one.
+  "[&_.fc-daygrid-event]:overflow-hidden",
   "[&_.fc-daygrid-dot-event]:text-foreground [&_.fc-daygrid-dot-event:hover]:bg-muted",
   "[&_.fc-timegrid-slot]:h-10 [&_.fc-timegrid-slot-label]:text-xs [&_.fc-timegrid-slot-label]:text-muted-foreground",
   "[&_.fc-list]:rounded-lg [&_.fc-list-day-cushion]:bg-muted/60 [&_.fc-list-event-time]:tabular-nums",
+  // The agenda's visually hidden header sits at `left: -10000px`. In RTL that is the
+  // scrollable side, so it made the list (and the page) over 10,000px wide. Hide it in place.
+  "[&_.fc-list-table_thead]:sr-only [&_.fc-list-table_thead]:inset-x-auto!",
   "[&_.fc-popover]:rounded-lg [&_.fc-popover]:border-border [&_.fc-popover]:bg-popover [&_.fc-popover]:text-popover-foreground [&_.fc-popover]:shadow-md",
   "[&_.fc-popover-header]:bg-muted [&_.fc-list-empty]:bg-transparent [&_.fc-list-empty]:text-muted-foreground",
 ].join(" ")

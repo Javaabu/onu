@@ -1,4 +1,7 @@
-import { Extension, mergeAttributes, Node, type Extensions } from "@tiptap/core"
+import { Extension, mergeAttributes, Node, type AnyExtension, type Extensions } from "@tiptap/core"
+import type { Node as PMNode } from "@tiptap/pm/model"
+import { Plugin, PluginKey } from "@tiptap/pm/state"
+import { Decoration, DecorationSet } from "@tiptap/pm/view"
 import Image from "@tiptap/extension-image"
 import { TableKit } from "@tiptap/extension-table"
 import TextAlign from "@tiptap/extension-text-align"
@@ -81,16 +84,80 @@ export function toEmbedUrl(url: string | null | undefined): string | null {
   return null
 }
 
+// First strong character, as in the Unicode bidi algorithm (P2): Hebrew, Arabic, Syriac,
+// Thaana, NKo, … and their presentation forms are RTL; Latin, Greek, Cyrillic, Indic, CJK, … are LTR.
+const RTL_CHAR = "\u0590-\u08FF\u200F\uFB1D-\uFDFF\uFE70-\uFEFF"
+const LTR_CHAR =
+  "A-Za-z\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02B8\u0370-\u0482\u048A-\u058F\u0900-\u1FFF\u200E\u2C00-\uFB1C\uFF21-\uFF3A\uFF41-\uFF5A"
+// Ranges of code points, not visible characters: combining marks inside a range are intended.
+// eslint-disable-next-line no-misleading-character-class
+const FIRST_STRONG = new RegExp(`[${RTL_CHAR}]|[${LTR_CHAR}]`)
+const IS_RTL = new RegExp(`^[${RTL_CHAR}]$`)
+
+/** The direction of the first strong character in `text`, or `null` when it has none (digits, punctuation). */
+export function detectDirection(text: string | null | undefined): "ltr" | "rtl" | null {
+  const match = text ? FIRST_STRONG.exec(text) : null
+  if (!match) return null
+  return IS_RTL.test(match[0]) ? "rtl" : "ltr"
+}
+
+/**
+ * The direction a container block (list, quote) should take from its content:
+ * an explicit `dir` on the first descendant that has one, else the first strong
+ * character of its text. Code (which is always LTR) is skipped. `null` when the
+ * block has no strong text yet.
+ */
+export function resolveBlockDirection(node: PMNode): "ltr" | "rtl" | null {
+  let result: "ltr" | "rtl" | null = null
+  node.descendants((child) => {
+    if (result) return false
+    if (child.type.name === "codeBlock") return false
+    const dir = child.attrs.dir as string | null | undefined
+    if (dir === "ltr" || dir === "rtl") {
+      result = dir
+      return false
+    }
+    if (child.isText && !child.marks.some((mark) => mark.type.name === "code")) result = detectDirection(child.text)
+    return !result
+  })
+  return result
+}
+
+/**
+ * Container blocks whose `dir` is resolved from their content rather than left
+ * as `dir="auto"`: the browser's auto-direction skips descendants that have their
+ * own `dir` (every paragraph inside does), so `dir="auto"` on a list or quote
+ * always fell back to LTR, putting bullets and the quote border on the wrong side
+ * of Dhivehi text.
+ */
+export const DIRECTIONAL_CONTAINERS = ["blockquote", "bulletList", "orderedList"]
+
+const autoDirectionKey = new PluginKey<DecorationSet>("onuAutoDirection")
+
+function containerDecorations(doc: PMNode, types: string[]): DecorationSet {
+  const decorations: Decoration[] = []
+  doc.descendants((node, pos) => {
+    if (types.includes(node.type.name) && !node.attrs.dir) {
+      decorations.push(Decoration.node(pos, pos + node.nodeSize, { dir: resolveBlockDirection(node) ?? "auto" }))
+    }
+    return true
+  })
+  return DecorationSet.create(doc, decorations)
+}
+
 /**
  * Renders `dir="auto"` on every text block, so each paragraph of mixed
  * Dhivehi/English content takes its direction from its own first strong
- * character (R11.7). An explicit `dir` in pasted HTML is kept.
+ * character (R11.7). Lists and quotes get the direction of their first strong
+ * character instead (see {@link DIRECTIONAL_CONTAINERS}), kept up to date while
+ * editing. An explicit `dir` in pasted HTML is kept.
  */
-export const AutoDirection = Extension.create<{ types: string[] }>({
+export const AutoDirection = Extension.create<{ types: string[]; containers: string[] }>({
   name: "autoDirection",
   addOptions() {
     return {
       types: ["paragraph", "heading", "blockquote", "bulletList", "orderedList", "tableCell", "tableHeader", "callout"],
+      containers: DIRECTIONAL_CONTAINERS,
     }
   },
   addGlobalAttributes() {
@@ -109,6 +176,42 @@ export const AutoDirection = Extension.create<{ types: string[] }>({
         },
       },
     ]
+  },
+  addProseMirrorPlugins() {
+    // ProseMirror only re-renders a node when its attributes change, so while
+    // typing the resolved direction is applied as a node decoration.
+    const containers = this.options.containers
+    return [
+      new Plugin<DecorationSet>({
+        key: autoDirectionKey,
+        state: {
+          init: (_, state) => containerDecorations(state.doc, containers),
+          apply: (tr, old) => (tr.docChanged ? containerDecorations(tr.doc, containers) : old),
+        },
+        props: {
+          decorations: (state) => autoDirectionKey.getState(state),
+        },
+      }),
+    ]
+  },
+})
+
+/** Wraps a list/quote node so its rendered HTML carries the direction resolved from its content. */
+function withResolvedDirection(extension: AnyExtension): AnyExtension {
+  if (extension.type !== "node" || !DIRECTIONAL_CONTAINERS.includes(extension.name)) return extension
+  return (extension as Node).extend({
+    renderHTML({ node, HTMLAttributes }) {
+      const attributes = HTMLAttributes as Record<string, unknown>
+      const dir = attributes.dir === "ltr" || attributes.dir === "rtl" ? attributes.dir : resolveBlockDirection(node)
+      return this.parent!({ node, HTMLAttributes: { ...attributes, dir: dir ?? "auto" } })
+    },
+  })
+}
+
+/** StarterKit with direction-resolving lists and quotes, for the editors, `getHTML()` and the renderer. */
+const DirectionalStarterKit = StarterKit.extend({
+  addExtensions() {
+    return (this.parent?.() ?? []).map(withResolvedDirection)
   },
 })
 
@@ -244,7 +347,7 @@ export interface SchemaOptions {
 /** The shared document schema: StarterKit, images, tables, alignment, auto direction (+ callout and embed). */
 export function createSchemaExtensions({ headingLevels = [1, 2, 3], blocks = true }: SchemaOptions = {}): Extensions {
   return [
-    StarterKit.configure({
+    DirectionalStarterKit.configure({
       heading: { levels: headingLevels },
       codeBlock: { HTMLAttributes: { dir: "ltr", spellcheck: "false" } },
       code: { HTMLAttributes: { dir: "ltr" } },

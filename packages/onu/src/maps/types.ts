@@ -107,7 +107,10 @@ export interface AdapterMapProps {
   label: string
   defaultCenter: LatLng
   defaultZoom: number
-  /** Fit these bounds on first render (wins over centre/zoom). */
+  /**
+   * Fit these bounds once, as soon as they are set (on first render, or later when the
+   * points load). Wins over centre/zoom; a single point is centred at a street-level zoom.
+   */
   defaultBounds?: LatLngBounds
   colorScheme: "light" | "dark"
   /** Map ID (cloud styling / vector maps). Already resolved for the colour scheme. */

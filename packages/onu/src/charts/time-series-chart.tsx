@@ -14,6 +14,8 @@ import {
 import {
   Area,
   AreaChart as RechartsAreaChart,
+  Bar,
+  BarChart as RechartsBarChart,
   Brush,
   CartesianGrid,
   Line,
@@ -63,8 +65,15 @@ export interface TimeSeriesChartProps extends ChartBaseProps {
   dateFormat?: string
   /** date-fns pattern for tooltips and the data table. Defaults by `interval` (`d MMM yyyy`). */
   tooltipDateFormat?: string
-  /** Fill the area under each line. */
+  /** How series are drawn. Default `"line"` (`"area"` when `area` is set). */
+  variant?: "line" | "area" | "bar"
+  /** Fill the area under each line. Same as `variant="area"`. */
   area?: boolean
+  /**
+   * Stack the series on top of each other (e.g. arrivals by atoll adding up to the total).
+   * Areas or bars stack; a line chart is drawn as stacked areas.
+   */
+  stacked?: boolean
   /** Show a brush under the chart to zoom into a range. */
   brush?: boolean
   /** Draw across missing values instead of leaving a gap. Default `false`. */
@@ -136,6 +145,16 @@ function defaultFormats(interval: TimeInterval | undefined, hourCycle: 12 | 24) 
   }
 }
 
+/** The smallest gap between consecutive points (ms), used to size bars and pad the axis. */
+function smallestStep(rows: ChartDatum[]): number {
+  let step = Infinity
+  for (let i = 1; i < rows.length; i++) {
+    const gap = (rows[i]![TIME_KEY] as number) - (rows[i - 1]![TIME_KEY] as number)
+    if (gap > 0) step = Math.min(step, gap)
+  }
+  return Number.isFinite(step) ? step : 24 * 60 * 60 * 1000
+}
+
 /**
  * Time-series chart on shadcn's chart (Recharts): a real time axis formatted with the active
  * locale, gaps for missing data, an optional brush to zoom, and newest-on-the-left in RTL.
@@ -149,7 +168,9 @@ export function TimeSeriesChart({
   interval,
   dateFormat,
   tooltipDateFormat,
+  variant: variantProp,
   area = false,
+  stacked = false,
   brush = false,
   connectNulls = false,
   showLegend,
@@ -216,7 +237,13 @@ export function TimeSeriesChart({
   const visible = zoomed && range ? displayRows.slice(range.start, range.end + 1) : null
   const visibleTimes = visible?.map((r) => r[TIME_KEY] as number)
 
-  const Chart = area ? RechartsAreaChart : RechartsLineChart
+  const requested = variantProp ?? (area ? "area" : "line")
+  // Stacked lines read as stacked areas: each band is one series' share of the total.
+  const variant = stacked && requested === "line" ? "area" : requested
+  const Chart = variant === "bar" ? RechartsBarChart : variant === "area" ? RechartsAreaChart : RechartsLineChart
+  const stackId = stacked ? "stack" : undefined
+  // Bars are centred on their time, so pad the axis by half a step to keep the first and last whole.
+  const halfStep = variant === "bar" ? smallestStep(rows) / 2 : 0
 
   return (
     <ChartFrame
@@ -269,7 +296,7 @@ export function TimeSeriesChart({
               dataKey={TIME_KEY}
               type="number"
               scale="time"
-              domain={["dataMin", "dataMax"]}
+              domain={halfStep ? [`dataMin - ${halfStep}`, `dataMax + ${halfStep}`] : ["dataMin", "dataMax"]}
               reversed={axes.reversed}
               tickFormatter={(value: number) => formatTime(value, tickPattern)}
               tickLine={false}
@@ -286,9 +313,10 @@ export function TimeSeriesChart({
             />
             <ChartTooltip
               trigger={trigger}
+              cursor={variant === "bar" ? false : undefined}
               content={
                 <ChartTooltipContent
-                  indicator="line"
+                  indicator={variant === "bar" ? "dot" : "line"}
                   labelFormatter={(_, payload) => formatTime(payload?.[0]?.payload?.[TIME_KEY], fullPattern)}
                   valueFormatter={(value) => (typeof value === "number" ? fmt.value(value) : String(value))}
                 />
@@ -297,7 +325,22 @@ export function TimeSeriesChart({
             {legend ? (
               <ChartLegend itemSorter={null} verticalAlign="top" content={<ChartLegendContent verticalAlign="top" />} />
             ) : null}
-            {series.map((s) => {
+            {series.map((s, i) => {
+              if (variant === "bar") {
+                const top = !stacked || i === series.length - 1
+                return (
+                  <Bar
+                    key={s.key}
+                    dataKey={s.key}
+                    name={s.key}
+                    fill={`var(--color-${s.key})`}
+                    stackId={stackId}
+                    radius={top ? [4, 4, 0, 0] : 0}
+                    maxBarSize={48}
+                    isAnimationActive={isAnimationActive}
+                  />
+                )
+              }
               const common = {
                 dataKey: s.key,
                 name: s.key,
@@ -309,8 +352,14 @@ export function TimeSeriesChart({
                 dot: false as const,
                 activeDot: { r: 4 },
               }
-              return area ? (
-                <Area key={s.key} {...common} fill={`var(--color-${s.key})`} fillOpacity={0.15} />
+              return variant === "area" ? (
+                <Area
+                  key={s.key}
+                  {...common}
+                  fill={`var(--color-${s.key})`}
+                  fillOpacity={stacked ? 0.4 : 0.15}
+                  stackId={stackId}
+                />
               ) : (
                 <Line key={s.key} {...common} />
               )

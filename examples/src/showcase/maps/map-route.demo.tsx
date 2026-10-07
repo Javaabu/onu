@@ -35,7 +35,7 @@ export default function MapRouteDemo() {
     <DemoPage>
       <DemoSection title="Patrol route" description="Move points, reorder them, or remove them." className="grid">
         <FormField label="Night patrol" name="route">
-          <MapRoute defaultValue={patrol} zoom={15} onDistanceChange={setMeters} tone="chart-4" />
+          <MapRoute defaultValue={patrol} onDistanceChange={setMeters} tone="chart-4" />
         </FormField>
         {meters !== null ? (
           <p className="text-sm text-muted-foreground">

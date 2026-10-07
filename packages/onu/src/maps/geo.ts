@@ -179,6 +179,16 @@ export function boundsOf(points: LatLng[]): LatLngBounds | null {
   return { north, south, east, west }
 }
 
+/** Padding (px) around points fitted on first render. */
+export const INITIAL_FIT_PADDING = 48
+/** Zoom used when the points to fit are a single spot (fitting would zoom all the way in). */
+export const SINGLE_POINT_ZOOM = 15
+
+/** True when the bounds are a single point (one marker, or several at the same spot). */
+export function isPointBounds(b: LatLngBounds): boolean {
+  return b.north === b.south && b.east === b.west
+}
+
 export function boundsCenter(b: LatLngBounds): LatLng {
   return { lat: (b.north + b.south) / 2, lng: (b.east + b.west) / 2 }
 }

@@ -50,6 +50,40 @@ const subscribe: LiveMapSubscribe = (push) => {
   return () => clearInterval(id)
 }
 
+const FLEET: LiveMapMarker[] = [
+  ...VESSELS,
+  {
+    id: "addu",
+    title: "Ferry Addu · ފެރީ އައްޑޫ",
+    position: { lat: -0.629, lng: 73.158 },
+    heading: 10,
+    tone: "chart-3",
+  },
+]
+
+/** A vessel list outside the map: selecting one centres it on the map without following it. */
+function ExternalSelection() {
+  const [selected, setSelected] = React.useState<string | null>(null)
+  return (
+    <div className="gap-3 @container grid">
+      <div role="group" aria-label="Fleet" className="gap-2 flex flex-wrap">
+        {FLEET.map((v) => (
+          <Button
+            key={v.id}
+            size="sm"
+            variant={selected === v.id ? "default" : "outline"}
+            aria-pressed={selected === v.id}
+            onClick={() => setSelected(selected === v.id ? null : v.id)}
+          >
+            {v.title}
+          </Button>
+        ))}
+      </div>
+      <LiveMap markers={FLEET} selectedId={selected} onSelect={setSelected} list={false} />
+    </div>
+  )
+}
+
 export default function LiveMapDemo() {
   const [selected, setSelected] = React.useState<string | null>(null)
   const vessel = VESSELS.find((v) => v.id === selected)
@@ -65,7 +99,6 @@ export default function LiveMapDemo() {
           subscribe={subscribe}
           selectedId={selected}
           onSelect={setSelected}
-          zoom={13}
           overlay={
             <MapInfoPanel
               open={!!vessel}
@@ -92,6 +125,13 @@ export default function LiveMapDemo() {
             </MapInfoPanel>
           }
         />
+      </DemoSection>
+      <DemoSection
+        title="Selected from outside the map"
+        description="Without a centre the map fits the whole fleet. Picking a vessel in your own list pans to it."
+        className="grid"
+      >
+        <ExternalSelection />
       </DemoSection>
       <DemoSection title="Empty" className="grid">
         <LiveMap markers={[]} />
