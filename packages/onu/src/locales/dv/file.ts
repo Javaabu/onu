@@ -1,4 +1,170 @@
 import type { MessageDict } from "../../i18n/types"
 import type { file as en } from "../en/file"
 
-export const file = {} satisfies Record<keyof typeof en, MessageDict[string]> & MessageDict
+export const file = {
+  // Sizes (Latin abbreviations are standard in Dhivehi too)
+  unitB: "B",
+  unitKB: "KB",
+  unitMB: "MB",
+  unitGB: "GB",
+  unitTB: "TB",
+
+  // File input
+  chooseFile: "ފައިލެއް ހޮވާ",
+  chooseFiles: "ފައިލުތައް ހޮވާ",
+  noFileChosen: "އެއްވެސް ފައިލެއް ހޮވާފައެއް ނުވޭ",
+  noFilesChosen: "އެއްވެސް ފައިލެއް ހޮވާފައެއް ނުވޭ",
+  filesSelected: { one: "{count} ފައިލް ހޮވިއްޖެ", other: "{count} ފައިލް ހޮވިއްޖެ" },
+  selectedFiles: "ހޮވާފައިވާ ފައިލުތައް",
+  removeFile: "{name} ނައްތާލާ",
+  limitFiles: { one: "ގިނަވެގެން {count} ފައިލް", other: "ގިނަވެގެން {count} ފައިލް" },
+  limitSize: "ކޮންމެ ފައިލެއް ގިނަވެގެން {size}",
+  countOfMax: "{max} ން {count}",
+
+  // Validation
+  errorTooLarge: "{name} ގެ ސައިޒު {max} އަށްވުރެ ބޮޑު.",
+  errorTooSmall: "{name} ގެ ސައިޒު {min} އަށްވުރެ ކުޑަ.",
+  errorType: "{name} އަކީ ގަބޫލުކުރެވޭ ފައިލް ވައްތަރެއް ނޫން.",
+  errorTooMany: {
+    one: "{name} އިތުރެއް ނުކުރެވުނު: ގިނަވެގެން {count} ފައިލް.",
+    other: "{name} އިތުރެއް ނުކުރެވުނު: ގިނަވެގެން {count} ފައިލް.",
+  },
+
+  // Uploads
+  uploads: "އަޕްލޯޑުތައް",
+  statusQueued: "އިންތިޒާރުގައި…",
+  statusUploading: "އަޕްލޯޑުކުރަނީ… {progress}%",
+  statusUploaded: "އަޕްލޯޑުކުރެވިއްޖެ",
+  statusCancelled: "ކެންސަލްކުރެވިއްޖެ",
+  uploadFailed: "އަޕްލޯޑު ނުކުރެވުނު",
+  cancelUpload: "{name} އަޕްލޯޑުކުރުން ކެންސަލްކުރޭ",
+  retryUpload: "{name} އަލުން އަޕްލޯޑުކުރޭ",
+  uploadProgressLabel: "{name} އަޕްލޯޑުވި މިންވަރު",
+  uploadingFile: "{name} އަޕްލޯޑުކުރަނީ",
+  uploadedFile: "{name} އަޕްލޯޑުކުރެވިއްޖެ",
+  cancelledFile: "{name} އަޕްލޯޑުކުރުން ކެންސަލްކުރެވިއްޖެ",
+  failedFile: "{name} އަޕްލޯޑު ނުކުރެވުނު: {error}",
+  uploadingCount: { one: "{count} ފައިލް އަޕްލޯޑުކުރަނީ…", other: "{count} ފައިލް އަޕްލޯޑުކުރަނީ…" },
+  uploadedCount: { one: "{count} ފައިލް އަޕްލޯޑުކުރެވިއްޖެ", other: "{count} ފައިލް އަޕްލޯޑުކުރެވިއްޖެ" },
+
+  // Drop zone
+  dropzoneTitle: "ފައިލުތައް މިތަނަށް ދަމައިގެން ގެނެސް ދޫކޮށްލާ",
+  dropzoneHint: "ނުވަތަ ޑިވައިސްއިން ހޯދާ. ކްލިޕްބޯޑުން ޕޭސްޓްވެސް ކުރެވޭނެ.",
+  dropToUpload: "އަޕްލޯޑުކުރަން ދޫކޮށްލާ",
+  browseFiles: "ފައިލުތައް ހޯދާ",
+  browseFile: "ފައިލެއް ހޯދާ",
+
+  // Additional files
+  attachments: "އެޓޭޗްމަންޓްތައް",
+  attachmentCount: { one: "{count} އެޓޭޗްމަންޓް", other: "{count} އެޓޭޗްމަންޓް" },
+  noAttachments: "އަދި އެއްވެސް އެޓޭޗްމަންޓެއް ނެތް",
+  addFiles: "ފައިލުތައް އިތުރުކުރޭ",
+  new: "އާ",
+  willBeRemoved: "ނައްތާލެވޭނެ",
+  openFile: "{name} ހުޅުވާ",
+  restoreFile: "{name} އަނބުރާ ގެންނަ",
+  markedForRemoval: "ސޭވްކުރާއިރު {name} ނައްތާލެވޭނެ",
+  restoredFile: "{name} އަނބުރާ ގެނެވިއްޖެ",
+  removedFile: "{name} ނައްތާލެވިއްޖެ",
+  filesAdded: { one: "{count} ފައިލް އިތުރުކުރެވިއްޖެ", other: "{count} ފައިލް އިތުރުކުރެވިއްޖެ" },
+  displayName: "ދައްކާނެ ނަން",
+  description: "ތަފްސީލު",
+
+  // Image input and avatar
+  chooseImage: "ފޮޓޯއެއް ހޮވާ",
+  replaceImage: "ބަދަލުކުރޭ",
+  removeImage: "ނައްތާލާ",
+  changePhoto: "ފޮޓޯ ބަދަލުކުރޭ",
+  uploadPhoto: "ފޮޓޯ އަޕްލޯޑުކުރޭ",
+  removePhoto: "ފޮޓޯ ނައްތާލާ",
+  savePhoto: "ފޮޓޯ ސޭވްކުރޭ",
+  photoOf: "{name} ގެ ފޮޓޯ",
+  noPhotoFor: "{name} (ފޮޓޯއެއް ނެތް)",
+  cropPhoto: "ފޮޓޯ ކްރޮޕްކުރޭ",
+  cropPhotoHint: "ފޮޓޯ ހަމަޖައްސަން ދަމާ، ޒޫމްކުރަން ދެއިނގިލިން ކުޑަބޮޑުކުރޭ ނުވަތަ ސްލައިޑަރު ބޭނުންކުރޭ.",
+
+  // Image cropper
+  cropArea: "{name} ކްރޮޕްކުރާ ސަރަހައްދު",
+  cropHelp: "ފޮޓޯ ހަރަކާތްކުރަން އެރޯ ކީތައް، ޒޫމްކުރަން ޕްލަސް ނުވަތަ މައިނަސް ބޭނުންކުރޭ.",
+  zoom: "ޒޫމް",
+  zoomIn: "ޒޫމް އިން",
+  zoomOut: "ޒޫމް އައުޓް",
+  rotation: "އަނބުރުން",
+  rotateLeft: "ވާތަށް އަނބުރާ",
+  rotateRight: "ކަނާތަށް އަނބުރާ",
+  aspectRatio: "ދިގުމިނާއި ފުޅާމިނުގެ ނިސްބަތް",
+  resetCrop: "ފުރަތަމަ ހާލަތަށް",
+
+  // Carousel
+  slideOf: "{total} ސްލައިޑުން {index}",
+  chooseSlide: "ސްލައިޑް ހޮވާ",
+  goToSlide: "ސްލައިޑް {index} އަށް",
+  pauseSlides: "ސްލައިޑްތައް މަޑުކުރޭ",
+  playSlides: "ސްލައިޑްތައް ކުޅުވާ",
+
+  // Attachment preview and document download
+  previewFile: "{name} ބައްލަވާ",
+  previewOf: "{name} ގެ ޕްރިވިއު",
+  download: "ޑައުންލޯޑް",
+  downloadFile: "{name} ޑައުންލޯޑްކުރޭ",
+  downloadIn: "{name} {language} ބަހުން ޑައުންލޯޑްކުރޭ",
+
+  // Video embed
+  playVideo: "ވީޑިއޯ ކުޅުވާ: {title}",
+
+  // Media lister
+  mediaLibrary: "މީޑިއާ ލައިބްރަރީ",
+  searchMedia: "މީޑިއާ ހޯދާ",
+  clearSelection: "ހޮވާފައިވާ އެއްޗެހި ފޮހެލާ",
+  selectedCount: { zero: "އެއްވެސް އެއްޗެއް ހޮވާފައެއް ނުވޭ", one: "{count} ހޮވިއްޖެ", other: "{count} ހޮވިއްޖެ" },
+  view: "ދައްކާ ގޮތް",
+  gridView: "ގްރިޑް ގޮތަށް",
+  listView: "ލިސްޓް ގޮތަށް",
+  noMedia: "އަދި އެއްވެސް މީޑިއާއެއް ނެތް",
+  loadMore: "އިތުރަށް ލޯޑުކުރޭ",
+  pageOf: "{total} ސަފްހާއިން {page}",
+
+  // Lightbox
+  lightbox: "ފޮޓޯ ބަލާ ސްކްރީން",
+  photoGallery: "ފޮޓޯ ގެލަރީ",
+  carousel: "ކެރަސެލް",
+  slide: "ސްލައިޑް",
+  indexOfTotal: "{total} ން {index}",
+  previousImage: "ކުރީގެ ފޮޓޯ",
+  nextImage: "ދެން އޮތް ފޮޓޯ",
+  caption: "ކެޕްޝަން",
+  showCaptions: "ކެޕްޝަން ދައްކާ",
+  hideCaptions: "ކެޕްޝަން ފޮރުވާ",
+
+  // Media player
+  playerPlay: "ކުޅުވާ",
+  playerPause: "މަޑުކުރޭ",
+  playerMute: "އަޑު ނިއްވާ",
+  playerUnmute: "އަޑު އަނބުރާ ގެންނަ",
+  playerVolume: "އަޑުގެ މިންވަރު",
+  playerSeek: "ވަގުތު ބަދަލުކުރޭ",
+  playerCaptions: "ކެޕްޝަން",
+  playerCaptionsOn: "ކެޕްޝަން ދައްކާ",
+  playerCaptionsOff: "ކެޕްޝަން ފޮރުވާ",
+  playerFullscreenEnter: "ފުލް ސްކްރީން",
+  playerFullscreenExit: "ފުލް ސްކްރީނުން ނިކުންނަ",
+  playerPlaybackRate: "ކުޅޭ ސްޕީޑް",
+  playerPlaybackRateValue: "ކުޅޭ ސްޕީޑް {playbackRate}",
+  playerSeekBackward: "ފަހަތަށް",
+  playerSeekForward: "ކުރިއަށް",
+  playerSeekBackSeconds: "{seekOffset} ސިކުންތު ފަހަތަށް",
+  playerSeekForwardSeconds: "{seekOffset} ސިކުންތު ކުރިއަށް",
+  playerTime: "ކުޅޭ ވަގުތު",
+  playerLoading: "މީޑިއާ ލޯޑުވަނީ",
+  playerVideo: "ވީޑިއޯ ޕްލޭޔަރ",
+  playerAudio: "އޯޑިއޯ ޕްލޭޔަރ",
+  playerRemaining: "{time} ބާކީ",
+  playerCurrentOfTotal: "{totalTime} ން {currentTime}",
+  playerUnknownTime: "މީޑިއާ ލޯޑުވެފައެއް ނުވޭ، ވަގުތު ނޭނގޭ.",
+  playerHour: "ގަޑިއިރު",
+  playerHours: "ގަޑިއިރު",
+  playerMinute: "މިނިޓު",
+  playerMinutes: "މިނިޓު",
+  playerSecond: "ސިކުންތު",
+  playerSeconds: "ސިކުންތު",
+} satisfies Record<keyof typeof en, MessageDict[string]> & MessageDict

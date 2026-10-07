@@ -1,3 +1,169 @@
 import type { MessageDict } from "../../i18n/types"
 
-export const file = {} satisfies MessageDict
+export const file = {
+  // Sizes
+  unitB: "B",
+  unitKB: "KB",
+  unitMB: "MB",
+  unitGB: "GB",
+  unitTB: "TB",
+
+  // File input
+  chooseFile: "Choose file",
+  chooseFiles: "Choose files",
+  noFileChosen: "No file chosen",
+  noFilesChosen: "No files chosen",
+  filesSelected: { one: "{count} file selected", other: "{count} files selected" },
+  selectedFiles: "Selected files",
+  removeFile: "Remove {name}",
+  limitFiles: { one: "Up to {count} file", other: "Up to {count} files" },
+  limitSize: "{size} max each",
+  countOfMax: "{count} of {max}",
+
+  // Validation
+  errorTooLarge: "{name} is larger than {max}.",
+  errorTooSmall: "{name} is smaller than {min}.",
+  errorType: "{name} is not an accepted file type.",
+  errorTooMany: {
+    one: "{name} was not added: only {count} file is allowed.",
+    other: "{name} was not added: only {count} files are allowed.",
+  },
+
+  // Uploads
+  uploads: "Uploads",
+  statusQueued: "Waiting…",
+  statusUploading: "Uploading… {progress}%",
+  statusUploaded: "Uploaded",
+  statusCancelled: "Cancelled",
+  uploadFailed: "Upload failed",
+  cancelUpload: "Cancel upload of {name}",
+  retryUpload: "Retry upload of {name}",
+  uploadProgressLabel: "Upload progress for {name}",
+  uploadingFile: "Uploading {name}",
+  uploadedFile: "{name} uploaded",
+  cancelledFile: "Upload of {name} cancelled",
+  failedFile: "{name} failed to upload: {error}",
+  uploadingCount: { one: "Uploading {count} file…", other: "Uploading {count} files…" },
+  uploadedCount: { one: "{count} file uploaded", other: "{count} files uploaded" },
+
+  // Drop zone
+  dropzoneTitle: "Drag and drop files here",
+  dropzoneHint: "or browse your device. You can also paste from the clipboard.",
+  dropToUpload: "Drop to upload",
+  browseFiles: "Browse files",
+  browseFile: "Browse file",
+
+  // Additional files
+  attachments: "Attachments",
+  attachmentCount: { one: "{count} attachment", other: "{count} attachments" },
+  noAttachments: "No attachments yet",
+  addFiles: "Add files",
+  new: "New",
+  willBeRemoved: "Will be removed",
+  openFile: "Open {name}",
+  restoreFile: "Restore {name}",
+  markedForRemoval: "{name} will be removed when you save",
+  restoredFile: "{name} restored",
+  removedFile: "{name} removed",
+  filesAdded: { one: "{count} file added", other: "{count} files added" },
+  displayName: "Display name",
+  description: "Description",
+
+  // Image input and avatar
+  chooseImage: "Choose an image",
+  replaceImage: "Replace",
+  removeImage: "Remove",
+  changePhoto: "Change photo",
+  uploadPhoto: "Upload photo",
+  removePhoto: "Remove photo",
+  savePhoto: "Save photo",
+  photoOf: "Photo of {name}",
+  noPhotoFor: "{name} (no photo)",
+  cropPhoto: "Crop photo",
+  cropPhotoHint: "Drag to position the photo, and pinch or use the slider to zoom.",
+
+  // Image cropper
+  cropArea: "Crop area for {name}",
+  cropHelp: "Use the arrow keys to move the image, and plus or minus to zoom.",
+  zoom: "Zoom",
+  zoomIn: "Zoom in",
+  zoomOut: "Zoom out",
+  rotation: "Rotation",
+  rotateLeft: "Rotate left",
+  rotateRight: "Rotate right",
+  aspectRatio: "Aspect ratio",
+  resetCrop: "Reset",
+
+  // Carousel
+  slideOf: "Slide {index} of {total}",
+  chooseSlide: "Choose slide",
+  goToSlide: "Go to slide {index}",
+  pauseSlides: "Pause slides",
+  playSlides: "Play slides",
+
+  // Attachment preview and document download
+  previewFile: "Preview {name}",
+  previewOf: "Preview of {name}",
+  download: "Download",
+  downloadFile: "Download {name}",
+  downloadIn: "Download {name} in {language}",
+
+  // Video embed
+  playVideo: "Play video: {title}",
+
+  // Media lister
+  mediaLibrary: "Media library",
+  searchMedia: "Search media",
+  clearSelection: "Clear selection",
+  selectedCount: { zero: "Nothing selected", one: "{count} selected", other: "{count} selected" },
+  view: "View",
+  gridView: "Grid view",
+  listView: "List view",
+  noMedia: "No media yet",
+  loadMore: "Load more",
+  pageOf: "Page {page} of {total}",
+
+  // Lightbox
+  lightbox: "Image viewer",
+  photoGallery: "Photo gallery",
+  carousel: "Carousel",
+  slide: "Slide",
+  indexOfTotal: "{index} of {total}",
+  previousImage: "Previous image",
+  nextImage: "Next image",
+  caption: "Caption",
+  showCaptions: "Show captions",
+  hideCaptions: "Hide captions",
+
+  // Media player
+  playerPlay: "Play",
+  playerPause: "Pause",
+  playerMute: "Mute",
+  playerUnmute: "Unmute",
+  playerVolume: "Volume",
+  playerSeek: "Seek",
+  playerCaptions: "Captions",
+  playerCaptionsOn: "Turn on captions",
+  playerCaptionsOff: "Turn off captions",
+  playerFullscreenEnter: "Enter full screen",
+  playerFullscreenExit: "Exit full screen",
+  playerPlaybackRate: "Playback speed",
+  playerPlaybackRateValue: "Playback speed {playbackRate}",
+  playerSeekBackward: "Seek backward",
+  playerSeekForward: "Seek forward",
+  playerSeekBackSeconds: "Back {seekOffset} seconds",
+  playerSeekForwardSeconds: "Forward {seekOffset} seconds",
+  playerTime: "Playback time",
+  playerLoading: "Loading media",
+  playerVideo: "Video player",
+  playerAudio: "Audio player",
+  playerRemaining: "{time} remaining",
+  playerCurrentOfTotal: "{currentTime} of {totalTime}",
+  playerUnknownTime: "Media not loaded, unknown time.",
+  playerHour: "hour",
+  playerHours: "hours",
+  playerMinute: "minute",
+  playerMinutes: "minutes",
+  playerSecond: "second",
+  playerSeconds: "seconds",
+} satisfies MessageDict

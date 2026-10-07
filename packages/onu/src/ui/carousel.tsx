@@ -11,6 +11,8 @@ import useEmblaCarousel, {
 
 import { Button } from "./button"
 import { Icon } from "../icons/icon"
+// onu: direction and translated labels.
+import { useOnu } from "../providers/onu-provider"
 
 type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
@@ -54,8 +56,11 @@ function Carousel({
   children,
   ...props
 }: React.ComponentProps<"div"> & CarouselProps) {
+  // onu: Embla needs the reading direction to lay out and swipe correctly in RTL.
+  const { dir } = useOnu()
   const [carouselRef, api] = useEmblaCarousel(
     {
+      direction: dir,
       ...opts,
       axis: orientation === "horizontal" ? "x" : "y",
     },
@@ -80,15 +85,17 @@ function Carousel({
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === "ArrowLeft") {
+      // onu: arrow keys follow visual order, so ArrowLeft moves forward in RTL (R11.5).
+      const rtl = (opts?.direction ?? dir) === "rtl"
+      if (event.key === (rtl ? "ArrowRight" : "ArrowLeft")) {
         event.preventDefault()
         scrollPrev()
-      } else if (event.key === "ArrowRight") {
+      } else if (event.key === (rtl ? "ArrowLeft" : "ArrowRight")) {
         event.preventDefault()
         scrollNext()
       }
     },
-    [scrollPrev, scrollNext]
+    [scrollPrev, scrollNext, opts?.direction, dir]
   )
 
   React.useEffect(() => {
@@ -181,6 +188,7 @@ function CarouselPrevious({
   ...props
 }: React.ComponentProps<typeof Button>) {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel()
+  const { t } = useOnu()
 
   return (
     <Button
@@ -198,8 +206,9 @@ function CarouselPrevious({
       onClick={scrollPrev}
       {...props}
     >
-      <Icon name="chevron-left" className="rtl:rotate-180" />
-      <span className="sr-only">Previous slide</span>
+      {/* onu: the Icon already mirrors in RTL; translated label. */}
+      <Icon name="chevron-left" />
+      <span className="sr-only">{t("common.previousSlide")}</span>
     </Button>
   )
 }
@@ -211,6 +220,7 @@ function CarouselNext({
   ...props
 }: React.ComponentProps<typeof Button>) {
   const { orientation, scrollNext, canScrollNext } = useCarousel()
+  const { t } = useOnu()
 
   return (
     <Button
@@ -228,8 +238,9 @@ function CarouselNext({
       onClick={scrollNext}
       {...props}
     >
-      <Icon name="chevron-right" className="rtl:rotate-180" />
-      <span className="sr-only">Next slide</span>
+      {/* onu: the Icon already mirrors in RTL; translated label. */}
+      <Icon name="chevron-right" />
+      <span className="sr-only">{t("common.nextSlide")}</span>
     </Button>
   )
 }
