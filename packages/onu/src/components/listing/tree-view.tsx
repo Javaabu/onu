@@ -38,6 +38,13 @@ export interface TreeViewProps {
   selectedKeys?: string[]
   defaultSelectedKeys?: string[]
   onSelectionChange?: (keys: string[]) => void
+  /**
+   * With `selectionMode="multiple"`: ticking a parent ticks everything under
+   * it, unticking clears them, and a parent is ticked when all of its children
+   * are. Default `false` (each row is selected on its own). Either way a parent
+   * with only some rows under it selected shows a dash (indeterminate).
+   */
+  selectionPropagation?: boolean
   expandedKeys?: string[]
   defaultExpandedKeys?: string[]
   onExpandedChange?: (keys: string[]) => void
@@ -57,10 +64,70 @@ function allIds(nodes: TreeNode[]): string[] {
   return nodes.flatMap((n) => [n.id, ...allIds(n.children ?? [])])
 }
 
+function descendantIds(node: TreeNode, disabled: Set<string>): string[] {
+  return (node.children ?? []).flatMap((c) => [...(disabled.has(c.id) ? [] : [c.id]), ...descendantIds(c, disabled)])
+}
+
+/**
+ * Applies a selection change with propagation: added rows bring their
+ * descendants, removed rows take them away, and each parent then follows its
+ * children (ticked when all its enabled children are).
+ */
+export function propagateTreeSelection(
+  items: TreeNode[],
+  previous: ReadonlySet<string>,
+  next: ReadonlySet<string>,
+  disabled: ReadonlySet<string> = new Set(),
+): string[] {
+  const disabledSet = new Set(disabled)
+  const result = new Set(next)
+  const byId = new Map<string, TreeNode>()
+  ;(function index(nodes: TreeNode[]) {
+    for (const n of nodes) {
+      byId.set(n.id, n)
+      index(n.children ?? [])
+    }
+  })(items)
+  for (const id of next) {
+    if (!previous.has(id)) for (const d of descendantIds(byId.get(id) ?? { id, label: "" }, disabledSet)) result.add(d)
+  }
+  for (const id of previous) {
+    if (!next.has(id)) for (const d of descendantIds(byId.get(id) ?? { id, label: "" }, disabledSet)) result.delete(d)
+  }
+  ;(function settle(nodes: TreeNode[]) {
+    for (const n of nodes) {
+      if (!n.children?.length) continue
+      settle(n.children)
+      const enabled = n.children.filter((c) => !disabledSet.has(c.id))
+      if (!enabled.length || disabledSet.has(n.id)) continue
+      if (enabled.every((c) => result.has(c.id))) result.add(n.id)
+      else result.delete(n.id)
+    }
+  })(items)
+  // Keep the tree's order.
+  return allIds(items).filter((id) => result.has(id))
+}
+
+/** Rows that are not selected but have selected rows under them (shown with a dash). */
+function partiallySelected(items: TreeNode[], selected: ReadonlySet<string>): Set<string> {
+  const partial = new Set<string>()
+  ;(function walk(nodes: TreeNode[]): boolean {
+    let any = false
+    for (const n of nodes) {
+      const below = walk(n.children ?? [])
+      if (below && !selected.has(n.id)) partial.add(n.id)
+      if (below || selected.has(n.id)) any = true
+    }
+    return any
+  })(items)
+  return partial
+}
+
 /**
  * A tree of records (folders, categories, org units) on React Aria's `Tree`:
  * the WAI-ARIA tree grid pattern with arrow-key navigation (mirrored in RTL),
- * expand/collapse and optional selection with checkboxes.
+ * expand/collapse and optional selection with checkboxes (a dash on parents
+ * with some rows under them selected, and optional `selectionPropagation`).
  */
 export function TreeView({
   items,
@@ -68,6 +135,7 @@ export function TreeView({
   selectedKeys,
   defaultSelectedKeys,
   onSelectionChange,
+  selectionPropagation = false,
   expandedKeys,
   defaultExpandedKeys,
   onExpandedChange,
@@ -86,6 +154,22 @@ export function TreeView({
       })(items),
     [items],
   )
+
+  const [ownSelection, setOwnSelection] = React.useState<string[]>(defaultSelectedKeys ?? [])
+  const selected = selectedKeys ?? ownSelection
+  const selectedSet = React.useMemo(() => new Set(selected), [selected])
+  const partial = React.useMemo(
+    () => (selectionMode === "multiple" ? partiallySelected(items, selectedSet) : new Set<string>()),
+    [items, selectedSet, selectionMode],
+  )
+  const changeSelection = (selection: Selection) => {
+    let next = toKeys(selection, () => allIds(items))
+    if (selectionPropagation && selectionMode === "multiple") {
+      next = propagateTreeSelection(items, selectedSet, new Set(next), new Set(disabledKeys))
+    }
+    if (selectedKeys === undefined) setOwnSelection(next)
+    onSelectionChange?.(next)
+  }
 
   const renderNode = (node: TreeNode): React.ReactElement => (
     <TreeItem
@@ -134,6 +218,7 @@ export function TreeView({
             {mode === "multiple" ? (
               <AriaCheckbox
                 slot="selection"
+                isIndeterminate={partial.has(node.id)}
                 className={cn(
                   "group/check size-4 flex shrink-0 items-center justify-center rounded-[4px] border border-input outline-none data-focus-visible:ring-3 data-focus-visible:ring-ring/50 data-indeterminate:bg-primary data-indeterminate:text-primary-foreground data-selected:border-primary data-selected:bg-primary data-selected:text-primary-foreground",
                   classNames?.checkbox,
@@ -158,7 +243,11 @@ export function TreeView({
           </div>
         )}
       </TreeItemContent>
-      {node.children?.length ? <Collection items={node.children}>{renderNode}</Collection> : null}
+      {node.children?.length ? (
+        <Collection items={node.children} dependencies={[partial]}>
+          {renderNode}
+        </Collection>
+      ) : null}
     </TreeItem>
   )
 
@@ -170,11 +259,9 @@ export function TreeView({
         data-slot="tree-view"
         items={items}
         selectionMode={selectionMode}
-        selectedKeys={selectedKeys}
-        defaultSelectedKeys={defaultSelectedKeys}
-        onSelectionChange={
-          onSelectionChange ? (selection) => onSelectionChange(toKeys(selection, () => allIds(items))) : undefined
-        }
+        selectedKeys={selected}
+        onSelectionChange={changeSelection}
+        dependencies={[partial]}
         expandedKeys={expandedKeys}
         defaultExpandedKeys={defaultExpandedKeys}
         onExpandedChange={onExpandedChange ? (keys: Set<Key>) => onExpandedChange([...keys].map(String)) : undefined}

@@ -8,7 +8,7 @@ import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test
 import { EmptyState } from "./empty-state"
 import { GridView } from "./grid-view"
 import { ListView } from "./list-view"
-import { TreeView, type TreeNode } from "./tree-view"
+import { propagateTreeSelection, TreeView, type TreeNode } from "./tree-view"
 
 // Interaction-heavy tests: allow for slow CI machines and coverage instrumentation.
 vi.setConfig({ testTimeout: 30_000 })
@@ -153,6 +153,88 @@ describe("TreeView", () => {
     expect(onSelectionChange).toHaveBeenCalledWith(["henveiru"])
     await userEvent.keyboard("{Control>}a{/Control}")
     expect(onSelectionChange).toHaveBeenLastCalledWith(["male", "henveiru", "galolhu", "addu"])
+  })
+
+  it("shows a parent as partly selected when only some rows under it are", async () => {
+    const wards: TreeNode[] = [
+      {
+        id: "male",
+        label: "Malé",
+        children: [
+          { id: "henveiru", label: "Henveiru" },
+          { id: "maafannu", label: "Maafannu" },
+        ],
+      },
+    ]
+    const { rerender } = renderWithOnu(
+      <TreeView items={wards} selectionMode="multiple" defaultExpandedKeys={["male"]} selectedKeys={["henveiru"]} />,
+    )
+    const parent = () => within(screen.getAllByRole("row")[0] as HTMLElement).getByRole("checkbox")
+    expect(parent()).toBePartiallyChecked()
+    rerender(<TreeView items={wards} selectionMode="multiple" defaultExpandedKeys={["male"]} selectedKeys={["male"]} />)
+    expect(parent()).toBeChecked()
+    expect(parent()).not.toBePartiallyChecked()
+    rerender(<TreeView items={wards} selectionMode="multiple" defaultExpandedKeys={["male"]} selectedKeys={[]} />)
+    expect(parent()).not.toBeChecked()
+    expect(parent()).not.toBePartiallyChecked()
+    await expectNoA11yViolations()
+  })
+
+  it("propagates selection to children and back up to parents with selectionPropagation", async () => {
+    const onSelectionChange = vi.fn()
+    const wards: TreeNode[] = [
+      {
+        id: "male",
+        label: "Malé",
+        children: [
+          { id: "henveiru", label: "Henveiru" },
+          { id: "maafannu", label: "Maafannu" },
+          { id: "galolhu", label: "Galolhu", disabled: true },
+        ],
+      },
+      { id: "addu", label: "Addu City" },
+    ]
+    renderWithOnu(
+      <TreeView
+        items={wards}
+        selectionMode="multiple"
+        selectionPropagation
+        defaultExpandedKeys={["male"]}
+        onSelectionChange={onSelectionChange}
+      />,
+    )
+    const box = (name: string) => within(screen.getByRole("row", { name: new RegExp(name) })).getByRole("checkbox")
+    // Ticking the parent ticks its (enabled) children.
+    await userEvent.click(box("Malé"))
+    expect(onSelectionChange).toHaveBeenLastCalledWith(["male", "henveiru", "maafannu"])
+    expect(box("Henveiru")).toBeChecked()
+    // Unticking one child: the parent becomes partly selected.
+    await userEvent.click(box("Henveiru"))
+    expect(onSelectionChange).toHaveBeenLastCalledWith(["maafannu"])
+    expect(box("Malé")).toBePartiallyChecked()
+    // Ticking it again completes the parent.
+    await userEvent.click(box("Henveiru"))
+    expect(onSelectionChange).toHaveBeenLastCalledWith(["male", "henveiru", "maafannu"])
+    expect(box("Malé")).toBeChecked()
+    // Unticking the parent clears everything under it.
+    await userEvent.click(box("Malé"))
+    expect(onSelectionChange).toHaveBeenLastCalledWith([])
+  })
+
+  it("propagateTreeSelection settles parents from their children", () => {
+    const wards: TreeNode[] = [
+      {
+        id: "p",
+        label: "P",
+        children: [
+          { id: "a", label: "A" },
+          { id: "b", label: "B" },
+        ],
+      },
+    ]
+    expect(propagateTreeSelection(wards, new Set(), new Set(["a", "b"]))).toEqual(["p", "a", "b"])
+    expect(propagateTreeSelection(wards, new Set(["p", "a", "b"]), new Set(["a", "b"]))).toEqual([])
+    expect(propagateTreeSelection(wards, new Set(["p", "a", "b"]), new Set(["p", "b"]))).toEqual(["b"])
   })
 
   it("shows the empty state", () => {
