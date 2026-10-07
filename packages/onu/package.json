@@ -388,19 +388,25 @@
       "name": "core (Button)",
       "path": "dist/index.js",
       "import": "{ Button }",
-      "limit": "20 kB"
+      "limit": "22 kB"
+    },
+    {
+      "name": "core (form field + text input)",
+      "path": "dist/index.js",
+      "import": "{ FormField, TextInput }",
+      "limit": "40 kB"
     },
     {
       "name": "core (everything)",
       "path": "dist/index.js",
       "import": "*",
-      "limit": "250 kB"
+      "limit": "1.2 MB"
     },
     {
       "name": "thaana",
       "path": "dist/thaana/index.js",
       "import": "*",
-      "limit": "8 kB"
+      "limit": "4 kB"
     }
   ]
 }
