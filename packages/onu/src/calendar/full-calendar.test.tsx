@@ -174,6 +174,15 @@ describe("FullCalendar", () => {
     expect(body().querySelector(".fc-col-header-cell")).toHaveTextContent("އާދި")
   })
 
+  it.each(directions)("keeps the agenda's hidden header in place in %s (no 10,000px overflow)", (dir) => {
+    renderWithOnu(<FullCalendar view="agenda" events={EVENTS} initialDate={TODAY} today={TODAY} />, { dir })
+    // FullCalendar hides the list header at `left: -10000px`, which overflows in RTL;
+    // Onu replaces that with an in-place visually hidden header.
+    expect(body().querySelector(".fc-list-table thead")).toBeInTheDocument()
+    expect(body()).toHaveClass("[&_.fc-list-table_thead]:sr-only", "[&_.fc-list-table_thead]:inset-x-auto!")
+    expect(body()).toHaveClass("[&_.fc-daygrid-event]:overflow-hidden")
+  })
+
   it("starts on the agenda on phones", () => {
     const original = window.matchMedia
     window.matchMedia = vi.fn().mockImplementation((query: string) => ({
