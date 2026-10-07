@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
-import { UserProfile, getInitials } from "./user-profile"
+import { UserProfile } from "./user-profile"
 
 // Overlays and axe are slow under parallel coverage runs.
 vi.setConfig({ testTimeout: 30_000 })
@@ -60,10 +60,15 @@ describe("UserProfile", () => {
     expect(onSelect).toHaveBeenCalled()
   })
 
-  it("derives initials from Latin and Thaana names", () => {
-    expect(getInitials("aishath shifa")).toBe("AS")
-    expect(getInitials("  Ali  ")).toBe("A")
-    expect(getInitials("އަޙްމަދު ޢަލީ")).toBe("އޢ")
+  it("shows initials from Latin and Thaana names", () => {
+    renderWithOnu(
+      <>
+        <UserProfile name="Aishath Shifa" onSignOut={() => {}} />
+        <UserProfile name="އަޙްމަދު ޢަލީ" onSignOut={() => {}} />
+      </>,
+    )
+    expect(screen.getByText("AS")).toBeInTheDocument()
+    expect(screen.getByText("އަޢަ")).toBeInTheDocument()
   })
 
   it.each(directions)("translates in %s", async (dir) => {

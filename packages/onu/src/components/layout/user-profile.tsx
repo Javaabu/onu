@@ -16,6 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu"
+import { getInitials } from "../display/user-avatar"
 import { NavIcon, NavLink } from "./_nav"
 
 export interface UserProfileMenuItem {
@@ -48,17 +49,6 @@ export interface UserProfileProps {
   align?: "start" | "end"
   className?: string
   classNames?: { trigger?: string; avatar?: string; name?: string; subtitle?: string; content?: string }
-}
-
-/** First letters of the first two words (works for Latin and Thaana names). */
-export function getInitials(name: string) {
-  return name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => Array.from(part)[0] ?? "")
-    .join("")
-    .toLocaleUpperCase()
 }
 
 /**
