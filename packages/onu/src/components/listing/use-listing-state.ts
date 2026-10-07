@@ -105,6 +105,8 @@ export function cleanFilters(filters: FilterValues): FilterValues {
   return out
 }
 
+const BASE_STATE: ListingState = { search: "", sort: null, page: 1, perPage: 25, filters: {} }
+
 function names(prefix = "", overrides?: Partial<ListingParamNames>): ListingParamNames {
   const merged = { ...DEFAULT_PARAM_NAMES, ...overrides }
   return Object.fromEntries(
@@ -112,7 +114,15 @@ function names(prefix = "", overrides?: Partial<ListingParamNames>): ListingPara
   ) as unknown as ListingParamNames
 }
 
-/** Writes listing state into URL params (`sort=-created_at`, `filter[status][]=active`, …). */
+function sameSort(a: ListingSort | null | undefined, b: ListingSort | null | undefined) {
+  return (a ?? null) === (b ?? null) || (!!a && !!b && a.id === b.id && !!a.desc === !!b.desc)
+}
+
+/**
+ * Writes listing state into URL params (`sort=-created_at`, `filter[status][]=active`, …).
+ * Values equal to `defaults` are left out; clearing a non-empty default writes an
+ * empty parameter (`sort=`, `filter[status]=`) so a reload keeps it cleared.
+ */
 export function listingStateToSearchParams(
   state: Partial<ListingState>,
   options: { paramPrefix?: string; paramNames?: Partial<ListingParamNames>; defaults?: Partial<ListingState> } = {},
@@ -120,12 +130,22 @@ export function listingStateToSearchParams(
 ): URLSearchParams {
   const n = names(options.paramPrefix, options.paramNames)
   const defaults = options.defaults ?? {}
-  if (state.search) params.set(n.search, state.search)
-  if (state.sort) params.set(n.sort, `${state.sort.desc ? "-" : ""}${state.sort.id}`)
+  if ((state.search ?? "") !== (defaults.search ?? "")) params.set(n.search, state.search ?? "")
+  if (!sameSort(state.sort, defaults.sort)) {
+    params.set(n.sort, state.sort ? `${state.sort.desc ? "-" : ""}${state.sort.id}` : "")
+  }
   if (state.page && state.page !== 1) params.set(n.page, String(state.page))
-  if (state.perPage && state.perPage !== defaults.perPage) params.set(n.perPage, String(state.perPage))
+  if (state.perPage && state.perPage !== (defaults.perPage ?? BASE_STATE.perPage)) {
+    params.set(n.perPage, String(state.perPage))
+  }
   if (state.view && state.view !== defaults.view) params.set(n.view, state.view)
-  for (const [key, value] of Object.entries(cleanFilters(state.filters ?? {}))) {
+  const filters = cleanFilters(state.filters ?? {})
+  const defaultFilters = cleanFilters(defaults.filters ?? {})
+  if (JSON.stringify(filters) === JSON.stringify(defaultFilters)) return params
+  for (const key of Object.keys(defaultFilters)) {
+    if (!(key in filters)) params.set(`${n.filter}[${key}]`, "")
+  }
+  for (const [key, value] of Object.entries(filters)) {
     const base = `${n.filter}[${key}]`
     if (typeof value === "string") params.set(base, value)
     else if (Array.isArray(value)) for (const v of value) params.append(`${base}[]`, v)
@@ -148,7 +168,8 @@ export function parseListingSearchParams(
   const search = params.get(n.search)
   if (search !== null) out.search = search
   const sort = params.get(n.sort)
-  if (sort) out.sort = sort.startsWith("-") ? { id: sort.slice(1), desc: true } : { id: sort, desc: false }
+  if (sort === "") out.sort = null
+  else if (sort) out.sort = sort.startsWith("-") ? { id: sort.slice(1), desc: true } : { id: sort, desc: false }
   const page = Number(params.get(n.page))
   if (Number.isInteger(page) && page > 0) out.page = page
   const perPage = Number(params.get(n.perPage))
@@ -178,8 +199,6 @@ export function parseListingSearchParams(
   if (Object.keys(filters).length) out.filters = filters
   return out
 }
-
-const BASE_STATE: ListingState = { search: "", sort: null, page: 1, perPage: 25, filters: {} }
 
 function readUrl(enabled: boolean, opts: { paramPrefix?: string; paramNames?: Partial<ListingParamNames> }) {
   if (!enabled || typeof window === "undefined") return {}

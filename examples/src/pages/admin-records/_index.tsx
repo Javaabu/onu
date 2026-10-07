@@ -9,7 +9,6 @@ import {
   LinkButton,
   ListingPage,
   ListView,
-  Pagination,
   Select,
   StatusBadge,
   toast,
@@ -195,6 +194,8 @@ export function CollectionIndex({ view }: { view: "list" | "grid" }) {
         state={state}
         columns={[]}
         data={rows}
+        total={total}
+        perPageOptions={view === "grid" ? [12, 24, 48] : [10, 25, 50, 100]}
         noun={labels.noun}
         filters={filters}
         searchPlaceholder={tr("Reference, name, ID card…", "ރެފަރެންސް، ނަން، އައިޑީ ކާޑު…")}
@@ -268,17 +269,6 @@ export function CollectionIndex({ view }: { view: "list" | "grid" }) {
               )}
             />
           )}
-          {total > 0 ? (
-            <Pagination
-              page={state.page}
-              perPage={state.perPage}
-              total={total}
-              noun={labels.noun}
-              perPageOptions={view === "grid" ? [12, 24, 48] : [10, 25, 50, 100]}
-              onPageChange={state.setPage}
-              onPerPageChange={state.setPerPage}
-            />
-          ) : null}
         </div>
       </ListingPage>
     </AdminShell>

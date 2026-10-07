@@ -5,7 +5,6 @@ import {
   Card,
   ConditionalLink,
   ListingPage,
-  Pagination,
   RelativeDate,
   StatusBadge,
   useListingState,
@@ -236,14 +235,6 @@ export default function ActivityLogPage() {
                 }))}
               />
             </Card>
-            <Pagination
-              page={state.page}
-              perPage={state.perPage}
-              total={total}
-              noun={labels.dv ? { one: "ހާދިސާ", other: "ހާދިސާ" } : { one: "event", other: "events" }}
-              onPageChange={state.setPage}
-              onPerPageChange={state.setPerPage}
-            />
           </div>
         ) : undefined}
       </ListingPage>

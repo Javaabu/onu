@@ -1,13 +1,14 @@
 import * as React from "react"
-import { act, screen, waitFor, within } from "@testing-library/react"
+import { act, renderHook, screen, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { setMobile, userFilters } from "../../../test/listing-fixtures"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
-import { ActiveFilterChips } from "./active-filter-chips"
+import { ActiveFilterChips, useActiveFilterLabels, useFormatFilter } from "./active-filter-chips"
 import { FilterPanel } from "./filter-panel"
 import type { FilterDefinition, FilterValues } from "./listing-types"
+import { OnuProvider } from "../../providers/onu-provider"
 
 // Interaction-heavy tests: allow for slow CI machines and coverage instrumentation.
 vi.setConfig({ testTimeout: 30_000 })
@@ -344,5 +345,24 @@ describe("ActiveFilterChips", () => {
     })
     expect(screen.getAllByRole("listitem")).toHaveLength(1)
     expect(screen.getByRole("listitem")).toHaveClass("chip-x")
+  })
+})
+
+describe("filter label helpers", () => {
+  it("formats one filter, or every applied filter, for custom empty states", () => {
+    const { result } = renderHook(() => ({
+      format: useFormatFilter(),
+      labels: useActiveFilterLabels(userFilters, { status: ["active", "banned"], verified: "1", email: "" }),
+    }))
+    expect(result.current.format(userFilters[0]!, "active")).toBe("Status: Active")
+    expect(result.current.format(userFilters[0]!, undefined)).toBeNull()
+    expect(result.current.labels).toEqual(["Status: Active, Banned", "Verified: Yes"])
+  })
+
+  it("uses the active locale", () => {
+    const { result } = renderHook(() => useFormatFilter(), {
+      wrapper: ({ children }) => <OnuProvider locale="dv">{children}</OnuProvider>,
+    })
+    expect(result.current(userFilters[2]!, "1")).toMatch(/^Verified: (?!Yes)/)
   })
 })

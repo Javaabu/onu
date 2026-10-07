@@ -23,7 +23,7 @@ const { data } = useQuery({
 
 ## URL format
 
-Laravel / spatie-query-builder style: `?search=jane&sort=-name&page=2&per_page=50&filter[status][]=active&filter[created][from]=2026-03-01&view=grid`. Defaults (page 1, the default rows-per-page and view) are left out. Use `paramPrefix` when a page has more than one listing, `paramNames` to rename parameters, and `url: false` to keep the state out of the URL.
+Laravel / spatie-query-builder style: `?search=jane&sort=-name&page=2&per_page=50&filter[status][]=active&filter[created][from]=2026-03-01&view=grid`. Defaults are left out: page 1, and any search, sort, rows-per-page, view or filters equal to `defaultState` (so a default `sort: { id: "submitted", desc: true }` never shows as `?sort=-submitted`). Clearing a non-empty default writes an empty parameter (`sort=`, `filter[status]=`) so a reload keeps it cleared. `toSearchParams()` is for your API, so it always includes the sort, filters and `per_page`. Use `paramPrefix` when a page has more than one listing, `paramNames` to rename parameters, and `url: false` to keep the state out of the URL.
 
 ## Options
 

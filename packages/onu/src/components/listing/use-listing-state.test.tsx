@@ -186,6 +186,26 @@ describe("useListingState", () => {
     })
   })
 
+  it("leaves defaults out of the URL, and keeps a cleared default cleared on reload", () => {
+    const defaultState = { sort: { id: "submitted", desc: true }, filters: { status: "active" } }
+    const { result, unmount } = renderHook(() => useListingState({ defaultState }))
+    expect(window.location.search).toBe("")
+    act(() => result.current.toggleSort("submitted"))
+    expect(new URLSearchParams(window.location.search).get("sort")).toBe("submitted")
+    act(() => result.current.setSort({ id: "submitted", desc: true }))
+    expect(window.location.search).toBe("")
+    act(() => result.current.setSort(null))
+    act(() => result.current.removeFilter("status"))
+    const params = new URLSearchParams(window.location.search)
+    expect(params.get("sort")).toBe("")
+    expect(params.get("filter[status]")).toBe("")
+    unmount()
+    // Reloading keeps both cleared instead of bringing the defaults back.
+    const reloaded = renderHook(() => useListingState({ defaultState }))
+    expect(reloaded.result.current.sort).toBeNull()
+    expect(reloaded.result.current.filters).toEqual({})
+  })
+
   it("supports a param prefix and custom names", () => {
     setUrl("/x?u_q=a")
     const { result } = renderHook(() => useListingState({ paramPrefix: "u_", paramNames: { search: "q" } }))
@@ -200,6 +220,18 @@ describe("useListingState", () => {
     const params = result.current.toSearchParams()
     expect(params.get("search")).toBe("x")
     expect(params.get("per_page")).toBe("25")
+  })
+
+  it("sends the default sort and filters to the server with toSearchParams", () => {
+    const { result } = renderHook(() =>
+      useListingState({
+        url: false,
+        defaultState: { sort: { id: "submitted", desc: true }, filters: { status: "a" } },
+      }),
+    )
+    const params = result.current.toSearchParams()
+    expect(params.get("sort")).toBe("-submitted")
+    expect(params.get("filter[status]")).toBe("a")
   })
 })
 

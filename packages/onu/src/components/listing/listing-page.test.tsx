@@ -111,6 +111,23 @@ describe("ListingPage", () => {
     expect(screen.queryByRole("table")).not.toBeInTheDocument()
   })
 
+  it("keeps the pagination footer and a Sort by menu around custom views", async () => {
+    renderWithOnu(
+      <UsersPage>
+        <ul aria-label="User cards">
+          <li>card</li>
+        </ul>
+      </UsersPage>,
+    )
+    expect(screen.queryByRole("table")).not.toBeInTheDocument()
+    expect(screen.getByRole("list", { name: "User cards" })).toBeInTheDocument()
+    expect(screen.getByText("Showing 1–25 of 60 users")).toBeInTheDocument()
+    await userEvent.click(screen.getByRole("button", { name: "Go to next page" }))
+    expect(screen.getByText("Showing 26–50 of 60 users")).toBeInTheDocument()
+    expect(screen.getByRole("combobox", { name: "Sort by" })).toBeInTheDocument()
+    expect(screen.getAllByRole("combobox", { name: "Sort by" })).toHaveLength(1)
+  })
+
   it.each(directions)("works in %s with Dhivehi", async (dir) => {
     renderWithOnu(<UsersPage title="ބޭނުންކުރާ މީހުން" noun={{ one: "މީހާ", other: "މީހުން" }} />, {
       dir,

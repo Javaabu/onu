@@ -70,6 +70,13 @@ describe("DataTable", () => {
     expect(screen.getByRole("button", { name: "Go to next page" })).toBeEnabled()
   })
 
+  it("gives selection checkboxes a 24×24 target (WCAG 2.5.8), the box drawn inside", () => {
+    renderWithOnu(<Users bulkActions={[deleteAction()]} />)
+    const selectAll = screen.getByRole("checkbox", { name: "Select all rows on this page" })
+    expect(selectAll).toHaveClass("size-6")
+    expect(selectAll.querySelector("[data-slot=checkbox-box]")).toHaveClass("size-4")
+  })
+
   it("has no axe violations", async () => {
     renderWithOnu(
       <Users all={ALL.slice(0, 4)} bulkActions={[deleteAction()]} rowActions={() => [{ id: "view", label: "View" }]} />,

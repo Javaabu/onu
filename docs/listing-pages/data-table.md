@@ -75,7 +75,7 @@ The table always shows the rows it is given (it never sorts or pages by itself):
 | <kbd>Enter</kbd> / <kbd>Space</kbd> | Sorts by a header, ticks a checkbox, opens a menu           |
 | <kbd>Escape</kbd>                   | Closes a ⋯ menu and returns focus to it                     |
 
-The header checkbox reports `aria-checked="mixed"` when some rows are selected. Selected rows have `aria-selected`. Sort changes and the selected count are announced.
+The header checkbox reports `aria-checked="mixed"` when some rows are selected. Selected rows have `aria-selected`. Sort changes and the selected count are announced. Each checkbox is a 24×24px target (WCAG 2.5.8) with the 16px box drawn inside, so it never crowds a sortable first column; on touch screens the hit area grows to 44px.
 
 ## RTL
 
