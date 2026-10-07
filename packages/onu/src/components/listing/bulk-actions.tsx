@@ -30,8 +30,8 @@ export interface BulkAction<V = unknown> {
   form?: (props: BulkActionFormProps<V>) => React.ReactNode
   /** Initial value of the form. */
   defaultValue?: V
-  /** Runs the action on the selected ids. May return a custom success message. */
-  run: (ids: string[], value: V | undefined) => void | string | Promise<void | string>
+  /** Runs the action on the selected ids. May return (or resolve to) a custom success message. */
+  run: (ids: string[], value: V | undefined) => unknown
   /** Success message. Defaults to "3 users deleted" for `id: "delete"`, otherwise "Label: 3 users done". */
   successMessage?: string | ((count: number) => string)
   /** `false` hides the action (permissions). */
@@ -100,7 +100,7 @@ export function BulkActionBar({
     if (count === 0 && phase.kind === "form") setPhase({ kind: "idle" })
   }
 
-  const successText = (action: BulkAction<unknown>, n: number, returned: void | string) => {
+  const successText = (action: BulkAction<unknown>, n: number, returned: unknown) => {
     if (typeof returned === "string") return returned
     if (typeof action.successMessage === "function") return action.successMessage(n)
     if (action.successMessage) return action.successMessage
