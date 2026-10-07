@@ -39,8 +39,7 @@ for (const [src, docs] of Object.entries(groups)) {
   for (const file of readdirSync(dir)) {
     if (!file.endsWith(".tsx") || file.endsWith(".test.tsx") || file.startsWith("_")) continue
     const name = file.replace(/\.tsx$/, "")
-    if (!existsSync(path.join(root, "docs", docs, `${name}.md`)))
-      missing.push(`docs/${docs}/${name}.md (for src/${src}/${file})`)
+    if (!hasPage(name)) missing.push(`docs/${docs}/${name}.md (for src/${src}/${file})`)
   }
 }
 if (missing.length) {
