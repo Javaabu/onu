@@ -8,7 +8,7 @@ import { Separator } from "../../ui/separator"
 import { SidebarTrigger } from "../../ui/sidebar"
 
 export const appHeaderVariants = cva(
-  "gap-2 px-4 supports-backdrop-filter:backdrop-blur z-30 flex h-(--onu-header-height,3.5rem) w-full shrink-0 items-center bg-background/95 [--onu-header-height:3.5rem] supports-backdrop-filter:bg-background/80",
+  "gap-2 px-4 supports-backdrop-filter:backdrop-blur z-30 flex h-[calc(var(--onu-header-height,3.5rem)+env(safe-area-inset-top))] w-full shrink-0 items-center bg-background/95 pt-[env(safe-area-inset-top)] [--onu-header-height:3.5rem] supports-backdrop-filter:bg-background/80",
   {
     variants: {
       variant: {
@@ -18,7 +18,7 @@ export const appHeaderVariants = cva(
           "bg-primary text-primary-foreground supports-backdrop-filter:bg-primary [&_[data-slot=button][data-variant=ghost]]:hover:bg-primary-foreground/10",
       },
       sticky: {
-        true: "top-0 sticky box-content pt-[env(safe-area-inset-top)]",
+        true: "top-0 sticky",
         false: "",
       },
     },
