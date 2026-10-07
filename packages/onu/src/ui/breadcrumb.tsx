@@ -5,11 +5,13 @@ import { cn } from "../lib/utils"
 import { Slot } from "radix-ui"
 
 import { Icon } from "../icons/icon"
+import { useTranslation } from "../providers/onu-provider"
 
 function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
+  const { t } = useTranslation() // onu: translated labels
   return (
     <nav
-      aria-label="breadcrumb"
+      aria-label={t("common.breadcrumb")}
       data-slot="breadcrumb"
       className={cn(className)}
       {...props}
@@ -94,6 +96,7 @@ function BreadcrumbEllipsis({
   className,
   ...props
 }: React.ComponentProps<"span">) {
+  const { t } = useTranslation() // onu: translated labels
   return (
     <span
       data-slot="breadcrumb-ellipsis"
@@ -106,7 +109,7 @@ function BreadcrumbEllipsis({
       {...props}
     >
       <Icon name="more" />
-      <span className="sr-only">More</span>
+      <span className="sr-only">{t("common.more")}</span>
     </span>
   )
 }

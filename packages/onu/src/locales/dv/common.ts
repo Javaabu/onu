@@ -49,5 +49,7 @@ export const common = {
   error: "މައްސަލައެއް ދިމާވެއްޖެ",
   success: "ކާމިޔާބު",
   warning: "ސަމާލުކަމަށް",
+  commandPalette: "ކޮމާންޑް ޕެލެޓް",
+  commandPaletteDescription: "ހިންގާނެ ކޮމާންޑެއް ހޯދާ…",
   info: "މަޢުލޫމާތު",
 } satisfies Record<keyof typeof en, string> & MessageDict

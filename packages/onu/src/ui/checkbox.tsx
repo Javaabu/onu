@@ -26,7 +26,9 @@ function Checkbox({
         data-slot="checkbox-indicator"
         className="[&>svg]:size-3.5 grid place-content-center text-current transition-none"
       >
-        <Icon name="check" />
+        {/* onu: a dash for the indeterminate state */}
+        <Icon name="check" className="[[data-state=indeterminate]_&]:hidden" />
+        <Icon name="minus" className="hidden [[data-state=indeterminate]_&]:block" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   )

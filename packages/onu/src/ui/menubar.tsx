@@ -237,7 +237,7 @@ function MenubarSubTrigger({
       {...props}
     >
       {children}
-      <Icon name="chevron-right" className="rtl:rotate-180 ms-auto size-4" />
+      <Icon name="chevron-right" className="ms-auto size-4" /* onu: Icon already mirrors in RTL */ />
     </MenubarPrimitive.SubTrigger>
   )
 }

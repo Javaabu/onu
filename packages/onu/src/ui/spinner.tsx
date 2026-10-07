@@ -4,14 +4,11 @@ import { cn } from "../lib/utils"
 
 import { Icon } from "../icons/icon"
 
+// onu: decorative only (no hard-coded English label). It is mostly used inside
+// buttons that carry their own text; for a standalone, announced spinner use
+// Onu's `Spinner` from "@javaabu/onu".
 function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
-  return (
-    <Icon name="loading" data-slot="spinner"
-      role="status"
-      aria-label="Loading"
-      className={cn("size-4 animate-spin", className)}
-      {...props} />
-  )
+  return <Icon name="loading" data-slot="spinner" className={cn("size-4 animate-spin", className)} {...props} />
 }
 
 export { Spinner }

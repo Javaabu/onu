@@ -5,12 +5,14 @@ import { cn } from "../lib/utils"
 
 import { Button } from "./button"
 import { Icon } from "../icons/icon"
+import { useTranslation } from "../providers/onu-provider"
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
+  const { t } = useTranslation() // onu: translated labels
   return (
     <nav
       role="navigation"
-      aria-label="pagination"
+      aria-label={t("common.pagination")}
       data-slot="pagination"
       className={cn(
         "mx-auto flex w-full justify-center",
@@ -68,20 +70,21 @@ function PaginationLink({
 
 function PaginationPrevious({
   className,
-  text = "Previous",
+  text,
   ...props
 }: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
+  const { t } = useTranslation() // onu: translated labels
   return (
     <PaginationLink
-      aria-label="Go to previous page"
+      aria-label={t("common.goToPreviousPage")}
       size="default"
       className={cn("ps-1.5!", className)}
       {...props}
     >
-      <Icon name="chevron-left" data-icon="inline-start"
-        className="rtl:rotate-180" />
+      {/* onu: Icon already mirrors in RTL */}
+      <Icon name="chevron-left" data-icon="inline-start" />
       <span className="hidden sm:block">
-        {text}
+        {text ?? t("common.previous")}
       </span>
     </PaginationLink>
   )
@@ -89,19 +92,20 @@ function PaginationPrevious({
 
 function PaginationNext({
   className,
-  text = "Next",
+  text,
   ...props
 }: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
+  const { t } = useTranslation() // onu: translated labels
   return (
     <PaginationLink
-      aria-label="Go to next page"
+      aria-label={t("common.goToNextPage")}
       size="default"
       className={cn("pe-1.5!", className)}
       {...props}
     >
-      <span className="hidden sm:block">{text}</span>
-      <Icon name="chevron-right" data-icon="inline-end"
-        className="rtl:rotate-180" />
+      <span className="hidden sm:block">{text ?? t("common.next")}</span>
+      {/* onu: Icon already mirrors in RTL */}
+      <Icon name="chevron-right" data-icon="inline-end" />
     </PaginationLink>
   )
 }
@@ -110,6 +114,7 @@ function PaginationEllipsis({
   className,
   ...props
 }: React.ComponentProps<"span">) {
+  const { t } = useTranslation() // onu: translated labels
   return (
     <span
       aria-hidden
@@ -121,7 +126,7 @@ function PaginationEllipsis({
       {...props}
     >
       <Icon name="more" />
-      <span className="sr-only">More pages</span>
+      <span className="sr-only">{t("common.morePages")}</span>
     </span>
   )
 }

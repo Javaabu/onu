@@ -48,5 +48,7 @@ export const common = {
   error: "Something went wrong",
   success: "Success",
   warning: "Warning",
+  commandPalette: "Command palette",
+  commandPaletteDescription: "Search for a command to run…",
   info: "Information",
 } satisfies MessageDict

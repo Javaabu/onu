@@ -9,6 +9,7 @@ import { Dialog as SheetPrimitive } from "radix-ui"
 
 import { Button } from "./button"
 import { Icon } from "../icons/icon"
+import { useTranslation } from "../providers/onu-provider"
 
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
@@ -75,7 +76,7 @@ function SheetContent({
           <SheetPrimitive.Close data-slot="sheet-close" asChild>
             <Button variant="ghost" className="absolute top-3 end-3" size="icon-sm">
               <Icon name="close" />
-              <span className="sr-only">Close</span>
+              <span className="sr-only"><CloseLabel /></span>
             </Button>
           </SheetPrimitive.Close>
         )}
@@ -139,4 +140,9 @@ export {
   SheetFooter,
   SheetTitle,
   SheetDescription,
+}
+
+// onu: translated close label (a component so the parent can stay hook-free).
+function CloseLabel() {
+  return useTranslation().t("common.close")
 }

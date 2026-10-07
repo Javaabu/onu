@@ -134,6 +134,8 @@ for (const file of files) {
   code = await transformDirection(code, true)
   // Drop style hooks the chosen style leaves unmapped (menu/font options the CLI resolves from config).
   code = code.replace(/ cn-[a-z0-9-]+(?=[ "'`])/g, "").replace(/(["'`])cn-[a-z0-9-]+ ?/g, "$1")
+  // <Icon> already mirrors directional icons in RTL; shadcn's extra rotation would flip them back.
+  code = code.replace(/ ?rtl:rotate-180 ?/g, (m) => (m.startsWith(" ") && m.endsWith(" ") ? " " : ""))
   code = replaceIcons(code)
   code = rewriteImports(code)
   const header = `// Vendored from shadcn/ui (radix base, ${style} style, RTL) by scripts/sync-shadcn.mjs.\n// Onu changes are marked with "onu:" comments; keep them when re-syncing.\n`

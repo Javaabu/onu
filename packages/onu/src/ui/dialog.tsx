@@ -9,6 +9,7 @@ import { Dialog as DialogPrimitive } from "radix-ui"
 
 import { Button } from "./button"
 import { Icon } from "../icons/icon"
+import { useTranslation } from "../providers/onu-provider"
 
 function Dialog({
   ...props
@@ -71,7 +72,7 @@ function DialogContent({
           <DialogPrimitive.Close data-slot="dialog-close" asChild>
             <Button variant="ghost" className="absolute top-2 end-2" size="icon-sm">
               <Icon name="close" />
-              <span className="sr-only">Close</span>
+              <span className="sr-only"><CloseLabel /></span>
             </Button>
           </DialogPrimitive.Close>
         )}
@@ -154,4 +155,9 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+}
+
+// onu: translated close label (a component so the parent can stay hook-free).
+function CloseLabel() {
+  return useTranslation().t("common.close")
 }

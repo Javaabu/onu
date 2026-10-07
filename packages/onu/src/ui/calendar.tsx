@@ -150,14 +150,14 @@ function Calendar({
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
             return (
-              <Icon name="chevron-left" className={cn("rtl:rotate-180 size-4", className)}
+              <Icon name="chevron-left" className={cn("size-4", className) /* onu: Icon already mirrors in RTL */}
                 {...props} />
             )
           }
 
           if (orientation === "right") {
             return (
-              <Icon name="chevron-right" className={cn("rtl:rotate-180 size-4", className)}
+              <Icon name="chevron-right" className={cn("size-4", className) /* onu: Icon already mirrors in RTL */}
                 {...props} />
             )
           }

@@ -5,16 +5,19 @@
 
 import * as React from "react"
 import { cn } from "../lib/utils"
-import { Progress as ProgressPrimitive } from "radix-ui"
+import { Direction, Progress as ProgressPrimitive } from "radix-ui"
 
 function Progress({
   className,
   value,
   ...props
 }: React.ComponentProps<typeof ProgressPrimitive.Root>) {
+  // onu: pass `value` to Radix (aria-valuenow) and fill from the inline start in RTL.
+  const rtl = Direction.useDirection() === "rtl"
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
+      value={value}
       className={cn(
         "bg-muted h-1 rounded-full relative flex w-full items-center overflow-x-hidden",
         className
@@ -24,7 +27,7 @@ function Progress({
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
         className="bg-primary size-full flex-1 transition-all"
-        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+        style={{ transform: `translateX(${rtl ? "" : "-"}${100 - (value || 0)}%)` }}
       />
     </ProgressPrimitive.Root>
   )

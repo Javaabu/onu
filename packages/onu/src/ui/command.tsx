@@ -19,6 +19,7 @@ import {
   InputGroupAddon,
 } from "./input-group"
 import { Icon } from "../icons/icon"
+import { useTranslation } from "../providers/onu-provider"
 
 function Command({
   className,
@@ -37,8 +38,8 @@ function Command({
 }
 
 function CommandDialog({
-  title = "Command Palette",
-  description = "Search for a command to run...",
+  title,
+  description,
   children,
   className,
   showCloseButton = false,
@@ -49,11 +50,12 @@ function CommandDialog({
   className?: string
   showCloseButton?: boolean
 }) {
+  const { t } = useTranslation() // onu: translated defaults
   return (
     <Dialog {...props}>
       <DialogHeader className="sr-only">
-        <DialogTitle>{title}</DialogTitle>
-        <DialogDescription>{description}</DialogDescription>
+        <DialogTitle>{title ?? t("common.commandPalette")}</DialogTitle>
+        <DialogDescription>{description ?? t("common.commandPaletteDescription")}</DialogDescription>
       </DialogHeader>
       <DialogContent
         className={cn(
