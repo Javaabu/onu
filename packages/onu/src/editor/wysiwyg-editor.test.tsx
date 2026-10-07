@@ -60,6 +60,26 @@ describe("WysiwygEditor", () => {
     expect(onChange).toHaveBeenLastCalledWith("", editor)
   })
 
+  it("resolves list and quote direction from their content while editing and in the HTML", async () => {
+    const onChange = vi.fn()
+    const { editor, textbox } = await setup({
+      defaultValue: "<ul><li><p>ހުޅުމާލެ</p></li></ul><blockquote><p>Quote</p></blockquote>",
+      onChange,
+    })
+    expect(textbox.querySelector("ul")).toHaveAttribute("dir", "rtl")
+    expect(textbox.querySelector("blockquote")).toHaveAttribute("dir", "ltr")
+    // Typing into an empty list updates its direction without re-rendering the node.
+    act(() => {
+      editor.commands.setContent("<ol><li><p></p></li></ol>", { emitUpdate: false })
+    })
+    expect(textbox.querySelector("ol")).toHaveAttribute("dir", "auto")
+    act(() => {
+      editor.chain().focus("end").insertContent("ދިވެހި").run()
+    })
+    expect(textbox.querySelector("ol")).toHaveAttribute("dir", "rtl")
+    expect(onChange).toHaveBeenLastCalledWith(expect.stringContaining('<ol dir="rtl">'), editor)
+  })
+
   it("emits Tiptap JSON when given JSON", async () => {
     const onChange = vi.fn()
     const { editor } = await setup({

@@ -3,7 +3,7 @@ import { fireEvent, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../test/utils"
-import { isSafeImageUrl, isSafeUrl, normalizeUrl, toEmbedUrl } from "./_schema"
+import { detectDirection, isSafeImageUrl, isSafeUrl, normalizeUrl, toEmbedUrl } from "./_schema"
 import { BlockRenderer } from "./block-renderer"
 
 /** axe-core cannot message iframes in jsdom; check everything else. */
@@ -134,6 +134,41 @@ describe("BlockRenderer", () => {
     expect(screen.getByTestId("b")).toHaveTextContent("B")
   })
 
+  it("gives lists and quotes the direction of their content, not dir=auto", () => {
+    const list = (type: string, ...items: string[]): JSONContent => ({
+      type,
+      content: items.map((item) => ({ type: "listItem", content: [p(text(item))] })),
+    })
+    const { container } = renderWithOnu(
+      <BlockRenderer
+        content={{
+          type: "doc",
+          content: [
+            list("bulletList", "ހުޅުމާލެ", "Addu"),
+            list("orderedList", "2024 Malé", "ފުވައްމުލައް"),
+            { type: "blockquote", content: [p(text("« "), text("ދިވެހި ރާއްޖެ"))] },
+            { type: "blockquote", content: [p(text("An English quote"))] },
+            { type: "blockquote", attrs: { dir: "ltr" }, content: [p(text("ދިވެހި"))] },
+            list("bulletList", "123"),
+          ],
+        }}
+      />,
+      { dir: "ltr" },
+    )
+    const [dvList, enList, numbersOnly] = container.querySelectorAll<HTMLElement>("ul, ol")
+    expect(dvList).toHaveAttribute("dir", "rtl")
+    expect(enList).toHaveAttribute("dir", "ltr")
+    // No strong character: the browser decides.
+    expect(numbersOnly).toHaveAttribute("dir", "auto")
+    const quotes = container.querySelectorAll("blockquote")
+    expect(quotes[0]).toHaveAttribute("dir", "rtl")
+    expect(quotes[1]).toHaveAttribute("dir", "ltr")
+    // An explicit direction wins.
+    expect(quotes[2]).toHaveAttribute("dir", "ltr")
+    // Paragraphs inside keep their own auto direction.
+    expect(dvList!.querySelector("p")).toHaveAttribute("dir", "auto")
+  })
+
   it.each(directions)("renders mixed content in %s with Dhivehi labels", async (dir) => {
     renderWithOnu(
       <BlockRenderer
@@ -146,6 +181,17 @@ describe("BlockRenderer", () => {
       "player.vimeo.com/video/123456",
     )
     await axeWithoutFrames()
+  })
+})
+
+describe("detectDirection", () => {
+  it("finds the first strong character", () => {
+    expect(detectDirection("ދިވެހި")).toBe("rtl")
+    expect(detectDirection("12, ދިވެހި then English")).toBe("rtl")
+    expect(detectDirection("« Malé ދިވެހި")).toBe("ltr")
+    expect(detectDirection("مرحبا")).toBe("rtl")
+    expect(detectDirection("2024 — !")).toBeNull()
+    expect(detectDirection("")).toBeNull()
   })
 })
 

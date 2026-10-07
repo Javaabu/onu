@@ -51,4 +51,4 @@ Other `<div>` props go to the root. The prose styles are exported as `proseVaria
 
 ## RTL, Thaana and accessibility
 
-Every block keeps `dir="auto"`, so Dhivehi paragraphs read right-to-left and English ones left-to-right on any page. Prose styles avoid faux italics and bold for Thaana and use size for heading emphasis. Wide tables and code scroll inside their own container. Images keep their alt text, and embeds get a `title` (falling back to "Embedded content").
+Every block keeps `dir="auto"`, so Dhivehi paragraphs read right-to-left and English ones left-to-right on any page. Lists and quotes get an explicit `dir` worked out from their first strong character (the browser's `dir="auto"` skips the paragraphs inside them and would fall back to LTR), so bullets, numbers and the quote border sit at the inline start of Dhivehi text. An explicit `dir` in the content wins. Prose styles avoid faux italics and bold for Thaana and use size for heading emphasis. Wide tables and code scroll inside their own container. Images keep their alt text, and embeds get a `title` (falling back to "Embedded content").
