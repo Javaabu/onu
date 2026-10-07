@@ -1,3 +1,115 @@
 import type { MessageDict } from "../../i18n/types"
 
-export const date = {} satisfies MessageDict
+export const date = {
+  // Placeholders
+  selectDate: "Select a date",
+  selectTime: "Select a time",
+  selectDateTime: "Select date and time",
+  selectMonth: "Select a month",
+  selectYear: "Select a year",
+  selectWeek: "Select a week",
+  selectDates: "Select dates",
+  selectPeriod: "Select a period",
+  selectHijriDate: "Select a Hijri date",
+
+  // Panels
+  chooseDate: "Choose a date",
+  chooseTime: "Choose a time",
+  chooseDateTime: "Choose a date and time",
+  chooseMonth: "Choose a month",
+  chooseYear: "Choose a year",
+  chooseWeek: "Choose a week",
+  chooseDates: "Choose dates",
+  choosePeriod: "Choose a period",
+
+  // Calendar navigation
+  previousMonth: "Previous month",
+  nextMonth: "Next month",
+  previousYear: "Previous year",
+  nextYear: "Next year",
+  previousYears: "Previous {count} years",
+  nextYears: "Next {count} years",
+  showMonths: "{label}: choose a month",
+  showYears: "{label}: choose a year",
+  showDecades: "{label}: choose a range of years",
+  calendar: "Calendar",
+  months: "Months",
+  years: "Years",
+  decades: "Ranges of years",
+  today: "Today",
+  weekend: "Weekend",
+  selected: "Selected: {value}",
+  cleared: "Cleared",
+
+  // Time
+  time: "Time",
+  hour: "Hour",
+  minute: "Minute",
+  hours: "Hours",
+  minutes: "Minutes",
+  increaseHour: "Next hour",
+  decreaseHour: "Previous hour",
+  increaseMinute: "Next minute",
+  decreaseMinute: "Previous minute",
+  chooseHour: "Choose the hour",
+  chooseMinute: "Choose the minute",
+  am: "AM",
+  pm: "PM",
+  period: "AM or PM",
+  changeTime: "Change time, {time}",
+  backToCalendar: "Back to calendar",
+  clearTime: "Clear time",
+
+  // Ranges
+  from: "From",
+  to: "To",
+  dateRange: "Date range",
+  endBeforeStart: "End date is before start date",
+  datesSelected: { one: "{count} date selected", other: "{count} dates selected" },
+
+  // Weeks
+  week: "Week",
+  weekLabel: "Week {week}, {year}",
+  weekNumber: "Week {week}",
+
+  // Reporting periods
+  periodType: "Period type",
+  monthly: "Monthly",
+  quarterly: "Quarterly",
+  yearly: "Yearly",
+  custom: "Custom range",
+  quarter: "Q{quarter}",
+  quarterLabel: "Q{quarter} {year}",
+  quarters: "Quarters",
+  fiscalYear: "FY {year}",
+  fiscalYears: "Financial years",
+
+  // Hijri
+  hijri: "Hijri",
+  hijriEra: "AH",
+  hijriMonth1: "Muharram",
+  hijriMonth2: "Safar",
+  hijriMonth3: "Rabi al-Awwal",
+  hijriMonth4: "Rabi al-Akhir",
+  hijriMonth5: "Jumada al-Ula",
+  hijriMonth6: "Jumada al-Akhirah",
+  hijriMonth7: "Rajab",
+  hijriMonth8: "Shaban",
+  hijriMonth9: "Ramadan",
+  hijriMonth10: "Shawwal",
+  hijriMonth11: "Dhu al-Qadah",
+  hijriMonth12: "Dhu al-Hijjah",
+
+  // Full calendar
+  monthView: "Month",
+  weekView: "Week",
+  dayView: "Day",
+  agendaView: "Agenda",
+  calendarView: "Calendar view",
+  previousPeriod: "Previous",
+  nextPeriod: "Next",
+  allDay: "All day",
+  noEvents: "No events to show",
+  moreEvents: "+{count} more",
+  weekShort: "W",
+} satisfies MessageDict
