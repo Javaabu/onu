@@ -267,7 +267,7 @@ export function MediaLister({
                       <bdi>{item.name}</bdi>
                     </span>
                     {typeof item.size === "number" ? (
-                      <span dir="ltr" className="text-xs text-muted-foreground tabular-nums [text-align:match-parent]">
+                      <span dir="ltr" className="text-xs [text-align:match-parent] text-muted-foreground tabular-nums">
                         {format(item.size)}
                       </span>
                     ) : null}

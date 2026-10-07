@@ -83,9 +83,11 @@ export function FileRow({
         </span>
         {sizeText || meta ? (
           <span className={cn("gap-2 text-xs flex flex-wrap items-center text-muted-foreground", classNames?.meta)}>
-            {sizeText ? <span dir="ltr" className="tabular-nums">
+            {sizeText ? (
+              <span dir="ltr" className="tabular-nums">
                 {sizeText}
-              </span> : null}
+              </span>
+            ) : null}
             {meta}
           </span>
         ) : null}

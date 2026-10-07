@@ -124,7 +124,7 @@ describe("Textarea", () => {
     expect(screen.getByText("3")).toBeInTheDocument()
   })
 
-  it("keeps the counter left-to-right in RTL", () => {
+  it("keeps the counter in LTR order on an RTL page", () => {
     renderWithOnu(<Textarea aria-label="a" showCount maxLength={280} defaultValue="abc" />, {
       locale: "dv",
       dir: "rtl",
