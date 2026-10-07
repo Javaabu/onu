@@ -84,9 +84,8 @@ function BreadcrumbSeparator({
       className={cn("[&>svg]:size-3.5", className)}
       {...props}
     >
-      {children ?? (
-        <Icon name="chevron-right" className="rtl:rotate-180" />
-      )}
+      {/* onu: Icon already mirrors directional icons in RTL; an extra rtl:rotate-180 cancelled that out. */}
+      {children ?? <Icon name="chevron-right" />}
     </li>
   )
 }

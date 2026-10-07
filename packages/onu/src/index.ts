@@ -16,6 +16,9 @@ export * from "./ui"
 // name, the Onu version is exported here; the primitive stays available from
 // "@javaabu/onu/primitives".
 export { Textarea, type TextareaProps } from "./components/inputs/textarea"
+export { Accordion, type AccordionProps } from "./components/layout/accordion"
+export { Card, type CardProps } from "./components/layout/card"
+export { Tabs, type TabsProps } from "./components/layout/tabs"
 export * from "./components/form"
 export * from "./components/inputs"
 export * from "./components/date"
