@@ -67,8 +67,7 @@ export default function RegisterPage() {
               "password_confirmation",
               tr("The password confirmation does not match.", "ޕާސްވޯޑު ދެވަނަ ފަހަރު ލިޔުނީ ތަފާތަށް."),
             )
-          if (!values.terms)
-            v.add("terms", tr("You must accept the terms.", "ޝަރުތުތަކަށް އެއްބަސްވާން ޖެހޭނެ."))
+          if (!values.terms) v.add("terms", tr("You must accept the terms.", "ޝަރުތުތަކަށް އެއްބަސްވާން ޖެހޭނެ."))
           v.throwIfFailed(tr("The given data was invalid.", "ދީފައިވާ މައުލޫމާތު ރަނގަޅެއް ނޫން."))
 
           toast.success(tr("Account created", "އެކައުންޓް ހެދިއްޖެ"), {

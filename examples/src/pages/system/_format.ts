@@ -3,7 +3,7 @@ import { useOnu } from "@javaabu/onu"
 // Onu doesn't export a locale-aware formatter for static dates (its date-fns
 // helpers are internal), and Intl has no Dhivehi month names, so the sample
 // pages format dates here.
-const DV_MONTHS = [
+export const DV_MONTHS = [
   "ޖަނަވަރީ",
   "ފެބްރުއަރީ",
   "މާރިޗު",
@@ -23,7 +23,8 @@ export function useFormatDate() {
   const { locale } = useOnu()
   return (d: Date, withTime = false) => {
     const time = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`
-    if (locale.code === "dv") return `${d.getDate()} ${DV_MONTHS[d.getMonth()]} ${d.getFullYear()}${withTime ? `، ${time}` : ""}`
+    if (locale.code === "dv")
+      return `${d.getDate()} ${DV_MONTHS[d.getMonth()]} ${d.getFullYear()}${withTime ? `، ${time}` : ""}`
     return new Intl.DateTimeFormat(locale.numberLocale, {
       day: "numeric",
       month: "long",
@@ -37,5 +38,7 @@ export function useFormatDate() {
 export function useFormatMoney() {
   const { locale } = useOnu()
   return (n: number) =>
-    new Intl.NumberFormat(locale.numberLocale, { style: "currency", currency: "MVR", currencyDisplay: "code" }).format(n)
+    new Intl.NumberFormat(locale.numberLocale, { style: "currency", currency: "MVR", currencyDisplay: "code" }).format(
+      n,
+    )
 }

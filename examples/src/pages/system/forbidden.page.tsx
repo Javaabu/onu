@@ -31,12 +31,7 @@ export default function ForbiddenSamplePage() {
           "ތިޔަ ރޯލް (ކައުންޓަރު މުވައްޒަފު) އަށް ރޯލްތަކާއި ހުއްދަތައް ބެލެހެއްޓޭކަށް ނުވޭ. އެޑްމިނިސްޓްރޭޓަރަކާ ހުއްދައަށް އެދިވަޑައިގަންނަވާ، ނުވަތަ ޑޭޝްބޯޑަށް ވަޑައިގަންނަވާ.",
         )}
         extraActions={
-          <Button
-            variant="outline"
-            className="touch:h-11"
-            disabled={requested}
-            onClick={() => setOpen(true)}
-          >
+          <Button variant="outline" className="touch:h-11" disabled={requested} onClick={() => setOpen(true)}>
             <Icon name={requested ? "check" : "key"} data-icon="inline-start" />
             {requested ? tr("Access requested", "ހުއްދައަށް އެދިއްޖެ") : tr("Request access", "ހުއްދައަށް އެދޭ")}
           </Button>

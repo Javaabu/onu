@@ -36,7 +36,9 @@ function Locked({ onVerify }: { onVerify: () => void }) {
       <div className="gap-5 px-6 py-8 grid">
         <Hero icon="lock" tone="warning" />
         <div className="gap-2 grid">
-          <h1 className="text-xl font-semibold">{tr("Account temporarily locked", "އެކައުންޓް ވަގުތީގޮތުން ބަންދުކުރެވިފައި")}</h1>
+          <h1 className="text-xl font-semibold">
+            {tr("Account temporarily locked", "އެކައުންޓް ވަގުތީގޮތުން ބަންދުކުރެވިފައި")}
+          </h1>
           <p className="text-sm text-muted-foreground">
             {tr(
               "There were too many unsuccessful sign-in attempts. To protect your account, sign-in is paused.",
@@ -46,34 +48,29 @@ function Locked({ onVerify }: { onVerify: () => void }) {
         </div>
         <div className="gap-1 p-4 grid justify-items-center rounded-lg bg-muted/60">
           <span className="text-sm text-muted-foreground">
-            {unlocked ? tr("You can sign in again.", "އަލުން ސައިން އިން ކުރެވޭނެ.") : tr("Try again in", "އަލުން މަސައްކަތް ކުރެވޭނީ")}
+            {unlocked
+              ? tr("You can sign in again.", "އަލުން ސައިން އިން ކުރެވޭނެ.")
+              : tr("Try again in", "އަލުން މަސައްކަތް ކުރެވޭނީ")}
           </span>
-          {unlocked ? null : (
-            <Countdown to={until} showSeconds onComplete={() => setUnlocked(true)} />
-          )}
+          {unlocked ? null : <Countdown to={until} showSeconds onComplete={() => setUnlocked(true)} />}
         </div>
         <div className="gap-2 grid">
           <LinkButton href={routes.auth.forgotPassword} startIcon="key" className="touch:min-h-11">
             {tr("Reset your password", "ޕާސްވޯޑު ބަދަލުކުރައްވާ")}
           </LinkButton>
-          <LinkButton
-            href={routes.auth.signIn}
-            variant="outline"
-            className="touch:min-h-11"
-            disabled={!unlocked}
-          >
+          <LinkButton href={routes.auth.signIn} variant="outline" className="touch:min-h-11" disabled={!unlocked}>
             {tr("Back to sign in", "ސައިން އިން އަށް")}
           </LinkButton>
         </div>
         <Notice tone="info" variant="bordered" icon="mail" className="text-start">
           {tr("Never verified your email?", "އީމެއިލް ވެރިފައި ނުކުރައްވަނީތޯ؟")}{" "}
-          <Button variant="link" className="h-auto p-0" onClick={onVerify}>
+          <Button variant="link" className="p-0 h-auto" onClick={onVerify}>
             {tr("Verify it to unlock now", "ވެރިފައިކޮށް މިހާރުން ހުޅުއްވާ")}
           </Button>
         </Notice>
         <p className="text-xs text-muted-foreground">
           {tr("Not you? Call 1500 or email", "ތިބާއެއް ނޫންތޯ؟ 1500 އަށް ގުޅުއްވާ، ނުވަތަ އީމެއިލް ކުރައްވާ")}{" "}
-          <a className="text-primary underline-offset-4 hover:underline" href="mailto:support@example.mv" dir="ltr">
+          <a className="text-primary underline underline-offset-4" href="mailto:support@example.mv" dir="ltr">
             support@example.mv
           </a>
         </p>
@@ -99,7 +96,10 @@ function Verify({ email }: { email: string }) {
             <span dir="ltr" className="font-medium text-foreground">
               {maskEmail(email)}
             </span>
-            {tr(". Open it on this device to activate your account.", " އަށް. އެކައުންޓް ހުޅުވުމަށް އެ ލިންކް ހުޅުއްވާ.")}
+            {tr(
+              ". Open it on this device to activate your account.",
+              " އަށް. އެކައުންޓް ހުޅުވުމަށް އެ ލިންކް ހުޅުއްވާ.",
+            )}
           </p>
         </div>
         <ol className="gap-2 p-4 text-sm grid list-inside list-decimal rounded-lg bg-muted/60 text-start">
@@ -120,7 +120,11 @@ function Verify({ email }: { email: string }) {
               })
             }}
           >
-            <Icon name={checking ? "loading" : "check"} data-icon="inline-start" className={checking ? "animate-spin" : undefined} />
+            <Icon
+              name={checking ? "loading" : "check"}
+              data-icon="inline-start"
+              className={checking ? "animate-spin" : undefined}
+            />
             {tr("I've verified my email", "އީމެއިލް ވެރިފައި ކުރީމެވެ")}
           </Button>
           <Button
@@ -146,7 +150,7 @@ function Verify({ email }: { email: string }) {
         </div>
         <p className="text-sm text-muted-foreground">
           {tr("Wrong address?", "އެޑްރެސް ނުބައިތޯ؟")}{" "}
-          <LinkButton href={routes.auth.register} variant="link" className="h-auto p-0">
+          <LinkButton href={routes.auth.register} variant="link" className="p-0 h-auto">
             {tr("Register again", "އަލުން ރަޖިސްޓަރ ކުރައްވާ")}
           </LinkButton>
         </p>

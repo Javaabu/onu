@@ -94,17 +94,11 @@ export default function TwoFactorPage() {
               const value = String(values.code ?? "")
               if (value.length < 6) v.add("code", tr("Enter all 6 digits.", "6 ޑިޖިޓް ހުރިހާ ލިޔުއްވާ."))
               else if (value !== DEMO_CODE)
-                v.add(
-                  "code",
-                  tr("The code is invalid or has expired.", "ކޯޑު ރަނގަޅެއް ނޫން، ނުވަތަ ބާޠިލުވެއްޖެ."),
-                )
+                v.add("code", tr("The code is invalid or has expired.", "ކޯޑު ރަނގަޅެއް ނޫން، ނުވަތަ ބާޠިލުވެއްޖެ."))
             } else {
               const value = String(values.recovery_code ?? "").trim()
               if (!/^[a-z0-9]{5}-[a-z0-9]{5}$/i.test(value))
-                v.add(
-                  "recovery_code",
-                  tr("The recovery code is invalid.", "ރިކަވަރީ ކޯޑު ރަނގަޅެއް ނޫން."),
-                )
+                v.add("recovery_code", tr("The recovery code is invalid.", "ރިކަވަރީ ކޯޑު ރަނގަޅެއް ނޫން."))
             }
             v.throwIfFailed(tr("The given data was invalid.", "ދީފައިވާ މައުލޫމާތު ރަނގަޅެއް ނޫން."))
             toast.success(tr("Signed in", "ސައިން އިން ވެއްޖެ"), {
@@ -178,7 +172,7 @@ export default function TwoFactorPage() {
           </div>
         </Form>
       </FormContainer>
-      <Notice tone="neutral" variant="subtle" icon="lock" className="mt-4">
+      <Notice tone="neutral" variant="subtle" icon="lock" className="max-w-sm mt-4 mx-auto">
         {tr(
           "Never share this code. Staff will never ask you for it.",
           "މި ކޯޑު އެއްވެސް މީހަކާ ހިއްސާ ނުކުރައްވާ. މުވައްޒަފުން ކޯޑު ނުއަހާނެ.",

@@ -129,13 +129,15 @@ export default function FirstRunPage() {
                             complete ? "bg-success/15 text-success" : "bg-muted text-muted-foreground",
                           )}
                         >
-                          {complete ? <Icon name="check" className="size-4" /> : <Icon name={step.icon} className="size-4" />}
+                          {complete ? (
+                            <Icon name="check" className="size-4" />
+                          ) : (
+                            <Icon name={step.icon} className="size-4" />
+                          )}
                         </span>
                         <div className="min-w-0">
                           <h3 className={cn("font-medium", complete && "text-muted-foreground line-through")}>
-                            <span className="sr-only">
-                              {tr(`Step ${i + 1}: `, `ފިޔަވަޅު ${i + 1}: `)}
-                            </span>
+                            <span className="sr-only">{tr(`Step ${i + 1}: `, `ފިޔަވަޅު ${i + 1}: `)}</span>
                             {step.title}
                             {complete ? <span className="sr-only"> ({tr("done", "ނިމިއްޖެ")})</span> : null}
                           </h3>
@@ -192,7 +194,12 @@ export default function FirstRunPage() {
               </LinkButton>
             }
           >
-            <LinkButton href={routes.adminRecords.import} variant="outline" startIcon="upload" className="touch:min-h-11">
+            <LinkButton
+              href={routes.adminRecords.import}
+              variant="outline"
+              startIcon="upload"
+              className="touch:min-h-11"
+            >
               {tr("Import from a spreadsheet", "ސްޕްރެޑްޝީޓުން")}
             </LinkButton>
           </EmptyState>

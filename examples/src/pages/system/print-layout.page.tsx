@@ -63,9 +63,9 @@ export default function PrintLayoutPage() {
       <main id="main" className="px-4 py-8 print:p-0">
         <article
           aria-labelledby="doc-title"
-          className="max-w-3xl gap-8 p-6 sm:p-10 shadow-sm print:max-w-none print:rounded-none print:border-0 print:p-0 print:shadow-none mx-auto grid rounded-xl border bg-card text-card-foreground"
+          className="max-w-3xl gap-8 p-6 sm:p-10 shadow-sm print:p-0 mx-auto grid rounded-xl border bg-card text-card-foreground print:max-w-none print:rounded-none print:border-0 print:shadow-none"
         >
-          <header className="gap-4 sm:flex-row sm:items-start flex flex-col justify-between border-b pb-6">
+          <header className="gap-4 sm:flex-row sm:items-start pb-6 flex flex-col justify-between border-b">
             <div className="gap-3 flex items-center">
               <Logo src={logoSrc} alt="" href={null} />
               <div>
@@ -88,9 +88,12 @@ export default function PrintLayoutPage() {
             </div>
           </header>
 
-          <section aria-labelledby="applicant-heading" className="gap-6 sm:grid-cols-2 print:grid-cols-2 grid">
+          <section aria-labelledby="applicant-heading" className="gap-6 sm:grid-cols-2 grid print:grid-cols-2">
             <div className="gap-3 grid content-start">
-              <h2 id="applicant-heading" className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+              <h2
+                id="applicant-heading"
+                className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+              >
                 {tr("Applicant", "އެދޭ ފަރާތް")}
               </h2>
               <DescriptionList layout="stacked" divided={false}>
@@ -121,7 +124,9 @@ export default function PrintLayoutPage() {
                   {date(new Date(2026, 9, 5, 10, 42), true)}
                 </DescriptionListItem>
                 <DescriptionListItem label={tr("Status", "ހާލަތު")}>
-                  <StatusBadge status="success">{tr("Paid, under review", "ފައިސާ ދައްކާފައި، ބަލަމުންދަނީ")}</StatusBadge>
+                  <StatusBadge status="success">
+                    {tr("Paid, under review", "ފައިސާ ދައްކާފައި، ބަލަމުންދަނީ")}
+                  </StatusBadge>
                 </DescriptionListItem>
               </DescriptionList>
             </div>
@@ -162,15 +167,14 @@ export default function PrintLayoutPage() {
                     <TableCell colSpan={2} className="font-semibold">
                       {tr("Total paid", "ދެއްކި ޖުމްލަ")}
                     </TableCell>
-                    <TableCell className="text-end font-semibold tabular-nums">{money(total)}</TableCell>
+                    <TableCell className="font-semibold text-end tabular-nums">{money(total)}</TableCell>
                   </TableRow>
                 </TableFooter>
               </Table>
             </div>
             <p className="text-sm text-muted-foreground">
               {tr("Paid by BML card ending 4417 on", "ބީއެމްއެލް ކާޑު (ނިމޭ ނަންބަރު 4417) އިން ދެއްކީ")}{" "}
-              {date(new Date(2026, 9, 5, 10, 44))}.{" "}
-              {tr("Transaction", "ޓްރާންޒެކްޝަން")}{" "}
+              {date(new Date(2026, 9, 5, 10, 44))}. {tr("Transaction", "ޓްރާންޒެކްޝަން")}{" "}
               <bdi dir="ltr" className="font-mono">
                 BML-88213094
               </bdi>
@@ -178,7 +182,10 @@ export default function PrintLayoutPage() {
           </section>
 
           <section aria-labelledby="declaration-heading" className="gap-3 grid break-inside-avoid">
-            <h2 id="declaration-heading" className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+            <h2
+              id="declaration-heading"
+              className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+            >
               {tr("Declaration", "އިޤްރާރު")}
             </h2>
             <p className="text-sm">
@@ -187,14 +194,15 @@ export default function PrintLayoutPage() {
                 "މި އެޕްލިކޭޝަންގައި ދީފައިވާ މައުލޫމާތަކީ ތެދު އަދި ފުރިހަމަ މައުލޫމާތުކަން ކަށަވަރުކުރަމެވެ.",
               )}
             </p>
-            <div className="gap-8 pt-10 sm:grid-cols-2 print:grid-cols-2 grid">
-              {[tr("Applicant's signature", "އެދޭ ފަރާތުގެ ސޮއި"), tr("Officer's signature and stamp", "މުވައްޒަފުގެ ސޮއި އަދި ތައްގަނޑު")].map(
-                (label) => (
-                  <div key={label} className="pt-2 text-sm border-t border-dashed text-muted-foreground">
-                    {label}
-                  </div>
-                ),
-              )}
+            <div className="gap-8 pt-10 sm:grid-cols-2 grid print:grid-cols-2">
+              {[
+                tr("Applicant's signature", "އެދޭ ފަރާތުގެ ސޮއި"),
+                tr("Officer's signature and stamp", "މުވައްޒަފުގެ ސޮއި އަދި ތައްގަނޑު"),
+              ].map((label) => (
+                <div key={label} className="pt-2 text-sm border-t border-dashed text-muted-foreground">
+                  {label}
+                </div>
+              ))}
             </div>
           </section>
 

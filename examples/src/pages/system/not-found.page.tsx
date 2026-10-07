@@ -23,7 +23,10 @@ export default function NotFoundSamplePage() {
     },
     {
       title: tr("Contact us", "ގުޅުއްވާ"),
-      description: tr("Call 1500 or visit a service centre.", "1500 އަށް ގުޅުއްވާ ނުވަތަ ސަރވިސް ސެންޓަރަށް ވަޑައިގަންނަވާ."),
+      description: tr(
+        "Call 1500 or visit a service centre.",
+        "1500 އަށް ގުޅުއްވާ ނުވަތަ ސަރވިސް ސެންޓަރަށް ވަޑައިގަންނަވާ.",
+      ),
       href: routes.public.contact,
     },
   ]

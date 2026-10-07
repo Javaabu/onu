@@ -76,7 +76,7 @@ export default function MaintenanceSamplePage() {
         </Card>
         <p className="text-sm text-center text-muted-foreground">
           {tr("Urgent? Call 1500 or visit", "ކުއްލި ކަމެއްތޯ؟ 1500 އަށް ގުޅުއްވާ ނުވަތަ ވަޑައިގަންނަވާ")}{" "}
-          <LinkButton variant="link" className="h-auto p-0" href={routes.public.contact}>
+          <LinkButton variant="link" className="p-0 h-auto" href={routes.public.contact}>
             {tr("a service centre", "ސަރވިސް ސެންޓަރަކަށް")}
           </LinkButton>
           .

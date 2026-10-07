@@ -43,7 +43,7 @@ export default function ForgotPasswordPage() {
             {tr("Demo:", "ޑެމޯ:")}{" "}
             <LinkButton
               variant="link"
-              className="h-auto p-0"
+              className="p-0 h-auto"
               href={`${routes.auth.resetPassword}?email=${encodeURIComponent(sentTo)}`}
             >
               {tr("Open the emailed reset link", "އީމެއިލް ކުރި ލިންކް ހުޅުވާ")}
