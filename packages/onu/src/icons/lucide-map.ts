@@ -100,6 +100,10 @@ import {
   OctagonXIcon,
   ZoomInIcon,
   ZoomOutIcon,
+  CookieIcon,
+  MegaphoneIcon,
+  MessageCircleIcon,
+  WrenchIcon,
 } from "lucide-react"
 
 import type { IconComponent, SemanticIconName } from "./types"
@@ -129,6 +133,7 @@ export const lucideIconMap: Record<SemanticIconName, IconComponent> = {
   close: XIcon,
   code: CodeIcon,
   columns: Columns3Icon,
+  cookie: CookieIcon,
   copy: CopyIcon,
   "credit-card": CreditCardIcon,
   crop: CropIcon,
@@ -166,7 +171,9 @@ export const lucideIconMap: Record<SemanticIconName, IconComponent> = {
   mail: MailIcon,
   "map-pin": MapPinIcon,
   maximize: Maximize2Icon,
+  megaphone: MegaphoneIcon,
   menu: MenuIcon,
+  message: MessageCircleIcon,
   minimize: Minimize2Icon,
   minus: MinusIcon,
   monitor: MonitorIcon,
@@ -207,6 +214,7 @@ export const lucideIconMap: Record<SemanticIconName, IconComponent> = {
   volume: Volume2Icon,
   "volume-off": VolumeXIcon,
   warning: TriangleAlertIcon,
+  wrench: WrenchIcon,
   "zoom-in": ZoomInIcon,
   "zoom-out": ZoomOutIcon,
 }
