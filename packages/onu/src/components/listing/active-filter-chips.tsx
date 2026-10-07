@@ -1,0 +1,122 @@
+"use client"
+
+import * as React from "react"
+
+import { Icon } from "../../icons/icon"
+import { cn } from "../../lib/utils"
+import { useTranslation } from "../../providers/onu-provider"
+import { Button } from "../../ui/button"
+import { formatFilter, type FormattedFilter } from "./_filter-format"
+import type { FilterDefinition, FilterValues } from "./listing-types"
+
+export { formatFilter, formatFilterDate, type FormattedFilter } from "./_filter-format"
+
+export interface ActiveFilterChip extends FormattedFilter {
+  key: string
+}
+
+/** Pills for the applied filters, in the order of `filters`. */
+export function useActiveFilterChips(filters: FilterDefinition[], value: FilterValues): ActiveFilterChip[] {
+  const { t, locale } = useTranslation()
+  return React.useMemo(
+    () =>
+      filters.flatMap((definition) => {
+        const formatted = formatFilter(definition, value[definition.key], t, locale.dateFns)
+        return formatted ? [{ key: definition.key, ...formatted }] : []
+      }),
+    [filters, value, t, locale.dateFns],
+  )
+}
+
+export interface ActiveFilterChipsProps extends Omit<React.ComponentProps<"div">, "onChange"> {
+  filters: FilterDefinition[]
+  /** The applied filters. */
+  value: FilterValues
+  /** ✕ on a pill. */
+  onRemove: (key: string) => void
+  /** "Clear all", shown when two or more pills are visible. */
+  onClearAll?: () => void
+  classNames?: { list?: string; chip?: string; remove?: string; clearAll?: string }
+}
+
+/**
+ * One pill per applied filter, e.g. "Status: Active ✕", "Created: 1 Mar → 31 Mar"
+ * (§25.7). ✕ removes that filter; "Clear all" appears with two or more pills.
+ * Renders nothing when no filters are applied.
+ */
+export function ActiveFilterChips({
+  filters,
+  value,
+  onRemove,
+  onClearAll,
+  className,
+  classNames,
+  ...props
+}: ActiveFilterChipsProps) {
+  const { t } = useTranslation()
+  const chips = useActiveFilterChips(filters, value)
+  const listRef = React.useRef<HTMLUListElement>(null)
+  if (chips.length === 0) return null
+
+  const remove = (key: string, index: number) => {
+    onRemove(key)
+    // Keep focus in the list: move to the next pill's ✕ (or the previous one).
+    window.setTimeout(() => {
+      const buttons = listRef.current?.querySelectorAll<HTMLButtonElement>("[data-slot=filter-chip-remove]")
+      if (!buttons?.length) return
+      buttons[Math.min(index, buttons.length - 1)]?.focus()
+    })
+  }
+
+  return (
+    <div
+      data-slot="active-filter-chips"
+      role="region"
+      aria-label={t("listing.activeFilters")}
+      className={cn("gap-2 flex flex-wrap items-center", className)}
+      {...props}
+    >
+      <ul ref={listRef} className={cn("gap-2 flex flex-wrap items-center", classNames?.list)}>
+        {chips.map((chip, index) => {
+          const full = `${chip.label}: ${chip.text}`
+          return (
+            <li
+              key={chip.key}
+              data-slot="filter-chip"
+              className={cn(
+                "gap-1 ps-2.5 pe-1 h-7 touch:h-11 text-sm inline-flex max-w-full items-center rounded-full border bg-muted/50",
+                classNames?.chip,
+              )}
+            >
+              <span className="truncate">
+                <span className="text-muted-foreground">{chip.label}:</span> {chip.text}
+              </span>
+              <button
+                type="button"
+                data-slot="filter-chip-remove"
+                aria-label={t("listing.removeFilter", { filter: full })}
+                onClick={() => remove(chip.key, index)}
+                className={cn(
+                  "size-5 touch:size-9 inline-flex shrink-0 items-center justify-center rounded-full text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
+                  classNames?.remove,
+                )}
+              >
+                <Icon name="close" size="xs" />
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+      {onClearAll && chips.length >= 2 ? (
+        <Button
+          variant="link"
+          size="sm"
+          className={cn("px-1 touch:min-h-11", classNames?.clearAll)}
+          onClick={onClearAll}
+        >
+          {t("listing.clearAllFilters")}
+        </Button>
+      ) : null}
+    </div>
+  )
+}

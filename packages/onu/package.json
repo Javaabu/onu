@@ -68,6 +68,10 @@
       "types": "./dist/media/index.d.ts",
       "default": "./dist/media/index.js"
     },
+    "./query-builder": {
+      "types": "./dist/query-builder/index.d.ts",
+      "default": "./dist/query-builder/index.js"
+    },
     "./icons/iconify": {
       "types": "./dist/icons/iconify/index.d.ts",
       "default": "./dist/icons/iconify/index.js"
@@ -210,6 +214,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
+    "@dnd-kit/dom": "^0.5.0",
     "@dnd-kit/helpers": "^0.5.0",
     "@dnd-kit/react": "^0.5.0",
     "@internationalized/date": "^3.12.4",
