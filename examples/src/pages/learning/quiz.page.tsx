@@ -122,7 +122,7 @@ export default function QuizPage() {
 
         {reviewing ? (
           <Card>
-            <div className="gap-4 px-6 grid">
+            <div className="gap-4 grid">
               <h2 ref={headingRef} tabIndex={-1} className="text-xl font-semibold outline-none">
                 {tr("Review your answers", "ޖަވާބުތައް ބައްލަވާ")}
               </h2>
@@ -200,7 +200,7 @@ export default function QuizPage() {
           </Card>
         ) : (
           <Card>
-            <div className="gap-6 px-6 grid">
+            <div className="gap-6 grid">
               <h2 ref={headingRef} tabIndex={-1} className="text-sm font-medium text-muted-foreground outline-none">
                 {tr(`Question ${step + 1} of ${questions.length}`, `${questions.length} ސުވާލުން ${step + 1}`)}
               </h2>

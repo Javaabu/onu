@@ -25,6 +25,41 @@ describe("Card", () => {
     await expectNoA11yViolations()
   })
 
+  it("pads content placed straight in the card, keeping images full-bleed", () => {
+    const { container } = renderWithOnu(
+      <>
+        <Card data-testid="bare">
+          <img src="/a.jpg" alt="" />
+          <p>Body</p>
+        </Card>
+        <Card data-testid="text">Just text</Card>
+        <Card data-testid="flush" padded={false}>
+          <table />
+        </Card>
+      </>,
+    )
+    const bare = screen.getByTestId("bare")
+    expect(bare).toHaveAttribute("data-padded", "true")
+    expect(bare).toHaveClass("[&>:not(img)]:px-(--card-spacing)")
+    const text = screen.getByText("Just text")
+    expect(text).toHaveAttribute("data-slot", "card-content")
+    expect(screen.getByTestId("text")).not.toHaveClass("[&>:not(img)]:px-(--card-spacing)")
+    const flush = screen.getByTestId("flush")
+    expect(flush).not.toHaveAttribute("data-padded")
+    expect(flush).not.toHaveClass("[&>:not(img)]:px-(--card-spacing)")
+    expect(container.querySelectorAll("[data-slot=card-content]")).toHaveLength(1)
+  })
+
+  it("leaves composed cards (title or CardContent) to their own padding", () => {
+    renderWithOnu(
+      <Card title="T" data-testid="titled">
+        Body
+      </Card>,
+    )
+    expect(screen.getByTestId("titled")).not.toHaveAttribute("data-padded")
+    expect(screen.getAllByText("Body")).toHaveLength(1)
+  })
+
   it("renders title, description, header actions and footer", async () => {
     renderWithOnu(
       <Card

@@ -216,7 +216,7 @@ export default function ActivityLogPage() {
       >
         {view === "feed" ? (
           <div className="gap-4 grid">
-            <Card className="px-4">
+            <Card>
               <ActivityFeed
                 title={null}
                 emptyText={tr("No events match your filters.", "ފިލްޓަރަށް ދިމާވާ އެއްވެސް ހާދިސާއެއް ނެތް.")}

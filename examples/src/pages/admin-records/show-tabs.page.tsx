@@ -188,7 +188,7 @@ export default function ShowTabsPage() {
         ) : null}
 
         {tab === "notes" ? (
-          <Card className="px-4">
+          <Card>
             <Notes
               title={tr("Internal notes", "އެތެރޭގެ ނޯޓުތައް")}
               notes={noteList}

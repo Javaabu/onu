@@ -74,7 +74,7 @@ export function FileRow({
           dir="auto"
           title={name}
           className={cn(
-            "text-sm font-medium truncate [text-align:match-parent]",
+            "text-sm font-medium max-w-full self-start truncate",
             struck && "text-muted-foreground line-through",
             classNames?.name,
           )}

@@ -43,6 +43,14 @@ export interface CardProps
   headingLevel?: HeadingLevel
   /** Render the root as its child element, e.g. `<article>` or a router link. */
   asChild?: boolean
+  /**
+   * Inline padding for content placed straight in the card (no `title`,
+   * `description`, `actions` or `footer`). Default `true`: each direct child
+   * (except images, which stay edge to edge) gets the card's content padding,
+   * the same as `CardContent`, so composing with `CardHeader`/`CardContent`
+   * is unchanged. Set `false` for edge-to-edge content such as a table.
+   */
+  padded?: boolean
   classNames?: {
     header?: string
     title?: string
@@ -53,10 +61,17 @@ export interface CardProps
   }
 }
 
+/** Pads a bare card's direct children like `CardContent` (images stay full-bleed). */
+const PADDED_CHILDREN = "[&>:not(img)]:px-(--card-spacing)"
+
+function hasTextChild(children: React.ReactNode) {
+  return React.Children.toArray(children).some((child) => typeof child === "string" || typeof child === "number")
+}
+
 /**
  * shadcn `Card`, extended with `title`/`description`/`actions`/`footer` props, link
- * cards (`href`) and `asChild`. With none of these it renders exactly like the
- * shadcn card, so `CardHeader`, `CardContent`, … still compose as before.
+ * cards (`href`) and `asChild`. `CardHeader`, `CardContent`, … still compose as
+ * before; other content placed straight in the card gets the content padding.
  */
 export function Card({
   size = "default",
@@ -69,6 +84,7 @@ export function Card({
   external,
   headingLevel = 3,
   asChild = false,
+  padded = true,
   className,
   classNames,
   children,
@@ -115,12 +131,16 @@ export function Card({
       <CardFooter className={cn("gap-2", href && "relative z-10", classNames?.footer)}>{footer}</CardFooter>
     ) : null
   const composed = hasHeader || footerNode
+  const padBare = !composed && padded
+  // Loose text cannot be padded by a child selector, so it goes in a CardContent.
+  const wrapText = padBare && !asChild && hasTextChild(children)
 
   const rootProps = {
     "data-slot": "card",
     "data-size": size,
     "data-variant": variant ?? "default",
-    className: cn(cardVariants({ variant, interactive }), className),
+    "data-padded": padBare || undefined,
+    className: cn(cardVariants({ variant, interactive }), padBare && !wrapText && PADDED_CHILDREN, className),
     ...props,
   }
 
@@ -136,6 +156,7 @@ export function Card({
   }
 
   let body: React.ReactNode = children
+  if (wrapText) body = <CardContent className={classNames?.content}>{children}</CardContent>
   if (composed) {
     body = (
       <>

@@ -26,6 +26,18 @@ import { Button, Card } from "@javaabu/onu"
 </Card>
 ```
 
+## Content padding
+
+Content placed straight in a card, without `title`, `description`, `actions` or `footer`, gets the same inline padding as `CardContent`, so a quick card needs no wrapper:
+
+```tsx
+<Card>
+  <p>Your application was received.</p>
+</Card>
+```
+
+Each direct child is padded (images stay edge to edge); loose text is wrapped in a `CardContent`. Cards composed from `CardHeader`/`CardContent`/`CardFooter` look exactly as before. Set `padded={false}` for edge-to-edge content such as a table or a map.
+
 ## Link cards
 
 With `href`, the title becomes a link stretched over the whole card (the "block link" pattern), so the card is one tab stop and its text stays selectable. Header actions and the footer sit above the link and stay clickable.
@@ -62,6 +74,7 @@ Render the card as another element. Header and footer props still work; the chil
 | `size`         | `'default' \| 'sm'`                                        | `'default'` | Spacing                       |
 | `variant`      | `'default' \| 'outline' \| 'muted'`                        | `'default'` | Surface                       |
 | `asChild`      | `boolean`                                                  | `false`     | Render as the child element   |
+| `padded`       | `boolean`                                                  | `true`      | Pad content placed straight in the card |
 | `classNames`   | `{ header, title, description, actions, content, footer }` |             | Classes for each part         |
 
 `cardVariants` is exported. Other `<div>` props (including `ref`) go to the root.

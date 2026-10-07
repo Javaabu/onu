@@ -129,7 +129,7 @@ export default function AboutPage() {
           {leadership.map((p) => (
             <li key={p.name.en}>
               <Card className="h-full text-center">
-                <div className="gap-3 px-6 flex flex-col items-center">
+                <div className="gap-3 flex flex-col items-center">
                   <UserAvatar name={l(p.name)} size="xl" decorative />
                   <div>
                     <h3 className="font-semibold">{l(p.name)}</h3>

@@ -26,7 +26,7 @@ Pass it to [`AppLayout`](./app-layout)'s `bottomNav` so the content is padded ab
 | Prop          | Type                                 | Default            | Description                                                   |
 | ------------- | ------------------------------------ | ------------------ | ------------------------------------------------------------- |
 | `items`       | `NavItem[]`                          |                    | Destinations (`label`, `href` or `onSelect`, `icon`, `badge`) |
-| `currentHref` | `string`                             |                    | Current URL path                                              |
+| `currentHref` | `string`                             |                    | Current URL (path and query)                              |
 | `match`       | `'prefix' \| 'exact'`                | `'prefix'`         | How `currentHref` matches                                     |
 | `position`    | `'fixed' \| 'static'`                | `'fixed'`          | Fixed to the viewport bottom, or in place                     |
 | `hideFrom`    | `'sm' \| 'md' \| 'lg' \| 'never'`    | `'md'`             | Breakpoint from which it hides                                |

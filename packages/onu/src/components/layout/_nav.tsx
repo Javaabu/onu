@@ -37,30 +37,91 @@ export interface NavGroup {
 
 export type NavMatch = "exact" | "prefix"
 
+interface ParsedHref {
+  path: string
+  /** Query parameters, or `null` when the href has no query string. */
+  query: URLSearchParams | null
+}
+
+/**
+ * Splits an href into its path and query. Hash-router hrefs (`#/users?tab=a`,
+ * `/app#!/users`) use the route inside the fragment.
+ */
+function parse(href: string): ParsedHref {
+  const route = /#!?(\/.*)$/.exec(href)
+  const target = (route ? route[1] : href.split("#")[0]) ?? ""
+  const [rawPath, rawQuery] = target.split("?", 2) as [string, string | undefined]
+  const path = rawPath || "/"
+  const trimmed = path.length > 1 ? path.replace(/\/+$/, "") : path
+  const query = rawQuery ? new URLSearchParams(rawQuery) : null
+  return { path: trimmed, query: query && [...query.keys()].length ? query : null }
+}
+
+/** A canonical form of an href: path, plus the sorted query when it has one. */
 function normalize(href: string) {
-  const path = href.split(/[?#]/)[0] || "/"
-  return path.length > 1 ? path.replace(/\/+$/, "") : path
+  const { path, query } = parse(href)
+  if (!query) return path
+  const sorted = new URLSearchParams([...query.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)))
+  return `${path}?${sorted.toString()}`
+}
+
+/** Whether every parameter of `item` appears, with the same value(s), in `current`. */
+function querySubset(item: URLSearchParams, current: URLSearchParams | null) {
+  if (!current) return false
+  return [...new Set(item.keys())].every((key) => {
+    const want = item.getAll(key).sort()
+    const have = current.getAll(key).sort()
+    return want.length === have.length && want.every((v, i) => v === have[i])
+  })
+}
+
+/**
+ * How well an item's query matches the current one: higher is better,
+ * `undefined` is no match. Equal or contained parameters score by how many
+ * there are; an item whose parameters are all absent from the current URL
+ * (e.g. the default tab on a bare `/reports`) scores lowest but still matches.
+ */
+function queryScore(item: URLSearchParams, current: URLSearchParams | null) {
+  if (querySubset(item, current)) return 1 + new Set(item.keys()).size
+  if ([...item.keys()].every((key) => !current?.has(key))) return -1
+  return undefined
 }
 
 function collectHrefs(items: NavItem[], out: string[] = []) {
   for (const item of items) {
-    if (item.href && !item.external) out.push(normalize(item.href))
+    if (item.href && !item.external) out.push(item.href)
     if (item.items) collectHrefs(item.items, out)
   }
   return out
 }
 
 /**
- * Resolves which href is "current": an exact match, or with `match="prefix"`
- * the longest item href that is a parent path of `currentHref`.
+ * Resolves which href is "current" (in canonical form).
+ *
+ * - Paths match exactly; with `match="prefix"`, the longest item path that is
+ *   a parent of `currentHref` matches when nothing matches exactly.
+ * - When an item href has a query string (`?tab=history`), its parameters must
+ *   match too: the item sharing the most parameters with the current URL wins,
+ *   then an item with the bare path. So tabs that differ only by `?tab=`
+ *   highlight one at a time. If the current URL has none of an item's
+ *   parameters (a bare `/reports`), the first such item counts as the default.
  */
 export function resolveActiveHref(items: NavItem[], currentHref: string | undefined, match: NavMatch = "prefix") {
   if (currentHref === undefined) return undefined
-  const current = normalize(currentHref)
-  const hrefs = collectHrefs(items)
-  if (hrefs.includes(current)) return current
+  const current = parse(currentHref)
+  const hrefs = collectHrefs(items).map((href) => ({ key: normalize(href), ...parse(href) }))
+
+  let best: { key: string; score: number } | undefined
+  for (const href of hrefs) {
+    if (href.path !== current.path) continue
+    const score = href.query ? queryScore(href.query, current.query) : 0
+    if (score !== undefined && (!best || score > best.score)) best = { key: href.key, score }
+  }
+  if (best) return best.key
   if (match === "exact") return undefined
-  return hrefs.filter((h) => h !== "/" && current.startsWith(`${h}/`)).sort((a, b) => b.length - a.length)[0]
+  return hrefs
+    .filter((h) => !h.query && h.path !== "/" && current.path.startsWith(`${h.path}/`))
+    .sort((a, b) => b.path.length - a.path.length)[0]?.key
 }
 
 /** Whether the item itself is the current page. */

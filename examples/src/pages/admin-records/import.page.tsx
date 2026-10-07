@@ -254,7 +254,7 @@ export default function ImportPage() {
             }
           />
         ) : (
-          <Card className="px-4">
+          <Card>
             <Wizard
               finishLabel={tr("Import", "އިމްޕޯޓްކުރޭ")}
               onComplete={runImport}

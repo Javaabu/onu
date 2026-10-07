@@ -42,7 +42,7 @@ Items use the shared `NavItem` shape: `{ label, href?, icon?, badge?, isActive?,
 - `icon`: a semantic icon name (`"home"`) or any node.
 - `badge`: a number (shown as a count, "99+" above 99, with "3 new" for screen readers) or any node.
 - `items`: nested items. A parent with an `href` gets a separate expand button; without one, the whole row toggles.
-- **Active state**: the item matching `currentHref` gets `aria-current="page"`; its parent starts expanded. `match="prefix"` (default) keeps `/users` active on `/users/12/edit`; set `isActive` to override.
+- **Active state**: the item matching `currentHref` gets `aria-current="page"`; its parent starts expanded. `match="prefix"` (default) keeps `/users` active on `/users/12/edit`; set `isActive` to override. Items whose `href` has a query string (`/users?status=active`) also match on its parameters.
 - **Collapsed to icons**: labels become tooltips and nested items open in a flyout menu.
 - On phones the drawer closes after an item is chosen.
 
@@ -52,7 +52,7 @@ Items use the shared `NavItem` shape: `{ label, href?, icon?, badge?, isActive?,
 | ------------- | ------------------------------------------------------------- | ----------- | --------------------------------- |
 | `items`       | `NavItem[]`                                                   |             | Flat list (or use `groups`)       |
 | `groups`      | `{ label?, items }[]`                                         |             | Labelled groups                   |
-| `currentHref` | `string`                                                      |             | Current URL path                  |
+| `currentHref` | `string`                                                      |             | Current URL (path and query)  |
 | `match`       | `'prefix' \| 'exact'`                                         | `'prefix'`  | How `currentHref` matches         |
 | `header`      | `ReactNode`                                                   |             | Top area (logo, team switcher)    |
 | `footer`      | `ReactNode`                                                   |             | Bottom area (user profile)        |

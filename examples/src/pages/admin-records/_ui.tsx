@@ -190,11 +190,7 @@ export function RecordHeader({
         actions={actions}
         action={action}
       />
-      {/* Tabs differ only by query string, which NavTabs' own matching ignores, so mark the current one. */}
-      <NavTabs
-        items={tabs.map((tab) => ({ ...tab, isActive: tab.href === currentHref }))}
-        aria-label={tr("Record sections", "ރެކޯޑުގެ ބައިތައް")}
-      />
+      <NavTabs items={tabs} currentHref={currentHref} aria-label={tr("Record sections", "ރެކޯޑުގެ ބައިތައް")} />
     </div>
   )
 }

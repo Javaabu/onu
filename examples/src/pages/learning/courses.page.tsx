@@ -80,7 +80,7 @@ export default function CourseCataloguePage() {
             {inProgress.map((c) => (
               <li key={c.id}>
                 <Card size="sm" className="h-full">
-                  <div className="gap-4 px-4 flex items-center">
+                  <div className="gap-4 flex items-center">
                     <img src={scene("", c.hue, 240, 240)} alt="" className="size-16 shrink-0 rounded-lg object-cover" />
                     <div className="min-w-0 gap-2 grid flex-1">
                       <h3 className="font-medium">{l(c.title)}</h3>

@@ -221,7 +221,7 @@ export default function PortalHomePage() {
                 return (
                   <li key={e.id}>
                     <Card href={routes.public.eventDetail} size="sm" className="transition-colors hover:bg-muted/40">
-                      <div className="gap-4 px-4 flex items-start">
+                      <div className="gap-4 flex items-start">
                         <div
                           aria-hidden
                           className="w-14 py-2 shrink-0 rounded-lg bg-primary/10 text-center text-primary tabular-nums"

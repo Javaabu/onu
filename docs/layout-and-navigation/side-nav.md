@@ -37,7 +37,7 @@ The current page gets `aria-current="page"` and its parents start expanded. Link
 | ------------- | ----------------------------------------------- | ----------- | --------------------------------------------- |
 | `items`       | `NavItem[]`                                     |             | Flat list (or use `groups`)                   |
 | `groups`      | `{ label?, items }[]`                           |             | Labelled groups (each list is labelled by it) |
-| `currentHref` | `string`                                        |             | Current URL path                              |
+| `currentHref` | `string`                                        |             | Current URL (path and query)              |
 | `match`       | `'prefix' \| 'exact'`                           | `'prefix'`  | How `currentHref` matches                     |
 | `size`        | `'sm' \| 'default' \| 'lg'`                     | `'default'` | `lg` gives 48px rows for kiosks and overlays  |
 | `onNavigate`  | `(item) => void`                                |             | Called after an item is activated             |

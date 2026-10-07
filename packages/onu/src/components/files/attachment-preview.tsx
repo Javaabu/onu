@@ -113,7 +113,7 @@ export function AttachmentPreview({
           <span
             dir="auto"
             title={name}
-            className={cn("text-sm font-medium truncate [text-align:match-parent]", classNames?.name)}
+            className={cn("text-sm font-medium max-w-full self-start truncate", classNames?.name)}
           >
             <bdi>{name}</bdi>
           </span>
@@ -183,8 +183,10 @@ export function AttachmentPreview({
             className={cn("sm:max-w-3xl max-h-[calc(100dvh-2rem)] grid-rows-[auto_minmax(0,1fr)]", classNames?.dialog)}
           >
             <DialogHeader className="gap-2 flex-row items-center">
-              <DialogTitle dir="auto" className="min-w-0 leading-normal flex-1 truncate [text-align:match-parent]">
-                <bdi>{name}</bdi>
+              <DialogTitle className="min-w-0 leading-normal flex-1">
+                <span dir="auto" className="block w-fit max-w-full truncate">
+                  {name}
+                </span>
               </DialogTitle>
               <DialogDescription className="sr-only">{t("file.previewOf", { name })}</DialogDescription>
               {download ? (

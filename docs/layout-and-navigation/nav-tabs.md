@@ -25,7 +25,7 @@ On a **create** page ([§25.9](../requirements)) mark the tabs that need a saved
 | Prop          | Type                                                             | Default    | Description                                  |
 | ------------- | ---------------------------------------------------------------- | ---------- | -------------------------------------------- |
 | `items`       | `{ label, href, count?, icon?, badge?, disabled?, isActive? }[]` |            | Tabs                                         |
-| `currentHref` | `string`                                                         |            | Current URL path                             |
+| `currentHref` | `string`                                                         |            | Current URL (path and query)             |
 | `match`       | `'exact' \| 'prefix'`                                            | `'exact'`  | `prefix` keeps a tab active on its sub-pages |
 | `variant`     | `'line' \| 'pill'`                                               | `'line'`   | Underline or pill style                      |
 | `aria-label`  | `string`                                                         | "Sections" | Landmark name                                |
@@ -37,6 +37,7 @@ On a **create** page ([§25.9](../requirements)) mark the tabs that need a saved
 
 - Each tab is a link to its own page.
 - The tab matching `currentHref` is highlighted and has `aria-current="page"`.
+- Matching uses the path, and the query string when a tab's `href` has one, so tabs that differ only by a parameter (`?tab=documents`, `?tab=history`) highlight one at a time. The tab sharing the most parameters with `currentHref` wins (extra parameters such as `page` are ignored); on a bare URL with none of the tabs' parameters, the first such tab is the default. Hash-router hrefs (`#/records/7?tab=history`) work too.
 - Counts show as "Activity (12)", formatted with the active locale.
 
 ## Accessibility

@@ -190,7 +190,7 @@ export default function CourseDetailPage() {
         <aside className="lg:sticky lg:top-20" aria-label={tr("Enrol", "ވައްދަވާ")}>
           <Card className="pt-0 overflow-hidden">
             <img src={scene("", course.hue, 800, 450)} alt="" className="aspect-video w-full object-cover" />
-            <div className="gap-4 px-6 grid">
+            <div className="gap-4 grid">
               {enrolled ? (
                 <ProgressBar value={0} label={tr("Your progress", "ކުރިއެރުން")} />
               ) : (

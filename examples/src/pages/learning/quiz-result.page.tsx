@@ -29,7 +29,7 @@ export default function QuizResultPage() {
     >
       <div className="max-w-3xl gap-6 mx-auto grid">
         <Card>
-          <div className="gap-6 px-6 sm:flex-row sm:items-center flex flex-col">
+          <div className="gap-6 sm:flex-row sm:items-center flex flex-col">
             <div
               className={cn(
                 "size-28 grid shrink-0 place-items-center rounded-full border-8 text-center",
@@ -66,7 +66,7 @@ export default function QuizResultPage() {
               />
             </div>
           </div>
-          <div className="mt-6 gap-2 px-6 flex flex-wrap">
+          <div className="mt-6 gap-2 flex flex-wrap">
             {passed ? (
               <LinkButton href={routes.learning.certificate} startIcon="star">
                 {tr("View certificate", "ސެޓްފިކެޓް ބައްލަވާ")}

@@ -152,7 +152,6 @@ export default function ServiceDetailPage() {
           <Section title={tr("Fees", "ފީ")} classNames={{ title: "text-xl", content: "mt-4" }}>
             <Card size="sm">
               <DescriptionList
-                className="px-4"
                 items={[
                   { label: tr("Standard (32 pages)", "ސްޓޭންޑަޑް (32 ސަފްހާ)"), value: mvr(750) },
                   { label: tr("Large (64 pages)", "ބޮޑު (64 ސަފްހާ)"), value: mvr(1000) },

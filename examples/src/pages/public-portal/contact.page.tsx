@@ -73,7 +73,7 @@ export default function ContactPage() {
           {channels.map((c) => (
             <li key={c.icon}>
               <Card size="sm" className="h-full">
-                <div className="gap-4 px-4 flex items-start">
+                <div className="gap-4 flex items-start">
                   <span className="size-10 grid shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
                     <Icon name={c.icon} className="size-5" />
                   </span>
@@ -117,7 +117,7 @@ export default function ContactPage() {
             />
           ) : (
             <Card className="mt-6">
-              <div className="px-6">
+              <div>
                 <Form
                   noValidate
                   onSubmit={async (values) => {

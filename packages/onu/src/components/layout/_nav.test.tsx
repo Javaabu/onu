@@ -32,9 +32,48 @@ describe("nav helpers", () => {
     expect(resolveActiveHref(items, "/users/new")).toBe("/users/new")
     expect(resolveActiveHref(items, "/users/12/edit")).toBe("/users")
     expect(resolveActiveHref(items, "/users/12", "exact")).toBeUndefined()
-    expect(resolveActiveHref(items, "/reports")).toBe("/reports")
+    expect(resolveActiveHref(items, "/reports")).toBe("/reports?tab=1")
     expect(resolveActiveHref(items, "/elsewhere")).toBeUndefined()
     expect(resolveActiveHref(items, "/")).toBe("/")
+  })
+
+  it("matches the query string when an item href has one", () => {
+    const tabs: NavItem[] = [
+      { label: "Overview", href: "/records/7?id=7" },
+      { label: "Documents", href: "/records/7?tab=documents&id=7" },
+      { label: "History", href: "/records/7?id=7&tab=history" },
+    ]
+    const active = (href: string) => tabs.filter((tab) => isSelfActive(tab, resolveActiveHref(tabs, href)))
+    expect(active("/records/7?id=7&tab=history").map((t) => t.label)).toEqual(["History"])
+    expect(active("/records/7?tab=documents&id=7").map((t) => t.label)).toEqual(["Documents"])
+    expect(active("/records/7?id=7").map((t) => t.label)).toEqual(["Overview"])
+    // Extra parameters (paging) keep the closest tab.
+    expect(active("/records/7?id=7&tab=history&page=2").map((t) => t.label)).toEqual(["History"])
+    // A different value matches nothing.
+    expect(active("/records/7?id=8&tab=history")).toEqual([])
+  })
+
+  it("treats ?tab= items as tabs, with the first as the default and the bare path winning", () => {
+    const tabs: NavItem[] = [
+      { label: "A", href: "/x?tab=a" },
+      { label: "B", href: "/x?tab=b" },
+    ]
+    expect(resolveActiveHref(tabs, "/x?tab=b")).toBe("/x?tab=b")
+    expect(resolveActiveHref(tabs, "/x")).toBe("/x?tab=a")
+    expect(resolveActiveHref([{ label: "All", href: "/x" }, ...tabs], "/x")).toBe("/x")
+    expect(resolveActiveHref([{ label: "All", href: "/x" }, ...tabs], "/x?tab=b")).toBe("/x?tab=b")
+    // Prefix matching uses paths only.
+    expect(resolveActiveHref([{ label: "X", href: "/x" }], "/x/1?tab=b")).toBe("/x")
+  })
+
+  it("reads hash-router hrefs", () => {
+    const tabs: NavItem[] = [
+      { label: "Docs", href: "#/records/7?tab=documents" },
+      { label: "History", href: "#/records/7?tab=history" },
+    ]
+    expect(resolveActiveHref(tabs, "/records/7?tab=history")).toBe("/records/7?tab=history")
+    expect(isSelfActive(tabs[1]!, resolveActiveHref(tabs, "/app#!/records/7?tab=history"))).toBe(true)
+    expect(isSelfActive(tabs[0]!, resolveActiveHref(tabs, "#/records/7?tab=history"))).toBe(false)
   })
 
   it("marks self and ancestors active", () => {
