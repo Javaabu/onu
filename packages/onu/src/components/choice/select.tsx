@@ -132,7 +132,7 @@ export function Select({
           {...triggerProps}
           className={cn(
             "touch:min-h-11 data-[size=lg]:h-10 data-[size=lg]:text-base w-full",
-            showClear && "pe-9",
+            showClear && "*:data-[slot=select-value]:pe-7",
             classNames?.trigger,
             className,
           )}

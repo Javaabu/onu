@@ -167,6 +167,32 @@ describe("SearchableSelect", () => {
   })
 })
 
+describe("on phones", () => {
+  it("opens in a bottom sheet with a title", async () => {
+    const original = window.matchMedia
+    window.matchMedia = ((query: string) => ({
+      matches: query.includes("max-width"),
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    })) as typeof window.matchMedia
+    try {
+      renderWithOnu(<SearchableSelect aria-label="Island" options={islands} />)
+      await userEvent.click(screen.getByRole("combobox", { name: "Island" }))
+      const sheet = await screen.findByRole("dialog", { name: "Island" })
+      expect(sheet).toHaveAttribute("data-slot", "choice-sheet")
+      await userEvent.click(screen.getByRole("option", { name: "Malé" }))
+      expect(screen.getByRole("combobox", { name: "Island" })).toHaveTextContent("Malé")
+    } finally {
+      window.matchMedia = original
+    }
+  })
+})
+
 describe("MultiSelect", () => {
   it("selects several values as chips and removes them", async () => {
     const onValueChange = vi.fn()

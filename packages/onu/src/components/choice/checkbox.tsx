@@ -14,7 +14,7 @@ export const checkboxVariants = cva(
   [
     "group/checkbox peer relative flex shrink-0 items-center justify-center border border-input transition-colors outline-none dark:bg-input/30",
     "data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:data-[state=checked]:bg-primary",
-    "data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground",
+    "data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground dark:data-[state=indeterminate]:bg-primary",
     "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
     "aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
     "disabled:cursor-not-allowed disabled:opacity-50",

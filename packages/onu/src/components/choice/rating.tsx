@@ -56,15 +56,15 @@ function Star({
     <span data-slot="rating-star" data-fill={fill} className={cn("relative inline-flex shrink-0", className)}>
       <Icon name={icon} className="size-full text-muted-foreground/40" />
       {fill > 0 ? (
-        <span
-          className={cn("inset-y-0 start-0 absolute overflow-hidden", fill >= 1 ? "w-full" : "w-1/2")}
-          aria-hidden="true"
-        >
-          <Icon
-            name={icon}
-            className={cn("aspect-square h-full max-w-none fill-current text-warning", filledClassName)}
-          />
-        </span>
+        <Icon
+          name={icon}
+          className={cn(
+            "inset-0 absolute size-full fill-current text-warning",
+            // A half star clips the filled icon to its reading-start half.
+            fill < 1 && "[clip-path:inset(0_50%_0_0)] rtl:[clip-path:inset(0_0_0_50%)]",
+            filledClassName,
+          )}
+        />
       ) : null}
     </span>
   )

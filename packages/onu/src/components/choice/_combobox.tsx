@@ -535,7 +535,7 @@ export function ComboboxCore({
                 <Icon name="close" className="size-3.5" />
               </button>
             ) : null}
-            <Icon name="chevrons-up-down" className="size-4 pointer-events-none shrink-0 text-muted-foreground" />
+            <Icon name="chevron-down" className="size-4 pointer-events-none shrink-0 text-muted-foreground" />
           </div>
         </PickerAnchor>
         <PickerContent id={contentId} title={title} className={classNames?.content}>

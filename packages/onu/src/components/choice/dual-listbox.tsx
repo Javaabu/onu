@@ -219,7 +219,7 @@ function Pane({
                 className={cn(
                   "gap-2 px-2 py-1.5 text-sm touch:min-h-11 flex cursor-default items-center rounded-md select-none",
                   "aria-disabled:opacity-50 aria-selected:bg-primary/10 aria-selected:text-foreground",
-                  "data-active:bg-muted in-[[role=listbox]:focus-visible]:data-active:ring-2 in-[[role=listbox]:focus-visible]:data-active:ring-ring/50",
+                  "in-[[role=listbox]:focus]:data-active:bg-muted in-[[role=listbox]:focus-visible]:data-active:ring-2 in-[[role=listbox]:focus-visible]:data-active:ring-ring/50",
                   classNames?.item,
                 )}
               >
