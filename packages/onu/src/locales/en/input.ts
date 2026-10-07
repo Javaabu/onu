@@ -1,3 +1,99 @@
 import type { MessageDict } from "../../i18n/types"
 
-export const input = {} satisfies MessageDict
+export const input = {
+  // Password
+  showPassword: "Show password",
+  capsLockOn: "Caps Lock is on",
+  strength: "Password strength: {level}",
+  strengthVeryWeak: "Very weak",
+  strengthWeak: "Weak",
+  strengthFair: "Fair",
+  strengthGood: "Good",
+  strengthStrong: "Strong",
+  // Sensitive and copy
+  reveal: "Show value",
+  revealed: "Value shown",
+  concealed: "Value hidden",
+  copy: "Copy",
+  copied: "Copied",
+  copyFailed: "Could not copy",
+  // Number, quantity and unit
+  increment: "Increase",
+  decrement: "Decrease",
+  unit: "Unit",
+  // Phone
+  country: "Country",
+  phone: "Phone number",
+  searchCountries: "Search countries",
+  noCountries: "No countries found",
+  international: "International",
+  // OTP
+  otp: "One-time code",
+  // Slug
+  slugAuto: "Generate the slug automatically",
+  slugAutoOn: "Slug is generated automatically",
+  slugAutoOff: "Slug is edited manually",
+  slugPreview: "Preview",
+  // Autocomplete and tags
+  suggestions: "Suggestions",
+  suggestionsCount: {
+    zero: "No suggestions",
+    one: "{count} suggestion available",
+    other: "{count} suggestions available",
+  },
+  loadingSuggestions: "Loading suggestions…",
+  suggestionsError: "Could not load suggestions",
+  removeTag: "Remove {tag}",
+  tagAdded: "{tag} added",
+  tagRemoved: "{tag} removed",
+  tagLimit: {
+    one: "You can add up to {count} tag",
+    other: "You can add up to {count} tags",
+  },
+  // Colour picker
+  pickColour: "Choose a colour",
+  colourArea: "Saturation and brightness",
+  hue: "Hue",
+  hex: "Hex colour",
+  presets: "Preset colours",
+  noColour: "No colour",
+  // Icon picker
+  pickIcon: "Choose an icon",
+  searchIcons: "Search icons",
+  noIcons: "No icons found",
+  iconSet: "Icon set",
+  allIconSets: "All sets",
+  recentIcons: "Recently used",
+  iconsCount: {
+    zero: "No icons",
+    one: "{count} icon",
+    other: "{count} icons",
+  },
+  noIcon: "No icon",
+  clearIcon: "Remove icon",
+  // Signature pad
+  signatureCanvas: "Signature drawing area. Draw with a finger, pen or mouse, or type your name instead.",
+  signatureDraw: "Draw",
+  signatureType: "Type",
+  signatureTypedName: "Type your full name",
+  signatureUndo: "Undo last stroke",
+  signatureClear: "Clear signature",
+  signatureCleared: "Signature cleared",
+  signatureCaptured: "Signature captured",
+  signatureEmpty: "Sign above",
+  // QR code scanner
+  scanStart: "Start camera",
+  scanStop: "Stop camera",
+  scanRequesting: "Waiting for camera permission…",
+  scanActive: "Point the camera at a QR code",
+  scanDenied: "Camera access was blocked. Allow it in your browser settings, or enter the code below.",
+  scanNoCamera: "No camera was found on this device. Enter the code below.",
+  scanUnsupported: "This browser cannot scan codes. Enter the code below.",
+  scanError: "The camera could not be started.",
+  scanTorchOn: "Turn on torch",
+  scanTorchOff: "Turn off torch",
+  scanManual: "Enter the code manually",
+  scanManualSubmit: "Use code",
+  scanFound: "Code scanned: {value}",
+  scanVideo: "Camera preview",
+} satisfies MessageDict

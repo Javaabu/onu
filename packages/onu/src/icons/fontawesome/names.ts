@@ -42,6 +42,7 @@ export const FONT_AWESOME_NAMES: Record<SemanticIconName, string> = {
   file: "file",
   "file-text": "file-lines",
   filter: "filter",
+  flashlight: "lightbulb",
   folder: "folder",
   forward: "arrow-right",
   globe: "globe",
