@@ -1,3 +1,32 @@
 import type { MessageDict } from "../../i18n/types"
 
-export const auth = {} satisfies MessageDict
+export const auth = {
+  email: "Email",
+  password: "Password",
+  name: "Full name",
+  confirmPassword: "Confirm password",
+  newPassword: "New password",
+  showPassword: "Show password",
+  hidePassword: "Hide password",
+  remember: "Remember me",
+  forgotPassword: "Forgot password?",
+  signInTitle: "Sign in",
+  signInDescription: "Enter your email and password to sign in.",
+  signIn: "Sign in",
+  or: "or",
+  noAccount: "Don’t have an account?",
+  createAccount: "Create an account",
+  registerTitle: "Create an account",
+  registerDescription: "Fill in your details to get started.",
+  register: "Create account",
+  acceptTerms: "I agree to the terms and conditions",
+  readTerms: "Read the terms and conditions",
+  haveAccount: "Already have an account?",
+  forgotTitle: "Forgot your password?",
+  forgotDescription: "Enter your email and we’ll send you a link to reset your password.",
+  sendResetLink: "Email reset link",
+  backToSignIn: "Back to sign in",
+  resetTitle: "Reset your password",
+  resetDescription: "Choose a new password for your account.",
+  resetPassword: "Reset password",
+} satisfies MessageDict
