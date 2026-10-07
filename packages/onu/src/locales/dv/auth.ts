@@ -1,4 +1,33 @@
 import type { MessageDict } from "../../i18n/types"
 import type { auth as en } from "../en/auth"
 
-export const auth = {} satisfies Record<keyof typeof en, MessageDict[string]> & MessageDict
+export const auth = {
+  email: "އީމެއިލް",
+  password: "ޕާސްވޯޑް",
+  name: "ފުރިހަމަ ނަން",
+  confirmPassword: "ޕާސްވޯޑް ކަށަވަރުކުރޭ",
+  newPassword: "އައު ޕާސްވޯޑް",
+  showPassword: "ޕާސްވޯޑް ދައްކާ",
+  hidePassword: "ޕާސްވޯޑް ފޮރުވާ",
+  remember: "ހަނދާން ބަހައްޓާ",
+  forgotPassword: "ޕާސްވޯޑް ހަނދާން ނެތީތަ؟",
+  signInTitle: "ސައިން އިން",
+  signInDescription: "ސައިން އިން ވުމަށް އީމެއިލް އަދި ޕާސްވޯޑް ޖައްސަވާ.",
+  signIn: "ސައިން އިން",
+  or: "ނުވަތަ",
+  noAccount: "އެކައުންޓެއް ނެތީތަ؟",
+  createAccount: "އެކައުންޓެއް ހައްދަވާ",
+  registerTitle: "އެކައުންޓެއް ހެދުން",
+  registerDescription: "ފެށުމަށް ތިރީގައިވާ މަޢުލޫމާތު ފުރިހަމަކުރައްވާ.",
+  register: "އެކައުންޓް ހަދާ",
+  acceptTerms: "ޝަރުތުތަކާ އެއްބަސްވަމެވެ",
+  readTerms: "ޝަރުތުތައް ކިޔާލައްވާ",
+  haveAccount: "ކުރިން އެކައުންޓެއް ހަދާފައި ވޭތަ؟",
+  forgotTitle: "ޕާސްވޯޑް ހަނދާން ނެތީތަ؟",
+  forgotDescription: "އީމެއިލް ޖައްސަވާ. ޕާސްވޯޑް ބަދަލުކުރެވޭނެ ލިންކެއް ފޮނުވާނަމެވެ.",
+  sendResetLink: "ލިންކު އީމެއިލްކުރޭ",
+  backToSignIn: "ސައިން އިން އަށް އެނބުރި",
+  resetTitle: "ޕާސްވޯޑް ބަދަލުކުރުން",
+  resetDescription: "އެކައުންޓަށް އައު ޕާސްވޯޑެއް ޚިޔާރުކުރައްވާ.",
+  resetPassword: "ޕާސްވޯޑް ބަދަލުކުރޭ",
+} satisfies Record<keyof typeof en, MessageDict[string]> & MessageDict
