@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import type { Editor } from "@tiptap/core"
 
 import { FormField } from "../components/form/form-field"
 import { TextInput } from "../components/inputs/text-input"
@@ -11,6 +12,30 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "../ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { isSafeImageUrl, normalizeUrl, toEmbedUrl } from "./_schema"
+
+/** Applies a link from the link dialog: wraps the selection, or inserts the URL at the caret. */
+export function applyLink(editor: Editor, { href, newTab }: { href: string; newTab: boolean }) {
+  const target = newTab ? "_blank" : null
+  if (editor.state.selection.empty && !editor.isActive("link")) {
+    editor
+      .chain()
+      .insertContent({ type: "text", text: href, marks: [{ type: "link", attrs: { href, target } }] })
+      .run()
+  } else {
+    editor.chain().extendMarkRange("link").setLink({ href, target }).run()
+  }
+}
+
+export function removeLink(editor: Editor) {
+  editor.chain().extendMarkRange("link").unsetLink().run()
+}
+
+/** The link under the caret, for editing it. */
+export function currentLink(editor: Editor | null): { href?: string; newTab?: boolean } {
+  if (!editor?.isActive("link")) return {}
+  const attrs = editor.getAttributes("link") as { href?: string; target?: string }
+  return { href: attrs.href, newTab: attrs.target === "_blank" }
+}
 
 /** Uploads an image file and resolves to its public URL. */
 export type ImageUploadHandler = (file: File) => Promise<string>

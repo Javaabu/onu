@@ -8,7 +8,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
 import type { ThaanaProp } from "../thaana/use-thaana-field"
-import { ImageDialog, LinkDialog, type ImageUploadHandler } from "./_dialogs"
+import { applyLink, currentLink, ImageDialog, LinkDialog, removeLink, type ImageUploadHandler } from "./_dialogs"
 import { editingClasses, proseVariants } from "./_prose"
 import { DEFAULT_TOOLBAR, EditorToolbar, type ToolbarItem } from "./_toolbar"
 import { useOnuEditor } from "./_use-editor"
@@ -168,8 +168,6 @@ export function WysiwygEditor({
     else editor?.commands.focus()
   }
 
-  const linkAttrs = editor?.isActive("link") ? (editor.getAttributes("link") as { href?: string; target?: string }) : {}
-
   return (
     <div
       data-slot="wysiwyg-editor"
@@ -210,20 +208,9 @@ export function WysiwygEditor({
             open={dialog === "link"}
             onOpenChange={(next) => setDialog(next ? "link" : null)}
             onCloseAutoFocus={afterDialog}
-            href={linkAttrs.href}
-            newTab={linkAttrs.target === "_blank"}
-            onSubmit={({ href, newTab }) => {
-              const target = newTab ? "_blank" : null
-              if (editor.state.selection.empty && !editor.isActive("link")) {
-                editor
-                  .chain()
-                  .insertContent({ type: "text", text: href, marks: [{ type: "link", attrs: { href, target } }] })
-                  .run()
-              } else {
-                editor.chain().extendMarkRange("link").setLink({ href, target }).run()
-              }
-            }}
-            onRemove={() => editor.chain().extendMarkRange("link").unsetLink().run()}
+            {...currentLink(editor)}
+            onSubmit={(link) => applyLink(editor, link)}
+            onRemove={() => removeLink(editor)}
           />
           <ImageDialog
             open={dialog === "image"}

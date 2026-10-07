@@ -129,7 +129,7 @@ export function useOnuEditor({
       onCreate: ({ editor: e }) => latest.current.onReady?.(e),
       onUpdate: ({ editor: e }) => {
         const next = readValue(e, latest.current.format)
-        setSerialized(stringifyValue(next))
+        setSerialized(e.isEmpty ? "" : stringifyValue(next))
         latest.current.onChange?.(next, e)
       },
     },

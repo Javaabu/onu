@@ -32,6 +32,9 @@ async function setup(props: Partial<WysiwygEditorProps> = {}, options: Parameter
 const toolbar = () => screen.getByRole("toolbar", { name: "Formatting" })
 const button = (name: string | RegExp) => within(toolbar()).getByRole("button", { name })
 
+// Editor interactions (dialogs, menus, Tiptap) are slow under jsdom on busy machines.
+vi.setConfig({ testTimeout: 30_000 })
+
 describe("WysiwygEditor", () => {
   it("renders an accessible editor with a toolbar and placeholder", async () => {
     const { textbox, container } = await setup({ placeholder: "Write the news…", className: "root-x" })

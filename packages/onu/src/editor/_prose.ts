@@ -28,7 +28,7 @@ export const proseVariants = cva(
     // Quote, rule, code
     "[&_blockquote]:my-4 [&_blockquote]:ps-4 [&_blockquote]:border-s-4 [&_blockquote]:border-border [&_blockquote]:text-muted-foreground",
     "[&_hr]:my-6 [&_hr]:border-border",
-    "[&_pre]:my-4 [&_pre]:p-4 [&_pre]:text-sm [&_pre]:leading-relaxed [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-muted [&_pre]:text-start [&_pre]:font-mono",
+    "[&_:not(figure)>pre]:my-4 [&_:not(figure)>pre]:p-4 [&_:not(figure)>pre]:text-sm [&_:not(figure)>pre]:leading-relaxed [&_:not(figure)>pre]:overflow-x-auto [&_:not(figure)>pre]:rounded-lg [&_:not(figure)>pre]:bg-muted [&_:not(figure)>pre]:text-start [&_:not(figure)>pre]:font-mono",
     // Media
     "[&_img]:my-4 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-lg",
     "[&_[data-type=embed]]:my-4 [&_[data-type=embed]_iframe]:aspect-video [&_[data-type=embed]_iframe]:w-full [&_[data-type=embed]_iframe]:rounded-lg [&_[data-type=embed]_iframe]:border-0",
