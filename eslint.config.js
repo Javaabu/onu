@@ -16,6 +16,7 @@ const physicalMessage =
 export default tseslint.config(
   {
     ignores: [
+      ".claude/**",
       "**/dist/**",
       "**/coverage/**",
       "**/node_modules/**",
