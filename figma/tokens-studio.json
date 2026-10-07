@@ -1,0 +1,337 @@
+{
+  "brand": {
+    "primary": {
+      "value": "oklch(0.53 0.14 150)",
+      "type": "color"
+    }
+  },
+  "light": {
+    "background": {
+      "value": "oklch(1 0 0)",
+      "type": "color"
+    },
+    "foreground": {
+      "value": "oklch(0.145 0 0)",
+      "type": "color"
+    },
+    "card": {
+      "value": "oklch(1 0 0)",
+      "type": "color"
+    },
+    "card-foreground": {
+      "value": "oklch(0.145 0 0)",
+      "type": "color"
+    },
+    "popover": {
+      "value": "oklch(1 0 0)",
+      "type": "color"
+    },
+    "popover-foreground": {
+      "value": "oklch(0.145 0 0)",
+      "type": "color"
+    },
+    "secondary": {
+      "value": "oklch(0.967 0.001 286.375)",
+      "type": "color"
+    },
+    "secondary-foreground": {
+      "value": "oklch(0.21 0.006 285.885)",
+      "type": "color"
+    },
+    "muted": {
+      "value": "oklch(0.97 0 0)",
+      "type": "color"
+    },
+    "muted-foreground": {
+      "value": "oklch(0.556 0 0)",
+      "type": "color"
+    },
+    "accent": {
+      "value": "oklch(0.97 0 0)",
+      "type": "color"
+    },
+    "accent-foreground": {
+      "value": "oklch(0.205 0 0)",
+      "type": "color"
+    },
+    "destructive": {
+      "value": "oklch(0.577 0.245 27.325)",
+      "type": "color"
+    },
+    "destructive-foreground": {
+      "value": "oklch(0.985 0 0)",
+      "type": "color"
+    },
+    "success": {
+      "value": "oklch(0.6 0.15 155)",
+      "type": "color"
+    },
+    "success-foreground": {
+      "value": "oklch(0.985 0 0)",
+      "type": "color"
+    },
+    "warning": {
+      "value": "oklch(0.77 0.16 70)",
+      "type": "color"
+    },
+    "warning-foreground": {
+      "value": "oklch(0.25 0.05 70)",
+      "type": "color"
+    },
+    "info": {
+      "value": "oklch(0.6 0.15 245)",
+      "type": "color"
+    },
+    "info-foreground": {
+      "value": "oklch(0.985 0 0)",
+      "type": "color"
+    },
+    "border": {
+      "value": "oklch(0.922 0 0)",
+      "type": "color"
+    },
+    "input": {
+      "value": "oklch(0.922 0 0)",
+      "type": "color"
+    },
+    "sidebar": {
+      "value": "oklch(0.985 0 0)",
+      "type": "color"
+    },
+    "sidebar-foreground": {
+      "value": "oklch(0.145 0 0)",
+      "type": "color"
+    },
+    "sidebar-accent": {
+      "value": "oklch(0.97 0 0)",
+      "type": "color"
+    },
+    "sidebar-accent-foreground": {
+      "value": "oklch(0.205 0 0)",
+      "type": "color"
+    },
+    "sidebar-border": {
+      "value": "oklch(0.922 0 0)",
+      "type": "color"
+    },
+    "chart-2": {
+      "value": "oklch(0.6 0.118 184.704)",
+      "type": "color"
+    },
+    "chart-3": {
+      "value": "oklch(0.398 0.07 227.392)",
+      "type": "color"
+    },
+    "chart-4": {
+      "value": "oklch(0.828 0.189 84.429)",
+      "type": "color"
+    },
+    "chart-5": {
+      "value": "oklch(0.769 0.188 70.08)",
+      "type": "color"
+    },
+    "chart-6": {
+      "value": "oklch(0.646 0.222 41.116)",
+      "type": "color"
+    },
+    "chart-7": {
+      "value": "oklch(0.627 0.265 303.9)",
+      "type": "color"
+    },
+    "chart-8": {
+      "value": "oklch(0.645 0.246 16.439)",
+      "type": "color"
+    }
+  },
+  "dark": {
+    "background": {
+      "value": "oklch(0.145 0 0)",
+      "type": "color"
+    },
+    "foreground": {
+      "value": "oklch(0.985 0 0)",
+      "type": "color"
+    },
+    "card": {
+      "value": "oklch(0.205 0 0)",
+      "type": "color"
+    },
+    "card-foreground": {
+      "value": "oklch(0.985 0 0)",
+      "type": "color"
+    },
+    "popover": {
+      "value": "oklch(0.205 0 0)",
+      "type": "color"
+    },
+    "popover-foreground": {
+      "value": "oklch(0.985 0 0)",
+      "type": "color"
+    },
+    "secondary": {
+      "value": "oklch(0.274 0.006 286.033)",
+      "type": "color"
+    },
+    "secondary-foreground": {
+      "value": "oklch(0.985 0 0)",
+      "type": "color"
+    },
+    "muted": {
+      "value": "oklch(0.269 0 0)",
+      "type": "color"
+    },
+    "muted-foreground": {
+      "value": "oklch(0.708 0 0)",
+      "type": "color"
+    },
+    "accent": {
+      "value": "oklch(0.269 0 0)",
+      "type": "color"
+    },
+    "accent-foreground": {
+      "value": "oklch(0.985 0 0)",
+      "type": "color"
+    },
+    "destructive": {
+      "value": "oklch(0.704 0.191 22.216)",
+      "type": "color"
+    },
+    "destructive-foreground": {
+      "value": "oklch(0.145 0 0)",
+      "type": "color"
+    },
+    "success": {
+      "value": "oklch(0.7 0.15 155)",
+      "type": "color"
+    },
+    "success-foreground": {
+      "value": "oklch(0.145 0 0)",
+      "type": "color"
+    },
+    "warning": {
+      "value": "oklch(0.8 0.15 75)",
+      "type": "color"
+    },
+    "warning-foreground": {
+      "value": "oklch(0.2 0.04 70)",
+      "type": "color"
+    },
+    "info": {
+      "value": "oklch(0.7 0.13 245)",
+      "type": "color"
+    },
+    "info-foreground": {
+      "value": "oklch(0.145 0 0)",
+      "type": "color"
+    },
+    "border": {
+      "value": "oklch(1 0 0 / 10%)",
+      "type": "color"
+    },
+    "input": {
+      "value": "oklch(1 0 0 / 15%)",
+      "type": "color"
+    },
+    "sidebar": {
+      "value": "oklch(0.205 0 0)",
+      "type": "color"
+    },
+    "sidebar-foreground": {
+      "value": "oklch(0.985 0 0)",
+      "type": "color"
+    },
+    "sidebar-accent": {
+      "value": "oklch(0.269 0 0)",
+      "type": "color"
+    },
+    "sidebar-accent-foreground": {
+      "value": "oklch(0.985 0 0)",
+      "type": "color"
+    },
+    "sidebar-border": {
+      "value": "oklch(1 0 0 / 10%)",
+      "type": "color"
+    },
+    "chart-2": {
+      "value": "oklch(0.696 0.17 162.48)",
+      "type": "color"
+    },
+    "chart-3": {
+      "value": "oklch(0.769 0.188 70.08)",
+      "type": "color"
+    },
+    "chart-4": {
+      "value": "oklch(0.627 0.265 303.9)",
+      "type": "color"
+    },
+    "chart-5": {
+      "value": "oklch(0.645 0.246 16.439)",
+      "type": "color"
+    },
+    "chart-6": {
+      "value": "oklch(0.488 0.243 264.376)",
+      "type": "color"
+    },
+    "chart-7": {
+      "value": "oklch(0.828 0.189 84.429)",
+      "type": "color"
+    },
+    "chart-8": {
+      "value": "oklch(0.6 0.118 184.704)",
+      "type": "color"
+    }
+  },
+  "shape": {
+    "radius": {
+      "value": "0.625rem",
+      "type": "borderRadius"
+    },
+    "label-width": {
+      "value": "12rem",
+      "type": "sizing"
+    },
+    "touch-target": {
+      "value": "44px",
+      "type": "sizing"
+    }
+  },
+  "density": {
+    "compact": {
+      "value": "0.225rem",
+      "type": "spacing"
+    },
+    "default": {
+      "value": "0.25rem",
+      "type": "spacing"
+    },
+    "comfortable": {
+      "value": "0.28rem",
+      "type": "spacing"
+    },
+    "touch": {
+      "value": "0.345rem",
+      "type": "spacing"
+    }
+  },
+  "font": {
+    "sans": {
+      "value": "Inter Variable, MV Waheed, Faruma, Noto Sans Thaana Variable, ui-sans-serif, system-ui, sans-serif",
+      "type": "fontFamilies"
+    },
+    "thaana": {
+      "value": "MV Waheed, Faruma, Noto Sans Thaana Variable, Inter Variable, sans-serif",
+      "type": "fontFamilies"
+    },
+    "mono": {
+      "value": "JetBrains Mono Variable, ui-monospace, SFMono-Regular, Menlo, monospace",
+      "type": "fontFamilies"
+    },
+    "serif": {
+      "value": "Source Serif 4 Variable, MV Waheed, Georgia, serif",
+      "type": "fontFamilies"
+    }
+  },
+  "$metadata": {
+    "tokenSetOrder": ["brand", "light", "dark", "shape", "density", "font"]
+  }
+}

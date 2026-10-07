@@ -104,7 +104,7 @@ export function Toolbar() {
                   aria-pressed={settings.primary === p.value}
                   onClick={() => update({ primary: p.value })}
                   className="size-7 rounded-full ring-offset-2 ring-offset-background aria-pressed:ring-2 aria-pressed:ring-ring"
-                  style={{ background: p.value || "oklch(0.56 0.14 150)" }}
+                  style={{ background: p.value || "oklch(0.53 0.14 150)" }}
                 />
               ))}
               <label className="size-7 relative cursor-pointer overflow-hidden rounded-full border" title="Custom">
