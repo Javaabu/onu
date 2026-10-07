@@ -9,6 +9,8 @@ export default defineConfig({
     setupFiles: ["./test/setup.ts"],
     include: ["src/**/*.test.{ts,tsx}", "test/**/*.test.{ts,tsx}"],
     css: false,
+    // axe scans and chart rendering are slow on shared CI runners.
+    testTimeout: 15_000,
     coverage: {
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],
