@@ -2,6 +2,8 @@ export * from "./wysiwyg-editor"
 export * from "./block-editor"
 export * from "./block-renderer"
 export * from "./code-block"
+export * from "./translations-editor"
+export * from "./custom-attribute-fields"
 export * from "./thaana-keyboard"
 export {
   ALIGNMENTS,
