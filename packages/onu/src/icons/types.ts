@@ -55,6 +55,7 @@ export const SEMANTIC_ICON_NAMES = [
   "file",
   "file-text",
   "filter",
+  "flashlight",
   "folder",
   "forward",
   "globe",
