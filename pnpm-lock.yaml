@@ -442,6 +442,9 @@ importers:
       '@turf/turf':
         specifier: ^7.4.0
         version: 7.4.0
+      '@types/google.maps':
+        specifier: ^3.66.5
+        version: 3.66.5
       '@types/node':
         specifier: ^26.6.4
         version: 26.6.4

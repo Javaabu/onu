@@ -51,6 +51,8 @@ MV Waheed (the default Thaana font) is not bundled until redistribution rights a
 
 Vite, Vitest, Testing Library, jsdom, axe-core, Playwright, TypeScript, ESLint, Prettier, Changesets, size-limit, and the `shadcn` package (for `scripts/sync-shadcn.mjs`).
 
+`@types/google.maps` (MIT, DefinitelyTyped) is a dev dependency: it types the Google Maps adapter inside `@javaabu/onu/maps`. Consumers get it through `@vis.gl/react-google-maps`, which depends on it.
+
 ## Governance
 
 - Renovate keeps dependencies current (`renovate.json`).
