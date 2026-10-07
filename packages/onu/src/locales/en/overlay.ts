@@ -1,3 +1,27 @@
 import type { MessageDict } from "../../i18n/types"
 
-export const overlay = {} satisfies MessageDict
+export const overlay = {
+  close: "Close",
+  confirmTitle: "Are you sure?",
+  typeToConfirm: "To confirm, type “{text}” below",
+  working: "Working…",
+  confirmFailed: "That didn't work. Please try again.",
+  commandPalette: "Command palette",
+  commandPaletteDescription: "Search for a page or a command to run",
+  commandPlaceholder: "Type a command or search…",
+  openCommandPalette: "Open command palette",
+  recent: "Recent",
+  searching: "Searching…",
+  searchFailed: "Search failed",
+  results: { zero: "No results", one: "{count} result", other: "{count} results" },
+  hintNavigate: "Navigate",
+  hintSelect: "Select",
+  hintClose: "Close",
+  moreActions: "More actions",
+  moreInfo: "More information",
+  expand: "Expand",
+  collapse: "Collapse",
+  loading: "Loading…",
+  pageLoading: "Loading page",
+  progress: "Progress",
+} satisfies MessageDict
