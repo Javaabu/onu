@@ -2,7 +2,8 @@
 /**
  * Every Onu component file must have a docs page (R19.6).
  * Component files: packages/onu/src/components/<group>/<name>.tsx (and the subpath entries).
- * Docs pages: docs/<docs folder>/<name>.md
+ * Docs pages: docs/<docs folder>/<name>.md. The page may live in any group folder
+ * (e.g. a component exported from the media entry documented under Text inputs).
  */
 import { existsSync, readdirSync } from "node:fs"
 import path from "node:path"
@@ -25,6 +26,11 @@ const groups = {
   calendar: "date-and-time",
   media: "files-and-media",
 }
+
+const docsDirs = readdirSync(path.join(root, "docs"), { withFileTypes: true })
+  .filter((d) => d.isDirectory())
+  .map((d) => d.name)
+const hasPage = (name) => docsDirs.some((d) => existsSync(path.join(root, "docs", d, `${name}.md`)))
 
 const missing = []
 for (const [src, docs] of Object.entries(groups)) {
