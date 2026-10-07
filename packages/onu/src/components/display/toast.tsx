@@ -84,4 +84,4 @@ export type ToastOptions = ExternalToast
  * `toast.info(…)`, `toast.promise(promise, { loading, success, error })`,
  * `toast.dismiss(id)`.
  */
-export const toast = sonnerToast
+export const toast: typeof sonnerToast = sonnerToast
