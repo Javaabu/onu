@@ -146,6 +146,8 @@ export function KeyboardKey({
 
   return (
     <KbdGroup
+      // Shortcuts read left to right on every keyboard, also in RTL pages.
+      dir="ltr"
       data-slot="keyboard-key"
       data-platform={platform}
       className={className}
@@ -166,7 +168,7 @@ export function KeyboardKey({
                   +
                 </span>
               ) : null}
-              <Kbd aria-hidden dir="ltr" className={cn(classNames?.key)}>
+              <Kbd aria-hidden className={cn(classNames?.key)}>
                 {k.symbol}
               </Kbd>
             </React.Fragment>

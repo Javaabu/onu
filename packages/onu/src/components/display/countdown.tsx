@@ -141,7 +141,13 @@ export function Countdown({
       className={cn("gap-1 inline-grid", className)}
       {...props}
     >
-      <div role="timer" aria-label={t("display.countdown")} className={countdownVariants({ variant, size })}>
+      <div
+        role="timer"
+        aria-label={t("display.countdown")}
+        // A clock reads left to right (hh:mm:ss) even in RTL; the boxes follow the page direction.
+        dir={variant === "inline" ? "ltr" : undefined}
+        className={countdownVariants({ variant, size })}
+      >
         {finished && completeText !== undefined ? (
           <span className={classNames?.complete}>{completeText}</span>
         ) : (

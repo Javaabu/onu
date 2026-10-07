@@ -3,6 +3,7 @@
 import * as React from "react"
 import { format as formatDate } from "date-fns"
 
+import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useOnu } from "../../providers/onu-provider"
 import { Calendar, CalendarDayButton } from "../../ui/calendar"
@@ -111,6 +112,16 @@ export function MiniCalendar({
         }}
         className={cn("rounded-lg border", classNames?.calendar)}
         components={{
+          // shadcn's calendar already rotates the nav chevrons in RTL, so don't mirror them again.
+          Chevron: ({ orientation, className }) => (
+            <Icon
+              name={
+                orientation === "left" ? "chevron-left" : orientation === "right" ? "chevron-right" : "chevron-down"
+              }
+              flip={false}
+              className={cn("size-4", className)}
+            />
+          ),
           DayButton: ({ children, ...dayProps }) => {
             const dayEvents = byDay.get(dayKey(dayProps.day.date)) ?? []
             return (

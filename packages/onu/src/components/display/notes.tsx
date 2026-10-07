@@ -81,7 +81,7 @@ export function Notes({
       )}
       {composerPosition === "top" ? composer : null}
       {notes.length ? (
-        <ul className={cn("divide-y rounded-lg border", classNames?.list)}>
+        <ul className={cn("divide-y overflow-hidden rounded-lg border", classNames?.list)}>
           {notes.map((note) => (
             <li key={note.id} data-slot="note" className={cn("gap-3 p-3 flex items-start bg-card", classNames?.note)}>
               <UserAvatar name={note.author.name} src={note.author.avatar} size="sm" decorative />

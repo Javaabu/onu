@@ -17,11 +17,11 @@ export interface AvatarGroupUser {
 type Size = NonNullable<UserAvatarProps["size"]>
 
 const OVERLAP: Record<Size, string> = {
-  xs: "-space-x-1.5",
-  sm: "-space-x-2",
-  md: "-space-x-2.5",
-  lg: "-space-x-3",
-  xl: "-space-x-4",
+  xs: "-space-x-1",
+  sm: "-space-x-1.5",
+  md: "-space-x-2",
+  lg: "-space-x-2.5",
+  xl: "-space-x-3",
 }
 
 const COUNT_SIZES: Record<Size, string> = {
@@ -71,15 +71,17 @@ export function UserAvatarGroup({
       {...props}
     >
       {visible.map((user, i) => (
-        <UserAvatar
-          key={user.id ?? i}
-          name={user.name}
-          src={user.src}
-          status={user.status}
-          size={size}
-          shape={shape}
-          className={cn("[&_[data-slot=avatar]]:ring-2 [&_[data-slot=avatar]]:ring-background", classNames?.avatar)}
-        />
+        // Earlier avatars sit on top so their presence dots stay visible.
+        <span key={user.id ?? i} className="relative inline-flex" style={{ zIndex: visible.length - i }}>
+          <UserAvatar
+            name={user.name}
+            src={user.src}
+            status={user.status}
+            size={size}
+            shape={shape}
+            className={cn("[&_[data-slot=avatar]]:ring-2 [&_[data-slot=avatar]]:ring-background", classNames?.avatar)}
+          />
+        </span>
       ))}
       {hidden.length > 0 ? (
         <Popover>
@@ -93,7 +95,7 @@ export function UserAvatarGroup({
               classNames?.count,
             )}
           >
-            +{hidden.length}
+            <span dir="ltr">+{hidden.length}</span>
           </PopoverTrigger>
           <PopoverContent className={cn("w-60 p-2", classNames?.popover)}>
             {renderOverflow ? (

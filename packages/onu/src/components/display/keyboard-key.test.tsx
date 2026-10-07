@@ -65,7 +65,7 @@ describe("KeyboardKey", () => {
   it.each(directions)("keeps keys in LTR order in %s", async (dir) => {
     const { container } = renderWithOnu(<KeyboardKey keys="mod+k" platform="other" className="custom" />, { dir })
     expect(container.querySelector("[data-slot=keyboard-key]")).toHaveClass("custom")
-    container.querySelectorAll("kbd[aria-hidden]").forEach((k) => expect(k).toHaveAttribute("dir", "ltr"))
+    expect(container.querySelector("[data-slot=keyboard-key]")).toHaveAttribute("dir", "ltr")
     await expectNoA11yViolations(container)
   })
 })
