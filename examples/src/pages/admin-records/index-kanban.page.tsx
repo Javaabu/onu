@@ -98,20 +98,22 @@ export default function IndexKanbanPage() {
           action={<NewApplicationButton />}
         />
         <div className="gap-2 flex flex-wrap items-center">
-          <SearchBox
-            value={search}
-            onSearch={setSearch}
-            placeholder={tr("Reference or name…", "ރެފަރެންސް ނުވަތަ ނަން…")}
-            thaana={labels.dv}
-            className="sm:flex-none sm:w-72 flex-1"
-          />
-          <Select
-            aria-label={tr("Service", "ޚިދުމަތް")}
-            className="w-52"
-            value={service}
-            onValueChange={setService}
-            options={[{ value: "all", label: tr("All services", "ހުރިހާ ޚިދުމަތެއް") }, ...labels.options.services]}
-          />
+          <div className="sm:w-72 w-full">
+            <SearchBox
+              value={search}
+              onSearch={setSearch}
+              placeholder={tr("Reference or name…", "ރެފަރެންސް ނުވަތަ ނަން…")}
+              thaana={labels.dv}
+            />
+          </div>
+          <div className="w-52">
+            <Select
+              aria-label={tr("Service", "ޚިދުމަތް")}
+              value={service}
+              onValueChange={setService}
+              options={[{ value: "all", label: tr("All services", "ހުރިހާ ޚިދުމަތެއް") }, ...labels.options.services]}
+            />
+          </div>
           <div className="ms-auto">
             <ViewNav value="kanban" />
           </div>

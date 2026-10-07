@@ -258,9 +258,11 @@ export function CollectionIndex({ view }: { view: "list" | "grid" }) {
                 </div>
               )}
               meta={(a) => (
-                <span className="gap-2 text-sm flex w-full flex-wrap items-center justify-between">
-                  <StatusBadge status={a.status} statusMap={labels.statusMap} size="sm" />
-                  <span className="tabular-nums">{labels.mvr(a.amount)}</span>
+                <span className="gap-1 text-sm grid w-full">
+                  <span className="gap-2 flex flex-wrap items-center justify-between">
+                    <StatusBadge status={a.status} statusMap={labels.statusMap} size="sm" />
+                    <span className="tabular-nums">{labels.mvr(a.amount)}</span>
+                  </span>
                   <span className="text-muted-foreground">{labels.island(a.island)}</span>
                 </span>
               )}

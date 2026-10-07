@@ -34,6 +34,8 @@ export function applicationColumns(labels: Labels, tr: Tr): DataTableColumn<Appl
       sortable: true,
       primary: true,
       className: "font-mono text-xs whitespace-nowrap",
+      // Keeps the sort button clear of the select-all box (WCAG 2.5.8 target spacing).
+      headerClassName: "ps-4",
     },
     { id: "name", header: tr("Applicant", "އެޕްލިކަންޓް"), sortable: true, accessor: (a) => labels.name(a) },
     { id: "service", header: tr("Service", "ޚިދުމަތް"), sortable: true, accessor: (a) => labels.service(a.service) },
@@ -188,7 +190,11 @@ export function RecordHeader({
         actions={actions}
         action={action}
       />
-      <NavTabs items={tabs} currentHref={currentHref} aria-label={tr("Record sections", "ރެކޯޑުގެ ބައިތައް")} />
+      {/* Tabs differ only by query string, which NavTabs' own matching ignores, so mark the current one. */}
+      <NavTabs
+        items={tabs.map((tab) => ({ ...tab, isActive: tab.href === currentHref }))}
+        aria-label={tr("Record sections", "ރެކޯޑުގެ ބައިތައް")}
+      />
     </div>
   )
 }

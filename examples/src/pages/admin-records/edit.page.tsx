@@ -21,6 +21,7 @@ import {
   fieldLabels,
   fromValues,
   toValues,
+  useHashLinkGuard,
   useOthers,
   validate,
   type ApplicationValues,
@@ -66,6 +67,7 @@ function EditForm({ record }: { record: Application }) {
   const [saved, setSaved] = React.useState<ApplicationValues>(() => toValues(record))
   const [values, setValues] = React.useState<ApplicationValues>(saved)
   const changes = describeChanges(saved, values, fieldLabels(tr), fieldFormat(labels))
+  const leaveDialog = useHashLinkGuard(changes.length > 0)
 
   return (
     <Form
@@ -97,6 +99,7 @@ function EditForm({ record }: { record: Application }) {
           discardLabel={tr("Discard", "ދޫކޮށްލާ")}
         />
       </div>
+      {leaveDialog}
     </Form>
   )
 }

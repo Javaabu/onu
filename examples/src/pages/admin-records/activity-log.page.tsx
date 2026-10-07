@@ -7,10 +7,10 @@ import {
   ListingPage,
   Pagination,
   RelativeDate,
-  SegmentedControl,
   StatusBadge,
   useListingState,
   UserAvatar,
+  ViewSwitcher,
   type DataTableColumn,
   type FilterDefinition,
 } from "@javaabu/onu"
@@ -207,20 +207,16 @@ export default function ActivityLogPage() {
         onExport={() => new Promise((r) => setTimeout(r, 1000))}
         exportOptions={["csv", "excel"]}
         toolbarEnd={
-          <SegmentedControl
-            aria-label={tr("Show as", "ދައްކާނީ")}
+          <ViewSwitcher
+            views={["table", { value: "feed", label: tr("Feed", "ފީޑް"), icon: "list" }]}
             value={view}
             onValueChange={setView}
-            options={[
-              { value: "table", label: tr("Table", "ޓޭބަލް") },
-              { value: "feed", label: tr("Feed", "ފީޑް") },
-            ]}
           />
         }
       >
         {view === "feed" ? (
           <div className="gap-4 grid">
-            <Card>
+            <Card className="px-4">
               <ActivityFeed
                 title={null}
                 emptyText={tr("No events match your filters.", "ފިލްޓަރަށް ދިމާވާ އެއްވެސް ހާދިސާއެއް ނެތް.")}

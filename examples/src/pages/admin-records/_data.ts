@@ -142,7 +142,7 @@ function make(i: number): Application {
     email: `${FIRST[f]!.toLowerCase()}.${LAST[l]!.toLowerCase()}${i % 50}@gmail.com`,
     island: ISLANDS[(i * 3) % ISLANDS.length]!.value,
     service: service.value,
-    status: STATUS_CYCLE[i % STATUS_CYCLE.length]!,
+    status: STATUS_CYCLE[(i + Math.floor(i / 6)) % STATUS_CYCLE.length]!,
     amount: service.fee + ((i * 37) % 4) * 250,
     submitted: daysAgo(submittedAgo),
     updated: daysAgo(Math.max(0, submittedAgo - ((i * 5) % 9))),

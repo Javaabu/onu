@@ -34,11 +34,18 @@ export default function DashboardPage() {
   const approvedRate = (list: Application[]) =>
     list.length ? list.filter((a) => a.status === "approved").length / list.length : 0
 
-  // Applications per day for the last 30 days, with a sparkline per week.
-  const perDay = Array.from({ length: 30 }, (_, i) => {
-    const date = dayString(today - (29 - i) * DAY)
-    const day = apps.filter((a) => a.submitted === date)
-    return { date, applications: day.length, approved: day.filter((a) => a.status === "approved").length }
+  // Applications per week for the last 16 weeks.
+  const perWeek = Array.from({ length: 16 }, (_, i) => {
+    const end = today - (15 - i) * 7 * DAY
+    const week = apps.filter((a) => {
+      const t = Date.parse(`${a.submitted}T00:00:00Z`)
+      return t > end - 7 * DAY && t <= end
+    })
+    return {
+      date: dayString(end - 6 * DAY),
+      applications: week.length,
+      approved: week.filter((a) => a.status === "approved").length,
+    }
   })
   const byService = SERVICES.map((s) => ({
     service: labels.service(s.value),
@@ -77,7 +84,7 @@ export default function DashboardPage() {
             previousValue={prev30.length}
             icon="file-text"
             deltaContext={tr("vs previous 30 days", "ކުރީގެ 30 ދުވަހާ އަޅާބަލާއިރު")}
-            sparkline={perDay.map((d) => d.applications)}
+            sparkline={perWeek.map((d) => d.applications)}
           />
           <StatTile
             label={tr("Fees collected", "ލިބުނު ފީ")}
@@ -108,22 +115,25 @@ export default function DashboardPage() {
         </StatTiles>
 
         <div className="gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] grid">
-          <Card className="min-w-0">
+          <div className="min-w-0 p-4 rounded-xl border bg-card">
             <TimeSeriesChart
-              title={tr("Applications per day", "ދުވާލަކަށް އެޕްލިކޭޝަން")}
-              description={tr("Submitted and approved, last 30 days", "ހުށަހެޅުނު އަދި ފާސްކުރެވުނު، ފަހުގެ 30 ދުވަސް")}
-              data={perDay}
+              title={tr("Applications per week", "ހަފްތާއަކަށް އެޕްލިކޭޝަން")}
+              description={tr(
+                "Submitted and approved, last 16 weeks",
+                "ހުށަހެޅުނު އަދި ފާސްކުރެވުނު، ފަހުގެ 16 ހަފްތާ",
+              )}
+              data={perWeek}
               config={{
                 applications: { label: tr("Submitted", "ހުށަހެޅި") },
                 approved: { label: tr("Approved", "ފާސްކުރެވިފަ") },
               }}
-              interval="day"
+              interval="week"
               area
               valueFormat="integer"
               height={260}
             />
-          </Card>
-          <Card className="min-w-0">
+          </div>
+          <div className="min-w-0 p-4 rounded-xl border bg-card">
             <PieChart
               title={tr("By status", "ސްޓޭޓަސްއިން")}
               description={tr("All open records", "ހުރިހާ ރެކޯޑެއް")}
@@ -132,11 +142,11 @@ export default function DashboardPage() {
               centerLabel={{ value: String(apps.length), label: tr("Total", "ޖުމްލަ") }}
               height={260}
             />
-          </Card>
+          </div>
         </div>
 
         <div className="gap-6 xl:grid-cols-3 grid">
-          <Card className="min-w-0 xl:col-span-1">
+          <div className="min-w-0 p-4 rounded-xl border bg-card">
             <BarChart
               title={tr("Fees by service", "ޚިދުމަތުން ލިބުނު ފީ")}
               description={tr("Last 30 days", "ފަހުގެ 30 ދުވަސް")}
@@ -147,7 +157,7 @@ export default function DashboardPage() {
               valueFormat="currency"
               height={280}
             />
-          </Card>
+          </div>
 
           <Card
             headingLevel={2}
@@ -172,8 +182,8 @@ export default function DashboardPage() {
                     className="mt-0.5"
                   />
                   <div className={done.includes(a.id) ? "min-w-0 flex-1 line-through opacity-60" : "min-w-0 flex-1"}>
-                    <ConditionalLink href={showHref(a.id)} className="text-sm font-medium hover:underline">
-                      {tr(`Review ${a.reference}`, `${a.reference} ރިވިއުކުރޭ`)}
+                    <ConditionalLink href={showHref(a.id)} className="text-sm font-medium font-mono hover:underline">
+                      {a.reference}
                     </ConditionalLink>
                     <p className="text-xs text-muted-foreground">
                       {labels.name(a)} · {labels.service(a.service)}
