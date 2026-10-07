@@ -1,0 +1,11 @@
+{
+  "position": 1.25,
+  "label": "Guides",
+  "collapsible": true,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "slug": "/onu/_categories/guides",
+    "description": "Theming, RTL, Dhivehi, Thaana input, icons, fonts and more"
+  }
+}

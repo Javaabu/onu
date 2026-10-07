@@ -1,0 +1,11 @@
+{
+  "position": 1.345,
+  "label": "Listing pages",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "slug": "/onu/_categories/listing-pages",
+    "description": "Tables, filters, pagination and listing tools"
+  }
+}

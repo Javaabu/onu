@@ -1,0 +1,11 @@
+{
+  "position": 1.33,
+  "label": "Rich content",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "slug": "/onu/_categories/rich-content",
+    "description": "Editors and renderers"
+  }
+}

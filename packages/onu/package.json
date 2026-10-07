@@ -40,6 +40,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./primitives": {
+      "types": "./dist/ui/index.d.ts",
+      "default": "./dist/ui/index.js"
+    },
     "./thaana": {
       "types": "./dist/thaana/index.d.ts",
       "default": "./dist/thaana/index.js"

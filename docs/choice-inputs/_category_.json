@@ -1,0 +1,11 @@
+{
+  "position": 1.32,
+  "label": "Choice inputs",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "slug": "/onu/_categories/choice-inputs",
+    "description": "Selects, checkboxes, radios, switches and pickers"
+  }
+}

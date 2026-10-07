@@ -1,0 +1,11 @@
+{
+  "position": 1.365,
+  "label": "Display and feedback",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "slug": "/onu/_categories/display-and-feedback",
+    "description": "Badges, alerts, toasts and display components"
+  }
+}

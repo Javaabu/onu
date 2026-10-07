@@ -1,0 +1,11 @@
+{
+  "position": 1.305,
+  "label": "Form scaffolding",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "slug": "/onu/_categories/form-scaffolding",
+    "description": "Forms, fields, labels, errors and buttons"
+  }
+}

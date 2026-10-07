@@ -1,0 +1,11 @@
+{
+  "position": 1.325,
+  "label": "Files and media",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "slug": "/onu/_categories/files-and-media",
+    "description": "Uploads, images, galleries and media"
+  }
+}

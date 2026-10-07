@@ -14,14 +14,15 @@ const isExternal = (id: string) =>
 /** Library entry points, mirrored by package.json `exports` (R2.5). */
 const entries = {
   index: "src/index.ts",
+  "ui/index": "src/ui/index.ts",
   "thaana/index": "src/thaana/index.ts",
   "charts/index": "src/charts/index.ts",
   "maps/index": "src/maps/index.ts",
   "editor/index": "src/editor/index.ts",
   "calendar/index": "src/calendar/index.ts",
   "media/index": "src/media/index.ts",
-  "icons/iconify/index": "src/icons/iconify/index.ts",
-  "icons/fontawesome/index": "src/icons/fontawesome/index.ts",
+  "icons/iconify/index": "src/icons/iconify/index.tsx",
+  "icons/fontawesome/index": "src/icons/fontawesome/index.tsx",
 }
 
 export default defineConfig({

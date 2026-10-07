@@ -12,7 +12,7 @@ export default defineConfig({
     // Use the package source directly so edits show up without a rebuild.
     alias: [
       { find: /^@javaabu\/onu\/(tailwind|styles|fonts|fonts-optional)\.css$/, replacement: `${onuSrc}/styles/$1.css` },
-      { find: /^@javaabu\/onu\/icons\/(iconify|fontawesome)$/, replacement: `${onuSrc}/icons/$1/index.ts` },
+      { find: /^@javaabu\/onu\/icons\/(iconify|fontawesome)$/, replacement: `${onuSrc}/icons/$1/index.tsx` },
       { find: /^@javaabu\/onu\/(thaana|charts|maps|editor|calendar|media)$/, replacement: `${onuSrc}/$1/index.ts` },
       { find: /^@javaabu\/onu$/, replacement: `${onuSrc}/index.ts` },
       { find: /^@\//, replacement: `${resolve(__dirname, "src")}/` },

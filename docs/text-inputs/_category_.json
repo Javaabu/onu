@@ -1,0 +1,11 @@
+{
+  "position": 1.31,
+  "label": "Text inputs",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "slug": "/onu/_categories/text-inputs",
+    "description": "Text, Thaana, number, phone, OTP and other inputs"
+  }
+}

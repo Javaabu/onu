@@ -12,7 +12,10 @@ export { useMediaQuery, useCoarsePointer, useNoHover } from "./hooks/use-media-q
 // shadcn/ui primitives
 export * from "./ui"
 
-// Onu components
+// Onu components. Where an Onu component extends a shadcn primitive of the same
+// name, the Onu version is exported here; the primitive stays available from
+// "@javaabu/onu/primitives".
+export { Textarea, type TextareaProps } from "./components/inputs/textarea"
 export * from "./components/form"
 export * from "./components/inputs"
 export * from "./components/date"

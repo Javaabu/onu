@@ -1,0 +1,11 @@
+{
+  "position": 1.355,
+  "label": "Loading",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "slug": "/onu/_categories/loading",
+    "description": "Spinners, skeletons and progress"
+  }
+}

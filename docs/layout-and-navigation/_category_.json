@@ -1,0 +1,11 @@
+{
+  "position": 1.36,
+  "label": "Layout and navigation",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "slug": "/onu/_categories/layout-and-navigation",
+    "description": "App layout, navigation and structure"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "position": 1.335,
+  "label": "Maps",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "slug": "/onu/_categories/maps",
+    "description": "Google Maps components"
+  }
+}
