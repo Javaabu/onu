@@ -33,6 +33,7 @@ This document captures the requirements, constraints and full build list for Onu
 22. [UI build list](#22-ui-build-list)
 23. [Sample pages](#23-sample-pages)
 24. [Open questions](#24-open-questions)
+25. [Expected UI behaviour](#25-expected-ui-behaviour)
 
 ---
 
@@ -110,6 +111,17 @@ Onu is used mainly for admin panels, but the same system has to work for public 
 - **R3.9** **Print**: print styles for certificates, receipts, invoices and detail views.
 - **R3.10** **Foundations first**: before the component build starts, a *Design foundations* page in `examples/` (colour, type, spacing, elevation, radius, iconography, density) is reviewed and signed off.
 
+### Figma kit (required)
+
+- **R3.11** A **Figma kit is a required deliverable**. It is a published Figma library that mirrors Onu one-to-one, so designers and developers work from the same system.
+- **R3.12** **Tokens are defined once, in code**: a W3C Design Tokens (DTCG) `tokens.json` in the repo. It generates the CSS variables (§9) and is synced to **Figma Variables** (via Tokens Studio or the Figma Variables REST API). Neither side is edited by hand on its own.
+  - Variable modes cover light/dark and the density modes, and the primary colour is a single variable, just as in code.
+- **R3.13** Every component in the build list (§22) has a Figma component whose properties and variants match the React props and `cva` variants (size, variant, state, density), using the same names.
+- **R3.14** The kit includes LTR and RTL versions of components where layout differs, Thaana typography styles, the default Lucide icon set, and text styles for Inter / Noto Sans Thaana / JetBrains Mono (§7).
+- **R3.15** **Figma Code Connect** links each Figma component to its React component and import, so Dev Mode shows real Onu code snippets.
+- **R3.16** The sample pages (§23) also exist as Figma frames, built only from kit components.
+- **R3.17** The kit may start from a community shadcn/ui Figma kit if its licence allows. It is versioned alongside the npm package: each release notes the matching kit version, and changes to tokens or components land in both in the same release.
+
 ## 4. Dependency policy
 
 **Don't build from scratch unless nothing good exists.** The order of preference for every component:
@@ -184,7 +196,7 @@ These picks were made against §4. A library may be replaced during implementati
 ## 6. Icons
 
 - **R6.1** An `<Icon>` component gives consistent sizing (size tokens that line up with the text scale) and inherits `currentColor`. It is `aria-hidden` by default; passing `label` makes it a meaningful image (`role="img"` + `aria-label`).
-- **R6.2** **Default set: [Lucide](https://lucide.dev)** (`lucide-react`). It is shadcn's default, has 1,600+ consistent-stroke icons, is ISC-licensed and tree-shakable.
+- **R6.2** **Default set: [Lucide](https://lucide.dev)** (`lucide-react`). It is shadcn's default, has 1,600+ consistent-stroke icons, is ISC-licensed and tree-shakable. **Lucide is the default for every project**: no configuration is needed to use it, and every built-in component ships with Lucide icons.
 - **R6.3** **Wide set: [Iconify](https://iconify.design)** (`@iconify/react`) gives access to 200,000+ icons across 150+ open sets, e.g. Tabler, Phosphor, Material Symbols, Heroicons, Remix, Fluent, and brand logos via Simple Icons.
   - **Offline mode is required**: collections are registered from `@iconify-json/*` packages, so there are no runtime API calls. This is needed for kiosks, intranets and strict CSP.
 - **R6.4** **[FontAwesome](https://fontawesome.com) Free and Pro support** through an adapter at `@javaabu/onu/icons/fontawesome`, built on `@fortawesome/react-fontawesome` + `@fortawesome/fontawesome-svg-core`.
@@ -192,7 +204,7 @@ These picks were made against §4. A library may be replaced during implementati
   - Pro packages are **optional peer dependencies supplied by the consuming project** (Pro needs a licensed token for `npm.fontawesome.com`). Onu never bundles or redistributes Pro icons.
   - CI tests the adapter with the Free packages. It also runs the Pro tests when a `FONTAWESOME_NPM_AUTH_TOKEN` secret is available.
   - Duotone secondary colour is bound to theme tokens (`--fa-primary-color`, `--fa-secondary-color` → `--onu-primary`), so duotone icons follow the theme.
-- **R6.5** **One switch for the whole library**: components refer to icons by semantic names (`close`, `check`, `chevron-down`, `search`, `calendar`, `upload`, `sort-asc`, `external-link`, …). `OnuProvider icons={...}` maps those names to any set.
+- **R6.5** **One switch for the whole library** (opt-in FontAwesome Pro): components refer to icons by semantic names (`close`, `check`, `chevron-down`, `search`, `calendar`, `upload`, `sort-asc`, `external-link`, …). `OnuProvider icons={...}` maps those names to any set.
   - Ships with `lucideIconMap` (the default) and `fontAwesomeIconMap({ style: 'regular' | 'solid' | 'light' | 'thin' | 'duotone' | 'sharp-…' })`.
   - A project already on FontAwesome Pro can therefore switch every built-in icon with one line.
 - **R6.6** Any component that renders an icon accepts overrides (`icon`, `startIcon`, `endIcon`, or slot props) as a React node or component.
@@ -401,6 +413,7 @@ onu/
 ├── .changeset/
 ├── .github/workflows/        # ci.yml, e2e.yml, release.yml
 ├── docs/                     # Docusaurus-format markdown (see §19)
+├── figma/                    # Code Connect mappings + token sync scripts
 ├── examples/                 # Vite showcase + sample pages app
 ├── packages/
 │   └── onu/                  # @javaabu/onu
@@ -410,13 +423,14 @@ onu/
 │       │   ├── icons/        # Icon, DynamicIcon, semantic icon maps, Iconify + FontAwesome adapters
 │       │   ├── charts/ maps/ editor/ calendar/ media/
 │       │   ├── hooks/ lib/ locales/ providers/
-│       │   └── styles/       # tokens.css, base.css, tailwind.css
+│       │   └── styles/       # generated tokens.css, base.css, tailwind.css
 │       └── package.json
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
 ├── LICENSE.md
 ├── README.md
-└── REQUIREMENTS.md
+├── REQUIREMENTS.md
+└── tokens.json               # DTCG design tokens: source for CSS + Figma Variables
 ```
 
 ## 21. Component definition of done
@@ -433,7 +447,9 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Uses semantic icon names so it follows the configured icon set
 - [ ] `className` / `classNames` / `asChild` overrides as applicable
 - [ ] Meets WCAG 2.2 AA; axe tests pass; keyboard interactions documented
+- [ ] Matches the expected UI behaviour in §25 where that component is specified, with a test for each listed behaviour
 - [ ] Unit tests meeting coverage thresholds
+- [ ] Matching Figma component published in the kit, with Code Connect
 - [ ] Showcase page in `examples/`
 - [ ] Docs page in `docs/`
 - [ ] Changeset added
@@ -690,6 +706,8 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Density modes
 - [ ] `Icon`, `DynamicIcon` and semantic icon maps (Lucide, Iconify, FontAwesome)
 - [ ] Font pack (`fonts.css`)
+- [ ] `tokens.json` (DTCG) → CSS variables + Figma Variables sync
+- [ ] Figma kit (foundations, components, sample page frames, Code Connect)
 - [ ] Dhivehi `date-fns` locale
 - [ ] `cn()` and shared utilities
 - [ ] Visually hidden / live region utilities
@@ -811,8 +829,8 @@ To be resolved before (or while) building the affected components:
 1. **Licence** — MIT like other Javaabu packages, or private/internal?
 2. **Map provider** — MapLibre (free, self-hostable tiles) as default, or Google Maps as primary? Which tile provider for the Maldives?
 3. **Thaana fonts**: does Javaabu hold licences for any Maldivian fonts (e.g. Faruma) that could ship as an optional pack, or do we stay with Noto Sans Thaana only?
-4. **FontAwesome Pro**: which Pro licence/Kit should CI use (needs a `FONTAWESOME_NPM_AUTH_TOKEN` secret)? Should the default icon map stay Lucide, or default to FontAwesome for Javaabu's own projects?
-5. **Figma**: do we also need a matching Figma kit (e.g. based on the shadcn Figma kit) for designers?
+4. **FontAwesome Pro**: which Pro licence/Kit should CI use (needs a `FONTAWESOME_NPM_AUTH_TOKEN` secret)?
+5. **Figma**: which Figma team/workspace hosts the library, and is a paid plan with Dev Mode available for Code Connect?
 6. **Default primary colour** — exact Javaabu/Onu brand colour value.
 7. **Docs hosting** — confirm the Docusaurus docs site that consumes `/docs` (same as js-utilities) and its slug (`/onu`).
 8. **Component semantics to confirm**:
@@ -824,3 +842,297 @@ To be resolved before (or while) building the affected components:
    - *Map navigation* / *Map replay* — data shape for tracks (GeoJSON LineString with timestamps?).
    - *Payment method selector* — which gateways (BML, MIB, MFaisaa, card) and branding assets?
 9. **React Native / Flutter parity** — should token names align with the Flutter design system for cross-platform consistency?
+
+---
+
+## 25. Expected UI behaviour
+
+> Directions in this section (left/right, ‹/›) describe the LTR layout. In RTL they mirror (§11). All visible text comes from the locale dictionaries (§12).
+
+How each component should look and act from the user's point of view: what appears, and what happens when they click, type or press a key.
+
+### 25.1 Date picker
+
+#### Field
+- Shows the selected date in the configured format (e.g. `12/03/2026`), or a placeholder like "Select a date" when empty.
+- Clicking the field (or pressing Enter/Space on it) opens the picker below it.
+- A disabled field does nothing when clicked.
+- A field with an error is highlighted, and the error message shows underneath.
+
+#### Days view (what opens first)
+- Shows one month as a grid, with weekday names across the top.
+- The month shown is the one containing the selected date, or today's month if the field is empty.
+- Today is marked. The selected date is highlighted.
+- Weekend days are visually distinct.
+- Days from the previous and next month fill the first and last rows, dimmed.
+- Clicking a day selects it, closes the picker, and shows the date in the field.
+- **‹** and **›** arrows move to the previous and next month.
+- Dates outside the allowed range are greyed out and can't be clicked.
+- Opening the picker does **not** select anything by itself; the field stays empty until the user clicks a day.
+
+#### Zooming out
+- The header shows the month and year, e.g. "March 2026".
+- **Clicking "March 2026"** switches to the **months view**: a grid of the 12 months of 2026.
+  - Clicking a month goes back to the days view for that month.
+  - ‹ › move to the previous and next year.
+- **Clicking "2026" in the months view** switches to the **years view**: a grid of 12 years around 2026.
+  - Clicking a year goes back to the months view for that year.
+  - ‹ › move by 12 years.
+- **Clicking the year range** (e.g. "2016–2027") switches to the **decades view**: a grid of 12-year blocks. Clicking a block goes back to the years view.
+
+#### Footer
+- **Clear** empties the field and closes the picker. It's shown only on optional fields.
+- **Done** closes the picker.
+
+#### Keyboard
+- Arrow keys move the highlight one day left or right, or one week up or down.
+- Page Up / Page Down go to the previous or next month (or year / 12 years in the other views).
+- Home / End go to the start or end of the week.
+- Enter or Space selects the highlighted day.
+- Escape closes the picker without changing anything, and returns focus to the field.
+- Clicking outside the picker closes it.
+
+### 25.2 Time picker
+
+#### Field
+- Shows the time, e.g. "2:30 PM" (12-hour) or "14:30" (24-hour), or a placeholder when empty.
+- Clicking it opens the time panel.
+
+#### Main view: steppers
+- Shows the hour and the minute side by side as large numbers, plus an **AM / PM** switch with both options visible and the current one highlighted.
+- Each number has a **▲** above it and a **▼** below it.
+  - Clicking ▲ / ▼ changes the value by one.
+  - The value wraps around: ▼ on 12 gives 11, ▲ on 59 minutes gives 00.
+  - Changing the hour never changes the date.
+- Clicking **AM** or **PM** switches between morning and afternoon, keeping the same hour on the clock (9 AM ↔ 9 PM).
+- Keyboard:
+  - Up/Down arrows on a number step it.
+  - Pressing **A** or **P** switches AM/PM directly.
+
+#### Clicking the hour: hour grid
+- Clicking the hour number opens an **hour grid**: 12 cells (12, 1, 2 … 11), laid out like a clock face, with the current hour highlighted.
+- A **Back** link returns to the steppers without changing anything.
+- Clicking an hour sets it and returns to the steppers.
+- The AM/PM setting is kept.
+
+#### Clicking the minute: minute grid
+- Clicking the minute number opens a **minute grid**: one cell per step (e.g. 00, 05, 10 … 55 for a 5-minute step), with the current minute highlighted.
+- Clicking a minute sets it and returns to the steppers. **Back** returns without changing anything.
+- If the steppers have set a minute that isn't on the grid (e.g. 07 with a 5-minute step), no cell is highlighted.
+
+#### Footer
+- **Clear** (optional fields only) empties the field and closes the panel.
+- **Done** closes the panel.
+
+#### 24-hour mode
+- The same as above, with no AM/PM switch.
+- The hour grid shows 00–23.
+
+#### Keyboard
+- In the grids, arrow keys move between cells and Enter picks one.
+- Escape closes the panel and returns focus to the field.
+
+### 25.3 Date-time picker
+
+- Opens on the **calendar** (the days view from the date picker).
+- Below the calendar, a **time chip** shows the current time, e.g. "🕑 2:30 PM".
+  - Clicking it swaps the calendar for the **time steppers** (§25.2).
+  - A **Back to calendar** link swaps back.
+- Next to it, **Clear time** resets the time to 00:00 and keeps the date.
+- Picking a day without ever choosing a time sets the time to 00:00.
+- The field shows both, e.g. "12/03/2026 2:30 PM".
+
+### 25.4 Date range
+
+- Two fields side by side: **From** and **To**. Each opens a date picker.
+- Either can be left empty for an open-ended range ("from 1 March onwards", "up to 31 March").
+- A To date with no time means **the end of that day**.
+- If To is before From, the range shows the message "End date is before start date".
+
+### 25.5 Relative time
+
+- Shows times like "just now", "5 minutes ago", "3 days ago" or "in 2 hours".
+- Hovering or focusing shows the exact date and time in a tooltip.
+- On touch screens (no hover), the exact date and time is shown in smaller text underneath instead.
+- With no value, it shows "—".
+
+### 25.6 Index (list) page
+
+#### What appears, top to bottom
+
+1. **Page header:**
+   - the page title (e.g. "Users");
+   - the main action button (e.g. "New user");
+   - secondary links if any (e.g. "Trash"). A small dot on Trash means it isn't empty.
+2. **Toolbar:**
+   - a **search box**;
+   - a **Filters** button. When filters are applied it shows a count badge, e.g. "Filters 2".
+   - an optional **Export** button.
+3. **Filter pills:** one pill per active filter, e.g. "Status: Active ✕". Only shown when filters are applied.
+4. **Table:**
+   - a checkbox column;
+   - the data columns;
+   - an actions (⋯) button at the end of each row.
+5. **Pagination** at the bottom:
+   - "Showing 26–50 of 312 users";
+   - a rows-per-page select (10 / 25 / 50 / 100);
+   - **Previous / Next** buttons.
+
+#### Search
+- Typing does nothing until the user presses **Enter**, or leaves the box after changing the text. Then the list updates.
+- Clearing the box and pressing Enter shows everything again.
+
+#### Sorting
+- Clicking a sortable column header sorts by it, A→Z or oldest→newest. An arrow appears on that header.
+- Clicking the same header again reverses the order.
+- Clicking another header sorts by that column instead, starting ascending.
+
+#### Pagination
+- Previous is disabled on the first page, and Next on the last.
+- Changing rows-per-page goes back to page 1.
+- Searching, filtering or sorting also goes back to page 1.
+
+#### Selecting rows and bulk actions
+- Ticking row checkboxes selects rows.
+- The header checkbox selects or deselects every row on **this page**.
+  - It shows a dash (–) when only some rows are selected.
+- As soon as one row is selected, a **bulk action bar** appears, showing:
+  - "3 selected";
+  - the bulk actions (e.g. "Delete", "Change status");
+  - a "Clear selection" link.
+- Choosing an action that needs more input (e.g. "Change status") shows a small form in the bar first.
+- Choosing a destructive action (e.g. "Delete") shows a confirmation, "Delete 3 selected users?", with Cancel and Delete buttons.
+- While the action runs, the bar shows a spinner, and the buttons can't be clicked again.
+- When it finishes:
+  - a success message appears, e.g. "3 users deleted";
+  - the selection clears.
+- Moving to another page, searching, filtering or sorting also clears the selection.
+
+#### Row actions (⋯ menu)
+- Clicking ⋯ opens a menu of actions for that row, e.g. View, Edit, Delete.
+- Only actions the user can actually do are listed.
+- Choosing Delete closes the menu, then asks "Delete Jane Doe?" before deleting.
+- Escape closes the menu.
+- Clicking the row (or its name) opens the record.
+
+#### Empty states
+- **No records at all:** a message such as "No users yet", a short explanation, and the main action button ("New user").
+- **No results for the current search or filters:**
+  - "No users match your search", naming the search term and filters;
+  - **Clear search** and/or **Clear filters** buttons.
+
+#### Trash view
+- Opened from the Trash link: the same list, showing deleted records.
+- No bulk bar.
+- Each row's ⋯ menu has **Restore** and **Delete permanently**. The second asks for confirmation first.
+
+#### On phones
+- Each row becomes a card, with every value labelled by its column name.
+- A **Sort by** dropdown replaces the clickable column headers.
+- A "Select all" checkbox sits above the cards.
+
+#### Browser behaviour
+- The search, filters, sort and page are kept in the address bar, so reloading or sharing the link shows the same view.
+- The Back button leaves the page. It doesn't undo each filter change one by one.
+
+### 25.7 Filters
+
+#### Filters panel
+- Clicking **Filters** opens a panel: a dropdown on desktop, a bottom sheet on phones.
+- It lists each available filter with its control:
+  - **Select:** pick one or several options. Long lists can be searched as you type.
+  - **Date range:**
+    - a "Date" dropdown, to choose which date to filter on (e.g. Created, Updated);
+    - **From** and **To** pickers.
+  - **Yes / No:** a two-option select.
+  - **Text:** a text box.
+  - **Deleted records:** "Hide", "Include" or "Only".
+- Each filter has its own **Clear** link.
+- At the bottom: **Clear all**, **Cancel** and **Apply**.
+- Changes in the panel don't affect the list until **Apply** is clicked.
+- **Cancel**, Escape or clicking outside closes the panel and throws away the changes.
+- **Clear all** removes every filter straight away and closes the panel.
+- Reopening the panel always shows the filters currently applied.
+
+#### Filter pills
+- After applying, each active filter shows as a pill under the toolbar. Examples:
+  - "Status: Active";
+  - "Created: 1 Mar → 31 Mar";
+  - "Created: from 1 Mar".
+- Clicking ✕ on a pill removes that filter, and the list updates.
+- When two or more pills are shown, a **Clear all** link appears next to them.
+- The Filters button's badge shows how many filters are active.
+
+### 25.8 Record view (show) page
+
+#### What appears
+1. **Breadcrumbs:** e.g. "Users › Jane Doe". Each part is a link except the last.
+2. **Header:**
+   - the record's name;
+   - on the left, links back to the list ("All users") and to "Trash";
+   - on the right, record actions ("Logs", "Delete").
+3. **Tabs:**
+   - e.g. "Profile", "Edit", "Activity (12)";
+   - each tab opens its own page, and the current one is highlighted.
+4. **Summary strip:** key facts such as "Created 3 months ago" and "Last login yesterday".
+5. **Detail cards:**
+   - groups of label–value pairs (e.g. "Email: jane@example.com");
+   - a missing value shows "—".
+6. **Activity card:** the last few changes, with a "View all" link.
+
+#### Actions
+- Status buttons such as **Approve** or **Suspend** do what they say. Risky ones ask for confirmation first.
+- After an action, a success message appears, and the page shows the updated record.
+- **Delete** asks for confirmation, then returns to the list with "Moved to trash".
+
+### 25.9 Edit page
+
+#### What appears
+- The same breadcrumbs, header and tabs as the view page, with **Edit** highlighted.
+- The form fields, grouped into cards.
+- A **save bar**:
+  - a sticky panel on the side on desktop, and a bar fixed to the bottom on phones;
+  - it holds **Save** and **Discard** buttons.
+
+#### While editing
+- As soon as a field changes, the save bar lists the change in plain words. For example:
+  - "Email changes to jane@new.com"
+  - "Role changes to Editor"
+- **Save** is disabled until something has changed.
+- **Discard** puts every field back to how it was when last saved.
+
+#### Leaving with unsaved changes
+- Clicking a link or tab, or pressing Back, asks "You have unsaved changes. Leave anyway?". Choosing to stay keeps the user on the page.
+- Closing or reloading the browser tab shows the browser's own "Leave site?" warning.
+- No warning appears once the changes are saved or discarded.
+
+#### Saving
+- Clicking **Save** shows a spinner on the button and prevents double-clicking.
+- **On success:**
+  - a message such as "User saved" appears;
+  - the save bar empties;
+  - the page stays on Edit.
+- **On error:**
+  - each problem shows in red under its field (e.g. "Email is already taken");
+  - the cursor jumps to the first field with an error;
+  - a short message says the save didn't go through.
+
+#### Separate sections
+- Things like "Change password" have their own card with their own Save button, independent of the main save bar.
+
+#### New record (create) page
+- Looks like the edit page, with empty fields.
+- The tabs are shown but greyed out until the record is saved.
+- After saving, the user lands on the new record.
+
+### 25.10 Keyboard and screen readers (applies to everything)
+
+- Every button, menu, picker and panel can be used with the keyboard alone.
+- After closing a menu, picker, panel or dialog, the cursor goes back to whatever opened it.
+- Screen readers announce:
+  - the selected date;
+  - the sort direction;
+  - "3 selected";
+  - which tab is current;
+  - error messages.
+- Every piece of text can be translated.
