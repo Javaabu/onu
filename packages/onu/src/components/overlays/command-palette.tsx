@@ -103,7 +103,7 @@ export function normalizeSearch(text: string) {
 }
 
 /** True when every word of `query` appears in the item's value, label or keywords. */
-export function matchesQuery(item: CommandPaletteItem, query: string) {
+export function matchesCommandItem(item: CommandPaletteItem, query: string) {
   const words = normalizeSearch(query).split(/\s+/).filter(Boolean)
   if (!words.length) return true
   const haystack = normalizeSearch(
@@ -248,7 +248,7 @@ export function CommandPalette({
         .map((group, index) => ({
           ...group,
           id: group.id ?? `group-${index}`,
-          items: group.items.filter((item) => matchesQuery(item, trimmed)),
+          items: group.items.filter((item) => matchesCommandItem(item, trimmed)),
         }))
         .filter((group) => group.items.length > 0),
     [groups, trimmed],

@@ -69,7 +69,7 @@ Chosen items are remembered in `localStorage` (`recent={{ storageKey, max }}`, d
 | `open`, `defaultOpen`, `onOpenChange` |                                                     |                    | Open state                          |
 | `classNames`                          | `{ input, list, group, item, empty, footer }`       |                    | Classes for each part               |
 
-`CommandPaletteItem`: `{ id, label, value?, keywords?, icon?, description?, shortcut?, href?, onSelect?, disabled? }`. `matchesQuery` and `normalizeSearch` are exported for custom filtering.
+`CommandPaletteItem`: `{ id, label, value?, keywords?, icon?, description?, shortcut?, href?, onSelect?, disabled? }`. `matchesCommandItem` and `normalizeSearch` are exported for custom filtering.
 
 ## Accessibility
 

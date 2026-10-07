@@ -7,7 +7,7 @@ import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test
 import { Button } from "../../ui/button"
 import {
   CommandPalette,
-  matchesQuery,
+  matchesCommandItem,
   normalizeSearch,
   type CommandPaletteGroup,
   type CommandPaletteItem,
@@ -45,11 +45,11 @@ describe("search helpers", () => {
 
   it("matches every word against value, label and keywords", () => {
     const item: CommandPaletteItem = { id: "1", label: "Staff list", keywords: ["employees"] }
-    expect(matchesQuery(item, "")).toBe(true)
-    expect(matchesQuery(item, "staff emp")).toBe(true)
-    expect(matchesQuery(item, "staff x")).toBe(false)
-    expect(matchesQuery({ id: "2", label: <b>Node</b>, value: "custom" }, "cust")).toBe(true)
-    expect(matchesQuery({ id: "3", label: <b>Node</b> }, "node")).toBe(false)
+    expect(matchesCommandItem(item, "")).toBe(true)
+    expect(matchesCommandItem(item, "staff emp")).toBe(true)
+    expect(matchesCommandItem(item, "staff x")).toBe(false)
+    expect(matchesCommandItem({ id: "2", label: <b>Node</b>, value: "custom" }, "cust")).toBe(true)
+    expect(matchesCommandItem({ id: "3", label: <b>Node</b> }, "node")).toBe(false)
   })
 })
 
