@@ -21,6 +21,34 @@ describe("SignInForm", () => {
     await expectNoA11yViolations()
   })
 
+  it("passes extraFields values to onSubmit alongside the built-in fields", async () => {
+    const onSubmit = vi.fn()
+    renderWithOnu(
+      <SignInForm
+        onSubmit={(values) => onSubmit(values.island, values.email)}
+        showRemember={false}
+        extraFields={
+          <label>
+            Island
+            <input name="island" defaultValue="Hulhumalé" />
+          </label>
+        }
+      />,
+    )
+    await userEvent.type(screen.getByLabelText(/Email/), "aisha@example.mv")
+    await userEvent.type(screen.getByLabelText(/^Password/), "secret")
+    await userEvent.click(screen.getByRole("button", { name: "Sign in" }))
+    expect(onSubmit).toHaveBeenCalledWith("Hulhumalé", "aisha@example.mv")
+  })
+
+  it("draws the 'or' divider without a background, so it suits the card in dark mode", () => {
+    renderWithOnu(<SignInForm efaas={<button type="button">eFaas</button>} />, { dark: true })
+    const label = screen.getByText("or")
+    expect(label.closest("[data-slot=divider]")).toBeInTheDocument()
+    expect(label.className).not.toMatch(/\bbg-/)
+    document.documentElement.classList.remove("dark")
+  })
+
   it("shows/hides the password", async () => {
     renderWithOnu(<SignInForm />)
     const password = screen.getByLabelText(/^Password/)

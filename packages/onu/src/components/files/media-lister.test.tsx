@@ -158,6 +158,9 @@ describe("MediaLister", () => {
     renderWithOnu(<MediaLister items={items} selectionMode="multiple" searchThaana />, { locale: "dv", dir })
     expect(screen.getByRole("list", { name: "މީޑިއާ ލައިބްރަރީ" })).toBeInTheDocument()
     expect(screen.getByRole("searchbox")).toHaveAttribute("lang", "dv")
+    // Names follow their own direction (so they truncate at their own end); sizes stay "313 KB".
+    expect(screen.getByText("Maafushi beach.jpg").parentElement).toHaveAttribute("dir", "auto")
+    expect(screen.getByText("313 KB")).toHaveAttribute("dir", "ltr")
     await expectNoA11yViolations()
   })
 })

@@ -92,11 +92,11 @@ function sentence(t: Translate, key: string, parts: Record<string, React.ReactNo
  * Builds save-bar changes by comparing saved and current values. Only keys in
  * `labels` are compared (in that order); values are compared as JSON.
  */
-export function describeChanges<T extends Record<string, unknown>>(
+export function describeChanges<T extends object>(
   initial: Partial<NoInfer<T>> | undefined,
   current: T,
-  labels: Partial<Record<keyof NoInfer<T>, string>>,
-  format?: Partial<Record<keyof NoInfer<T>, (value: unknown) => unknown>>,
+  labels: Partial<Record<keyof NoInfer<T> & string, string>>,
+  format?: Partial<{ [K in keyof NoInfer<T> & string]: (value: T[K]) => unknown }>,
 ): SaveBarChange[] {
   return (Object.keys(labels) as (keyof T & string)[]).flatMap((key) => {
     const before = initial?.[key]
@@ -104,6 +104,39 @@ export function describeChanges<T extends Record<string, unknown>>(
     if (JSON.stringify(before ?? null) === JSON.stringify(after ?? null)) return []
     return [{ key, field: labels[key] ?? key, value: format?.[key] ? format[key]!(after) : after }]
   })
+}
+
+/**
+ * While the bar is fixed to the bottom, keeps it inside the page's content
+ * column (`AppLayout`'s main area, or the nearest `<main>`) so it never covers
+ * a desktop sidebar. Writes the column's inline offsets to CSS variables.
+ */
+function useContentColumnInset(ref: React.RefObject<HTMLElement | null>, enabled: boolean) {
+  React.useLayoutEffect(() => {
+    const bar = ref.current
+    if (!enabled || !bar || typeof window === "undefined") return
+    const column = bar.closest<HTMLElement>('[data-slot="app-layout-main"], [data-slot="sidebar-inset"], main')
+    if (!column) return
+    const update = () => {
+      const rect = column.getBoundingClientRect()
+      const viewport = document.documentElement.clientWidth
+      const rtl = getComputedStyle(bar).direction === "rtl"
+      const left = Math.max(0, rect.left)
+      const right = Math.max(0, viewport - rect.right)
+      bar.style.setProperty("--save-bar-start", `${rtl ? right : left}px`)
+      bar.style.setProperty("--save-bar-end", `${rtl ? left : right}px`)
+    }
+    update()
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update)
+    observer?.observe(column)
+    window.addEventListener("resize", update)
+    return () => {
+      observer?.disconnect()
+      window.removeEventListener("resize", update)
+      bar.style.removeProperty("--save-bar-start")
+      bar.style.removeProperty("--save-bar-end")
+    }
+  }, [ref, enabled])
 }
 
 /**
@@ -137,6 +170,7 @@ export function SaveBar({
   const [ownStatus, setOwnStatus] = React.useState<"idle" | "success" | "error">("idle")
   const [expanded, setExpanded] = React.useState(false)
   const listId = React.useId()
+  const barRef = React.useRef<HTMLElement>(null)
   const dirty = dirtyProp ?? changes.length > 0
   const saving = savingProp ?? (ownSaving || (!onSave && !!formCtx?.processing))
   const formStatus = formCtx?.status === "success" ? "success" : formCtx?.status === "error" ? "error" : "idle"
@@ -162,6 +196,7 @@ export function SaveBar({
   const showSuccess = status === "success" && !dirty
   const showError = status === "error"
   const count = changes.length
+  useContentColumnInset(barRef, bottom || responsive)
 
   const message = showError ? (
     <p role="alert" className={cn("gap-1.5 text-sm flex items-start text-destructive", classNames?.message)}>
@@ -178,6 +213,7 @@ export function SaveBar({
   return (
     <>
       <aside
+        ref={barRef}
         data-slot="save-bar"
         data-layout={layout}
         data-dirty={dirty || undefined}
@@ -186,7 +222,7 @@ export function SaveBar({
           "gap-3 grid bg-background text-foreground",
           // phones: fixed to the bottom, above the safe area
           (bottom || responsive) &&
-            "inset-x-0 bottom-0 px-4 pt-3 fixed z-40 border-t border-border pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-4px_16px_-8px_rgb(0_0_0/0.15)]",
+            "bottom-0 px-4 pt-3 fixed start-(--save-bar-start,0px) end-(--save-bar-end,0px) z-40 border-t border-border pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-4px_16px_-8px_rgb(0_0_0/0.15)]",
           // desktop: sticky side panel
           responsive &&
             "lg:inset-auto lg:top-4 lg:rounded-xl lg:p-4 lg:sticky lg:z-auto lg:border lg:bg-card lg:shadow-none",
@@ -196,7 +232,9 @@ export function SaveBar({
         {...props}
       >
         <div className="gap-2 flex items-center justify-between">
-          <h2 className={cn("text-sm font-semibold", classNames?.title)}>{title ?? t("form.unsavedChanges")}</h2>
+          <h2 className={cn("text-sm font-semibold", classNames?.title)}>
+            {dirty ? (title ?? t("form.unsavedChanges")) : t("form.noChanges")}
+          </h2>
           {count > 0 ? (
             <button
               type="button"
@@ -243,11 +281,7 @@ export function SaveBar({
                 )
               })}
             </ul>
-          ) : showSuccess || showError ? null : (
-            <p className={cn("text-sm text-muted-foreground", bottom && "sr-only", responsive && "max-lg:sr-only")}>
-              {t("form.noChanges")}
-            </p>
-          )}
+          ) : null}
           {message}
         </div>
 

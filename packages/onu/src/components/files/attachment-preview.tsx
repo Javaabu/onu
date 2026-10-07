@@ -110,12 +110,21 @@ export function AttachmentPreview({
       )}
       <div className={cn("min-w-0 gap-2 flex flex-1 items-center", card && "p-3")}>
         <div className="min-w-0 gap-0.5 flex flex-1 flex-col">
-          <span title={name} className={cn("text-sm font-medium truncate", classNames?.name)}>
+          <span
+            dir="auto"
+            title={name}
+            className={cn("text-sm font-medium max-w-full self-start truncate", classNames?.name)}
+          >
             <bdi>{name}</bdi>
           </span>
           {meta.length || extraMeta ? (
             <span className={cn("gap-x-1 text-xs flex flex-wrap text-muted-foreground tabular-nums", classNames?.meta)}>
-              {meta.length ? <span>{meta.join(" · ")}</span> : null}
+              {meta.map((part, i) => (
+                <React.Fragment key={i}>
+                  {i ? <span aria-hidden="true">·</span> : null}
+                  <span dir="ltr">{part}</span>
+                </React.Fragment>
+              ))}
               {meta.length && extraMeta ? <span aria-hidden="true">·</span> : null}
               {extraMeta}
             </span>
@@ -174,8 +183,10 @@ export function AttachmentPreview({
             className={cn("sm:max-w-3xl max-h-[calc(100dvh-2rem)] grid-rows-[auto_minmax(0,1fr)]", classNames?.dialog)}
           >
             <DialogHeader className="gap-2 flex-row items-center">
-              <DialogTitle className="min-w-0 leading-normal flex-1 truncate">
-                <bdi>{name}</bdi>
+              <DialogTitle className="min-w-0 leading-normal flex-1">
+                <span dir="auto" className="block w-fit max-w-full truncate">
+                  {name}
+                </span>
               </DialogTitle>
               <DialogDescription className="sr-only">{t("file.previewOf", { name })}</DialogDescription>
               {download ? (

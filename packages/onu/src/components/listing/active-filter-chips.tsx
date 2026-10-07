@@ -7,9 +7,40 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { formatFilter, type FormattedFilter } from "./_filter-format"
-import type { FilterDefinition, FilterValues } from "./listing-types"
+import type { FilterDefinition, FilterValue, FilterValues } from "./listing-types"
 
 export { formatFilter, formatFilterDate, type FormattedFilter } from "./_filter-format"
+
+/** One applied filter as a single label, e.g. "Status: Active" (as the "no results" state lists them). */
+export function formatFilterLabel(filter: FormattedFilter) {
+  return `${filter.label}: ${filter.text}`
+}
+
+/**
+ * Formats one applied filter in the active locale: `(definition, value)` →
+ * "Status: Active", "Created: 1 Mar → 31 Mar", or `null` when the value is empty.
+ * For custom empty states and summaries; dates and Yes/No use the active locale.
+ */
+export function useFormatFilter() {
+  const { t, locale } = useTranslation()
+  return React.useCallback(
+    (definition: FilterDefinition, value: FilterValue | undefined): string | null => {
+      const formatted = formatFilter(definition, value, t, locale.dateFns)
+      return formatted ? formatFilterLabel(formatted) : null
+    },
+    [t, locale.dateFns],
+  )
+}
+
+/**
+ * Labels for every applied filter, in the order of `filters`
+ * (`["Status: Active", "Island: Malé"]`). Pass them to `EmptyState`'s
+ * `filters` for a custom "no results" state.
+ */
+export function useActiveFilterLabels(filters: FilterDefinition[], value: FilterValues): string[] {
+  const chips = useActiveFilterChips(filters, value)
+  return React.useMemo(() => chips.map(formatFilterLabel), [chips])
+}
 
 export interface ActiveFilterChip extends FormattedFilter {
   key: string

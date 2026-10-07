@@ -6,8 +6,8 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
 import { Checkbox } from "../../ui/checkbox"
-import { FieldSeparator } from "../../ui/field"
 import { TextInput } from "../inputs/text-input"
+import { Divider } from "../layout/divider"
 import { PasswordField } from "./_password-input"
 import { FieldErrors } from "./field-errors"
 import { Form, type FormValues } from "./form"
@@ -17,9 +17,19 @@ import { FormField } from "./form-field"
 import { Label } from "./label"
 import { SubmitButton } from "./submit-button"
 
+/**
+ * What an auth form submits: its built-in fields, typed, plus any other named
+ * fields (from `extraFields`) as `FormData` values (`string`, `File` or arrays).
+ */
+export type AuthFormValues<V> = V & Record<string, unknown>
+
 export interface AuthFormProps<V> extends Omit<FormContainerProps, "onSubmit" | "children" | "title" | "onError"> {
-  /** Called with the typed values. May return a promise; throw a Laravel 422 body to show errors. */
-  onSubmit?: (values: V) => unknown
+  /**
+   * Called with the typed values, plus every other named field in the form
+   * (e.g. from `extraFields`) as submitted. May return a promise; throw a
+   * Laravel 422 body to show errors.
+   */
+  onSubmit?: (values: AuthFormValues<V>) => unknown
   /** Server errors by field name (Laravel / Inertia `errors`). */
   errors?: FormErrors | null
   /** Show the submitting state (e.g. Inertia's `processing`). */
@@ -138,7 +148,7 @@ function AuthShell<V>({
       <Form
         errors={errors}
         processing={processing}
-        onSubmit={onSubmit ? (values: FormValues) => onSubmit(toValues(values)) : undefined}
+        onSubmit={onSubmit ? (values: FormValues) => onSubmit({ ...values, ...toValues(values) }) : undefined}
         className="gap-5"
         {...formProps}
       >
@@ -207,7 +217,8 @@ export function SignInForm({
         <>
           {efaas ? (
             <>
-              <FieldSeparator>{t("auth.or")}</FieldSeparator>
+              {/* Lines either side of the label, no background, so it suits any card surface. */}
+              <Divider label={t("auth.or")} className="text-sm" />
               <div data-slot="auth-efaas" className="grid">
                 {efaas}
               </div>

@@ -22,7 +22,8 @@ describe("AttachmentPreview", () => {
       />,
     )
     expect(screen.getByRole("img", { name: "Bikini beach" })).toHaveAttribute("loading", "lazy")
-    expect(screen.getByText("JPG · 1 MB")).toBeInTheDocument()
+    expect(screen.getByText("JPG")).toHaveAttribute("dir", "ltr")
+    expect(screen.getByText("1 MB")).toHaveAttribute("dir", "ltr")
     expect(screen.getByRole("link", { name: "Download beach.jpg" })).toHaveAttribute("download", "beach.jpg")
     const preview = screen.getByRole("button", { name: "Preview beach.jpg" })
     await userEvent.click(preview)
@@ -83,7 +84,8 @@ describe("DocumentDownload", () => {
       />,
     )
     expect(screen.getByRole("group", { name: "Annual report 2025" })).toBeInTheDocument()
-    expect(screen.getByText("PDF · 2.3 MB")).toBeInTheDocument()
+    expect(screen.getByText("PDF")).toHaveAttribute("dir", "ltr")
+    expect(screen.getByText("2.3 MB")).toHaveAttribute("dir", "ltr")
     expect(screen.getByText("Published 3 March")).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "Download Annual report 2025" })).toHaveAttribute(
       "href",

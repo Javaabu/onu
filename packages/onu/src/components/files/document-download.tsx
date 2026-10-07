@@ -92,7 +92,16 @@ export function DocumentDownload({
           ) : null}
           {details.length || meta ? (
             <span className={cn("gap-x-2 text-xs flex flex-wrap text-muted-foreground tabular-nums", classNames?.meta)}>
-              {details.length ? <span>{details.join(" · ")}</span> : null}
+              {details.length ? (
+                <span className="gap-x-1 inline-flex flex-wrap">
+                  {details.map((part, i) => (
+                    <React.Fragment key={i}>
+                      {i ? <span aria-hidden="true">·</span> : null}
+                      <span dir="ltr">{part}</span>
+                    </React.Fragment>
+                  ))}
+                </span>
+              ) : null}
               {meta}
             </span>
           ) : null}
@@ -113,7 +122,9 @@ export function DocumentDownload({
                   <Icon name="download" data-icon="inline-start" />
                   <span lang={version.lang}>{language}</span>
                   {typeof version.size === "number" ? (
-                    <span className="text-muted-foreground tabular-nums">{format(version.size)}</span>
+                    <span dir="ltr" className="text-muted-foreground tabular-nums">
+                      {format(version.size)}
+                    </span>
                   ) : null}
                 </a>
               </Button>

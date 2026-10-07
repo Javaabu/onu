@@ -73,7 +73,7 @@ export default function EventsCalendarPage() {
             {upcoming.map((e) => (
               <li key={e.id}>
                 <Card href={routes.public.eventDetail} size="sm" className="transition-colors hover:bg-muted/40">
-                  <div className="gap-3 px-4 flex items-start">
+                  <div className="gap-3 flex items-start">
                     <div aria-hidden className="w-12 py-1.5 shrink-0 rounded-md bg-muted text-center tabular-nums">
                       <div className="font-medium text-[0.7rem] text-muted-foreground uppercase">
                         {dates.monthShort(e.start)}

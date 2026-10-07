@@ -64,7 +64,7 @@ export function Textarea({
       <div className={cn("gap-2 text-xs flex items-center justify-between text-muted-foreground", classNames?.footer)}>
         {showToggle ? <ThaanaToggle enabled={enabled} onToggle={toggle} /> : <span />}
         {showCount ? (
-          <span data-numeric aria-live="polite" className="tabular-nums">
+          <span data-numeric dir="ltr" aria-live="polite" className="tabular-nums">
             {props.maxLength ? `${count} / ${props.maxLength}` : count}
           </span>
         ) : null}

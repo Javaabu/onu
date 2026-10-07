@@ -15,7 +15,9 @@ import { ExportMenu, type ExportFormat, type ExportOption } from "./export-menu"
 import { FilterPanel } from "./filter-panel"
 import { FilterTabs, type FilterTab } from "./filter-tabs"
 import type { FilterDefinition } from "./listing-types"
+import { Pagination } from "./pagination"
 import { SearchBox } from "./search-box"
+import { SortMenu } from "./_sort-menu"
 import { useListingState, type ListingController } from "./use-listing-state"
 
 export interface ListingPageLink {
@@ -59,7 +61,11 @@ export interface ListingPageProps<T extends RowData> extends Omit<DataTableProps
   tabsFilterKey?: string
   /** Extra toolbar content at the end (e.g. a `ViewSwitcher`). */
   toolbarEnd?: React.ReactNode
-  /** Replace the table (e.g. a `ListView` or `GridView` for other views). */
+  /**
+   * Replace the table (e.g. a `ListView` or `GridView` for other views). The
+   * page keeps the "Sort by" menu (from the sortable `columns`) and the
+   * pagination footer (from `total` / `pagination`) around it.
+   */
   children?: React.ReactNode
 }
 
@@ -113,6 +119,14 @@ export function ListingPage<T extends RowData>({
         ]
       : []),
   ]
+  // With a custom view (children) there are no sortable headers or table footer, so the page adds them.
+  const customView = children !== undefined && children !== null && children !== false
+  const sortColumns = customView ? tableProps.columns.filter((c) => c.sortable) : []
+  const showPagination =
+    customView &&
+    (tableProps.pagination ?? tableProps.total !== undefined) &&
+    !(!tableProps.loading && tableProps.data.length === 0 && !state.isFiltered && state.page === 1)
+
   const tabValue =
     typeof state.filters[tabsFilterKey] === "string"
       ? (state.filters[tabsFilterKey] as string)
@@ -184,6 +198,9 @@ export function ListingPage<T extends RowData>({
               onValueChange={state.setColumnVisibility}
             />
           ) : null}
+          {sortColumns.length ? (
+            <SortMenu columns={sortColumns} sort={state.sort} onSortChange={state.setSort} />
+          ) : null}
           {onExport ? <ExportMenu onExport={onExport} options={exportOptions} /> : null}
           {toolbarEnd}
         </div>
@@ -197,7 +214,9 @@ export function ListingPage<T extends RowData>({
       />
 
       <div id={listId} className="min-w-0">
-        {children ?? (
+        {customView ? (
+          children
+        ) : (
           <DataTable
             {...tableProps}
             state={state}
@@ -207,6 +226,19 @@ export function ListingPage<T extends RowData>({
           />
         )}
       </div>
+      {showPagination ? (
+        <Pagination
+          page={state.page}
+          perPage={state.perPage}
+          total={tableProps.total}
+          hasNextPage={tableProps.total === undefined ? tableProps.data.length >= state.perPage : undefined}
+          onPageChange={state.setPage}
+          onPerPageChange={state.setPerPage}
+          perPageOptions={tableProps.perPageOptions}
+          noun={tableProps.noun}
+          className={tableProps.classNames?.footer}
+        />
+      ) : null}
     </section>
   )
 }

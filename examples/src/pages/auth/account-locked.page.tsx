@@ -33,7 +33,7 @@ function Locked({ onVerify }: { onVerify: () => void }) {
 
   return (
     <Card className="text-center">
-      <div className="gap-5 px-6 py-8 grid">
+      <div className="gap-5 py-8 grid">
         <Hero icon="lock" tone="warning" />
         <div className="gap-2 grid">
           <h1 className="text-xl font-semibold">
@@ -87,7 +87,7 @@ function Verify({ email }: { email: string }) {
 
   return (
     <Card className="text-center">
-      <div className="gap-5 px-6 py-8 grid">
+      <div className="gap-5 py-8 grid">
         <Hero icon="mail" tone="primary" />
         <div className="gap-2 grid">
           <h1 className="text-xl font-semibold">{tr("Verify your email", "އީމެއިލް ވެރިފައި ކުރައްވާ")}</h1>

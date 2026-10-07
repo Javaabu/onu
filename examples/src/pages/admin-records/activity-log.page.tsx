@@ -5,7 +5,6 @@ import {
   Card,
   ConditionalLink,
   ListingPage,
-  Pagination,
   RelativeDate,
   StatusBadge,
   useListingState,
@@ -216,7 +215,7 @@ export default function ActivityLogPage() {
       >
         {view === "feed" ? (
           <div className="gap-4 grid">
-            <Card className="px-4">
+            <Card>
               <ActivityFeed
                 title={null}
                 emptyText={tr("No events match your filters.", "ފިލްޓަރަށް ދިމާވާ އެއްވެސް ހާދިސާއެއް ނެތް.")}
@@ -236,14 +235,6 @@ export default function ActivityLogPage() {
                 }))}
               />
             </Card>
-            <Pagination
-              page={state.page}
-              perPage={state.perPage}
-              total={total}
-              noun={labels.dv ? { one: "ހާދިސާ", other: "ހާދިސާ" } : { one: "event", other: "events" }}
-              onPageChange={state.setPage}
-              onPerPageChange={state.setPerPage}
-            />
           </div>
         ) : undefined}
       </ListingPage>

@@ -12,7 +12,6 @@ import {
   fieldFormat,
   fieldLabels,
   fromValues,
-  useHashLinkGuard,
   useOthers,
   validate,
   type ApplicationValues,
@@ -33,7 +32,6 @@ export default function CreatePage() {
   const others = useOthers()
   const [values, setValues] = React.useState<ApplicationValues>(EMPTY_VALUES)
   const changes = describeChanges(EMPTY_VALUES, values, fieldLabels(tr), fieldFormat(labels))
-  const leaveDialog = useHashLinkGuard(changes.length > 0)
   const tabs = recordTabs(null, tr, { disabled: true })
   const created = React.useRef<Application | null>(null)
 
@@ -95,7 +93,6 @@ export default function CreatePage() {
               successMessage={tr("Application created", "އެޕްލިކޭޝަން އުފެއްދިއްޖެ")}
             />
           </div>
-          {leaveDialog}
         </Form>
       </div>
     </AdminShell>

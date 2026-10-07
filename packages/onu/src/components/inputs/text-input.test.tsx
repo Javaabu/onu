@@ -124,6 +124,14 @@ describe("Textarea", () => {
     expect(screen.getByText("3")).toBeInTheDocument()
   })
 
+  it("keeps the counter in LTR order on an RTL page", () => {
+    renderWithOnu(<Textarea aria-label="a" showCount maxLength={280} defaultValue="abc" />, {
+      locale: "dv",
+      dir: "rtl",
+    })
+    expect(screen.getByText("3 / 280")).toHaveAttribute("dir", "ltr")
+  })
+
   it("tracks a controlled value", () => {
     const { rerender } = renderWithOnu(<Textarea aria-label="a" showCount value="ab" onChange={() => {}} />)
     expect(screen.getByText("2")).toBeInTheDocument()

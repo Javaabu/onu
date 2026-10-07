@@ -20,12 +20,12 @@ import { useIsMobile } from "../../hooks/use-mobile"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
 import { Skeleton } from "../../ui/skeleton"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../../ui/table"
 import { isInteractiveTarget, useAnnouncer } from "./_shared"
 import { SelectionCheckbox } from "./_selection-checkbox"
-import { useActiveFilterChips } from "./active-filter-chips"
+import { SortMenu } from "./_sort-menu"
+import { formatFilterLabel, useActiveFilterChips } from "./active-filter-chips"
 import { BulkActionBar, type BulkAction } from "./bulk-actions"
 import { EmptyState } from "./empty-state"
 import type { FilterDefinition, ListingNoun } from "./listing-types"
@@ -310,7 +310,7 @@ export function DataTable<T extends RowData>({
           variant="no-results"
           noun={noun}
           search={state.search || undefined}
-          filters={chips.map((c) => `${c.label}: ${c.text}`)}
+          filters={chips.map(formatFilterLabel)}
           onClearSearch={state.search ? state.clearSearch : undefined}
           onClearFilters={chips.length ? state.clearFilters : undefined}
         />
@@ -444,7 +444,6 @@ export function DataTable<T extends RowData>({
   )
 
   const cardColumns = visibleColumns.filter((c) => c !== primary && !c.hideOnCards)
-  const sortValue = state.sort ? `${state.sort.id}:${state.sort.desc ? "desc" : "asc"}` : ""
 
   const cardsToolbar =
     selectable || sortable.length ? (
@@ -464,29 +463,7 @@ export function DataTable<T extends RowData>({
         ) : (
           <span />
         )}
-        {sortable.length ? (
-          <Select
-            value={sortValue}
-            onValueChange={(v) => {
-              const [id, dir] = v.split(":") as [string, string]
-              state.setSort({ id, desc: dir === "desc" })
-            }}
-          >
-            <SelectTrigger size="sm" aria-label={t("listing.sortBy")} className="touch:min-h-11">
-              <Icon name="sort" />
-              <SelectValue placeholder={t("listing.sortBy")} />
-            </SelectTrigger>
-            <SelectContent align="end">
-              {sortable.flatMap((c) =>
-                (["asc", "desc"] as const).map((dir) => (
-                  <SelectItem key={`${c.id}:${dir}`} value={`${c.id}:${dir}`}>
-                    {c.header}, {t(dir === "asc" ? "listing.sortAscending" : "listing.sortDescending")}
-                  </SelectItem>
-                )),
-              )}
-            </SelectContent>
-          </Select>
-        ) : null}
+        <SortMenu columns={sortable} sort={state.sort} onSortChange={state.setSort} />
       </div>
     ) : null
 

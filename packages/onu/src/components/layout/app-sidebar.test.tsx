@@ -71,6 +71,34 @@ describe("AppSidebar", () => {
     window.matchMedia = original
   })
 
+  it.each(directions)("lays out a parent's badge before its chevron, never on top of it (%s)", (dir) => {
+    renderSidebar(
+      <AppSidebar
+        groups={[
+          {
+            items: [
+              { label: "Inbox", href: "/inbox", badge: 12, items: [{ label: "Unread", href: "/inbox/unread" }] },
+              { label: "Reports", badge: 4, items: [{ label: "Monthly", href: "/reports/monthly" }] },
+            ],
+          },
+        ]}
+      />,
+      { dir },
+    )
+    // A linked parent: the badge sits inside the link, the submenu toggle after it.
+    const inbox = screen.getByRole("link", { name: /^Inbox/ })
+    const inboxBadge = inbox.querySelector("[data-slot=nav-badge]")!
+    expect(inboxBadge).toHaveClass("ms-auto", "shrink-0")
+    expect(inboxBadge).not.toHaveClass("absolute")
+    expect(inbox.closest("li")!.querySelector("[data-sidebar=menu-badge]")).toBeNull()
+    // A toggle-only parent: badge, then the chevron, in the same flex row.
+    const reports = screen.getByRole("button", { name: /^Reports/ })
+    const badge = reports.querySelector("[data-slot=nav-badge]")!
+    const chevron = reports.querySelector("svg:last-of-type")!
+    expect(badge.compareDocumentPosition(chevron) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(chevron).not.toHaveClass("ms-auto")
+  })
+
   it("renders groups, icons, badges and the active item", async () => {
     renderSidebar(
       <AppSidebar
@@ -101,7 +129,7 @@ describe("AppSidebar", () => {
     expect(toggle).toHaveAttribute("aria-expanded", "true")
     await userEvent.click(toggle)
     expect(toggle).toHaveAttribute("aria-expanded", "false")
-    const reports = screen.getByRole("button", { name: "Reports" })
+    const reports = screen.getByRole("button", { name: /^Reports/ })
     reports.focus()
     await userEvent.keyboard("{Enter}")
     expect(reports).toHaveAttribute("aria-expanded", "true")

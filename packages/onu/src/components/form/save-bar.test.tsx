@@ -175,6 +175,50 @@ describe("SaveBar (§25.9)", () => {
     expect(bar()).not.toHaveClass("lg:sticky")
   })
 
+  it("stays inside the content column instead of covering the sidebar", () => {
+    const { container } = renderWithOnu(
+      <main data-slot="app-layout-main">
+        <SaveBar layout="bottom" />
+      </main>,
+    )
+    const main = container.querySelector("main")!
+    vi.spyOn(main, "getBoundingClientRect").mockReturnValue(DOMRect.fromRect({ x: 256, y: 0, width: 600, height: 400 }))
+    vi.spyOn(document.documentElement, "clientWidth", "get").mockReturnValue(1000)
+    window.dispatchEvent(new Event("resize"))
+    const bar = container.querySelector<HTMLElement>("[data-slot=save-bar]")!
+    expect(bar).toHaveClass("start-(--save-bar-start,0px)", "end-(--save-bar-end,0px)")
+    expect(bar.style.getPropertyValue("--save-bar-start")).toBe("256px")
+    expect(bar.style.getPropertyValue("--save-bar-end")).toBe("144px")
+    vi.restoreAllMocks()
+  })
+
+  it("mirrors the column offsets in RTL", () => {
+    const { container } = renderWithOnu(
+      <main>
+        <SaveBar layout="bottom" />
+      </main>,
+      { dir: "rtl" },
+    )
+    const main = container.querySelector("main")!
+    vi.spyOn(main, "getBoundingClientRect").mockReturnValue(DOMRect.fromRect({ x: 0, y: 0, width: 744, height: 400 }))
+    vi.spyOn(document.documentElement, "clientWidth", "get").mockReturnValue(1000)
+    window.dispatchEvent(new Event("resize"))
+    const bar = container.querySelector<HTMLElement>("[data-slot=save-bar]")!
+    expect(bar.style.getPropertyValue("--save-bar-start")).toBe("256px")
+    expect(bar.style.getPropertyValue("--save-bar-end")).toBe("0px")
+    vi.restoreAllMocks()
+  })
+
+  it("says there are no changes (not 'Unsaved changes') while clean", () => {
+    const { rerender } = renderWithOnu(<SaveBar layout="bottom" />)
+    expect(screen.getByRole("heading", { name: "No changes yet" })).toBeInTheDocument()
+    expect(screen.queryByText("Unsaved changes")).not.toBeInTheDocument()
+    rerender(<SaveBar layout="bottom" title="Profile changes" />)
+    expect(screen.getByRole("heading", { name: "No changes yet" })).toBeInTheDocument()
+    rerender(<SaveBar layout="bottom" changes={[{ field: "Name", value: "Ali" }]} guard={false} />)
+    expect(screen.getByRole("heading", { name: "Unsaved changes" })).toBeInTheDocument()
+  })
+
   it("toggles the change list on phones", async () => {
     renderWithOnu(<SaveBar changes={[{ field: "Island", value: "Hulhumalé" }]} />)
     const toggle = screen.getByRole("button", { name: /Show changes/ })
@@ -251,6 +295,18 @@ describe("save bar helpers", () => {
     ])
     expect(describeChanges(undefined, { a: null }, { a: "A" })).toEqual([])
   })
+
+  it("accepts interface value types", () => {
+    interface Profile {
+      name: string
+      age: number
+    }
+    const before: Profile = { name: "Ali", age: 30 }
+    const after: Profile = { name: "Ali", age: 31 }
+    expect(describeChanges(before, after, { name: "Name", age: "Age" }, { age: (v) => v + 1 })).toEqual([
+      { key: "age", field: "Age", value: 32 },
+    ])
+  })
 })
 
 describe("useUnsavedChangesGuard", () => {
@@ -305,6 +361,8 @@ describe("useUnsavedChangesGuard", () => {
           </a>
           <a href="https://example.com/x">ext</a>
           <a href="#section">anchor</a>
+          <a href="#/pages/users">route</a>
+          <a href="#!/pages/roles">bang route</a>
           <div data-unsaved-guard-ignore="">
             <a href="/d">ignored</a>
           </div>
@@ -324,5 +382,62 @@ describe("useUnsavedChangesGuard", () => {
     fireEvent.click(screen.getByRole("link", { name: "plain" }))
     expect(await screen.findByRole("alertdialog")).toBeInTheDocument()
     document.removeEventListener("click", prevent)
+  })
+
+  it.each(["route", "bang route"])("treats hash-router links (%s) as navigation", async (name) => {
+    function Links() {
+      const { dialog } = useUnsavedChangesGuard(true)
+      return (
+        <>
+          <a href="#/pages/users">route</a>
+          <a href="#!/pages/roles">bang route</a>
+          {dialog}
+        </>
+      )
+    }
+    renderWithOnu(<Links />)
+    fireEvent.click(screen.getByRole("link", { name }))
+    expect(await screen.findByRole("alertdialog")).toBeInTheDocument()
+  })
+
+  /** A stand-in for the Navigation API (jsdom has none). */
+  function fakeNavigation() {
+    const navigation = Object.assign(new EventTarget(), { traverseTo: vi.fn(() => ({ finished: Promise.resolve() })) })
+    Object.defineProperty(window, "navigation", { value: navigation, configurable: true })
+    const traverse = (url: string, key = "k1") => {
+      const event = Object.assign(new Event("navigate", { cancelable: true }), {
+        navigationType: "traverse",
+        destination: { url, key },
+      })
+      navigation.dispatchEvent(event)
+      return event
+    }
+    return { navigation, traverse, restore: () => delete (window as { navigation?: unknown }).navigation }
+  }
+
+  it("asks before Back leaves the page, and completes the move on Leave", async () => {
+    const { navigation, traverse, restore } = fakeNavigation()
+    renderWithOnu(<Guarded dirty onLeave={() => {}} />)
+    const back = traverse("/list")
+    expect(back.defaultPrevented).toBe(true)
+    const dialog = await screen.findByRole("alertdialog")
+    await userEvent.click(within(dialog).getByRole("button", { name: "Stay on page" }))
+    expect(navigation.traverseTo).not.toHaveBeenCalled()
+    traverse("#/pages/users", "k2")
+    await userEvent.click(within(await screen.findByRole("alertdialog")).getByRole("button", { name: "Leave" }))
+    expect(navigation.traverseTo).toHaveBeenCalledWith("k2")
+    // The repeated move goes through.
+    expect(traverse("/list").defaultPrevented).toBe(false)
+    restore()
+  })
+
+  it("lets Back between in-page anchors, and Back while clean, through", () => {
+    const { traverse, restore } = fakeNavigation()
+    const { rerender } = renderWithOnu(<Guarded dirty onLeave={() => {}} />)
+    expect(traverse(`${window.location.pathname}#details`).defaultPrevented).toBe(false)
+    rerender(<Guarded dirty={false} onLeave={() => {}} />)
+    expect(traverse("/list").defaultPrevented).toBe(false)
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument()
+    restore()
   })
 })

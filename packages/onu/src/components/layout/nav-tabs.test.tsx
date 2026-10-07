@@ -28,6 +28,18 @@ describe("NavTabs", () => {
     await expectNoA11yViolations()
   })
 
+  it("highlights only the tab whose query string matches", () => {
+    const tabs: NavTabItem[] = [
+      { label: "Documents", href: "/records/7?tab=documents" },
+      { label: "History", href: "/records/7?tab=history" },
+      { label: "Notes", href: "/records/7?tab=notes" },
+    ]
+    renderWithOnu(<NavTabs items={tabs} currentHref="/records/7?tab=history" />)
+    expect(screen.getByRole("link", { name: "History" })).toHaveAttribute("aria-current", "page")
+    expect(screen.getByRole("link", { name: "Documents" })).not.toHaveAttribute("aria-current")
+    expect(screen.getByRole("link", { name: "Notes" })).not.toHaveAttribute("aria-current")
+  })
+
   it('§25.8: shows counts like "Activity (12)"', () => {
     renderWithOnu(<NavTabs items={items} classNames={{ count: "cnt" }} />)
     expect(screen.getByRole("link", { name: "Activity (12)" })).toBeInTheDocument()

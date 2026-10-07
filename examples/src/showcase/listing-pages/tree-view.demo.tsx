@@ -41,6 +41,7 @@ const atolls: TreeNode[] = [
 
 export default function TreeViewDemo() {
   const [selected, setSelected] = React.useState<string[]>(["henveiru"])
+  const [cascaded, setCascaded] = React.useState<string[]>(["hithadhoo"])
   const [action, setAction] = React.useState("")
   return (
     <DemoPage>
@@ -62,6 +63,22 @@ export default function TreeViewDemo() {
           defaultExpandedKeys={["kaafu", "male"]}
         />
         <p className="mt-2 text-sm text-muted-foreground">{selected.join(", ")}</p>
+      </DemoSection>
+      <DemoSection
+        title="Selection propagation"
+        description="Ticking a parent ticks everything under it; a parent with some rows ticked shows a dash."
+        className="max-w-md block"
+      >
+        <TreeView
+          aria-label="Islands to include"
+          items={atolls}
+          selectionMode="multiple"
+          selectionPropagation
+          selectedKeys={cascaded}
+          onSelectionChange={setCascaded}
+          defaultExpandedKeys={["kaafu", "male", "seenu"]}
+        />
+        <p className="mt-2 text-sm text-muted-foreground">{cascaded.join(", ")}</p>
       </DemoSection>
     </DemoPage>
   )

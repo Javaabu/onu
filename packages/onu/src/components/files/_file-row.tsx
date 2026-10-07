@@ -71,9 +71,10 @@ export function FileRow({
       )}
       <div className={cn("min-w-0 gap-1 flex flex-1 flex-col", classNames?.body)}>
         <span
+          dir="auto"
           title={name}
           className={cn(
-            "text-sm font-medium truncate",
+            "text-sm font-medium max-w-full self-start truncate",
             struck && "text-muted-foreground line-through",
             classNames?.name,
           )}
@@ -82,7 +83,11 @@ export function FileRow({
         </span>
         {sizeText || meta ? (
           <span className={cn("gap-2 text-xs flex flex-wrap items-center text-muted-foreground", classNames?.meta)}>
-            {sizeText ? <span className="tabular-nums">{sizeText}</span> : null}
+            {sizeText ? (
+              <span dir="ltr" className="tabular-nums">
+                {sizeText}
+              </span>
+            ) : null}
             {meta}
           </span>
         ) : null}

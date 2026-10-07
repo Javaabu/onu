@@ -60,3 +60,4 @@ Without `onSearchChange`, `items` are filtered by name locally. For paged APIs p
 ## RTL and Dhivehi
 
 The grid uses container queries (2 → 6 columns). Thaana search works with `searchThaana`; local filtering uses the active locale.
+File names take their own direction (`dir="auto"`), so a Latin name in an RTL page is cut at its own end; sizes such as "248 KB" are forced left-to-right. AttachmentPreview, DocumentDownload, FileInput and the upload lists do the same.

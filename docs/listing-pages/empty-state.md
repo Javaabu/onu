@@ -27,7 +27,7 @@ import { EmptyState } from "@javaabu/onu"
 | `title`, `description`            | `ReactNode`                               |                | Replace the built-in text    |
 | `icon`                            | `string \| ReactNode \| null`             | per variant    |                              |
 | `action`                          | `ReactNode`                               |                | Main action                  |
-| `search`, `filters`               | `string`, `string[]`                      |                | Named in the no-results text |
+| `search`, `filters`               | `string`, `string[]`                      |                | Named in the no-results text; [`useActiveFilterLabels`](active-filter-chips#filter-labels-for-your-own-ui) builds `filters` |
 | `onClearSearch`, `onClearFilters` | `() => void`                              |                | Show the clear buttons       |
 | `classNames`                      | `{ media, title, description, content }`  |                |                              |
 

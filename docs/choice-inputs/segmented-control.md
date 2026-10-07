@@ -32,6 +32,10 @@ import { SegmentedControl, Icon } from '@javaabu/onu';
 | `name`                   | `string`                     |              | Hidden input for forms                          |
 | `classNames`             | `{ item }`                   |              |                                                 |
 
+## Layout
+
+Segments size to their label and are never truncated. When there is spare room (for example with `fullWidth`) they share it evenly; when space runs out (a narrow toolbar or phone), the control scrolls sideways instead of cutting labels off. Focusing a segment with the keyboard scrolls it into view.
+
 ## Accessibility
 
 A `radiogroup` of `radio` buttons (Radix toggle group, single mode), labelled by its FormField or `aria-label`.
