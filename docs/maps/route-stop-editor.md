@@ -30,7 +30,7 @@ Without a Google Maps API key the map renders a labelled **schematic preview** (
 | `addOnMapClick`                               | `boolean`                           | `true`  | Clicking the map adds a stop |
 | `showPath`                                    | `boolean`                           | `true`  | Connect stops with a line    |
 | `thaana`                                      | `boolean \| ThaanaOptions`          |         | Thaana typing in stop names  |
-| `disabled`, `tone`, `center`, `zoom`, `label` |                                     |         |                              |
+| `disabled`, `tone`, `center`, `zoom`, `label` |                                     |         | Without `center`/`zoom`, fits the stops |
 | `className`, `classNames`                     | `{ root, map, list, item, footer }` |         | Overrides                    |
 
 ## Accessibility

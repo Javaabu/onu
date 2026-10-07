@@ -157,6 +157,23 @@ describe("MapView (placeholder engine)", () => {
     expect(ref.current!.getView()!.center).toEqual({ lat: 0.5, lng: 0.5 })
   })
 
+  it("fits bounds that arrive after the first render once, and centres a single point", () => {
+    const ref = React.createRef<MapHandle>()
+    const { rerender } = renderWithOnu(<MapView mapRef={ref} bounds={null} />)
+    expect(ref.current!.getView()!.center).toEqual(MALE)
+    // Points loaded later: fitted once.
+    rerender(<MapView mapRef={ref} bounds={{ north: 0.7, south: -0.7, east: 73.6, west: 73 }} />)
+    expect(ref.current!.getView()!.center.lat).toBeCloseTo(0)
+    expect(ref.current!.getView()!.center.lng).toBeCloseTo(73.3)
+    // Later changes don't move the camera again.
+    rerender(<MapView mapRef={ref} bounds={{ north: 5, south: 4, east: 74, west: 73 }} />)
+    expect(ref.current!.getView()!.center.lat).toBeCloseTo(0)
+
+    const point = React.createRef<MapHandle>()
+    renderWithOnu(<MapView mapRef={point} bounds={{ north: 0.69, south: 0.69, east: 73.15, west: 73.15 }} />)
+    expect(point.current!.getView()).toMatchObject({ center: { lat: 0.69, lng: 73.15 }, zoom: 15 })
+  })
+
   it("renders markers, shapes and layers; interactive markers are buttons", async () => {
     const onClick = vi.fn()
     const onPolygonClick = vi.fn()

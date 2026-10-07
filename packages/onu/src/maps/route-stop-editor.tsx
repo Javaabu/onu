@@ -196,7 +196,7 @@ function RouteStopEditorInner({
   tone = "primary",
   label,
   center,
-  zoom = 12,
+  zoom,
   className,
   classNames,
   ref,
@@ -209,11 +209,10 @@ function RouteStopEditorInner({
   const [expandedId, setExpandedId] = React.useState<string | null>(null)
   const mapRef = React.useRef<MapHandle>(null)
   const { message, announce } = useAnnouncer()
-  const [initialBounds] = React.useState(() =>
-    center ? null : boundsOf(stops.flatMap((s) => (s.position ? [s.position] : []))),
-  )
   const full = max !== undefined && stops.length >= max
   const placed = stops.flatMap((s) => (s.position ? [s.position] : []))
+  // Without an explicit centre or zoom, fit the stops (once, also when they load later).
+  const initialBounds = center || zoom !== undefined ? null : boundsOf(placed)
   const nameOf = (s: RouteStop, i: number) => s.label || t("map.stopNumber", { index: i + 1 })
 
   const update = (id: string, patch: Partial<RouteStop>) =>
@@ -249,7 +248,7 @@ function RouteStopEditorInner({
         <MapView
           label={label ?? t("map.stopsLabel")}
           center={center}
-          zoom={zoom}
+          zoom={zoom ?? 12}
           bounds={initialBounds}
           mapRef={mapRef}
           onMapClick={addOnMapClick && !disabled && !full ? (p) => addStop(p) : undefined}

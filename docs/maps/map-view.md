@@ -32,7 +32,7 @@ Without a Google Maps API key the map renders a labelled **schematic preview** (
 | ------------------------- | ----------------------------------------------- | --------------- | ----------------------------------------------- |
 | `label`                   | `string`                                        | "Map"           | Accessible name of the map region               |
 | `center` / `zoom`         | `LatLng` / `number`                             | Malé / `12`     | Initial camera                                  |
-| `bounds`                  | `LatLngBounds`                                  |                 | Fit these bounds initially                      |
+| `bounds`                  | `LatLngBounds`                                  |                 | Fit these bounds once, on first render or when they are first set (data loaded later). Wins over `center`/`zoom`; a single point is centred at zoom 15|
 | `onMapClick`              | `(p: LatLng) => void`                           |                 | Clicked point                                   |
 | `onViewChange`            | `(view: MapViewState) => void`                  |                 | Centre, zoom and bounds after the camera stops  |
 | `mapRef`                  | `Ref<MapHandle>`                                |                 | `panTo`, `fitBounds`, `getView`                 |

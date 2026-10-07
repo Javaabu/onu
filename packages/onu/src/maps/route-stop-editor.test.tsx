@@ -54,6 +54,26 @@ function Controlled({ onChange }: { onChange?: (s: RouteStop[]) => void }) {
 const names = () => screen.getAllByRole("textbox", { name: /^Name of stop/ }).map((i) => (i as HTMLInputElement).value)
 
 describe("RouteStopEditor", () => {
+  it("fits stops that load after the first render, unless a centre or zoom is given", () => {
+    const addu: RouteStop[] = [
+      { id: "g", label: "Gan", position: { lat: -0.69, lng: 73.15 } },
+      { id: "h", label: "Hithadhoo", position: { lat: -0.6, lng: 73.09 } },
+    ]
+    const pin = (name: string) => document.querySelector(`[data-slot=map-marker][aria-label^="${name}"]`)
+    const { rerender } = renderWithOnu(<RouteStopEditor value={[]} />)
+    // Addu is far from the default view (Malé) …
+    rerender(<RouteStopEditor value={addu} />)
+    // … but the map fits the stops once they arrive.
+    expect(pin("Stop 1")).toBeInTheDocument()
+    expect(pin("Stop 2")).toBeInTheDocument()
+  })
+
+  it("keeps an explicit centre instead of fitting the stops", () => {
+    const addu: RouteStop[] = [{ id: "g", label: "Gan", position: { lat: -0.69, lng: 73.15 } }]
+    renderWithOnu(<RouteStopEditor defaultValue={addu} center={{ lat: 4.17, lng: 73.5 }} />)
+    expect(document.querySelector("[data-slot=map-marker]")).toBeNull()
+  })
+
   it("lists stops in order with numbered markers and hidden inputs", async () => {
     const { container } = renderWithOnu(<Controlled />)
     expect(screen.getByRole("group", { name: "Shuttle stops" })).toBeInTheDocument()

@@ -92,8 +92,8 @@ export function ShapeEditor({
   disabled,
   tone = "primary",
   label,
-  center = MALE,
-  zoom = 13,
+  center,
+  zoom,
   measure,
   total,
   itemLabel,
@@ -112,7 +112,8 @@ export function ShapeEditor({
   const [newPoint, setNewPoint] = React.useState<LatLng | null>(null)
   const mapRef = React.useRef<MapHandle>(null)
   const { message, announce } = useAnnouncer()
-  const [initialBounds] = React.useState(() => boundsOf(shapes.flatMap((s) => s.path)))
+  // Without an explicit centre or zoom, fit the shapes (once, also when they load later).
+  const initialBounds = center || zoom !== undefined ? null : boundsOf(shapes.flatMap((s) => s.path))
 
   const selected = shapes.find((s) => s.id === selectedId) ?? (multiple ? undefined : shapes[0])
   const canAddShape = multiple || shapes.length === 0
@@ -241,8 +242,8 @@ export function ShapeEditor({
       )}
       <MapView
         label={label}
-        center={center}
-        zoom={zoom}
+        center={center ?? MALE}
+        zoom={zoom ?? 13}
         bounds={initialBounds}
         mapRef={mapRef}
         className={classNames?.map}

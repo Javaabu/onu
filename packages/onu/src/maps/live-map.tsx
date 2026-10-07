@@ -93,7 +93,7 @@ function LiveMapInner({
   list = true,
   label,
   center,
-  zoom = 12,
+  zoom,
   overlay,
   className,
   classNames,
@@ -117,7 +117,8 @@ function LiveMapInner({
     return [...byId.values()]
   }, [markersProp, streamed])
 
-  const [initialBounds] = React.useState(() => (center ? null : boundsOf(markersProp.map((m) => m.position))))
+  // Without an explicit centre or zoom, fit the markers (once, also when they arrive later).
+  const initialBounds = center || zoom !== undefined ? null : boundsOf(markers.map((m) => m.position))
 
   // Follow mode: keep the followed marker in view as it moves.
   const followed = markers.find((m) => m.id === followId)
@@ -127,10 +128,23 @@ function LiveMapInner({
   }, [followedPosition])
 
   const markersRef = useLatest(markers)
-  const select = (id: string | null, pan = false) => {
+  // Centre on the selected marker whenever the selection changes (the list, a parent's
+  // `selectedId`, e.g. an external vessel list) — except for a tap on the marker itself,
+  // which is already in view. Selecting never turns on follow mode.
+  const skipPanFor = React.useRef<string | null | undefined>(undefined)
+  const previousSelected = React.useRef(selectedId)
+  React.useEffect(() => {
+    if (previousSelected.current === selectedId) return
+    previousSelected.current = selectedId
+    const skip = skipPanFor.current === selectedId
+    skipPanFor.current = undefined
+    const m = markersRef.current.find((x) => x.id === selectedId)
+    if (m && !skip) mapRef.current?.panTo(m.position)
+  }, [selectedId, markersRef])
+
+  const select = (id: string | null, fromMap = false) => {
+    if (fromMap) skipPanFor.current = id
     setSelectedId(id)
-    const m = markersRef.current.find((x) => x.id === id)
-    if (m && pan) mapRef.current?.panTo(m.position)
   }
 
   const toggleFollow = (id: string) => {
@@ -155,7 +169,7 @@ function LiveMapInner({
         <MapView
           label={label ?? t("map.liveMap")}
           center={followed?.position ?? center ?? MALE}
-          zoom={zoom}
+          zoom={zoom ?? 12}
           bounds={initialBounds}
           mapRef={mapRef}
           className={classNames?.map}
@@ -186,7 +200,7 @@ function LiveMapInner({
               marker={m}
               duration={animationDuration}
               selected={m.id === selectedId}
-              onSelect={() => select(m.id === selectedId ? null : m.id)}
+              onSelect={() => select(m.id === selectedId ? null : m.id, true)}
             />
           ))}
         </MapView>
@@ -204,7 +218,7 @@ function LiveMapInner({
                     type="button"
                     aria-pressed={m.id === selectedId}
                     className="min-w-0 flex-1 rounded-sm text-start outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-                    onClick={() => select(m.id === selectedId ? null : m.id, true)}
+                    onClick={() => select(m.id === selectedId ? null : m.id)}
                   >
                     <span className="font-medium text-sm block truncate">{m.title}</span>
                     <span className="text-xs block text-muted-foreground tabular-nums">

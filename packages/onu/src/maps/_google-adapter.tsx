@@ -18,7 +18,7 @@ import type { Layer } from "@deck.gl/core"
 import { cn } from "../lib/utils"
 import { hexToRgb, toneVar } from "./_colors"
 import { MarkerArrow, MarkerPin } from "./_marker-glyphs"
-import { fromPosition, toPosition } from "./geo"
+import { fromPosition, INITIAL_FIT_PADDING, isPointBounds, SINGLE_POINT_ZOOM, toPosition } from "./geo"
 import { useMapEngine } from "./_context"
 import type {
   AdapterCircleProps,
@@ -33,6 +33,7 @@ import type {
   AdapterTrailProps,
   DrawShape,
   LatLng,
+  LatLngBounds,
   MapAdapter,
   MapHandle,
   MapViewState,
@@ -82,6 +83,25 @@ function HandleBinder({ handleRef }: { handleRef?: React.Ref<MapHandle> }) {
   return null
 }
 
+/**
+ * Fits `bounds` once, as soon as both the map and the bounds exist: on creation, or
+ * later when the points load. A single point is centred instead of zoomed all the way in.
+ */
+function InitialFit({ bounds, doneRef }: { bounds?: LatLngBounds; doneRef: React.RefObject<boolean> }) {
+  const map = useMap()
+  React.useEffect(() => {
+    if (!map || !bounds || doneRef.current) return
+    doneRef.current = true
+    if (isPointBounds(bounds)) {
+      map.setCenter({ lat: bounds.north, lng: bounds.east })
+      map.setZoom(SINGLE_POINT_ZOOM)
+    } else {
+      map.fitBounds(bounds, INITIAL_FIT_PADDING)
+    }
+  }, [map, bounds, doneRef])
+  return null
+}
+
 function GoogleMapView({
   label,
   defaultCenter,
@@ -97,6 +117,8 @@ function GoogleMapView({
   className,
   children,
 }: AdapterMapProps) {
+  // Outside the keyed map, so switching light/dark doesn't fit again.
+  const fitted = React.useRef(false)
   return (
     <div role="region" aria-label={label} data-slot="google-map" className={cn("relative size-full", className)}>
       <GoogleMap
@@ -106,7 +128,6 @@ function GoogleMapView({
         colorScheme={colorScheme === "dark" ? "DARK" : "LIGHT"}
         defaultCenter={defaultCenter}
         defaultZoom={defaultZoom}
-        defaultBounds={defaultBounds}
         gestureHandling={gestureHandling}
         disableDefaultUI={!controls}
         clickableIcons={false}
@@ -122,6 +143,7 @@ function GoogleMapView({
         }}
       >
         <HandleBinder handleRef={handleRef} />
+        <InitialFit bounds={defaultBounds} doneRef={fitted} />
         {children}
       </GoogleMap>
     </div>

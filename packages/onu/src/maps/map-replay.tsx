@@ -83,7 +83,8 @@ function MapReplayInner({
   const [playing, setPlaying] = useControllableState(playingProp, defaultPlaying, onPlayingChange)
   const [speed, setSpeed] = React.useState(speeds.includes(defaultSpeed) ? defaultSpeed : (speeds[0] ?? 1))
   const mapRef = React.useRef<MapHandle>(null)
-  const [initialBounds] = React.useState(() => boundsOf(track))
+  // Fit the track once, also when it loads after the first render.
+  const initialBounds = boundsOf(track)
   const clamped = Math.min(end, Math.max(start, time))
   const state = trackStateAt(track, clamped)
   const travelled = React.useMemo(() => travelledPath(track, clamped), [track, clamped])

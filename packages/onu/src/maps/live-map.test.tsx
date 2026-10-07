@@ -1,5 +1,5 @@
 import * as React from "react"
-import { act, renderHook, screen } from "@testing-library/react"
+import { act, renderHook, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
@@ -38,6 +38,45 @@ describe("LiveMap", () => {
     expect(onSelect).toHaveBeenLastCalledWith(null)
     expect(item).toBeInTheDocument()
     await expectNoA11yViolations()
+  })
+
+  it("centres on a marker selected from outside the map, without following it", () => {
+    const far: LiveMapMarker[] = [
+      { id: "a", title: "Hiyala", position: { lat: 4.17, lng: 73.5 } },
+      { id: "b", title: "Dhoni", position: { lat: 0.69, lng: 73.15 } },
+    ]
+    const onFollowChange = vi.fn()
+    const marker = (name: string) => document.querySelector<HTMLElement>(`[data-slot=map-marker][aria-label="${name}"]`)
+    const { rerender } = renderWithOnu(
+      <LiveMap markers={far} selectedId={null} center={far[0]!.position} onFollowChange={onFollowChange} />,
+    )
+    // Addu is far outside the view at first.
+    expect(marker("Dhoni")).toBeNull()
+    rerender(<LiveMap markers={far} selectedId="b" center={far[0]!.position} onFollowChange={onFollowChange} />)
+    // The camera is centred on it (jsdom has no layout, so the preview uses its default 640×360 size).
+    expect(marker("Dhoni")).toHaveStyle({ left: "320px", top: "180px" })
+    expect(onFollowChange).not.toHaveBeenCalled()
+    expect(screen.queryByText(/Following/)).not.toBeInTheDocument()
+    // Deselecting leaves the camera where it is.
+    rerender(<LiveMap markers={far} selectedId={null} center={far[0]!.position} onFollowChange={onFollowChange} />)
+    expect(marker("Dhoni")).toHaveStyle({ left: "320px", top: "180px" })
+  })
+
+  it("centres on a marker picked in the list but not on a tap on the marker itself", async () => {
+    const far: LiveMapMarker[] = [
+      { id: "a", title: "Hiyala", position: { lat: 4.17, lng: 73.5 } },
+      { id: "b", title: "Dhoni", position: { lat: 4.1705, lng: 73.5005 } },
+    ]
+    renderWithOnu(<LiveMap markers={far} center={far[0]!.position} animationDuration={0} />)
+    const marker = (name: string) =>
+      document.querySelector<HTMLElement>(`[data-slot=map-marker][aria-label="${name}"]`)!
+    const before = marker("Dhoni").style.left
+    await userEvent.click(marker("Dhoni"))
+    expect(marker("Dhoni").style.left).toBe(before)
+    await userEvent.click(
+      within(screen.getByRole("region", { name: "Markers" })).getByRole("button", { name: /^Hiyala/ }),
+    )
+    expect(marker("Hiyala")).toHaveStyle({ left: "320px", top: "180px" })
   })
 
   it("merges streamed updates and follows a marker", async () => {
