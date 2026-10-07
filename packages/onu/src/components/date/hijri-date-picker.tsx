@@ -231,6 +231,8 @@ export function HijriCalendar({
   } else if (view === "month") {
     body = (
       <PeriodGrid
+        key="months"
+        activeIndex={selectedHijri?.year === month.year ? selectedHijri.month - 1 : month.month - 1}
         label={t("date.months")}
         initialFocus={focusGrid}
         onPage={(delta) => goMonths(delta * 12)}
@@ -256,6 +258,8 @@ export function HijriCalendar({
     const start = yearBlockStart(month.year)
     body = (
       <PeriodGrid
+        key="years"
+        activeIndex={month.year - start}
         label={t("date.years")}
         initialFocus={focusGrid}
         onPage={(delta) => goMonths(delta * 144)}

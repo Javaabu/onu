@@ -115,7 +115,7 @@ export function DateRangePicker({
 
   const renderField = (end: "from" | "to") => {
     const id = end === "from" ? fromId : toId
-    const labelId = `${id}-label`
+    const labelId = `${uid}-${end}-label`
     const pickerProps = {
       ...common,
       id,

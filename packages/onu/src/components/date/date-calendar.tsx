@@ -5,13 +5,14 @@ import {
   addMonths,
   addYears,
   endOfMonth,
+  isSameDay,
   isSameMonth,
   isSameYear,
   setMonth as setMonthOf,
   setYear,
   startOfMonth,
 } from "date-fns"
-import type { DateRange, Matcher, Modifiers } from "react-day-picker"
+import type { DateRange, Matcher, Modifiers, WeekNumberProps } from "react-day-picker"
 
 import { cn } from "../../lib/utils"
 import { useOnu } from "../../providers/onu-provider"
@@ -86,8 +87,6 @@ export type DateCalendarProps = SelectionProps & {
   modifiers?: Record<string, Matcher | Matcher[] | undefined>
   modifiersClassNames?: Record<string, string>
   onDayClick?: (date: Date, modifiers: Modifiers) => void
-  onDayMouseEnter?: (date: Date) => void
-  onDayMouseLeave?: () => void
   /** Pins "today" (tests, demos, or server time). */
   today?: Date
   /** Focus the active day (or cell) when mounted. */
@@ -122,8 +121,6 @@ export function DateCalendar(props: DateCalendarProps) {
     modifiers,
     modifiersClassNames,
     onDayClick,
-    onDayMouseEnter,
-    onDayMouseLeave,
     today: todayProp,
     initialFocus,
     className,
@@ -226,15 +223,21 @@ export function DateCalendar(props: DateCalendarProps) {
         weekStartsOn={weekStartsOn ?? locale.weekStartsOn}
         showOutsideDays={showOutsideDays}
         showWeekNumber={showWeekNumber}
-        disabled={[...(min ? [{ before: min }] : []), ...(max ? [{ after: max }] : []), ...toArray(disabledDates)]}
+        disabled={[
+          ...(min ? [{ before: min }] : []),
+          ...(max ? [{ after: max }] : []),
+          ...toArray(disabledDates),
+          ...(props.mode === "multiple" && props.maxSelected && selectedDates.length >= props.maxSelected
+            ? [(d: Date) => !selectedDates.some((s) => isSameDay(s, d))]
+            : []),
+        ]}
         modifiers={{ weekend: { dayOfWeek: weekendDays }, ...modifiers }}
         modifiersClassNames={{
           weekend: "[&:not([data-outside])]:text-destructive",
           ...modifiersClassNames,
         }}
         onDayClick={onDayClick}
-        onDayMouseEnter={onDayMouseEnter ? (date) => onDayMouseEnter(date) : undefined}
-        onDayMouseLeave={onDayMouseLeave ? () => onDayMouseLeave() : undefined}
+        components={CALENDAR_COMPONENTS}
         labels={{
           labelDayButton: (date, mods) =>
             [mods.today ? t("date.today") : null, formatDate(date, "PPPP", locale.dateFns)].filter(Boolean).join(", "),
@@ -260,6 +263,7 @@ export function DateCalendar(props: DateCalendarProps) {
       <PeriodGrid
         key={view}
         items={items.map((i) => i.item)}
+        activeIndex={activeIndexFor(view, month, selectedDates)}
         columns={3}
         label={t(view === "month" ? "date.months" : view === "year" ? "date.years" : "date.decades")}
         initialFocus={focusGrid}
@@ -305,6 +309,19 @@ export function DateCalendar(props: DateCalendarProps) {
     </div>
   )
 }
+
+/** Week numbers are row headers (`<th scope="row">`); shadcn renders a `<td>`, which axe rejects. */
+function WeekNumberCell({ children, week: _week, ...props }: WeekNumberProps) {
+  return (
+    <th {...props}>
+      <div className="font-normal flex size-(--cell-size) items-center justify-center text-center text-[0.8rem] text-muted-foreground">
+        {children}
+      </div>
+    </th>
+  )
+}
+
+const CALENDAR_COMPONENTS = { WeekNumber: WeekNumberCell }
 
 function toArray<T>(value: T | T[] | undefined): T[] {
   if (value === undefined) return []
@@ -372,6 +389,21 @@ function dayPickerSelection(props: SelectionProps): Record<string, unknown> {
         onSelect: (date: Date) => props.onSelect?.(date),
       }
   }
+}
+
+/** The cell to focus first in a zoom view: the selected one if shown, else the displayed month / year. */
+function activeIndexFor(view: CalendarView, month: Date, selected: Date[]) {
+  const year = month.getFullYear()
+  if (view === "month") {
+    const hit = selected.find((d) => d.getFullYear() === year)
+    return (hit ?? month).getMonth()
+  }
+  if (view === "year") {
+    const start = yearBlockStart(year)
+    const hit = selected.find((d) => d.getFullYear() >= start && d.getFullYear() < start + 12)
+    return (hit ?? month).getFullYear() - start
+  }
+  return Math.floor((year - decadeSpanStart(year)) / 12)
 }
 
 interface PeriodContext {

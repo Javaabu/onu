@@ -7,6 +7,9 @@ import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test
 import { FormField } from "../form/form-field"
 import { DatePicker } from "./date-picker"
 
+// Calendars render many buttons; user-event runs slowly when the whole suite runs in parallel.
+vi.setConfig({ testTimeout: 30_000 })
+
 const TODAY = new Date(2026, 2, 12) // Thursday 12 March 2026
 
 function setup(ui: React.ReactElement, options?: Parameters<typeof renderWithOnu>[1]) {

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { addDays, endOfWeek, getWeek, getWeekYear, startOfWeek } from "date-fns"
+import { endOfWeek, getWeek, getWeekYear, startOfWeek } from "date-fns"
 
 import { useOnu } from "../../providers/onu-provider"
 import { DateCalendar } from "./date-calendar"
@@ -45,17 +45,15 @@ export function WeekPicker({
   const weekStartsOn = weekStartsOnProp ?? locale.weekStartsOn
   const options = { weekStartsOn, locale: locale.dateFns }
   const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
-  const [hovered, setHovered] = React.useState<Date | null>(null)
 
   const start = value ? startOfWeek(value, options) : null
   const end = start ? endOfWeek(start, options) : null
   const describe = (s: Date, e: Date) =>
     formatWeek
       ? formatWeek(s, e)
-      : `${t("date.weekLabel", { week: getWeek(s, options), year: getWeekYear(s, options) })} (${formatDate(s, "d MMM", locale.dateFns)} – ${formatDate(e, "d MMM", locale.dateFns)})`
+      : `${t("date.weekLabel", { week: getWeek(s, options), year: String(getWeekYear(s, options)) })} (${formatDate(s, "d MMM", locale.dateFns)} – ${formatDate(e, "d MMM", locale.dateFns)})`
   const display = start && end ? describe(start, end) : null
 
-  const hoverStart = hovered ? startOfWeek(hovered, options) : null
   const modifiers = start
     ? {
         selected: { from: start, to: end! },
@@ -88,13 +86,9 @@ export function WeekPicker({
           today={today}
           defaultMonth={start ?? undefined}
           initialFocus
-          modifiers={{
-            ...modifiers,
-            hoverWeek: hoverStart ? { from: hoverStart, to: addDays(hoverStart, 6) } : undefined,
-          }}
-          modifiersClassNames={{ hoverWeek: "bg-muted/60" }}
-          onDayMouseEnter={setHovered}
-          onDayMouseLeave={() => setHovered(null)}
+          modifiers={modifiers}
+          // Hovering any day previews its whole week (CSS only, so the grid never re-renders under the pointer).
+          classNames={{ grid: "[&_.rdp-week:hover_.rdp-day:not([data-outside])]:bg-muted/60" }}
           onDayClick={(day, mods) => {
             if (mods.disabled) return
             setValue(startOfWeek(day, options))

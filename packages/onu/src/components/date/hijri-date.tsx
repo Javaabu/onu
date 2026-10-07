@@ -68,8 +68,9 @@ export function HijriDate({
   return (
     <time data-slot="hijri-date" dateTime={toISODate(date)} className={cn("tabular-nums", className)} {...props}>
       <span className={classNames?.hijri}>{formatHijriParts(toHijri(date), t, format)}</span>
+      {showGregorian ? " " : null}
       {showGregorian ? (
-        <span className={cn("ms-1 text-muted-foreground", classNames?.gregorian)}>
+        <span className={cn("text-muted-foreground", classNames?.gregorian)}>
           ({formatDate(date, gregorianFormat, locale.dateFns)})
         </span>
       ) : null}

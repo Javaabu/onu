@@ -81,7 +81,13 @@ export function ReportingPeriodPicker({
   const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
   const [type, setType] = React.useState<ReportingPeriodType>(value?.type ?? defaultType ?? types[0] ?? "monthly")
   const [year, setYear] = React.useState(() => fy.yearOf(value?.from ?? today))
-  const [pending, setPending] = React.useState<DateRangeValue | null>(null)
+  const [pending, setPendingState] = React.useState<DateRangeValue | null>(null)
+  // Mirrors `pending` so closing right after a commit sees the cleared value.
+  const pendingRef = React.useRef<DateRangeValue | null>(null)
+  const setPending = (next: DateRangeValue | null) => {
+    pendingRef.current = next
+    setPendingState(next)
+  }
 
   const fyName = (y: number) => (fiscalYearStartMonth === 0 ? String(y) : t("date.fiscalYear", { year: fy.label(y) }))
   const short = (d: Date) => formatDate(d, "MMM", locale.dateFns)
@@ -128,8 +134,9 @@ export function ReportingPeriodPicker({
       }}
       onOpenChange={(open) => {
         // Closing with half a custom range keeps it as a one-day (or open-to-from) range.
-        if (!open && pending?.from) {
-          setValue({ type: "custom", from: startOfDay(pending.from), to: endOfDay(pending.to ?? pending.from) })
+        const half = pendingRef.current
+        if (!open && half?.from) {
+          setValue({ type: "custom", from: startOfDay(half.from), to: endOfDay(half.to ?? half.from) })
           setPending(null)
         }
         props.onOpenChange?.(open)

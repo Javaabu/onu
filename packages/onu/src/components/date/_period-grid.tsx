@@ -91,6 +91,8 @@ export interface PeriodGridProps {
   label: string
   onSelect: (index: number) => void
   onPage?: (delta: number) => void
+  /** Cell that is focusable first. Defaults to the selected cell, then the current one, then the first. */
+  activeIndex?: number
   /** Focus the active cell when mounted. */
   initialFocus?: boolean
   /** `grid` (rows and columns) or `clock` (cells on a circle; 24 items use two rings). */
@@ -115,6 +117,7 @@ export function PeriodGrid({
   label,
   onSelect,
   onPage,
+  activeIndex,
   initialFocus,
   layout = "grid",
   currentKind = "date",
@@ -122,7 +125,7 @@ export function PeriodGrid({
   cellClassName,
 }: PeriodGridProps) {
   const { dir } = useOnu()
-  const [focused, setFocusedState] = React.useState(() => initialIndex(items))
+  const [focused, setFocusedState] = React.useState(() => activeIndex ?? initialIndex(items))
   const active = Math.min(focused, items.length - 1)
   const buttons = React.useRef<(HTMLButtonElement | null)[]>([])
   const pendingFocus = React.useRef(!!initialFocus)
