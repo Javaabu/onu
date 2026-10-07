@@ -481,6 +481,7 @@ describe("DatePicker — integration", () => {
   it.each(directions)("passes axe when open in %s", async (dir) => {
     const { user } = setup(<DatePicker aria-label="Date" defaultValue={TODAY} />, { dir })
     await user.click(trigger())
+    expect(dialog()).toHaveAttribute("dir", dir)
     await expectNoA11yViolations()
   })
 
