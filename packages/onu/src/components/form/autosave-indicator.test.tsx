@@ -12,7 +12,7 @@ afterEach(() => {
 
 describe("AutosaveIndicator", () => {
   it.each([
-    ["idle", "All changes saved", ""],
+    ["idle", "No unsaved changes", ""],
     ["saving", "Saving…", "Saving…"],
     ["saved", "Saved", "Saved"],
     ["error", "Couldn’t save changes", "Couldn’t save changes"],
@@ -124,6 +124,6 @@ describe("useAutosave", () => {
       return <AutosaveIndicator {...autosave} />
     }
     renderWithOnu(<Demo />)
-    expect(screen.getByText("All changes saved")).toBeInTheDocument()
+    expect(screen.getByText("No unsaved changes")).toBeInTheDocument()
   })
 })

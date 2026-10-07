@@ -1,4 +1,7 @@
 import {
+  BanknoteIcon,
+  WifiIcon,
+  WifiOffIcon,
   ArchiveIcon,
   ArchiveRestoreIcon,
   ArrowDownIcon,
@@ -231,6 +234,10 @@ export const lucideIconMap: Record<SemanticIconName, IconComponent> = {
   plus: PlusIcon,
   polygon: PentagonIcon,
   print: PrinterIcon,
+  printer: PrinterIcon,
+  banknote: BanknoteIcon,
+  wifi: WifiIcon,
+  "wifi-off": WifiOffIcon,
   "qr-code": QrCodeIcon,
   quote: TextQuoteIcon,
   redo: Redo2Icon,

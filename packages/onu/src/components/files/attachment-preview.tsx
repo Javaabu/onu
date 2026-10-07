@@ -43,6 +43,8 @@ export interface AttachmentPreviewProps
   onRemove?: () => void
   /** Extra actions at the end. */
   actions?: React.ReactNode
+  /** Extra details after the type and size, e.g. an upload date or uploader. */
+  meta?: React.ReactNode
   classNames?: { thumbnail?: string; name?: string; meta?: string; actions?: string; dialog?: string }
 }
 
@@ -61,6 +63,7 @@ export function AttachmentPreview({
   preview = true,
   onRemove,
   actions,
+  meta: extraMeta,
   variant,
   className,
   classNames,
@@ -110,9 +113,11 @@ export function AttachmentPreview({
           <span title={name} className={cn("text-sm font-medium truncate", classNames?.name)}>
             <bdi>{name}</bdi>
           </span>
-          {meta.length ? (
-            <span className={cn("text-xs text-muted-foreground tabular-nums", classNames?.meta)}>
-              {meta.join(" · ")}
+          {meta.length || extraMeta ? (
+            <span className={cn("gap-x-1 text-xs flex flex-wrap text-muted-foreground tabular-nums", classNames?.meta)}>
+              {meta.length ? <span>{meta.join(" · ")}</span> : null}
+              {meta.length && extraMeta ? <span aria-hidden="true">·</span> : null}
+              {extraMeta}
             </span>
           ) : null}
         </div>

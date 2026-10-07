@@ -24,7 +24,7 @@ export const form = {
   leaveMessage: "ސޭވް ނުކުރާ ބަދަލުތައް އެބަހުއްޓެވެ. ދާން ބޭނުންތަ؟",
   leave: "ދާ",
   stay: "ސަފްހާގައި ހުންނާ",
-  autosaveIdle: "ހުރިހާ ބަދަލެއް ސޭވްކުރެވިފައި",
+  autosaveIdle: "ސޭވްނުކުރެވި ހުރި ބަދަލެއް ނެތް",
   autosaveSaving: "ސޭވްކުރަނީ…",
   autosaveSaved: "ސޭވްކުރެވިއްޖެ",
   autosaveSavedJustNow: "މިހާރު ސޭވްކުރެވުނު",

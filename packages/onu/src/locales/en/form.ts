@@ -28,7 +28,7 @@ export const form = {
   leave: "Leave",
   stay: "Stay on page",
   // Autosave indicator
-  autosaveIdle: "All changes saved",
+  autosaveIdle: "No unsaved changes",
   autosaveSaving: "Saving…",
   autosaveSaved: "Saved",
   autosaveSavedJustNow: "Saved just now",

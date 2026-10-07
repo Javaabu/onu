@@ -76,7 +76,22 @@ body {
     --background: white;
     --foreground: black;
   }
-  [data-print="hide"] {
+  /* App chrome never prints: only the page content does. */
+  [data-print="hide"],
+  [data-slot="sidebar"],
+  [data-slot="sidebar-gap"],
+  [data-slot="sidebar-container"],
+  [data-slot="app-header"],
+  [data-slot="bottom-nav"],
+  [data-slot="skip-link"],
+  [data-slot="back-to-top"],
+  [data-slot="announcement-bar"],
+  [data-slot="cookie-consent"],
+  [data-slot="sonner-toaster"],
+  [data-sonner-toaster] {
     display: none !important;
+  }
+  [data-slot="app-layout-main"] {
+    padding: 0 !important;
   }
 }

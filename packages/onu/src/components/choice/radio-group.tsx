@@ -15,7 +15,7 @@ import {
 import { normalizeOptions, type ChoiceOption, type ChoiceOptionInput } from "./options"
 import { Radio } from "./radio"
 
-export const radioGroupVariants = cva("w-full", {
+export const radioGroupVariants = cva("relative w-full", {
   variants: {
     variant: { default: "", card: "" },
     orientation: { vertical: "", horizontal: "" },
