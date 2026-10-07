@@ -124,7 +124,9 @@ export function DescriptionListItem({
       data-slot="description-list-item"
       className={cn(
         "gap-x-4 gap-y-1 py-3 grid",
-        layout === "inline" && !fullWidth && "grid-cols-[minmax(0,var(--onu-dl-label-width,12rem))_minmax(0,1fr)]",
+        layout === "inline" &&
+          !fullWidth &&
+          "grid-cols-[minmax(0,min(var(--onu-dl-label-width,12rem),40%))_minmax(0,1fr)]",
         layout === "auto" && !fullWidth && "@md:grid-cols-[minmax(0,var(--onu-dl-label-width,12rem))_minmax(0,1fr)]",
         striped && "px-3 even:bg-muted/40",
         className,
