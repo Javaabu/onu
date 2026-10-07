@@ -23,6 +23,15 @@ const form = useForm({ email: "", password: "", remember: false })
 
 `onSubmit` may also return a promise and throw a Laravel 422 body; the errors then show under the fields (see [`Form`](./form)).
 
+Fields you add with `extraFields` are submitted too: `onSubmit` receives the typed built-in values plus every other named field as the form submitted it (`AuthFormValues<V>` = `V & Record<string, unknown>`).
+
+```tsx
+<SignInForm
+  extraFields={<FormField label="Island" name="island"><TextInput /></FormField>}
+  onSubmit={(values) => router.post("/login", { ...values, island: String(values.island ?? "") })}
+/>
+```
+
 ## SignInForm
 
 Fields: `email`, `password` (with show/hide), `remember`. Values: `{ email, password, remember: boolean }`.
@@ -66,7 +75,7 @@ Fields: hidden `token`, `email`, `password`, `password_confirmation`.
 
 | Prop                   | Type                                 | Description                                      |
 | ---------------------- | ------------------------------------ | ------------------------------------------------ |
-| `onSubmit`             | `(values) => unknown`                | Typed values; may return a promise               |
+| `onSubmit`             | `(values) => unknown`                | Typed values plus any `extraFields` values; may return a promise |
 | `errors`               | `Record<string, string \| string[]>` | Server errors by field                           |
 | `processing`           | `boolean`                            | Spinner on the button, fields disabled           |
 | `status`               | `ReactNode`                          | Success / info message above the fields          |

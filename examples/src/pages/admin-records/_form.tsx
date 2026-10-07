@@ -1,7 +1,5 @@
 import * as React from "react"
-import { useNavigate } from "react-router"
 import {
-  useUnsavedChangesGuard,
   EmailInput,
   Fieldset,
   FormField,
@@ -260,29 +258,4 @@ export function ApplicationFields({
       </Fieldset>
     </>
   )
-}
-
-/**
- * Workaround: `SaveBar`'s link guard treats HashRouter links (`#/pages/…`) as
- * in-page anchors and lets them through. This asks the same question for
- * hash-route links, using Onu's own `useUnsavedChangesGuard`. Render `dialog` once.
- */
-export function useHashLinkGuard(dirty: boolean) {
-  const navigate = useNavigate()
-  const { guard, dialog } = useUnsavedChangesGuard(dirty, { beforeUnload: false, interceptLinks: false })
-  React.useEffect(() => {
-    if (!dirty) return
-    const handler = (event: MouseEvent) => {
-      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey) return
-      const anchor = (event.target as Element | null)?.closest?.('a[href^="#/"]') as HTMLAnchorElement | null
-      if (!anchor || anchor.closest("[data-unsaved-guard-ignore]")) return
-      const to = anchor.getAttribute("href")!.slice(1)
-      event.preventDefault()
-      event.stopPropagation()
-      guard(() => void navigate(to))
-    }
-    document.addEventListener("click", handler, true)
-    return () => document.removeEventListener("click", handler, true)
-  }, [dirty, guard, navigate])
-  return dialog
 }

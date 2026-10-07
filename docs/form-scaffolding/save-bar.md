@@ -25,11 +25,11 @@ const changes = describeChanges(saved, values, { email: "Email", role: "Role" })
 - **Saving**: inside a [`Form`](./form) the Save button submits it and shows the form's processing state (spinner, no double clicks). Outside a form, pass `form="form-id"`, or `onSave` to save yourself.
 - **On success**: the success message appears; the list empties once your saved values update.
 - **On error**: "Your changes were not saved. Please try again." The `Form` shows each error under its field and focuses the first one.
-- **Leaving**: while there are unsaved changes, closing or reloading the tab shows the browser's "Leave site?" prompt, and clicking an in-app link asks "You have unsaved changes. Leave anyway?". Nothing is asked once changes are saved or discarded. For router navigation that is not a link click (Back button, programmatic visits), use [`useUnsavedChangesGuard`](./unsaved-changes-guard).
+- **Leaving**: while there are unsaved changes, closing or reloading the tab shows the browser's "Leave site?" prompt, and clicking an in-app link (including hash-router links such as `#/users`) or pressing the browser's Back button asks "You have unsaved changes. Leave anyway?". Nothing is asked once changes are saved or discarded. For programmatic visits, use [`useUnsavedChangesGuard`](./unsaved-changes-guard).
 
 ## describeChanges(saved, current, labels, format?)
 
-Compares the keys in `labels` (in that order) and returns `SaveBarChange[]`. `format` maps a key to a display value (e.g. a role id to its name). Values are formatted for the locale: numbers, dates, yes/no for booleans, lists joined with commas, `{ label }` objects by label; empty values read "… is cleared".
+Compares the keys in `labels` (in that order) and returns `SaveBarChange[]`. The values can be any object type, including an `interface`. `format` maps a key to a display value (each formatter receives that key's typed value) (e.g. a role id to its name). Values are formatted for the locale: numbers, dates, yes/no for booleans, lists joined with commas, `{ label }` objects by label; empty values read "… is cleared".
 
 ## Props
 
@@ -44,13 +44,15 @@ Compares the keys in `labels` (in that order) and returns `SaveBarChange[]`. `fo
 | `status`                     | `'idle' \| 'success' \| 'error'`          | from `Form` / `onSave`         | Result of the last save                    |
 | `successMessage`             | `ReactNode`                               | "Changes saved"                | e.g. "User saved"                          |
 | `errorMessage`               | `ReactNode`                               | "Your changes were not saved…" |                                            |
-| `title`                      | `ReactNode`                               | "Unsaved changes"              | Panel title                                |
+| `title`                      | `ReactNode`                               | "Unsaved changes"              | Panel title while there are changes; it reads "No changes yet" otherwise |
 | `saveLabel` / `discardLabel` | `ReactNode`                               |                                | Button text                                |
 | `guard`                      | `boolean`                                 | `true`                         | Warn before leaving with unsaved changes   |
 | `layout`                     | `'responsive' \| 'side' \| 'bottom'`      | `responsive`                   | Force a layout                             |
 | `classNames`                 | `{ title, list, item, actions, message }` |                                | Classes for each part                      |
 
-On phones the bar is fixed to the bottom (above the safe area) with a spacer so it never covers content; the change list collapses behind an "N unsaved changes" toggle.
+On phones the bar is fixed to the bottom (above the safe area) with a spacer so it never covers content; the change list collapses behind an "N unsaved changes" toggle. While nothing has changed, the bar reads "No changes yet" rather than "Unsaved changes".
+
+Whenever the bar is fixed to the bottom (`layout="bottom"`, or `responsive` below `lg`), it lines up with the page's content column: `AppLayout`'s main area, a shadcn `SidebarInset`, or the nearest `<main>`. It follows the column as the sidebar opens, collapses or resizes, so it never covers the `AppSidebar` (in LTR or RTL). Outside such a column it spans the viewport.
 
 ## Accessibility
 
