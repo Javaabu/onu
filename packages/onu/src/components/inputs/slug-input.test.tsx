@@ -133,7 +133,7 @@ describe("SlugInput", () => {
     expect(input).toHaveValue("x")
   })
 
-  it("is wired by a FormField and disables the toggle when read-only", () => {
+  it("is wired by a FormField and hides the toggle when read-only", () => {
     renderWithOnu(
       <FormField label="Slug" name="slug" help="Used in the address">
         <SlugInput source="Title" readOnly classNames={{ preview: "pv-x" }} prefix="/news/" />
@@ -142,7 +142,7 @@ describe("SlugInput", () => {
     const input = screen.getByLabelText("Slug")
     expect(input).toHaveAttribute("name", "slug")
     expect(input.getAttribute("aria-describedby")).toMatch(/help/)
-    expect(screen.getByRole("button")).toBeDisabled()
+    expect(screen.queryByRole("button")).not.toBeInTheDocument()
     expect(document.querySelector(".pv-x")).toBeInTheDocument()
   })
 

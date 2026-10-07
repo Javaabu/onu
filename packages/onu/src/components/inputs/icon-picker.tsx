@@ -274,7 +274,7 @@ export function IconPicker({
         }
       >
         <div className="gap-2 flex">
-          <div className="relative flex-1">
+          <div dir="ltr" className="relative flex-1">
             <Icon
               name="search"
               className="size-4 start-2.5 pointer-events-none absolute top-1/2 -translate-y-1/2 text-muted-foreground"

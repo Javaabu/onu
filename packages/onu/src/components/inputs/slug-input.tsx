@@ -132,18 +132,20 @@ export function SlugInput({
         endAddon={
           <>
             {endAddon}
-            <InputGroupButton
-              size="icon-xs"
-              data-slot="slug-toggle"
-              aria-label={t("input.slugAuto")}
-              aria-pressed={auto}
-              title={t("input.slugAuto")}
-              disabled={props.disabled || props.readOnly}
-              onClick={toggle}
-              className={cn("touch:size-11", classNames?.toggle)}
-            >
-              <Icon name={auto ? "lock" : "unlock"} />
-            </InputGroupButton>
+            {props.readOnly ? null : (
+              <InputGroupButton
+                size="icon-xs"
+                data-slot="slug-toggle"
+                aria-label={t("input.slugAuto")}
+                aria-pressed={auto}
+                title={t("input.slugAuto")}
+                disabled={props.disabled}
+                onClick={toggle}
+                className={cn("touch:size-11", classNames?.toggle)}
+              >
+                <Icon name={auto ? "lock" : "unlock"} />
+              </InputGroupButton>
+            )}
           </>
         }
         {...props}

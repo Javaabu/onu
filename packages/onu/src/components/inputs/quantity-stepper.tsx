@@ -117,6 +117,7 @@ export function QuantityStepper({
   }
   const dec = usePressRepeat(change(-step), repeatDelay, repeatInterval)
   const inc = usePressRepeat(change(step), repeatDelay, repeatInterval)
+  // Buttons at a limit use aria-disabled, not disabled: a disabled descendant would grey out the whole group.
   const inactive = disabled || readOnly
   const btn = buttonSizes[size ?? "default"]
 
@@ -140,8 +141,9 @@ export function QuantityStepper({
           tabIndex={-1}
           data-slot="quantity-decrement"
           aria-label={t("input.decrement")}
-          disabled={inactive || value <= min}
-          className={cn(btn, classNames?.decrement)}
+          disabled={inactive}
+          aria-disabled={value <= min || undefined}
+          className={cn(btn, "aria-disabled:pointer-events-none aria-disabled:opacity-40", classNames?.decrement)}
           {...dec}
         >
           <Icon name="minus" />
@@ -154,8 +156,9 @@ export function QuantityStepper({
           tabIndex={-1}
           data-slot="quantity-increment"
           aria-label={t("input.increment")}
-          disabled={inactive || (max !== undefined && value >= max)}
-          className={cn(btn, classNames?.increment)}
+          disabled={inactive}
+          aria-disabled={(max !== undefined && value >= max) || undefined}
+          className={cn(btn, "aria-disabled:pointer-events-none aria-disabled:opacity-40", classNames?.increment)}
           {...inc}
         >
           <Icon name="plus" />
