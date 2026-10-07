@@ -230,7 +230,8 @@ function DropdownMenuSubTrigger({
       {...props}
     >
       {children}
-      <Icon name="chevron-right" className="rtl:rotate-180 ms-auto" />
+      {/* onu: no rtl:rotate-180 here; <Icon> already mirrors chevron-right in RTL, rotating flipped it back. */}
+      <Icon name="chevron-right" className="ms-auto" />
     </DropdownMenuPrimitive.SubTrigger>
   )
 }
