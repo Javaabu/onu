@@ -163,7 +163,7 @@ export function TreeView({
   )
 
   return (
-    <I18nProvider locale={dir === "rtl" && locale.code === "en" ? "ar" : locale.code}>
+    <I18nProvider locale={dir === locale.dir ? locale.code : dir === "rtl" ? "ar" : "en"}>
       <Tree
         {...aria}
         aria-label={aria["aria-label"] ?? (aria["aria-labelledby"] ? undefined : t("listing.tree"))}

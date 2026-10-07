@@ -67,13 +67,13 @@ export function FilterTabs({
               aria-controls={controls}
               className={cn("gap-1.5 touch:min-h-11", classNames?.tab)}
             >
-              {tab.label}
+              {tab.count !== undefined ? `${tab.label} ` : tab.label}
               {tab.count !== undefined ? (
                 <>
                   <Badge variant="secondary" className={cn("tabular-nums", classNames?.count)} aria-hidden="true">
                     {format.format(tab.count)}
                   </Badge>
-                  <span className="sr-only">({format.format(tab.count)})</span>
+                  <span className="sr-only">{`(${format.format(tab.count)})`}</span>
                 </>
               ) : null}
             </TabsTrigger>

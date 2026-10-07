@@ -81,6 +81,11 @@ export function BulkActionBar({
   const [phase, setPhase] = React.useState<Phase>({ kind: "idle" })
   const [confirming, setConfirming] = React.useState<{ action: BulkAction<unknown>; value: unknown } | null>(null)
   const [message, setMessage] = React.useState<{ text: string; tone: "success" | "error" } | null>(null)
+  const messageRef = React.useRef<HTMLDivElement>(null)
+  // The bar goes away with the selection: keep keyboard focus on the result instead of losing it.
+  React.useEffect(() => {
+    if (message && (selected.length === 0 || message.tone === "error")) messageRef.current?.focus()
+  }, [message, selected.length])
 
   const count = selected.length
   const visible = actions.filter((a) => a.permitted !== false)
@@ -154,11 +159,13 @@ export function BulkActionBar({
 
   const messageEl = message ? (
     <div
+      ref={messageRef}
+      tabIndex={-1}
       role={message.tone === "error" ? "alert" : "status"}
       data-slot="bulk-action-message"
       data-tone={message.tone}
       className={cn(
-        "gap-2 px-3 py-2 text-sm flex items-center rounded-lg border",
+        "gap-2 px-3 py-2 text-sm flex items-center rounded-lg border outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
         message.tone === "success"
           ? "border-success/30 bg-success/10 text-foreground"
           : "border-destructive/30 bg-destructive/10 text-destructive",

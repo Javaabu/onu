@@ -256,6 +256,9 @@ export function EditableDataGrid<T>({
                     tabIndex={isActive && !isEditing ? 0 : -1}
                     data-active={isActive || undefined}
                     data-editing={isEditing || undefined}
+                    onFocus={(e) => {
+                      if (e.target === e.currentTarget && !isActive) setActive({ row: r, col: c })
+                    }}
                     onClick={() => !isEditing && setActive({ row: r, col: c })}
                     onDoubleClick={() => startEdit({ row: r, col: c })}
                     className={cn(

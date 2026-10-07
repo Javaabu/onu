@@ -97,6 +97,12 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   const { t } = useTranslation()
   const [busy, setBusy] = React.useState(false)
+  // Radix only returns focus to an AlertDialogTrigger; these dialogs open from
+  // menus and buttons, so remember what had focus and go back to it (§25.10).
+  const returnTo = React.useRef<HTMLElement | null>(null)
+  React.useLayoutEffect(() => {
+    if (open) returnTo.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+  }, [open])
 
   const confirm = async (event: React.MouseEvent) => {
     event.preventDefault()
@@ -111,7 +117,14 @@ export function ConfirmDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={(next) => !busy && onOpenChange(next)}>
-      <AlertDialogContent data-slot="listing-confirm">
+      <AlertDialogContent
+        data-slot="listing-confirm"
+        onCloseAutoFocus={(event) => {
+          if (!returnTo.current?.isConnected) return
+          event.preventDefault()
+          returnTo.current.focus()
+        }}
+      >
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription className={description ? undefined : "sr-only"}>

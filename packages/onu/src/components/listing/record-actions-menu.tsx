@@ -40,6 +40,7 @@ export function RecordActionsMenu({
   const { t } = useTranslation()
   const Link = useLinkComponent()
   const { run, queue, flush, dialog } = useActionRunner(name)
+  const triggerRef = React.useRef<HTMLButtonElement>(null)
   const wide = useMediaQuery("(min-width: 640px)")
   const items = visibleActions(actions)
   const inline = wide ? items.slice(0, maxVisible) : []
@@ -90,7 +91,7 @@ export function RecordActionsMenu({
             <DropdownMenuContent
               align="end"
               className={cn("min-w-44 w-auto", classNames?.content)}
-              onCloseAutoFocus={flush}
+              onCloseAutoFocus={(event) => flush(event, triggerRef.current)}
             >
               <ActionMenuItems actions={overflow} onChoose={queue} />
             </DropdownMenuContent>

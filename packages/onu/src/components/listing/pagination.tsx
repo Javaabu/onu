@@ -97,17 +97,19 @@ export function normalizePagination(input: LaravelResourceCollection | LaravelPa
   }
 }
 
-/** Page numbers to show around the current page, with `null` for a gap. */
+/** Page numbers to show around the current page, with `null` for a gap. Always the same length once gaps appear. */
 export function getPageItems(page: number, lastPage: number, siblings = 1): (number | null)[] {
-  const items: (number | null)[] = []
-  const start = Math.max(2, page - siblings)
-  const end = Math.min(lastPage - 1, page + siblings)
-  items.push(1)
-  if (start > 2) items.push(start === 3 ? 2 : null)
-  for (let p = start; p <= end; p++) items.push(p)
-  if (end < lastPage - 1) items.push(end === lastPage - 2 ? lastPage - 1 : null)
-  if (lastPage > 1) items.push(lastPage)
-  return items
+  const range = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i)
+  const slots = siblings * 2 + 5
+  if (lastPage <= slots) return range(1, lastPage)
+  const left = Math.max(page - siblings, 1)
+  const right = Math.min(page + siblings, lastPage)
+  const leftGap = left > 2
+  const rightGap = right < lastPage - 1
+  const edge = 3 + siblings * 2
+  if (!leftGap) return [...range(1, edge), null, lastPage]
+  if (!rightGap) return [1, null, ...range(lastPage - edge + 1, lastPage)]
+  return [1, null, ...range(left, right), null, lastPage]
 }
 
 export const paginationVariants = cva("gap-3 @container flex flex-wrap items-center justify-between", {

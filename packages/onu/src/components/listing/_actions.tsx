@@ -84,12 +84,16 @@ export function useActionRunner(name: string) {
       setPending(action)
     } else void action.onSelect?.()
   }
-  /** Call from the menu's `onCloseAutoFocus`, after focus is back on the trigger. */
-  const flush = () => {
-    if (queued.current) {
-      queued.current = null
-      setOpen(true)
-    }
+  /**
+   * Call from the menu's `onCloseAutoFocus`: puts focus back on the trigger
+   * first, so the confirmation returns focus there when it closes.
+   */
+  const flush = (event: Event, trigger: HTMLElement | null) => {
+    if (!queued.current) return
+    queued.current = null
+    event.preventDefault()
+    trigger?.focus()
+    setOpen(true)
   }
   /** For a button: ask now, or run now. */
   const run = (action: RecordAction) => {

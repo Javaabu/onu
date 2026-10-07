@@ -128,7 +128,7 @@ function SelectControl({ definition, value, onChange, id, labelId }: ControlProp
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0 min-w-56 w-(--radix-popover-trigger-width)" align="start">
-        <Command>
+        <Command label={t("listing.searchOptions")}>
           <CommandInput placeholder={t("listing.searchOptions")} aria-label={t("listing.searchOptions")} />
           <CommandList aria-multiselectable={multiple || undefined}>
             <CommandEmpty>{t("listing.noOptions")}</CommandEmpty>

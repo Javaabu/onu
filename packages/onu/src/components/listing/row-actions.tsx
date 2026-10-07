@@ -7,6 +7,7 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../../ui/dropdown-menu"
+import { useMergedRef } from "../inputs/text-input"
 import { ActionMenuItems, useActionRunner, visibleActions, type RecordAction } from "./_actions"
 
 export type { RecordAction } from "./_actions"
@@ -28,6 +29,8 @@ export interface RowActionsProps extends Omit<React.ComponentProps<"button">, "c
 export function RowActions({ name, actions, align = "end", className, classNames, ref, ...props }: RowActionsProps) {
   const { t } = useTranslation()
   const { queue, flush, dialog } = useActionRunner(name)
+  const triggerRef = React.useRef<HTMLButtonElement>(null)
+  const mergedRef = useMergedRef(triggerRef, ref)
   const items = visibleActions(actions)
   if (items.length === 0) return null
 
@@ -36,7 +39,7 @@ export function RowActions({ name, actions, align = "end", className, classNames
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            ref={ref}
+            ref={mergedRef}
             variant="ghost"
             size="icon-sm"
             data-slot="row-actions"
@@ -50,7 +53,7 @@ export function RowActions({ name, actions, align = "end", className, classNames
         <DropdownMenuContent
           align={align}
           className={cn("min-w-40 w-auto", classNames?.content)}
-          onCloseAutoFocus={flush}
+          onCloseAutoFocus={(event) => flush(event, triggerRef.current)}
         >
           <ActionMenuItems actions={items} onChoose={queue} />
         </DropdownMenuContent>
