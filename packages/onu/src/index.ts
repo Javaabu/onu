@@ -16,6 +16,10 @@ export * from "./ui"
 // name, the Onu version is exported here; the primitive stays available from
 // "@javaabu/onu/primitives".
 export { Textarea, type TextareaProps } from "./components/inputs/textarea"
+export { Select, type SelectProps } from "./components/choice/select"
+export { Checkbox, type CheckboxProps } from "./components/choice/checkbox"
+export { RadioGroup, type RadioGroupProps } from "./components/choice/radio-group"
+export { Switch, type SwitchProps } from "./components/choice/switch"
 export * from "./components/form"
 export * from "./components/inputs"
 export * from "./components/date"

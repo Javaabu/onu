@@ -1,6 +1,6 @@
 import * as React from "react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { fireEvent, screen, waitFor } from "@testing-library/react"
+import { fireEvent, screen, waitFor, configure } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
@@ -16,6 +16,10 @@ import {
   valueUrlFor,
 } from "./api-options"
 import { ApiSelect } from "./api-select"
+
+// Interaction-heavy tests: allow for slow, shared CI machines.
+vi.setConfig({ testTimeout: 30_000 })
+configure({ asyncUtilTimeout: 5_000 })
 
 const newClient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } })
 

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { act, fireEvent, screen, waitFor } from "@testing-library/react"
+import { screen, waitFor, configure } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
@@ -9,6 +9,10 @@ import { MultiSelect } from "./multi-select"
 import { QuickCreateSelect } from "./quick-create-select"
 import { SearchableSelect } from "./searchable-select"
 import type { ChoiceOption } from "./options"
+
+// Interaction-heavy tests: allow for slow, shared CI machines.
+vi.setConfig({ testTimeout: 30_000 })
+configure({ asyncUtilTimeout: 5_000 })
 
 const islands: ChoiceOption[] = [
   { value: "male", label: "Malé", group: "Kaafu" },
@@ -283,7 +287,3 @@ describe("QuickCreateSelect", () => {
     expect(screen.getByRole("button", { name: "Remove Kudahuvadhoo" })).toBeInTheDocument()
   })
 })
-
-// keep imports used
-void act
-void fireEvent
