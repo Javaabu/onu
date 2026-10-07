@@ -30,16 +30,30 @@ function useCurrent() {
   return useLocation().pathname
 }
 
-function Language() {
+function Language({ variant = "select" }: { variant?: "select" | "menu" }) {
   const { settings, update } = useSettings()
   return (
-    <LanguageSwitcher value={settings.locale} onChange={(code) => update({ locale: code as "en" | "dv" })} size="sm" />
+    <LanguageSwitcher
+      variant={variant}
+      value={settings.locale}
+      onChange={(code) => update({ locale: code as "en" | "dv" })}
+      size="sm"
+    />
   )
 }
 
 export interface Crumb {
   label: string
   href?: string
+}
+
+/** Breadcrumbs in app headers: hidden on phones, where the page title already says where you are. */
+function HeaderCrumbs({ items }: { items: Crumb[] }) {
+  return items.length ? (
+    <div className="min-w-0 sm:block hidden">
+      <Breadcrumbs items={items} />
+    </div>
+  ) : null
 }
 
 function adminNav(tr: ReturnType<typeof useTr>): NavGroup[] {
@@ -135,7 +149,7 @@ export function AdminShell({
           sidebarTrigger
           actions={
             <>
-              <Language />
+              <Language variant="menu" />
               <ThemeToggle />
               <NotificationCenter
                 notifications={[
@@ -156,7 +170,7 @@ export function AdminShell({
             </>
           }
         >
-          {breadcrumbs.length ? <Breadcrumbs items={breadcrumbs} /> : null}
+          <HeaderCrumbs items={breadcrumbs} />
         </AppHeader>
       }
     >
@@ -237,6 +251,15 @@ export function PortalShell({ children, className }: { children: React.ReactNode
     <Density value="comfortable" className="flex min-h-svh flex-col bg-background">
       <header className="top-0 backdrop-blur sticky z-30 border-b bg-background/95">
         <div className="max-w-6xl gap-4 px-4 py-2 mx-auto flex items-center">
+          {/* TopNav shows `logo` only in its phone drawer; the bar shows it here. */}
+          <div className="md:block hidden shrink-0">
+            <Logo
+              src={logoSrc}
+              alt="Onu"
+              text={tr("Ministry of Services", "ޚިދުމަތްތަކުގެ ވުޒާރާ")}
+              href={routes.public.home}
+            />
+          </div>
           <TopNav
             className="flex-1"
             currentHref={current}
