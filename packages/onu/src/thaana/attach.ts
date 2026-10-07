@@ -49,7 +49,7 @@ export function insertText(el: ThaanaTarget, text: string, replace?: { start: nu
   if (isTextControl(el)) {
     if (replace) el.setSelectionRange(replace.start, replace.end)
     const doc = el.ownerDocument
-    let done = false
+    let done: boolean
     try {
       done = typeof doc.execCommand === "function" && doc.execCommand("insertText", false, text)
     } catch {
@@ -65,7 +65,7 @@ export function insertText(el: ThaanaTarget, text: string, replace?: { start: nu
   }
 
   const doc = el.ownerDocument
-  let done = false
+  let done: boolean
   try {
     done = typeof doc.execCommand === "function" && doc.execCommand("insertText", false, text)
   } catch {

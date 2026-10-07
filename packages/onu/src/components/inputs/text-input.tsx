@@ -21,17 +21,19 @@ export interface TextInputProps extends Omit<React.ComponentProps<"input">, "siz
   classNames?: { root?: string; input?: string; startAddon?: string; endAddon?: string }
 }
 
+function setRef<T>(ref: React.Ref<T> | undefined, node: T | null) {
+  if (typeof ref === "function") ref(node)
+  else if (ref) (ref as React.RefObject<T | null>).current = node
+}
+
 /** Merges a forwarded ref with a local one. */
-export function useMergedRef<T>(...refs: (React.Ref<T> | undefined)[]) {
+export function useMergedRef<T>(a: React.Ref<T> | undefined, b?: React.Ref<T>) {
   return React.useCallback(
     (node: T | null) => {
-      for (const ref of refs) {
-        if (typeof ref === "function") ref(node)
-        else if (ref) (ref as React.RefObject<T | null>).current = node
-      }
+      setRef(a, node)
+      setRef(b, node)
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    refs,
+    [a, b],
   )
 }
 

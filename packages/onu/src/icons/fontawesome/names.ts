@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax -- FontAwesome icon names, not Tailwind classes */
 import type { SemanticIconName } from "../types"
 
 /**

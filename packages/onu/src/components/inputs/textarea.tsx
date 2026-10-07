@@ -35,10 +35,8 @@ export function Textarea({
   const merged = useMergedRef(local, ref)
   const { fieldProps, active, enabled, toggle } = useThaanaField(local, thaana)
   const controlProps = useFormFieldControl(props)
-  const [count, setCount] = React.useState(() => String(props.value ?? props.defaultValue ?? "").length)
-  React.useEffect(() => {
-    if (props.value !== undefined) setCount(String(props.value).length)
-  }, [props.value])
+  const [typed, setTyped] = React.useState(() => String(props.defaultValue ?? "").length)
+  const count = props.value !== undefined ? String(props.value).length : typed
 
   const textarea = (
     <BaseTextarea
@@ -49,7 +47,7 @@ export function Textarea({
         !showCount && !thaanaToggle && className,
       )}
       onChange={(e) => {
-        setCount(e.target.value.length)
+        setTyped(e.target.value.length)
         onChange?.(e)
       }}
       {...fieldProps}
