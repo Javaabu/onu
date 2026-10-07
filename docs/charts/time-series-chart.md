@@ -3,7 +3,7 @@ title: TimeSeriesChart
 sidebar_position: 4
 ---
 
-A line or area chart on a real time axis. Dates are formatted with the active locale (Dhivehi month names in `dv`), missing steps can be filled in as gaps, and a brush lets people zoom into a range.
+A line, area or bar chart on a real time axis, optionally stacked. Dates are formatted with the active locale (Dhivehi month names in `dv`), missing steps can be filled in as gaps, and a brush lets people zoom into a range.
 
 ```tsx
 import { TimeSeriesChart } from "@javaabu/onu/charts"
@@ -27,6 +27,21 @@ Rows may come in any order; they are sorted oldest first. Dates can be `Date` ob
 
 `null` values break the line. With `interval` (`"hour" | "day" | "week" | "month"`), missing steps are inserted too (3 September above), so a missing day is a visible gap rather than a straight line across it. `connectNulls` bridges gaps instead.
 
+## Stacked areas and bars
+
+`stacked` adds the series up, so the top edge is the total: use `variant="area"` for stacked areas or `variant="bar"` for stacked bars (a stacked `"line"` chart is drawn as stacked areas). Bars are centred on their date, and the axis is padded by half a step so the first and last bars are whole. The data table and summary still list each series on its own, and the time axis is mirrored in RTL as usual.
+
+```tsx
+<TimeSeriesChart
+  title="Tourist arrivals by stay type"
+  variant="bar"
+  stacked
+  data={rows}
+  config={{ resorts: { label: "Resorts" }, guesthouses: { label: "Guesthouses" } }}
+  interval="month"
+/>
+```
+
 ## Zoom
 
 `brush` adds a range slider under the chart. Drag the handles, or focus one and use the arrow keys. While zoomed, a **Reset zoom** button appears and "Showing 2 Sep 2026 to 4 Sep 2026" is announced in a polite live region.
@@ -42,7 +57,9 @@ Also takes the common chart props (`title`, `description`, `config`, `series`, `
 | `interval`          | `"hour" \| "day" \| "week" \| "month"` |             | Fill missing steps with gaps            |
 | `dateFormat`        | `string` (date-fns)                    | by interval | Tick format (`d MMM`, `MMM yyyy`, time) |
 | `tooltipDateFormat` | `string` (date-fns)                    | by interval | Tooltip and table format                |
-| `area`              | `boolean`                              | `false`     | Filled areas                            |
+| `variant`           | `"line" \| "area" \| "bar"`            | `"line"`    | How series are drawn                    |
+| `area`              | `boolean`                              | `false`     | Filled areas (same as `variant="area"`) |
+| `stacked`           | `boolean`                              | `false`     | Stack the series (areas or bars)        |
 | `brush`             | `boolean`                              | `false`     | Brush to zoom                           |
 | `connectNulls`      | `boolean`                              | `false`     | Bridge gaps                             |
 

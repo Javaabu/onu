@@ -193,6 +193,54 @@ describe("TimeSeriesChart", () => {
     expect(container.querySelector(".recharts-legend-wrapper")).toHaveTextContent("ArrivalsDepartures")
   })
 
+  const twoSeries = {
+    data: [
+      { date: "2026-01-01", male: 120, addu: 40 },
+      { date: "2026-01-02", male: 140, addu: 35 },
+      { date: "2026-01-03", male: 90, addu: 60 },
+    ],
+    config: { male: { label: "Malé" }, addu: { label: "Addu" } },
+  }
+
+  it("stacks areas, and draws stacked lines as stacked areas", () => {
+    const { container, rerender } = renderWithOnu(
+      <TimeSeriesChart title="Arrivals" variant="area" stacked {...twoSeries} animate={false} />,
+    )
+    expect(container.querySelectorAll(".recharts-area")).toHaveLength(2)
+    // Each band has its own edge on top of the one below.
+    const tops = [...container.querySelectorAll(".recharts-area-curve")].map((c) => c.getAttribute("d"))
+    expect(tops[0]).not.toEqual(tops[1])
+    rerender(<TimeSeriesChart title="Arrivals" stacked {...twoSeries} animate={false} />)
+    expect(container.querySelectorAll(".recharts-area")).toHaveLength(2)
+    expect(container.querySelector(".recharts-line")).toBeNull()
+  })
+
+  it.each(directions)("draws stacked bars on the time axis with the data table intact (%s)", async (dir) => {
+    const user = userEvent.setup()
+    const { container } = renderWithOnu(
+      <TimeSeriesChart title="Arrivals" variant="bar" stacked {...twoSeries} animate={false} />,
+      { dir },
+    )
+    const bars = [...container.querySelectorAll<SVGPathElement>(".recharts-bar-rectangle path")]
+    expect(bars).toHaveLength(6)
+    // Stacked: for the same day, the Addu bar starts where the Malé bar ends.
+    const box = (el: Element) => ({ x: Number(el.getAttribute("x")), y: Number(el.getAttribute("y")) })
+    const male = container.querySelectorAll(".recharts-bar")[0]!.querySelectorAll(".recharts-rectangle")
+    const addu = container.querySelectorAll(".recharts-bar")[1]!.querySelectorAll(".recharts-rectangle")
+    expect(box(addu[0]!).x).toBeCloseTo(box(male[0]!).x)
+    expect(box(addu[0]!).y).toBeLessThan(box(male[0]!).y)
+    // Newest (3 Jan, the shortest Malé bar) on the right in LTR and on the left in RTL.
+    const maleBars = [...male].map((r) => ({ x: box(r).x, height: Number(r.getAttribute("height")) }))
+    const newest = maleBars.reduce((a, b) => (b.height < a.height ? b : a))
+    const xs = maleBars.map((b) => b.x)
+    expect(newest.x).toBe(dir === "rtl" ? Math.min(...xs) : Math.max(...xs))
+    await user.click(screen.getByRole("button", { name: "View as table" }))
+    expect(screen.getByRole("columnheader", { name: "Malé" })).toBeInTheDocument()
+    expect(screen.getByRole("columnheader", { name: "Addu" })).toBeInTheDocument()
+    expect(screen.getAllByRole("row")[1]).toHaveTextContent(/1 Jan 2026.*120.*40/)
+    await expectNoA11yViolations(container)
+  })
+
   it("shows the empty state without valid dates", () => {
     renderWithOnu(<TimeSeriesChart title="Arrivals" data={[{ date: "x", arrivals: 1 }]} config={config} />)
     expect(screen.getByText("No data to show")).toBeInTheDocument()
