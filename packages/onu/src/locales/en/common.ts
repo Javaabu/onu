@@ -51,4 +51,6 @@ export const common = {
   commandPalette: "Command palette",
   commandPaletteDescription: "Search for a command to run…",
   info: "Information",
+  // Number formatting (useFormatCurrency)
+  currency: "MVR {amount}",
 } satisfies MessageDict

@@ -52,4 +52,6 @@ export const common = {
   commandPalette: "ކޮމާންޑް ޕެލެޓް",
   commandPaletteDescription: "ހިންގާނެ ކޮމާންޑެއް ހޯދާ…",
   info: "މަޢުލޫމާތު",
+  // Number formatting (useFormatCurrency)
+  currency: "ރ. {amount}",
 } satisfies Record<keyof typeof en, string> & MessageDict
