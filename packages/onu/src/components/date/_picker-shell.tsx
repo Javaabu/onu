@@ -121,7 +121,7 @@ export function PickerShell(props: PickerShellProps) {
     today: _today,
     ...rest
   } = props
-  const { t } = useOnu()
+  const { t, dir } = useOnu()
   const detached = React.useContext(DetachedContext)
   const formField = useFormField()
   const field = detached ? null : formField
@@ -232,6 +232,7 @@ export function PickerShell(props: PickerShellProps) {
           <DrawerTrigger asChild>{trigger}</DrawerTrigger>
           <DrawerContent
             id={panelId}
+            dir={dir}
             aria-label={panelLabel}
             className={cn("[--cell-size:--spacing(11)]", classNames?.content)}
           >
@@ -257,6 +258,7 @@ export function PickerShell(props: PickerShellProps) {
         <PopoverTrigger asChild>{trigger}</PopoverTrigger>
         <PopoverContent
           id={panelId}
+          dir={dir}
           align="start"
           aria-label={panelLabel}
           data-slot="picker-content"
