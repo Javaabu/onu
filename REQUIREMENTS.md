@@ -177,14 +177,14 @@ What each build-list group is based on. "In-house" means composed from shadcn pr
 
 | Group | shadcn base | Libraries | In-house |
 |---|---|---|---|
-| Form scaffolding | `form`, `field`, `label`, `button`, `button-group`, `input-group`, `card`, `separator` | `react-hook-form` (`useFieldArray` for repeating groups) | Required marker, AJAX errors, autosave indicator, save bar, floating submit, multi-language submit, field definition editor (with `@dnd-kit`) |
-| Text inputs | `input`, `textarea`, `input-group`, `input-otp`, `popover`, `command` | `react-phone-number-input`, `signature_pad`, `barcode-detector` (zxing-wasm polyfill for the native API), CodeMirror 6 (formula input), `@sindresorhus/slugify`, React Aria `ColorArea`/`ColorSlider`/`ColorField` (colour picker), TanStack Virtual (icon picker grid) | Thaana engine, copy input, sensitive input, tags input (on `command` + `badge`) |
+| Form scaffolding | `form`, `field`, `label`, `button`, `button-group`, `input-group`, `card`, `separator` | `react-hook-form` (`useFieldArray` for repeating groups) | Required marker, AJAX errors, autosave indicator, save bar, floating submit |
+| Text inputs | `input`, `textarea`, `input-group`, `input-otp`, `popover`, `command` | `react-phone-number-input`, `signature_pad`, `barcode-detector` (zxing-wasm polyfill for the native API), `@sindresorhus/slugify`, React Aria `ColorArea`/`ColorSlider`/`ColorField` (colour picker), TanStack Virtual (icon picker grid) | Thaana engine, copy input, sensitive input, tags input (on `command` + `badge`) |
 | Date and time | `calendar`, `popover`, date-picker pattern | `react-day-picker`, `date-fns`, React Aria `DateField`/`TimeField` + `@internationalized/date` (Hijri), FullCalendar (standard plugins) | Week picker, reporting-period picker |
-| Choice inputs | `select`, `combobox`, `command`, `checkbox`, `radio-group`, `switch`, `toggle-group`, `slider` | `cmdk` | Rating, dual listbox, image select, payment method selector, account switcher, dependent/API/model selects, quick-create |
+| Choice inputs | `select`, `combobox`, `command`, `checkbox`, `radio-group`, `switch`, `toggle-group`, `slider` | `cmdk`, TanStack Query (API select caching and request de-duplication) | Rating, dual listbox, image select, payment method selector, account switcher, dependent/API selects, quick-create |
 | Files and media | `avatar`, `progress`, `carousel`, `dialog`, `aspect-ratio` | `react-dropzone`, `react-easy-crop`, `embla-carousel-react`, `yet-another-react-lightbox`, Media Chrome (media player) | Upload progress, media lister, attachment preview, document download, click-to-load embed |
 | Rich content | none (shadcn has no editor) | [Plate](https://platejs.org) (shadcn-native editor on Slate, MIT) for the WYSIWYG editor, block editor and static block renderer; Shiki for code highlighting | Translations editor, custom attribute fields |
-| Maps | none | `react-map-gl` (MapLibre) and `@vis.gl/react-google-maps` behind one adapter, `terra-draw` (radius/polygon/route drawing), `supercluster`, `@turf/turf` | Location card, info panel, legend swatch, replay controls, route stop editor |
-| Charts | `chart` | `recharts` (choropleth map chart via MapLibre) | Stat tiles, period comparison |
+| Maps | none | **Google Maps (default)** via `@vis.gl/react-google-maps`; `terra-draw` + its Google Maps adapter (radius/polygon/route drawing); `@googlemaps/markerclusterer`; deck.gl `GoogleMapsOverlay` (heatmap, replay trails); `@turf/turf`. MapLibre via `react-map-gl` as an optional secondary adapter | Location card, info panel, legend swatch, replay controls, route stop editor |
+| Charts | `chart` | `recharts`; map chart as a choropleth on Google Maps (deck.gl `GeoJsonLayer`) | Stat tiles, period comparison |
 | Listing pages | `table`, data-table pattern, `pagination`, `dropdown-menu`, `checkbox`, `empty`, `toggle-group` | TanStack Table, TanStack Virtual, `@dnd-kit`, React Aria `Tree`, `react-querybuilder` (filter condition builder) | Kanban, filter panel/chips/tabs, bulk actions, view switcher, load more |
 | Overlays | `dialog`, `alert-dialog`, `sheet`, `drawer`, `popover`, `tooltip`, `hover-card`, `dropdown-menu`, `context-menu`, `command` | `vaul`, `cmdk`, `yet-another-react-lightbox` | none |
 | Loading | `spinner`, `skeleton`, `progress` | none | Loading overlay, page progress bar |
@@ -222,7 +222,7 @@ Recommended font pack. Everything is open-licensed (OFL) and **self-hosted via [
 |---|---|---|---|
 | UI sans (default) | **Inter** (variable) | The de-facto modern UI typeface. Excellent legibility at small admin sizes, tabular figures, wide language coverage, optical-size axis for display headings | `@fontsource-variable/inter` |
 | Thaana | **Noto Sans Thaana** (variable, 100–900) | The well-maintained, openly-licensed Thaana family with a full weight range, so Thaana bold/medium never falls back to faux bold. Designed to sit alongside Latin sans fonts | `@fontsource-variable/noto-sans-thaana` |
-| Monospace | **JetBrains Mono** (variable) | Code blocks, formula input, API keys, IDs, keyboard keys | `@fontsource-variable/jetbrains-mono` |
+| Monospace | **JetBrains Mono** (variable) | Code blocks, API keys, IDs, keyboard keys | `@fontsource-variable/jetbrains-mono` |
 | Alternative UI sans | **Geist** (variable) | A slightly more geometric, contemporary option. Shipped as a preset for products that want a different feel | `@fontsource-variable/geist` |
 | Serif (optional) | **Source Serif 4** (variable) | Long-form reading: news articles, the laws and regulations reader, certificates | `@fontsource-variable/source-serif-4` |
 
@@ -298,7 +298,7 @@ Javaabu currently uses the JTK (JavaScript Thaana Keyboard) approach for typing 
 - **R13.2** React bindings:
   - `useThaanaInput(ref, options)` hook that can be attached to any `<input>`, `<textarea>` or `contenteditable`.
   - `<ThaanaInput>` and `<ThaanaTextarea>` components.
-- **R13.3** **Every component that accepts free text** exposes a `thaana` prop (`boolean | ThaanaOptions`), including: Text input, Textarea, Search box, Autocomplete, Searchable select / Multi-select search field, Tags input, Inline edit, Editable select, Combobox-style inputs, Command palette, Translations editor, Notes, Comment thread composer, WYSIWYG and Block editor. Inputs whose content must be Latin (email, password, URL, number, phone, OTP, slug, colour, formula) do **not** offer it.
+- **R13.3** **Every component that accepts free text** exposes a `thaana` prop (`boolean | ThaanaOptions`), including: Text input, Textarea, Search box, Autocomplete, Searchable select / Multi-select search field, Tags input, Inline edit, Editable select, Combobox-style inputs, Command palette, Translations editor, Notes, Comment thread composer, WYSIWYG and Block editor. Inputs whose content must be Latin (email, password, URL, number, phone, OTP, slug, colour) do **not** offer it.
 - **R13.4** When `thaana` is on, the field sets `dir="rtl"`, `lang="dv"` and the Thaana font automatically.
 - **R13.5** Optional per-field toggle (button and keyboard shortcut) to switch between Thaana and Latin while typing; the current mode is announced to screen readers.
 - **R13.6** Must work with:
@@ -343,9 +343,32 @@ Javaabu currently uses the JTK (JavaScript Thaana Keyboard) approach for typing 
 - **R16.2** Link-rendering components (Link button, Breadcrumbs, Side navigation, Pagination, Nav tabs, Conditional link, …) accept a pluggable link component via `OnuProvider` (`linkComponent={InertiaLink}`) or `asChild`.
 - **R16.3** **Laravel validation compatibility**: Field errors and AJAX validation errors accept Laravel's `422` payload (`{ message, errors: { "field.0.name": [...] } }`) directly, including nested/array dot-notation keys, and map them to fields (also via `react-hook-form` `setError`).
 - **R16.4** Pagination accepts Laravel paginator / API resource `meta` + `links` shapes out of the box.
-- **R16.5** API select / Autocomplete / Dependent select accept a fetcher function, with a default fetcher for Laravel JSON resources; no hard dependency on any HTTP client.
+- **R16.5** **API select must fetch options asynchronously from any API URL.** Autocomplete and Dependent select reuse the same data layer.
+  - **Source**: either a `url` (any endpoint, same-origin or cross-origin) or a custom `fetcher(query, { page, signal })` function. The default fetcher uses `fetch`, so there is no hard dependency on any HTTP client.
+  - **Request options**: method, headers, `credentials`, and extra static or dynamic params. The names of the search, page and per-page params are configurable (defaults: `search`, `page`, `per_page`).
+  - **Response mapping**: options can be read from any response shape, via a path to the items array (e.g. `data`, `results.items`) plus `valueKey` / `labelKey`, or a `mapOption(item)` function. Laravel JSON resources and paginators work without any configuration.
+  - **Searching**: requests are debounced (default 300ms) and have an optional minimum query length. When the user keeps typing, older in-flight requests are cancelled with `AbortController`, so a slow early response can never overwrite a newer one.
+  - **Paging**: options load page by page as the list scrolls (infinite scroll) when the API is paginated.
+  - **Preloading**: options can load on open, or immediately (`preload`).
+  - **Showing the current value**: if a value is already set (e.g. on an edit page), its label is shown without opening the list. The label comes from `initialOptions`, or from a fetch to a `valueUrl` / `fetchById`.
+  - **States**: loading, empty ("No results for …"), and error with a **Retry** button. All are announced to screen readers.
+  - **Caching**: results are cached per URL + query (TanStack Query), with a configurable lifetime and manual invalidation, e.g. after quick-create.
+  - **Dependent use**: params can come from other field values. When the parent field changes, the child refetches and its value clears.
+  - **Shared behaviour**: single and multi-select, `thaana` search input, RTL, and full keyboard support, as for Searchable select.
 - **R16.6** CSRF and auth are the consumer's concern; components never perform network requests without a consumer-supplied URL/fetcher.
 - **R16.7** eFaas sign-in button follows eFaas branding guidelines (asset/colours supplied by eFaas, not invented).
+- **R16.8** **Payment method selector** offers two gateways:
+  - **BML Transfer** (bank transfer to a Bank of Maldives account, typically followed by a transfer-slip upload);
+  - **BML Connect** (BML's online card/payment gateway).
+  - Options are configurable: a project can enable either or both, set their order and the default, and supply its own labels and descriptions in both locales.
+  - Logos and colours follow BML's branding guidelines, using assets supplied by BML rather than invented ones.
+  - It is a radio group of cards: fully keyboard-operable, with a large touch size for kiosks.
+  - Selection only. Onu does not integrate with the gateway itself; redirects and callbacks are the consuming app's job.
+- **R16.9** **Maps default to Google Maps.**
+  - `OnuProvider` (or `<MapProvider>`) takes the Google Maps API key and an optional Map ID (needed for vector maps, advanced markers and cloud-based styling).
+  - Map styles follow light/dark mode and the theme tokens. The map UI language follows the active locale (`dv`/`en`) and direction.
+  - Google has deprecated its Drawing Library and its Heatmap Layer, so neither may be used. Drawing (radius, polygon, route) uses `terra-draw`; heatmaps and replay trails use deck.gl.
+  - Map components are written against an internal adapter interface. A MapLibre adapter (no API key, self-hostable tiles, useful for offline kiosks) can be added without changing the component APIs.
 
 ## 17. Testing, CI & coverage
 
@@ -477,9 +500,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Button
 - [ ] Link button
 - [ ] Button group
-- [ ] Multi-language submit
 - [ ] Auth forms (sign in, register, reset password)
-- [ ] Field definition editor
 
 ### Text inputs
 - [ ] Text input
@@ -496,7 +517,6 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Textarea
 - [ ] Thaana input
 - [ ] OTP input
-- [ ] Formula input
 - [ ] Slug generator
 - [ ] Autocomplete
 - [ ] Colour picker
@@ -520,7 +540,6 @@ A build-list item is ticked only when all of the following are true:
 ### Choice inputs
 - [ ] Select
 - [ ] Searchable select
-- [ ] Model selector
 - [ ] Dependent select
 - [ ] API select
 - [ ] Editable select
@@ -827,20 +846,17 @@ All sample pages live in `examples/` and must render correctly in light/dark, LT
 To be resolved before (or while) building the affected components:
 
 1. **Licence** — MIT like other Javaabu packages, or private/internal?
-2. **Map provider** — MapLibre (free, self-hostable tiles) as default, or Google Maps as primary? Which tile provider for the Maldives?
+2. **Google Maps billing**: whose Google Cloud project/API key is used for the examples app and CI, and is a Map ID set up for vector maps?
 3. **Thaana fonts**: does Javaabu hold licences for any Maldivian fonts (e.g. Faruma) that could ship as an optional pack, or do we stay with Noto Sans Thaana only?
 4. **FontAwesome Pro**: which Pro licence/Kit should CI use (needs a `FONTAWESOME_NPM_AUTH_TOKEN` secret)?
 5. **Figma**: which Figma team/workspace hosts the library, and is a paid plan with Dev Mode available for Code Connect?
 6. **Default primary colour** — exact Javaabu/Onu brand colour value.
 7. **Docs hosting** — confirm the Docusaurus docs site that consumes `/docs` (same as js-utilities) and its slug (`/onu`).
 8. **Component semantics to confirm**:
-   - *Formula input* — spreadsheet-style expression editor? Which functions/variables?
-   - *Field definition editor* / *Custom attribute fields* — schema shape (align with an existing Javaabu Laravel package?).
-   - *Multi-language submit* — "Save" + "Save & translate to …" per configured locale?
-   - *Model selector* vs *API select* — difference in behaviour.
+   - *Custom attribute fields* — schema shape (align with an existing Javaabu Laravel package?).
    - *Reporting-period picker* — fiscal periods (monthly/quarterly/yearly) with custom fiscal year start?
    - *Map navigation* / *Map replay* — data shape for tracks (GeoJSON LineString with timestamps?).
-   - *Payment method selector* — which gateways (BML, MIB, MFaisaa, card) and branding assets?
+   - *BML Transfer*: should the selector itself show the bank account details and slip upload, or only the choice?
 9. **React Native / Flutter parity** — should token names align with the Flutter design system for cross-platform consistency?
 
 ---
