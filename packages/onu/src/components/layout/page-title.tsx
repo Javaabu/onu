@@ -121,7 +121,7 @@ export function PageTitle({
                             data-slot="page-title-dot"
                             aria-hidden="true"
                             className="size-1.5 rounded-full bg-primary"
-                          />
+                          />{" "}
                           <span className="sr-only">{t("layout.notEmpty")}</span>
                         </>
                       ) : null}

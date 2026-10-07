@@ -71,11 +71,14 @@ export function BottomNav({
             "hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset aria-disabled:opacity-50 data-active:text-primary",
             classNames?.item,
           )
+          // The label comes first in the DOM so the accessible name reads "Inbox, 3 new";
+          // CSS order puts the icon on top.
           const inner = (
             <>
+              <span className={cn("order-2 max-w-full truncate", classNames?.label)}>{item.label}</span>{" "}
               <span
                 className={cn(
-                  "h-7 w-12 [&_svg]:size-5 relative flex items-center justify-center rounded-full transition-colors in-data-active:bg-primary/10",
+                  "h-7 w-12 [&_svg]:size-5 relative order-1 flex items-center justify-center rounded-full transition-colors in-data-active:bg-primary/10",
                   classNames?.icon,
                 )}
               >
@@ -88,7 +91,6 @@ export function BottomNav({
                   )}
                 />
               </span>
-              <span className={cn("max-w-full truncate", classNames?.label)}>{item.label}</span>
             </>
           )
           return (

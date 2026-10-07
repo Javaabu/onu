@@ -100,6 +100,7 @@ export function NavTabs({
             <>
               <NavIcon icon={item.icon} />
               <span>{item.label}</span>
+              {item.count !== undefined ? " " : null}
               {item.count !== undefined ? (
                 <span
                   data-slot="nav-tabs-count"
