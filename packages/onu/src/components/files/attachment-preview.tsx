@@ -107,8 +107,8 @@ export function AttachmentPreview({
       )}
       <div className={cn("min-w-0 gap-2 flex flex-1 items-center", card && "p-3")}>
         <div className="min-w-0 gap-0.5 flex flex-1 flex-col">
-          <span dir="auto" title={name} className={cn("text-sm font-medium truncate", classNames?.name)}>
-            {name}
+          <span title={name} className={cn("text-sm font-medium truncate", classNames?.name)}>
+            <bdi>{name}</bdi>
           </span>
           {meta.length ? (
             <span className={cn("text-xs text-muted-foreground tabular-nums", classNames?.meta)}>
@@ -169,8 +169,8 @@ export function AttachmentPreview({
             className={cn("sm:max-w-3xl max-h-[calc(100dvh-2rem)] grid-rows-[auto_minmax(0,1fr)]", classNames?.dialog)}
           >
             <DialogHeader className="gap-2 flex-row items-center">
-              <DialogTitle dir="auto" className="min-w-0 leading-normal flex-1 truncate">
-                {name}
+              <DialogTitle className="min-w-0 leading-normal flex-1 truncate">
+                <bdi>{name}</bdi>
               </DialogTitle>
               <DialogDescription className="sr-only">{t("file.previewOf", { name })}</DialogDescription>
               {download ? (

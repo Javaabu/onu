@@ -138,13 +138,12 @@ export function VideoEmbed({
             className="inset-x-0 top-0 h-24 absolute bg-gradient-to-b from-foreground/60 to-transparent dark:from-background/80"
           />
           <span
-            dir="auto"
             className={cn(
               "inset-x-0 top-0 p-3 text-sm font-medium absolute line-clamp-2 text-start text-background dark:text-foreground",
               classNames?.title,
             )}
           >
-            {title}
+            <bdi>{title}</bdi>
           </span>
           <span
             className={cn(

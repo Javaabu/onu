@@ -71,7 +71,7 @@ describe("FileInput", () => {
       )
     }
     const { container } = renderWithOnu(<Controlled />)
-    expect(screen.getByText("existing.pdf", { selector: "[data-slot=file-row] span" })).toBeInTheDocument()
+    expect(screen.getByText("existing.pdf", { selector: "[data-slot=file-row] bdi" })).toBeInTheDocument()
     await user().upload(input(container), [file("a.pdf"), file("b.pdf")])
     expect(screen.getByText("2")).toBeInTheDocument()
     expect(screen.getByText("2 files selected")).toBeInTheDocument()
@@ -112,7 +112,7 @@ describe("FileInput", () => {
       />,
     )
     expect(screen.getByText("Browse")).toHaveClass("b")
-    expect(screen.getByText("Nothing yet")).toHaveClass("s")
+    expect(screen.getByText("Nothing yet").parentElement).toHaveClass("s")
     expect(container.querySelector(".r .t")).toBeInTheDocument()
     expect(input(container)).toBeDisabled()
   })

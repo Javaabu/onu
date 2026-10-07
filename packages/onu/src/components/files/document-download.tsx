@@ -82,12 +82,12 @@ export function DocumentDownload({
       <div className="gap-3 flex items-start">
         <FileIcon kind={kind} size="lg" className={classNames?.icon} />
         <div className="min-w-0 gap-1 flex flex-1 flex-col">
-          <span id={titleId} dir="auto" className={cn("font-medium leading-snug", classNames?.title)}>
-            {title}
+          <span id={titleId} className={cn("font-medium leading-snug", classNames?.title)}>
+            <bdi>{title}</bdi>
           </span>
           {description ? (
-            <span dir="auto" className={cn("text-sm text-muted-foreground", classNames?.description)}>
-              {description}
+            <span className={cn("text-sm text-muted-foreground", classNames?.description)}>
+              <bdi>{description}</bdi>
             </span>
           ) : null}
           {details.length || meta ? (

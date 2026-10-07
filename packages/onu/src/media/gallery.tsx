@@ -103,8 +103,8 @@ export function Gallery({
                 />
               </button>
               {showCaptions && image.title ? (
-                <figcaption dir="auto" className={cn("text-sm text-muted-foreground", classNames?.caption)}>
-                  {image.title}
+                <figcaption className={cn("text-sm text-muted-foreground", classNames?.caption)}>
+                  <bdi>{image.title}</bdi>
                 </figcaption>
               ) : null}
             </figure>

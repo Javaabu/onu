@@ -70,7 +70,6 @@ export function FileRow({
       )}
       <div className={cn("min-w-0 gap-1 flex flex-1 flex-col", classNames?.body)}>
         <span
-          dir="auto"
           title={name}
           className={cn(
             "text-sm font-medium truncate",
@@ -78,7 +77,7 @@ export function FileRow({
             classNames?.name,
           )}
         >
-          {name}
+          <bdi>{name}</bdi>
         </span>
         {sizeText || meta ? (
           <span className={cn("gap-2 text-xs flex flex-wrap items-center text-muted-foreground", classNames?.meta)}>

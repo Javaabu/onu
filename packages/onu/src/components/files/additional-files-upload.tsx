@@ -170,8 +170,8 @@ export function AdditionalFilesUpload({
                       {t("file.willBeRemoved")}
                     </Badge>
                   ) : attachment.description ? (
-                    <span dir="auto" className="truncate">
-                      {attachment.description}
+                    <span className="truncate">
+                      <bdi>{attachment.description}</bdi>
                     </span>
                   ) : null
                 }

@@ -177,10 +177,9 @@ export function FileInput({
         </span>
         <span
           id={statusId}
-          dir="auto"
           className={cn("min-w-0 truncate", !files.length && "text-muted-foreground", classNames?.summary)}
         >
-          {statusText}
+          <bdi>{statusText}</bdi>
         </span>
       </div>
 

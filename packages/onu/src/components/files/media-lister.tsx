@@ -258,8 +258,8 @@ export function MediaLister({
                     <FileIcon kind={kind} />
                   )}
                   <span className="min-w-0 gap-0.5 flex flex-1 flex-col">
-                    <span dir="auto" className={cn("text-sm font-medium truncate", classNames?.name)}>
-                      {item.name}
+                    <span className={cn("text-sm font-medium truncate", classNames?.name)}>
+                      <bdi>{item.name}</bdi>
                     </span>
                     {typeof item.size === "number" ? (
                       <span className="text-xs text-muted-foreground tabular-nums">{format(item.size)}</span>
