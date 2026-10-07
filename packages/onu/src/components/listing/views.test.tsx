@@ -151,6 +151,8 @@ describe("TreeView", () => {
     const rows = screen.getAllByRole("row")
     await userEvent.click(within(rows[1] as HTMLElement).getByRole("checkbox"))
     expect(onSelectionChange).toHaveBeenCalledWith(["henveiru"])
+    await userEvent.keyboard("{Control>}a{/Control}")
+    expect(onSelectionChange).toHaveBeenLastCalledWith(["male", "henveiru", "galolhu", "addu"])
   })
 
   it("shows the empty state", () => {

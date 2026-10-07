@@ -29,12 +29,6 @@ export function useNoun(noun: ListingNoun | undefined) {
   )
 }
 
-/** Formats a number with the active locale (Western digits in Dhivehi, R12.6). */
-export function useNumberFormat() {
-  const { locale } = useTranslation()
-  return React.useMemo(() => new Intl.NumberFormat(locale.numberLocale), [locale.numberLocale])
-}
-
 /**
  * A polite live region and a function that announces a message through it.
  * The message is cleared first so the same text is announced again.
