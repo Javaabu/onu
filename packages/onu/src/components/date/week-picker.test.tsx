@@ -59,6 +59,8 @@ describe("WeekPicker", () => {
     await user.click(screen.getByRole("combobox"))
     const before = day(/Monday, March 2nd/)
     expect(before).toBeDisabled()
+    await user.click(within(dialog()).getByRole("button", { name: "Clear" }))
+    expect(screen.getByRole("combobox")).toHaveTextContent("Select a week")
   })
 
   it.each(directions)("passes axe and speaks Dhivehi in %s", async (dir) => {
