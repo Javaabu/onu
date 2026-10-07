@@ -61,4 +61,5 @@ export const layout = {
   statusInfo: "Information",
   statusPending: "Pending",
   statusCurrent: "In progress",
+  learnMore: "Learn more",
 } satisfies MessageDict

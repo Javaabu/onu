@@ -96,6 +96,32 @@
   }
 }
 
+/*
+ * Fluid type scale for portal and marketing pages (R3.4): sizes grow smoothly from
+ * 320px to 1280px viewports with clamp(), and the rem part keeps them zoomable (WCAG 1.4.4).
+ * App UIs keep the fixed scale. Use the `text-fluid-*` utilities; override a step
+ * with `--onu-text-fluid-<step>` (e.g. `--onu-text-fluid-5xl: 5rem`).
+ * Headings get a tight line height, taller for Thaana so fili are not clipped (R12.4).
+ */
+:root {
+  --fluid-text-sm: var(--onu-text-fluid-sm, clamp(0.875rem, 0.8333rem + 0.2083vw, 1rem));
+  --fluid-text-base: var(--onu-text-fluid-base, clamp(1rem, 0.9583rem + 0.2083vw, 1.125rem));
+  --fluid-text-lg: var(--onu-text-fluid-lg, clamp(1.125rem, 1.042rem + 0.4167vw, 1.375rem));
+  --fluid-text-xl: var(--onu-text-fluid-xl, clamp(1.25rem, 1.083rem + 0.8333vw, 1.75rem));
+  --fluid-text-2xl: var(--onu-text-fluid-2xl, clamp(1.5rem, 1.25rem + 1.25vw, 2.25rem));
+  --fluid-text-3xl: var(--onu-text-fluid-3xl, clamp(1.875rem, 1.5rem + 1.875vw, 3rem));
+  --fluid-text-4xl: var(--onu-text-fluid-4xl, clamp(2.25rem, 1.75rem + 2.5vw, 3.75rem));
+  --fluid-text-5xl: var(--onu-text-fluid-5xl, clamp(2.5rem, 1.833rem + 3.3333vw, 4.5rem));
+  --fluid-leading-tight: 1.1;
+  --fluid-leading-snug: 1.3;
+  --fluid-leading-normal: 1.6;
+}
+:lang(dv) {
+  --fluid-leading-tight: 1.5;
+  --fluid-leading-snug: 1.6;
+  --fluid-leading-normal: 1.8;
+}
+
 /* Density modes scale Tailwind's spacing unit, so every size follows (R3.2). */
 :root[data-density="compact"],
 [data-density="compact"] {

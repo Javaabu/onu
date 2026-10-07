@@ -77,4 +77,22 @@
   --font-serif: var(--onu-font-serif);
   --font-thaana: var(--onu-font-thaana);
   --font-heading: var(--onu-font-sans);
+
+  /* Fluid type (R3.4): text-fluid-sm … text-fluid-5xl. */
+  --text-fluid-sm: var(--fluid-text-sm);
+  --text-fluid-sm--line-height: var(--fluid-leading-normal);
+  --text-fluid-base: var(--fluid-text-base);
+  --text-fluid-base--line-height: var(--fluid-leading-normal);
+  --text-fluid-lg: var(--fluid-text-lg);
+  --text-fluid-lg--line-height: var(--fluid-leading-normal);
+  --text-fluid-xl: var(--fluid-text-xl);
+  --text-fluid-xl--line-height: var(--fluid-leading-snug);
+  --text-fluid-2xl: var(--fluid-text-2xl);
+  --text-fluid-2xl--line-height: var(--fluid-leading-snug);
+  --text-fluid-3xl: var(--fluid-text-3xl);
+  --text-fluid-3xl--line-height: var(--fluid-leading-tight);
+  --text-fluid-4xl: var(--fluid-text-4xl);
+  --text-fluid-4xl--line-height: var(--fluid-leading-tight);
+  --text-fluid-5xl: var(--fluid-text-5xl);
+  --text-fluid-5xl--line-height: var(--fluid-leading-tight);
 }
