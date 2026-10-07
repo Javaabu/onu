@@ -1,0 +1,8 @@
+/* Optional presets (R7): Geist as an alternative UI sans, Source Serif 4 for long-form reading. */
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/source-serif-4";
+
+[data-font="geist"] {
+  --onu-font-sans:
+    "Geist Variable", "MV Waheed", Faruma, "Noto Sans Thaana Variable", ui-sans-serif, system-ui, sans-serif;
+}

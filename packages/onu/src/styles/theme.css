@@ -1,0 +1,116 @@
+/*
+ * Derived theme variables. The shadcn-compatible names (--primary, --background, …)
+ * read from the public --onu-* tokens, so a project only ever sets --onu-* (R9.4).
+ * Derived shades use color-mix() (baseline browsers); automatic contrast uses
+ * relative colour syntax where supported (R9.2, R9.3).
+ *
+ * Scoped themes (R9.6): set tokens on any element together with the
+ * `data-onu-theme` attribute so the derived variables are recomputed there:
+ *   <section data-onu-theme style="--onu-primary: oklch(0.6 0.2 260)">…</section>
+ */
+:root,
+[data-onu-theme],
+.dark,
+[data-theme="dark"] {
+  --primary: var(--onu-primary);
+  --primary-foreground: var(--onu-primary-foreground, oklch(0.985 0 0));
+  --primary-hover: color-mix(in oklch, var(--primary), black 12%);
+  --primary-active: color-mix(in oklch, var(--primary), black 20%);
+  --primary-subtle: color-mix(in oklch, var(--primary) 12%, var(--background));
+  --primary-subtle-foreground: color-mix(in oklch, var(--primary), var(--foreground) 35%);
+
+  --background: var(--onu-background);
+  --foreground: var(--onu-foreground);
+  --card: var(--onu-card);
+  --card-foreground: var(--onu-card-foreground);
+  --popover: var(--onu-popover);
+  --popover-foreground: var(--onu-popover-foreground);
+  --secondary: var(--onu-secondary);
+  --secondary-foreground: var(--onu-secondary-foreground);
+  --muted: var(--onu-muted);
+  --muted-foreground: var(--onu-muted-foreground);
+  --accent: var(--onu-accent);
+  --accent-foreground: var(--onu-accent-foreground);
+  --destructive: var(--onu-destructive);
+  --destructive-foreground: var(--onu-destructive-foreground);
+  --success: var(--onu-success);
+  --success-foreground: var(--onu-success-foreground);
+  --warning: var(--onu-warning);
+  --warning-foreground: var(--onu-warning-foreground);
+  --info: var(--onu-info);
+  --info-foreground: var(--onu-info-foreground);
+  --border: var(--onu-border);
+  --input: var(--onu-input);
+  --ring: var(--onu-ring, var(--primary));
+
+  --chart-1: var(--onu-chart-1, var(--primary));
+  --chart-2: var(--onu-chart-2);
+  --chart-3: var(--onu-chart-3);
+  --chart-4: var(--onu-chart-4);
+  --chart-5: var(--onu-chart-5);
+  --chart-6: var(--onu-chart-6);
+  --chart-7: var(--onu-chart-7);
+  --chart-8: var(--onu-chart-8);
+
+  --sidebar: var(--onu-sidebar);
+  --sidebar-foreground: var(--onu-sidebar-foreground);
+  --sidebar-primary: var(--onu-sidebar-primary, var(--primary));
+  --sidebar-primary-foreground: var(--onu-sidebar-primary-foreground, var(--primary-foreground));
+  --sidebar-accent: var(--onu-sidebar-accent);
+  --sidebar-accent-foreground: var(--onu-sidebar-accent-foreground);
+  --sidebar-border: var(--onu-sidebar-border);
+  --sidebar-ring: var(--ring);
+
+  --radius: var(--onu-radius);
+
+  /* FontAwesome duotone follows the theme (R6.4). */
+  --fa-primary-color: currentColor;
+  --fa-secondary-color: var(--primary);
+}
+
+/* Pick black or white text on primary automatically where relative colours are supported. */
+@supports (color: oklch(from red l c h)) {
+  :root,
+  [data-onu-theme],
+  .dark,
+  [data-theme="dark"] {
+    --primary-foreground: var(
+      --onu-primary-foreground,
+      oklch(from var(--primary) clamp(0, (0.68 - l) * 1000, 0.985) 0 0)
+    );
+  }
+}
+
+/* Dark mode: lift the brand colour so it keeps contrast on dark surfaces (R10.4). */
+.dark,
+[data-theme="dark"] {
+  --primary: var(--onu-primary-dark, color-mix(in oklch, var(--onu-primary), white 18%));
+  --primary-hover: color-mix(in oklch, var(--primary), white 10%);
+  --primary-active: color-mix(in oklch, var(--primary), white 18%);
+}
+
+@supports (color: oklch(from red l c h)) {
+  .dark,
+  [data-theme="dark"] {
+    --primary: var(--onu-primary-dark, oklch(from var(--onu-primary) max(l, 0.7) c h));
+  }
+}
+
+/* Density modes scale Tailwind's spacing unit, so every size follows (R3.2). */
+:root[data-density="compact"],
+[data-density="compact"] {
+  --spacing: var(--onu-density-compact);
+}
+:root[data-density="default"],
+[data-density="default"] {
+  --spacing: var(--onu-density-default);
+}
+:root[data-density="comfortable"],
+[data-density="comfortable"] {
+  --spacing: var(--onu-density-comfortable);
+}
+:root[data-density="touch"],
+[data-density="touch"] {
+  --spacing: var(--onu-density-touch);
+  font-size: 1.0625rem;
+}

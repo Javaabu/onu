@@ -1,0 +1,149 @@
+import type * as React from "react"
+
+/** Props every icon component receives from <Icon>. */
+export interface IconComponentProps {
+  [data: `data-${string}`]: string | undefined
+  className?: string
+  "aria-hidden"?: boolean | "true" | "false"
+  "aria-label"?: string
+  role?: string
+  focusable?: "true" | "false"
+}
+
+export type IconComponent = React.ComponentType<IconComponentProps>
+
+/** Semantic icon names used by Onu components (R6.5). Projects may add their own names. */
+export const SEMANTIC_ICON_NAMES = [
+  "add",
+  "archive",
+  "arrow-down",
+  "arrow-left",
+  "arrow-right",
+  "arrow-up",
+  "attachment",
+  "back",
+  "bell",
+  "calendar",
+  "camera",
+  "check",
+  "chevron-down",
+  "chevron-left",
+  "chevron-right",
+  "chevron-up",
+  "chevrons-left",
+  "chevrons-right",
+  "chevrons-up-down",
+  "clock",
+  "close",
+  "code",
+  "columns",
+  "copy",
+  "credit-card",
+  "crop",
+  "dot",
+  "download",
+  "edit",
+  "error",
+  "external-link",
+  "eye",
+  "eye-off",
+  "file",
+  "file-text",
+  "filter",
+  "folder",
+  "forward",
+  "globe",
+  "grid",
+  "grip-vertical",
+  "heart",
+  "help",
+  "history",
+  "home",
+  "image",
+  "info",
+  "kanban",
+  "key",
+  "keyboard",
+  "languages",
+  "link",
+  "list",
+  "loading",
+  "lock",
+  "log-in",
+  "log-out",
+  "mail",
+  "map-pin",
+  "maximize",
+  "menu",
+  "minimize",
+  "minus",
+  "monitor",
+  "moon",
+  "more",
+  "more-vertical",
+  "navigation",
+  "pause",
+  "phone",
+  "play",
+  "plus",
+  "print",
+  "qr-code",
+  "redo",
+  "refresh",
+  "reply",
+  "restore",
+  "rotate",
+  "save",
+  "search",
+  "send",
+  "settings",
+  "share",
+  "sidebar",
+  "sort",
+  "sort-asc",
+  "sort-desc",
+  "star",
+  "success",
+  "sun",
+  "table",
+  "trash",
+  "undo",
+  "unlock",
+  "upload",
+  "user",
+  "users",
+  "volume",
+  "volume-off",
+  "warning",
+  "zoom-in",
+  "zoom-out",
+] as const
+
+export type SemanticIconName = (typeof SEMANTIC_ICON_NAMES)[number]
+
+/** Name → component or element. Unknown names fall back to the default map. */
+export type IconMap = Partial<Record<SemanticIconName | (string & {}), IconComponent | React.ReactElement>>
+
+/**
+ * Icons that point in a reading direction and must mirror in RTL (R6.8, R11.4).
+ * Applies to every icon source, including custom maps.
+ */
+export const DIRECTIONAL_ICONS = new Set<string>([
+  "arrow-left",
+  "arrow-right",
+  "back",
+  "chevron-left",
+  "chevron-right",
+  "chevrons-left",
+  "chevrons-right",
+  "external-link",
+  "forward",
+  "list",
+  "log-in",
+  "log-out",
+  "redo",
+  "reply",
+  "send",
+  "sidebar",
+  "undo",
+])

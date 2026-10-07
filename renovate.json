@@ -1,0 +1,20 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":semanticCommitsDisabled"],
+  "rangeStrategy": "bump",
+  "packageRules": [
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "dev dependencies (non-major)",
+      "automerge": true
+    },
+    { "matchPackageNames": ["/^@radix-ui/", "radix-ui", "shadcn"], "groupName": "radix and shadcn" },
+    { "matchPackageNames": ["/^@tiptap/"], "groupName": "tiptap" },
+    { "matchPackageNames": ["/^@deck.gl/"], "groupName": "deck.gl" },
+    { "matchPackageNames": ["/^@fullcalendar/"], "groupName": "fullcalendar" },
+    { "matchPackageNames": ["/^@fontsource/", "/^@fontsource-variable/"], "groupName": "fonts" }
+  ],
+  "vulnerabilityAlerts": { "enabled": true },
+  "schedule": ["before 6am on monday"]
+}

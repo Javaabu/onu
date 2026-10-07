@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@import "@javaabu/onu/tailwind.css";
+@import "@javaabu/onu/fonts.css";
+
+@source "../../packages/onu/src";

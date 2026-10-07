@@ -1,0 +1,82 @@
+/* Base styles. Imported inside `@layer base` by tailwind.css. */
+* {
+  border-color: var(--border);
+  outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--onu-font-sans);
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Dhivehi text: Thaana font first, taller line-height, no faux italics or bold (R8.3, R8.4, R7.3). */
+:lang(dv) {
+  font-family: var(--onu-font-thaana);
+  font-synthesis: none;
+  line-height: 1.75;
+  letter-spacing: 0;
+}
+:lang(dv) :is(em, i, cite) {
+  font-style: normal;
+}
+:lang(dv) :is(b, strong, h1, h2, h3, h4, h5, h6, th) {
+  font-family: var(--onu-font-thaana-bold, var(--onu-font-thaana));
+}
+
+/* Numbers that line up (R7.5). */
+.tabular-nums,
+[data-numeric] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Touch: minimum target size on coarse pointers, whatever the density (R3.25). */
+@media (pointer: coarse) {
+  :where(
+    [data-slot="button"],
+    [data-slot="select-trigger"],
+    [data-slot="toggle"],
+    [data-slot="tabs-trigger"],
+    [data-slot="input"],
+    [data-slot="input-group"],
+    [data-slot="combobox-trigger"],
+    [data-slot="pagination-link"],
+    [data-slot="dropdown-menu-item"],
+    [data-slot="command-item"],
+    [data-slot="select-item"]
+  ) {
+    min-height: var(--onu-touch-target);
+  }
+  :where([data-slot="button"][data-size^="icon"], [data-slot="pagination-link"]) {
+    min-width: var(--onu-touch-target);
+  }
+}
+
+/* Respect reduced motion everywhere (R14.8). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  :root {
+    --background: white;
+    --foreground: black;
+  }
+  [data-print="hide"] {
+    display: none !important;
+  }
+}

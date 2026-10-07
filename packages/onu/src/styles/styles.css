@@ -1,0 +1,6 @@
+/*
+ * Onu tokens and theme variables, without Tailwind directives.
+ * Tailwind projects should import `@javaabu/onu/tailwind.css` instead.
+ */
+@import "./tokens.css";
+@import "./theme.css";

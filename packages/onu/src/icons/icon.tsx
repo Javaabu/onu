@@ -1,0 +1,53 @@
+import * as React from "react"
+
+import { cn } from "../lib/utils"
+import { useIconContext } from "./icon-context"
+import { fallbackIcon, lucideIconMap } from "./lucide-map"
+import { DIRECTIONAL_ICONS, type IconComponent, type SemanticIconName } from "./types"
+
+const SIZES = {
+  xs: "size-3",
+  sm: "size-3.5",
+  md: "size-4",
+  lg: "size-5",
+  xl: "size-6",
+} as const
+
+export interface IconProps extends Omit<React.SVGAttributes<SVGSVGElement>, "name"> {
+  /** Semantic name (e.g. `"close"`) resolved through the configured icon map. */
+  name: SemanticIconName | (string & {})
+  /** Accessible label. Without it the icon is decorative and hidden from screen readers. */
+  label?: string
+  /** Size token. Omit to size with `className` or inherit from the parent (`[&_svg]:size-*`). */
+  size?: keyof typeof SIZES | number
+  /** Force mirroring in RTL on or off. Defaults to on for directional icons. */
+  flip?: boolean
+  className?: string
+}
+
+/**
+ * Renders an icon by semantic name. Lucide by default; projects can switch every
+ * built-in icon (e.g. to FontAwesome Pro) with `OnuProvider icons={…}` (R6.5).
+ */
+export function Icon({ name, label, size, flip, className, ...rest }: IconProps) {
+  const { icons } = useIconContext()
+  const entry = icons?.[name] ?? (lucideIconMap as Record<string, IconComponent>)[name] ?? fallbackIcon
+  const mirror = flip ?? DIRECTIONAL_ICONS.has(name)
+
+  const classes = cn(typeof size === "string" && SIZES[size], mirror && "rtl:-scale-x-100", className)
+  if (typeof size === "number") Object.assign(rest, { width: size, height: size })
+  const a11y = label ? ({ role: "img", "aria-label": label } as const) : ({ "aria-hidden": true } as const)
+
+  if (React.isValidElement<{ className?: string }>(entry)) {
+    return React.cloneElement(entry, {
+      ...rest,
+      ...a11y,
+      "data-icon-name": name,
+      className: cn(entry.props.className, classes),
+    } as unknown as React.Attributes & { className?: string })
+  }
+
+  const Component = entry as IconComponent
+  // Rendered without a wrapper so parent selectors like `[&_svg]` and `*:[svg]` keep working.
+  return <Component {...(rest as object)} {...a11y} data-icon-name={name} className={classes} />
+}

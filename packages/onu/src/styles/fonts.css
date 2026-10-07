@@ -1,0 +1,37 @@
+/*
+ * Onu font pack (R7.1). Optional: requires the Fontsource packages listed as
+ * optional peer dependencies.
+ *
+ *   @import "@javaabu/onu/fonts.css";
+ */
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+/* Fallback Thaana face when MV Waheed is not available (R7.3). */
+@import "@fontsource-variable/noto-sans-thaana";
+
+/*
+ * MV Waheed: the default Thaana font (R7.3). Only Thaana code points use it.
+ *
+ * Its files are not bundled until redistribution rights are confirmed. Uses an
+ * installed copy if present; to self-host, declare your own file after this import:
+ *
+ *   @font-face {
+ *     font-family: "MV Waheed";
+ *     src: url("/fonts/mv-waheed.woff2") format("woff2");
+ *     font-display: swap;
+ *     unicode-range: U+0780-07BF, U+FDF2, U+060C, U+061B, U+061F;
+ *   }
+ */
+@font-face {
+  font-family: "MV Waheed";
+  src: local("MV Waheed"), local("MVWaheed"), local("MV_Waheed");
+  font-display: swap;
+  unicode-range: U+0780-07BF, U+FDF2, U+060C, U+061B, U+061F;
+}
+
+@font-face {
+  font-family: "Faruma";
+  src: local("Faruma"), local("A_Faruma");
+  font-display: swap;
+  unicode-range: U+0780-07BF, U+FDF2, U+060C, U+061B, U+061F;
+}

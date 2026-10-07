@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Lint, typecheck, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Format
+        run: pnpm format:check
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Tokens are up to date
+        run: pnpm --filter @javaabu/onu tokens && git diff --exit-code packages/onu/src/styles/tokens.css
+      - name: Unit tests with coverage
+        run: pnpm test:coverage
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
+        with:
+          files: packages/onu/coverage/lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+      - name: Build package
+        run: pnpm build
+      - name: Size budgets
+        run: pnpm --filter @javaabu/onu size
+      - name: Build examples
+        run: pnpm build:examples
+      - name: Docs cover every component
+        run: node scripts/check-docs.mjs
+      - name: Licences
+        run: node scripts/check-licenses.mjs
+      - name: Audit
+        run: pnpm audit --prod --audit-level high
+
+  fontawesome-pro:
+    name: FontAwesome Pro adapter
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
+    env:
+      FONTAWESOME_NPM_AUTH_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+        if: ${{ env.FONTAWESOME_NPM_AUTH_TOKEN != '' }}
+      - uses: pnpm/action-setup@v4
+        if: ${{ env.FONTAWESOME_NPM_AUTH_TOKEN != '' }}
+      - uses: actions/setup-node@v5
+        if: ${{ env.FONTAWESOME_NPM_AUTH_TOKEN != '' }}
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install with Pro packages
+        if: ${{ env.FONTAWESOME_NPM_AUTH_TOKEN != '' }}
+        run: |
+          pnpm install --frozen-lockfile
+          echo "@fortawesome:registry=https://npm.fontawesome.com/" >> .npmrc
+          echo "//npm.fontawesome.com/:_authToken=${FONTAWESOME_NPM_AUTH_TOKEN}" >> .npmrc
+          pnpm --filter @javaabu/onu add -D @fortawesome/pro-regular-svg-icons @fortawesome/pro-solid-svg-icons
+      - name: Test FontAwesome adapter against Pro
+        if: ${{ env.FONTAWESOME_NPM_AUTH_TOKEN != '' }}
+        run: ONU_FONTAWESOME_PRO=1 pnpm --filter @javaabu/onu exec vitest run src/icons/fontawesome
