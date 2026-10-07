@@ -41,9 +41,40 @@ function collect(modules: Record<string, Module>, sources: Record<string, string
 export const demos = collect(demoModules, demoSources, /\.demo\.tsx$/)
 export const pages = collect(pageModules, pageSources, /\.page\.tsx$/)
 
+/** Navigation order: foundations, then REQUIREMENTS §22 and §23 order. Unknown groups go last. */
+const GROUP_ORDER = [
+  "Foundations",
+  "Form scaffolding",
+  "Text inputs",
+  "Date and time",
+  "Choice inputs",
+  "Files and media",
+  "Rich content",
+  "Maps",
+  "Charts",
+  "Listing pages",
+  "Overlays",
+  "Loading",
+  "Layout and navigation",
+  "Display and feedback",
+  "Auth",
+  "Admin: records",
+  "Admin: content",
+  "Admin: settings and access",
+  "Applications and workflows",
+  "Public portal",
+  "Citizen portal",
+  "Learning",
+  "Maps and operations",
+  "Kiosk",
+  "System",
+]
+
 export function groupBy(entries: Entry[]) {
   const groups = new Map<string, Entry[]>()
-  for (const entry of entries) {
+  const rank = (g: string) => (GROUP_ORDER.indexOf(g) === -1 ? GROUP_ORDER.length : GROUP_ORDER.indexOf(g))
+  const sorted = [...entries].sort((a, b) => rank(a.meta.group) - rank(b.meta.group))
+  for (const entry of sorted) {
     const list = groups.get(entry.meta.group) ?? []
     list.push(entry)
     groups.set(entry.meta.group, list)

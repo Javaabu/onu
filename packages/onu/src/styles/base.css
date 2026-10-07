@@ -1,7 +1,7 @@
 /* Base styles. Imported inside `@layer base` by tailwind.css. */
 * {
   border-color: var(--border);
-  outline-color: color-mix(in oklch, var(--ring) 50%, transparent);
+  outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
 }
 
 html {

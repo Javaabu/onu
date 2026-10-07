@@ -14,10 +14,10 @@
 [data-theme="dark"] {
   --primary: var(--onu-primary);
   --primary-foreground: var(--onu-primary-foreground, oklch(0.985 0 0));
-  --primary-hover: color-mix(in oklch, var(--primary), black 12%);
-  --primary-active: color-mix(in oklch, var(--primary), black 20%);
-  --primary-subtle: color-mix(in oklch, var(--primary) 12%, var(--background));
-  --primary-subtle-foreground: color-mix(in oklch, var(--primary), var(--foreground) 35%);
+  --primary-hover: color-mix(in oklab, var(--primary), black 12%);
+  --primary-active: color-mix(in oklab, var(--primary), black 20%);
+  --primary-subtle: color-mix(in oklab, var(--primary) 12%, var(--background));
+  --primary-subtle-foreground: color-mix(in oklab, var(--primary), var(--foreground) 35%);
 
   --background: var(--onu-background);
   --foreground: var(--onu-foreground);
@@ -84,9 +84,9 @@
 /* Dark mode: lift the brand colour so it keeps contrast on dark surfaces (R10.4). */
 .dark,
 [data-theme="dark"] {
-  --primary: var(--onu-primary-dark, color-mix(in oklch, var(--onu-primary), white 18%));
-  --primary-hover: color-mix(in oklch, var(--primary), white 10%);
-  --primary-active: color-mix(in oklch, var(--primary), white 18%);
+  --primary: var(--onu-primary-dark, color-mix(in oklab, var(--onu-primary), white 18%));
+  --primary-hover: color-mix(in oklab, var(--primary), white 10%);
+  --primary-active: color-mix(in oklab, var(--primary), white 18%);
 }
 
 @supports (color: oklch(from red l c h)) {
