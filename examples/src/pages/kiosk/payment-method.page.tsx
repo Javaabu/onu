@@ -27,7 +27,7 @@ export default function KioskPaymentMethodPage() {
 
   return (
     <KioskShell>
-      <div className="gap-8 max-w-3xl grid w-full">
+      <div className="gap-8 max-w-3xl p-1 relative grid w-full grid-cols-1 overflow-x-clip">
         <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-center">
           {tr("How would you like to pay?", "ފައިސާ ދައްކާނީ ކިހިނެއް؟")}
         </h1>

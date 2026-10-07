@@ -111,14 +111,7 @@ export default function KioskMaintenancePage() {
               disabled={locked}
               classNames={{ control: "justify-items-center" }}
             >
-              <OtpInput
-                length={6}
-                size="lg"
-                groupSize={3}
-                value={pin}
-                onValueChange={setPin}
-                onComplete={(code) => void verify(code)}
-              />
+              <OtpInput length={6} value={pin} onValueChange={setPin} onComplete={(code) => void verify(code)} />
             </FormField>
             <div className="gap-4 sm:grid-cols-2 grid w-full">
               <LinkButton href={routes.kiosk.start} variant="outline" className={BIG} startIcon="back">

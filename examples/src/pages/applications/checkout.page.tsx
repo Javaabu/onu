@@ -83,7 +83,7 @@ export default function CheckoutPage() {
         { label: tr("Checkout", "ފައިސާ ދެއްކުން") },
       ]}
     >
-      <div className="gap-6 max-w-5xl grid">
+      <div className="gap-6 max-w-5xl relative grid grid-cols-1 overflow-x-clip">
         <PageTitle
           title={tr("Pay for your application", "އެޕްލިކޭޝަނުގެ ފީ ދެއްކުން")}
           description={`${order.ref} · ${order.application}`}

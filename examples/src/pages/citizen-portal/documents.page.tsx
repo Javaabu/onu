@@ -21,14 +21,7 @@ import {
 import { CitizenShell } from "../_shared/shells"
 import { useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
-import {
-  documentUrl,
-  documents as initialDocs,
-  matchesAny,
-  useFormat,
-  wait,
-  type PortalDocument,
-} from "../applications/_data"
+import { documentUrl, documents as initialDocs, matchesAny, wait, type PortalDocument } from "../applications/_data"
 
 export const meta = { title: "My documents", group: "Citizen portal", layout: "bare", order: 3 }
 
@@ -36,7 +29,6 @@ const CATEGORIES = ["identity", "certificates", "receipts"] as const
 
 export default function MyDocumentsPage() {
   const tr = useTr()
-  const { date } = useFormat()
   const [docs, setDocs] = React.useState<PortalDocument[]>(initialDocs)
   const [search, setSearch] = React.useState("")
   const [category, setCategory] = React.useState("all")
@@ -91,7 +83,7 @@ export default function MyDocumentsPage() {
 
   return (
     <CitizenShell>
-      <div className="gap-6 grid">
+      <div className="gap-6 grid grid-cols-1">
         <PageTitle
           title={tr("My documents", "އަޅުގަނޑުގެ ލިޔެކިޔުން")}
           description={tr(
@@ -113,16 +105,17 @@ export default function MyDocumentsPage() {
             aria-label={tr("Search documents", "ލިޔުން ހޯދާ")}
             className="md:max-w-sm"
           />
-          <SegmentedControl
-            aria-label={tr("Category", "ބާވަތް")}
-            value={category}
-            onValueChange={setCategory}
-            className="max-w-full overflow-x-auto"
-            options={[
-              { value: "all", label: tr("All", "ހުރިހާ") },
-              ...CATEGORIES.map((c) => ({ value: c, label: categoryLabel[c] })),
-            ]}
-          />
+          <div className="min-w-0 max-w-full overflow-x-auto">
+            <SegmentedControl
+              aria-label={tr("Category", "ބާވަތް")}
+              value={category}
+              onValueChange={setCategory}
+              options={[
+                { value: "all", label: tr("All", "ހުރިހާ") },
+                ...CATEGORIES.map((c) => ({ value: c, label: categoryLabel[c] })),
+              ]}
+            />
+          </div>
         </div>
 
         <Section
@@ -152,7 +145,7 @@ export default function MyDocumentsPage() {
         ) : (
           CATEGORIES.filter((c) => shown.some((d) => d.category === c)).map((c) => (
             <Section key={c} title={categoryLabel[c]}>
-              <ul className="gap-2 grid">
+              <ul className="gap-2 grid grid-cols-1">
                 {shown
                   .filter((d) => d.category === c)
                   .map((d) => (
@@ -164,7 +157,6 @@ export default function MyDocumentsPage() {
                         size={d.size}
                         type={d.kind === "pdf" ? "application/pdf" : "image/svg+xml"}
                         alt={tr(...d.title)}
-                        actions={<span className="text-xs text-muted-foreground">{date(d.added)}</span>}
                       />
                     </li>
                   ))}

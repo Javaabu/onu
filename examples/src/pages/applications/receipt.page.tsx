@@ -37,7 +37,7 @@ export default function ReceiptPage() {
       ]}
     >
       <PrintOnlyContent />
-      <div className="gap-4 max-w-3xl mx-auto grid w-full">
+      <div className="gap-4 max-w-3xl mx-auto grid w-full grid-cols-1">
         <div className="gap-2 flex flex-wrap items-center justify-between" data-print="hide">
           <BackButton fallbackHref={routes.citizen.payments}>{tr("Back", "ފަހަތަށް")}</BackButton>
           <PrintButton variant="default">{tr("Print receipt", "ރަސީދު ޕްރިންޓްކުރޭ")}</PrintButton>

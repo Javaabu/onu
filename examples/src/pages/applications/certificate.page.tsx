@@ -38,7 +38,7 @@ export default function CertificatePage() {
       ]}
     >
       <PrintOnlyContent />
-      <div className="gap-4 max-w-4xl mx-auto grid w-full">
+      <div className="gap-4 max-w-4xl mx-auto grid w-full grid-cols-1">
         <div className="gap-2 flex flex-wrap items-center justify-between" data-print="hide">
           <BackButton fallbackHref={routes.citizen.documents}>{tr("Back", "ފަހަތަށް")}</BackButton>
           <div className="gap-2 flex flex-wrap items-center">
