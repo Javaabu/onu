@@ -339,7 +339,7 @@ function TranslationCell({
           }
         }}
       />
-      <div className="gap-2 text-xs min-h-5 flex flex-wrap items-center">
+      <div className="gap-2 text-xs min-h-5 flex flex-wrap items-center empty:hidden">
         {missing ? (
           <span className="gap-1 font-medium inline-flex items-center text-warning-foreground dark:text-warning">
             <Icon name="warning" className="size-3.5" />

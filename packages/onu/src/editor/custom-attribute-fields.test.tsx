@@ -164,7 +164,7 @@ describe("CustomAttributeFields", () => {
       />,
     )
     const root = container.querySelector("[data-slot=custom-attribute-fields]")!
-    expect(root).toHaveClass("@xl/attributes:grid-cols-2")
+    expect(root.firstElementChild).toHaveClass("@xl/attributes:grid-cols-2")
     expect(container.querySelector("[data-attribute=summary]")).toHaveClass("col-span-full", "field-x")
     expect(container.querySelector("[data-attribute=title]")).not.toHaveClass("col-span-full")
     expect(container.querySelector("[data-attribute=title]")).toHaveAttribute("data-label-layout", "inline")

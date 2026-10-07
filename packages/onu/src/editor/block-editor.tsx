@@ -267,7 +267,7 @@ export function BlockEditor({
           className={cn(
             proseVariants({ size }),
             editingClasses,
-            "min-h-48 py-3 ps-16 pe-4 touch:ps-24 [&_.ProseMirror]:min-h-[inherit]",
+            "min-h-48 py-3 ps-16 pe-4 touch:ps-14 [&_.ProseMirror]:min-h-[inherit]",
             readOnly && "min-h-0 px-0 touch:ps-0",
             classNames?.content,
           )}

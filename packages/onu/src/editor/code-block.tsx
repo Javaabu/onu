@@ -83,12 +83,12 @@ export function CodeBlock({
 }: CodeBlockProps) {
   const { t } = useTranslation()
   const lang = normalizeLanguage(language)
-  const tokens = useHighlightedCode(code, lang, themes)
+  const text = code.replace(/\n$/, "")
+  const tokens = useHighlightedCode(text, lang, themes)
   const [copied, setCopied] = React.useState(false)
   const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
   React.useEffect(() => () => clearTimeout(timer.current ?? undefined), [])
 
-  const text = code.replace(/\n$/, "")
   const lines: HighlightToken[][] = tokens ?? text.split("\n").map((content) => [{ content }])
   const label = lang ? (LANGUAGE_NAMES[lang] ?? lang) : t("editor.plainText")
   const highlighted = new Set(highlightLines)

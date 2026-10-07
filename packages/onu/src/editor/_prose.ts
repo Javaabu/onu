@@ -9,7 +9,6 @@ import { cva } from "class-variance-authority"
 export const proseVariants = cva(
   [
     "[overflow-wrap:anywhere] text-foreground",
-    "[&_:lang(dv)]:leading-[1.9] [&:lang(dv)]:leading-[1.9]",
     "[&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
     // Text blocks
     "[&_p]:my-3",

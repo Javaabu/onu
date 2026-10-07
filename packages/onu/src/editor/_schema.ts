@@ -89,7 +89,9 @@ export function toEmbedUrl(url: string | null | undefined): string | null {
 export const AutoDirection = Extension.create<{ types: string[] }>({
   name: "autoDirection",
   addOptions() {
-    return { types: ["paragraph", "heading", "blockquote", "listItem", "tableCell", "tableHeader", "callout"] }
+    return {
+      types: ["paragraph", "heading", "blockquote", "bulletList", "orderedList", "tableCell", "tableHeader", "callout"],
+    }
   },
   addGlobalAttributes() {
     return [

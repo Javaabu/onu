@@ -155,7 +155,7 @@ export function BlockHandle({ editor, container, blocks, context, onMoved }: Blo
       <div
         data-slot="block-handle"
         style={{ top }}
-        className="gap-0.5 start-0 absolute z-10 flex items-center transition-[top] duration-150 motion-reduce:transition-none"
+        className="gap-0.5 start-0 absolute z-10 flex items-center transition-[top] duration-150 motion-reduce:transition-none touch:flex-col"
       >
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

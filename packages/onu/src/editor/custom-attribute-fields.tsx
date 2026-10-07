@@ -140,35 +140,38 @@ export function CustomAttributeFields({
   const fields = (
     <div
       data-slot="custom-attribute-fields"
-      className={cn("gap-4 @container/attributes grid", columns === 2 && "@xl/attributes:grid-cols-2", className)}
+      className={cn("min-w-0 @container/attributes w-full", className)}
       {...props}
     >
-      {schema.map((field) => {
-        const inputName = name ? `${name}[${field.name}]` : field.name
-        const current = values[field.name] ?? field.defaultValue ?? emptyValue(field.type)
-        const wide = field.fullWidth || field.type === "textarea" || field.type === "multiselect"
-        return (
-          <FormField
-            key={field.name}
-            name={inputName}
-            label={field.label}
-            help={field.help}
-            required={field.required}
-            disabled={disabled || field.disabled}
-            labelLayout={labelLayout}
-            data-attribute={field.name}
-            className={cn(wide && "col-span-full", classNames?.field)}
-          >
-            <AttributeControl
-              field={field}
+      {/* Container queries match an ancestor, so the grid sits inside the container. */}
+      <div className={cn("gap-4 grid", columns === 2 && "@xl/attributes:grid-cols-2")}>
+        {schema.map((field) => {
+          const inputName = name ? `${name}[${field.name}]` : field.name
+          const current = values[field.name] ?? field.defaultValue ?? emptyValue(field.type)
+          const wide = field.fullWidth || field.type === "textarea" || field.type === "multiselect"
+          return (
+            <FormField
+              key={field.name}
               name={inputName}
-              value={current}
-              onChange={(next) => set(field.name, next)}
-              className={classNames?.control}
-            />
-          </FormField>
-        )
-      })}
+              label={field.label}
+              help={field.help}
+              required={field.required}
+              disabled={disabled || field.disabled}
+              labelLayout={labelLayout}
+              data-attribute={field.name}
+              className={cn(wide && "col-span-full", classNames?.field)}
+            >
+              <AttributeControl
+                field={field}
+                name={inputName}
+                value={current}
+                onChange={(next) => set(field.name, next)}
+                className={classNames?.control}
+              />
+            </FormField>
+          )
+        })}
+      </div>
     </div>
   )
 
