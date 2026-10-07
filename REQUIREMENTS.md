@@ -11,24 +11,28 @@ This document captures the requirements, constraints and full build list for Onu
 
 1. [Overview](#1-overview)
 2. [Package & distribution](#2-package--distribution)
-3. [Technology stack](#3-technology-stack)
-4. [Browser support](#4-browser-support)
-5. [Theming](#5-theming)
-6. [Dark mode](#6-dark-mode)
-7. [RTL support](#7-rtl-support)
-8. [Dhivehi support](#8-dhivehi-support)
-9. [Thaana (JTK) input](#9-thaana-jtk-input)
-10. [Accessibility](#10-accessibility)
-11. [Style overrides & customisation](#11-style-overrides--customisation)
-12. [Framework integration](#12-framework-integration)
-13. [Testing, CI & coverage](#13-testing-ci--coverage)
-14. [Examples](#14-examples)
-15. [Developer documentation](#15-developer-documentation)
-16. [Repository structure](#16-repository-structure)
-17. [Component definition of done](#17-component-definition-of-done)
-18. [UI build list](#18-ui-build-list)
-19. [Sample pages](#19-sample-pages)
-20. [Open questions](#20-open-questions)
+3. [Design language](#3-design-language)
+4. [Dependency policy](#4-dependency-policy)
+5. [Technology stack & component sourcing](#5-technology-stack--component-sourcing)
+6. [Icons](#6-icons)
+7. [Typography & fonts](#7-typography--fonts)
+8. [Browser support](#8-browser-support)
+9. [Theming](#9-theming)
+10. [Dark mode](#10-dark-mode)
+11. [RTL support](#11-rtl-support)
+12. [Dhivehi support](#12-dhivehi-support)
+13. [Thaana (JTK) input](#13-thaana-jtk-input)
+14. [Accessibility](#14-accessibility)
+15. [Style overrides & customisation](#15-style-overrides--customisation)
+16. [Framework integration](#16-framework-integration)
+17. [Testing, CI & coverage](#17-testing-ci--coverage)
+18. [Examples](#18-examples)
+19. [Developer documentation](#19-developer-documentation)
+20. [Repository structure](#20-repository-structure)
+21. [Component definition of done](#21-component-definition-of-done)
+22. [UI build list](#22-ui-build-list)
+23. [Sample pages](#23-sample-pages)
+24. [Open questions](#24-open-questions)
 
 ---
 
@@ -39,12 +43,15 @@ This document captures the requirements, constraints and full build list for Onu
 | **Name** | Onu |
 | **Package** | `@javaabu/onu` |
 | **Owner** | Javaabu Pvt. Ltd. |
-| **Basis** | [shadcn/ui](https://ui.shadcn.com) patterns on top of [Radix UI](https://www.radix-ui.com) primitives, styled with [Tailwind CSS](https://tailwindcss.com) |
+| **Basis** | [shadcn/ui](https://ui.shadcn.com) components wherever one exists, on [Radix UI](https://www.radix-ui.com) primitives, styled with [Tailwind CSS](https://tailwindcss.com). Gaps are filled with reputable, well-maintained libraries (§4) |
 | **Licence** | MIT (to be confirmed) |
 
 ### Goals
 
-- One shared, versioned component library for all Javaabu React projects (admin panels, public portals, citizen portals, kiosks, LMS).
+- One shared, versioned component library for all Javaabu React projects. Admin panels first, but equally at home in public portals, citizen portals, kiosks and LMS.
+- A modern, clean design language that adapts to each of those contexts (§3).
+- Built on shadcn/ui and proven libraries, not reinvented (§4).
+- A wide icon set out of the box, with first-class FontAwesome Pro support (§6).
 - RTL and Dhivehi are first-class, not afterthoughts.
 - Every free-text input can type Thaana via a phonetic (JTK-style) keyboard.
 - Re-theme an entire app by changing **one** CSS variable.
@@ -72,117 +79,217 @@ This document captures the requirements, constraints and full build list for Onu
   - `@javaabu/onu/editor` — WYSIWYG / block editor / renderer
   - `@javaabu/onu/calendar` — full calendar
   - `@javaabu/onu/media` — cropper, signature pad, QR scanner, media player
+  - `@javaabu/onu/icons/iconify` — Iconify adapter
+  - `@javaabu/onu/icons/fontawesome` — FontAwesome Free/Pro adapter
+  - `@javaabu/onu/fonts.css` — recommended font pack (§7)
   - `@javaabu/onu/styles.css` — theme tokens + base styles
   - `@javaabu/onu/tailwind.css` — Tailwind `@theme` / `@source` entry for consumers
-- **R2.6** Heavy third-party dependencies (map SDKs, chart libs, editors, scanners) are **optional peer dependencies**, required only when the matching subpath is imported.
+- **R2.6** Heavy or licensed third-party dependencies (map SDKs, chart libs, editors, scanners, FontAwesome, fonts) are **optional peer dependencies**, required only when the matching subpath is imported.
 - **R2.7** Peer dependencies: `react` and `react-dom` `^18.3 || ^19`, `tailwindcss` `^4`.
 - **R2.8** Ship TypeScript declarations; source written in TypeScript `strict` mode. No `any` in public APIs.
 - **R2.9** Every client component file carries a `"use client"` directive so it works in React Server Component environments (Next.js App Router).
 - **R2.10** Semantic versioning. Releases managed with [Changesets](https://github.com/changesets/changesets); `CHANGELOG.md` generated from them.
 - **R2.11** Bundle-size budget tracked in CI (e.g. `size-limit`); a PR that grows a subpath beyond its budget fails.
 
-## 3. Technology stack
+## 3. Design language
 
-Prefer the same libraries shadcn/ui uses so we stay close to upstream.
+Onu is used mainly for admin panels, but the same system has to work for public portals, citizen portals, learning platforms, kiosks and print. The design must be modern, neutral and versatile, never "admin-only".
+
+- **R3.1** **Visual style**: clean and current, in line with shadcn/ui's *new-york* style. That means neutral surfaces, subtle 1px borders, shadows used sparingly, generous whitespace and restrained colour (primary marks emphasis and action, not decoration). Reference points: shadcn/ui, Linear, Vercel, the Stripe dashboard.
+- **R3.2** **Density modes** via `data-density="compact | default | comfortable | touch"` on any container:
+  - `compact`: data-heavy admin tables and grids
+  - `default`: general admin forms and pages
+  - `comfortable`: public and citizen portals, LMS
+  - `touch`: kiosks, with ≥ 44px targets and a larger type scale
+- **R3.3** **Elevation scale** (flat → raised → overlay → modal) mapped to tokens. In dark mode, raised elements use lighter surfaces instead of heavier shadows.
+- **R3.4** **Spacing** on a 4px grid. The **type scale** is fixed for app UIs and fluid (`clamp()`) for portal and marketing pages.
+- **R3.5** **Shape** comes from `--onu-radius`, so the same components can look sharp (0), soft (default) or pill-shaped, with presets for each.
+- **R3.6** **Motion** is short (150–250ms), purposeful and ease-out. It uses `tw-animate-css` (shadcn's default) and is disabled under `prefers-reduced-motion`.
+- **R3.7** **Beyond admin**: layout pieces for portal and content pages (hero, feature grid, content card, masonry). Prose styling (`@tailwindcss/typography`) is tuned for both Latin and Thaana for articles and the laws reader.
+- **R3.8** **Data-dense details**: tabular numerals, truncation with tooltip, sticky headers and columns, and zebra/hover rows as options.
+- **R3.9** **Print**: print styles for certificates, receipts, invoices and detail views.
+- **R3.10** **Foundations first**: before the component build starts, a *Design foundations* page in `examples/` (colour, type, spacing, elevation, radius, iconography, density) is reviewed and signed off.
+
+## 4. Dependency policy
+
+**Don't build from scratch unless nothing good exists.** The order of preference for every component:
+
+1. **shadcn/ui component exists** → use it as the base. Pull it into the package source with the shadcn CLI, then extend it (RTL, Thaana, tokens, locales). Track upstream changes.
+2. **No shadcn component, but a reputable library exists** (shadcn-ecosystem libraries preferred) → wrap it in Onu styling and tokens.
+3. **Missing accessible widget pattern** → use [React Aria](https://react-spectrum.adobe.com/react-aria/) (Adobe) primitives where Radix has none: tree, colour picker, date/time segment fields, non-Gregorian calendars.
+4. **Build in-house** on top of shadcn primitives, only as a last resort. The PR must say why no library was suitable.
+
+A dependency must meet **all** of these criteria:
+
+- **Licence**: MIT, Apache-2.0, ISC, BSD or a similar permissive licence. No GPL/AGPL. Commercial packages are allowed only as **optional adapters** that Onu never bundles (e.g. FontAwesome Pro, §6).
+- **Maintained**: a release or meaningful commit within the last 12 months, a responsive issue tracker, and not archived or deprecated.
+- **Reputable**: widely adopted, and backed by an organisation or established maintainers.
+- **Typed**: first-party TypeScript types.
+- **Compatible**: React 18 and 19, SSR-safe, tree-shakable.
+- **Accessible and RTL-capable**, or can be made so by wrapping.
+- **Reasonable bundle size** for what it provides.
+
+Governance:
+
+- **R4.1** Every runtime and peer dependency is recorded in `DEPENDENCIES.md` with its purpose, licence and the reason it was chosen.
+- **R4.2** Renovate (or Dependabot) keeps dependencies current. CI runs a vulnerability scan (`npm audit` / OSV) and a licence check that fails on disallowed licences.
+- **R4.3** Dependencies are reviewed quarterly against the criteria above. Current watch-list:
+  - `vaul` (shadcn Drawer): its maintainer has signalled reduced maintenance. Follow whatever shadcn moves to, and keep the bottom sheet behind Onu's own API so the underlying library can be swapped.
+  - `date-fns` has no Dhivehi locale. Write one and contribute it upstream.
+  - FullCalendar: only its MIT "standard" plugins may be used, never the premium ones.
+
+## 5. Technology stack & component sourcing
+
+### Core stack
 
 | Concern | Choice |
 |---|---|
 | Language | TypeScript (strict) |
-| Primitives | Radix UI |
-| Styling | Tailwind CSS v4, `class-variance-authority`, `tailwind-merge`, `clsx` |
-| Icons | `lucide-react` (swappable, see R11.6) |
+| Base components | shadcn/ui (new-york style) |
+| Primitives | Radix UI; React Aria where Radix has gaps |
+| Styling | Tailwind CSS v4, `class-variance-authority`, `tailwind-merge`, `clsx`, `tw-animate-css` |
+| Icons | Lucide (default), Iconify (wide set), FontAwesome Free/Pro adapter (see §6) |
+| Fonts | Inter, Noto Sans Thaana, JetBrains Mono via Fontsource (see §7) |
 | Build | Vite library mode (or `tsup`) emitting ESM + `.d.ts` |
-| Forms | `react-hook-form` integration (components also work uncontrolled / plain controlled) |
+| Forms | `react-hook-form` (components also work uncontrolled or plain controlled) |
 | Validation | Schema-agnostic; `zod` used in examples |
-| Dates | `date-fns` + `react-day-picker`; `Intl` for Hijri (`islamic-umalqura`) |
-| Tables / grids | TanStack Table (+ TanStack Virtual for large data) |
-| Drag & drop | `@dnd-kit` |
-| Command palette | `cmdk` |
-| Toasts | `sonner` |
-| Drawer / bottom sheet | `vaul` |
-| Carousel | `embla-carousel-react` |
-| OTP | `input-otp` |
-| Charts | `recharts` (shadcn charts) |
-| Rich text / blocks | Tiptap (ProseMirror) |
-| Maps | Adapter-based; default MapLibre GL, Google Maps adapter |
-| Phone | `libphonenumber-js` (default region `MV`) |
-| Image crop | `react-easy-crop` |
-| Signature | `signature_pad` |
-| QR scanning | Native `BarcodeDetector` with `@zxing` fallback |
+| Dates | `date-fns` + `react-day-picker`; `@internationalized/date` for Hijri and date/time fields |
 | Unit tests | Vitest + React Testing Library + `user-event` + jsdom |
-| a11y tests | `vitest-axe` (axe-core) + Playwright `@axe-core/playwright` |
-| E2E / visual | Playwright (component and examples app) |
-| Docs | Markdown in `/docs`, rendered by Docusaurus (see §15) |
+| a11y tests | `vitest-axe` (axe-core) + `@axe-core/playwright` |
+| E2E / visual | Playwright (examples app) |
+| Docs | Markdown in `/docs`, rendered by Docusaurus (see §19) |
 
-Final library choices for each heavy component may change during implementation, but any replacement must satisfy the same requirements (RTL, a11y, theming, dark mode).
+### Sourcing map
 
-## 4. Browser support
+What each build-list group is based on. "In-house" means composed from shadcn primitives because no suitable library exists.
 
-- **R4.1** Support every browser supported by the latest stable Tailwind CSS (v4.x at time of writing): **Chrome/Edge 111+, Safari 16.4+, Firefox 128+**, plus their mobile counterparts (iOS Safari 16.4+, Chrome Android).
-- **R4.2** Features beyond that baseline (e.g. `BarcodeDetector`, Popover API, View Transitions) must be feature-detected with a working fallback.
-- **R4.3** Playwright CI runs against Chromium, Firefox and WebKit.
+| Group | shadcn base | Libraries | In-house |
+|---|---|---|---|
+| Form scaffolding | `form`, `field`, `label`, `button`, `button-group`, `input-group`, `card`, `separator` | `react-hook-form` (`useFieldArray` for repeating groups) | Required marker, AJAX errors, autosave indicator, save bar, floating submit, multi-language submit, field definition editor (with `@dnd-kit`) |
+| Text inputs | `input`, `textarea`, `input-group`, `input-otp`, `popover`, `command` | `react-phone-number-input`, `signature_pad`, `barcode-detector` (zxing-wasm polyfill for the native API), CodeMirror 6 (formula input), `@sindresorhus/slugify`, React Aria `ColorArea`/`ColorSlider`/`ColorField` (colour picker), TanStack Virtual (icon picker grid) | Thaana engine, copy input, sensitive input, tags input (on `command` + `badge`) |
+| Date and time | `calendar`, `popover`, date-picker pattern | `react-day-picker`, `date-fns`, React Aria `DateField`/`TimeField` + `@internationalized/date` (Hijri), FullCalendar (standard plugins) | Week picker, reporting-period picker |
+| Choice inputs | `select`, `combobox`, `command`, `checkbox`, `radio-group`, `switch`, `toggle-group`, `slider` | `cmdk` | Rating, dual listbox, image select, payment method selector, account switcher, dependent/API/model selects, quick-create |
+| Files and media | `avatar`, `progress`, `carousel`, `dialog`, `aspect-ratio` | `react-dropzone`, `react-easy-crop`, `embla-carousel-react`, `yet-another-react-lightbox`, Media Chrome (media player) | Upload progress, media lister, attachment preview, document download, click-to-load embed |
+| Rich content | none (shadcn has no editor) | [Plate](https://platejs.org) (shadcn-native editor on Slate, MIT) for the WYSIWYG editor, block editor and static block renderer; Shiki for code highlighting | Translations editor, custom attribute fields |
+| Maps | none | `react-map-gl` (MapLibre) and `@vis.gl/react-google-maps` behind one adapter, `terra-draw` (radius/polygon/route drawing), `supercluster`, `@turf/turf` | Location card, info panel, legend swatch, replay controls, route stop editor |
+| Charts | `chart` | `recharts` (choropleth map chart via MapLibre) | Stat tiles, period comparison |
+| Listing pages | `table`, data-table pattern, `pagination`, `dropdown-menu`, `checkbox`, `empty`, `toggle-group` | TanStack Table, TanStack Virtual, `@dnd-kit`, React Aria `Tree`, `react-querybuilder` (filter condition builder) | Kanban, filter panel/chips/tabs, bulk actions, view switcher, load more |
+| Overlays | `dialog`, `alert-dialog`, `sheet`, `drawer`, `popover`, `tooltip`, `hover-card`, `dropdown-menu`, `context-menu`, `command` | `vaul`, `cmdk`, `yet-another-react-lightbox` | none |
+| Loading | `spinner`, `skeleton`, `progress` | none | Loading overlay, page progress bar |
+| Layout and navigation | `sidebar`, `navigation-menu`, `menubar`, `breadcrumb`, `tabs`, `accordion`, `card`, `separator`, `collapsible`, `scroll-area`, `resizable` | none | Wizard/stepper, timeline, masonry (CSS columns), mega menu (on `navigation-menu`), notification centre, back to top, skip link, language switcher, theme toggle |
+| Display and feedback | `badge`, `avatar`, `kbd`, `alert`, `sonner`, `item`, `empty`, `hover-card` | `sonner`, `Intl.RelativeTimeFormat` / `date-fns` | Countdown, activity feed, comment thread, publish box, cookie consent, share buttons, error pages |
 
-## 5. Theming
+These picks were made against §4. A library may be replaced during implementation only by one that also meets §4 and the RTL, accessibility, theming and dark mode requirements.
 
-- **R5.1** **One variable switches the whole brand colour**: setting `--onu-primary` (any CSS colour, e.g. `oklch(0.55 0.15 150)` or `#1f7a4d`) recolours the entire library.
-- **R5.2** All derived shades (hover, active, subtle backgrounds, rings, foreground-on-primary) are computed from `--onu-primary` using CSS relative colour syntax / `color-mix()` in OKLCH, so no build step or JS is needed to re-theme.
-- **R5.3** Foreground colour on primary is chosen automatically to meet WCAG AA contrast, overridable via `--onu-primary-foreground`.
-- **R5.4** Additional granular tokens, following the shadcn token naming so shadcn docs/themes stay applicable:
+## 6. Icons
+
+- **R6.1** An `<Icon>` component gives consistent sizing (size tokens that line up with the text scale) and inherits `currentColor`. It is `aria-hidden` by default; passing `label` makes it a meaningful image (`role="img"` + `aria-label`).
+- **R6.2** **Default set: [Lucide](https://lucide.dev)** (`lucide-react`). It is shadcn's default, has 1,600+ consistent-stroke icons, is ISC-licensed and tree-shakable.
+- **R6.3** **Wide set: [Iconify](https://iconify.design)** (`@iconify/react`) gives access to 200,000+ icons across 150+ open sets, e.g. Tabler, Phosphor, Material Symbols, Heroicons, Remix, Fluent, and brand logos via Simple Icons.
+  - **Offline mode is required**: collections are registered from `@iconify-json/*` packages, so there are no runtime API calls. This is needed for kiosks, intranets and strict CSP.
+- **R6.4** **[FontAwesome](https://fontawesome.com) Free and Pro support** through an adapter at `@javaabu/onu/icons/fontawesome`, built on `@fortawesome/react-fontawesome` + `@fortawesome/fontawesome-svg-core`.
+  - All FA styles are supported: solid, regular, light, thin, duotone, the sharp families, brands, and custom icons from FA **Kits** (`@awesome.me/kit-*`).
+  - Pro packages are **optional peer dependencies supplied by the consuming project** (Pro needs a licensed token for `npm.fontawesome.com`). Onu never bundles or redistributes Pro icons.
+  - CI tests the adapter with the Free packages. It also runs the Pro tests when a `FONTAWESOME_NPM_AUTH_TOKEN` secret is available.
+  - Duotone secondary colour is bound to theme tokens (`--fa-primary-color`, `--fa-secondary-color` → `--onu-primary`), so duotone icons follow the theme.
+- **R6.5** **One switch for the whole library**: components refer to icons by semantic names (`close`, `check`, `chevron-down`, `search`, `calendar`, `upload`, `sort-asc`, `external-link`, …). `OnuProvider icons={...}` maps those names to any set.
+  - Ships with `lucideIconMap` (the default) and `fontAwesomeIconMap({ style: 'regular' | 'solid' | 'light' | 'thin' | 'duotone' | 'sharp-…' })`.
+  - A project already on FontAwesome Pro can therefore switch every built-in icon with one line.
+- **R6.6** Any component that renders an icon accepts overrides (`icon`, `startIcon`, `endIcon`, or slot props) as a React node or component.
+- **R6.7** **Icon picker** searches every configured source: Lucide, the registered Iconify collections, and FontAwesome when the adapter is present.
+  - Virtualised grid, keyword search, set and style filters, recently used.
+  - The value is a portable string id, e.g. `lucide:house`, `tabler:home`, `fa:regular:house`.
+  - A matching `<DynamicIcon id="…">` renders stored ids, e.g. from a CMS or a menu builder.
+- **R6.8** A curated list of directional icons (arrows, chevrons, undo/redo, reply, log-in/out, …) is mirrored automatically in RTL (see R11.4). This works for every icon source.
+
+## 7. Typography & fonts
+
+Recommended font pack. Everything is open-licensed (OFL) and **self-hosted via [Fontsource](https://fontsource.org) npm packages**, so there are no third-party CDN calls and fonts work offline, on intranets and on kiosks.
+
+| Role | Font | Why | Package |
+|---|---|---|---|
+| UI sans (default) | **Inter** (variable) | The de-facto modern UI typeface. Excellent legibility at small admin sizes, tabular figures, wide language coverage, optical-size axis for display headings | `@fontsource-variable/inter` |
+| Thaana | **Noto Sans Thaana** (variable, 100–900) | The well-maintained, openly-licensed Thaana family with a full weight range, so Thaana bold/medium never falls back to faux bold. Designed to sit alongside Latin sans fonts | `@fontsource-variable/noto-sans-thaana` |
+| Monospace | **JetBrains Mono** (variable) | Code blocks, formula input, API keys, IDs, keyboard keys | `@fontsource-variable/jetbrains-mono` |
+| Alternative UI sans | **Geist** (variable) | A slightly more geometric, contemporary option. Shipped as a preset for products that want a different feel | `@fontsource-variable/geist` |
+| Serif (optional) | **Source Serif 4** (variable) | Long-form reading: news articles, the laws and regulations reader, certificates | `@fontsource-variable/source-serif-4` |
+
+- **R7.1** Fonts are not bundled into the JS. They are an optional CSS entry, `@javaabu/onu/fonts.css`, which imports the recommended Fontsource packages (optional peer dependencies). Projects can skip it and set the `--onu-font-*` tokens to their own fonts.
+- **R7.2** Font stacks rely on per-script `unicode-range`, so mixed Dhivehi/English text automatically renders each script in the right font:
+  `--onu-font-sans: "Inter Variable", "Noto Sans Thaana Variable", ui-sans-serif, system-ui, sans-serif;`
+  Under `lang="dv"`, Thaana-specific metrics (line-height, size-adjust) apply.
+- **R7.3** Popular Maldivian fonts (Faruma, MV Waheed, MV Typewriter, etc.) are **not bundled** because their licensing is unclear. The docs show how to register them with `@font-face` and `--onu-font-thaana`.
+- **R7.4** `font-display: swap`, metric-matched fallbacks (`size-adjust`, `ascent-override`) to minimise layout shift, and preload guidance in the docs.
+- **R7.5** Tabular figures (`font-variant-numeric: tabular-nums`) in tables, stat tiles, pagination, countdowns and any column of numbers.
+- **R7.6** Typography tokens: `--onu-font-sans`, `--onu-font-thaana`, `--onu-font-mono`, `--onu-font-serif`, plus a type-scale and line-height token per density mode.
+
+## 8. Browser support
+
+- **R8.1** Support every browser supported by the latest stable Tailwind CSS (v4.x at time of writing): **Chrome/Edge 111+, Safari 16.4+, Firefox 128+**, plus their mobile counterparts (iOS Safari 16.4+, Chrome Android).
+- **R8.2** Features beyond that baseline (e.g. `BarcodeDetector`, Popover API, View Transitions) must be feature-detected with a working fallback.
+- **R8.3** Playwright CI runs against Chromium, Firefox and WebKit.
+
+## 9. Theming
+
+- **R9.1** **One variable switches the whole brand colour**: setting `--onu-primary` (any CSS colour, e.g. `oklch(0.55 0.15 150)` or `#1f7a4d`) recolours the entire library.
+- **R9.2** All derived shades (hover, active, subtle backgrounds, rings, foreground-on-primary) are computed from `--onu-primary` using CSS relative colour syntax / `color-mix()` in OKLCH, so no build step or JS is needed to re-theme.
+- **R9.3** Foreground colour on primary is chosen automatically to meet WCAG AA contrast, overridable via `--onu-primary-foreground`.
+- **R9.4** Additional granular tokens, following the shadcn token naming so shadcn docs/themes stay applicable:
   - Colour: `--onu-background`, `--onu-foreground`, `--onu-card`, `--onu-popover`, `--onu-secondary`, `--onu-muted`, `--onu-accent`, `--onu-destructive`, `--onu-success`, `--onu-warning`, `--onu-info`, `--onu-border`, `--onu-input`, `--onu-ring`, each with a `-foreground` pair where relevant.
   - Charts: `--onu-chart-1` … `--onu-chart-8`.
   - Sidebar: `--onu-sidebar`, `--onu-sidebar-foreground`, `--onu-sidebar-primary`, `--onu-sidebar-accent`, `--onu-sidebar-border`.
   - Shape: `--onu-radius` (all radii derive from it).
   - Typography: `--onu-font-sans`, `--onu-font-thaana`, `--onu-font-mono`.
   - Density: `--onu-spacing-scale` (compact / comfortable layouts, e.g. kiosk vs admin).
-- **R5.5** Tokens are exposed to Tailwind via `@theme inline` so consumers write `bg-primary`, `text-muted-foreground`, `rounded-lg`, etc.
-- **R5.6** Themes can be scoped: setting variables on any element re-themes that subtree only.
-- **R5.7** Ship a few preset themes (e.g. *Onu green* default, neutral, blue) and a theme-builder page in the examples app that outputs the CSS to copy.
+- **R9.5** Tokens are exposed to Tailwind via `@theme inline` so consumers write `bg-primary`, `text-muted-foreground`, `rounded-lg`, etc.
+- **R9.6** Themes can be scoped: setting variables on any element re-themes that subtree only.
+- **R9.7** Ship a few preset themes (e.g. *Onu green* default, neutral, blue) and a theme-builder page in the examples app that outputs the CSS to copy.
 
-## 6. Dark mode
+## 10. Dark mode
 
-- **R6.1** Every component ships a dark variant. No component may hard-code light-only colours.
-- **R6.2** Dark mode is activated by a `.dark` class or `[data-theme="dark"]` on an ancestor (Tailwind `@custom-variant dark`), so it works with any toggling strategy.
-- **R6.3** Provide `<ThemeProvider>` + `useTheme()` supporting `light`, `dark` and `system`, persisted to `localStorage`, with a no-flash inline script helper for SSR apps.
-- **R6.4** Derived primary shades are re-computed for dark mode so the single `--onu-primary` still meets contrast on dark backgrounds.
-- **R6.5** Tests and visual snapshots run in both modes.
+- **R10.1** Every component ships a dark variant. No component may hard-code light-only colours.
+- **R10.2** Dark mode is activated by a `.dark` class or `[data-theme="dark"]` on an ancestor (Tailwind `@custom-variant dark`), so it works with any toggling strategy.
+- **R10.3** Provide `<ThemeProvider>` + `useTheme()` supporting `light`, `dark` and `system`, persisted to `localStorage`, with a no-flash inline script helper for SSR apps.
+- **R10.4** Derived primary shades are re-computed for dark mode so the single `--onu-primary` still meets contrast on dark backgrounds.
+- **R10.5** Tests and visual snapshots run in both modes.
 
-## 7. RTL support
+## 11. RTL support
 
-- **R7.1** Every component works correctly in `dir="rtl"` out of the box, with no extra props.
-- **R7.2** Use logical properties/utilities only (`ms-*`, `me-*`, `ps-*`, `pe-*`, `start-*`, `end-*`, `text-start`, `rounded-s-*`, `border-e`, …). Physical `left/right` utilities are banned by a lint rule except where explicitly justified.
-- **R7.3** `<DirectionProvider dir="rtl">` (wrapping Radix's `DirectionProvider`) propagates direction to all primitives; components also respect the nearest `dir` attribute.
-- **R7.4** Directional icons (chevrons, arrows, back/next, breadcrumb separators) mirror in RTL; non-directional icons (play, checkmarks, logos) do not.
-- **R7.5** Keyboard navigation follows visual order in RTL (e.g. `ArrowLeft` moves "forward" in tabs, sliders, carousels, calendars, menus).
-- **R7.6** Sliders, progress bars, carousels, steppers, timelines, pagination and charts render mirrored in RTL where semantically appropriate.
-- **R7.7** Mixed-direction content is handled: inputs for Latin-only data (email, URL, phone, numbers, codes, OTP) are forced `dir="ltr"` even inside an RTL page; free text uses `dir="auto"` unless set.
-- **R7.8** Every component is tested in both LTR and RTL.
+- **R11.1** Every component works correctly in `dir="rtl"` out of the box, with no extra props.
+- **R11.2** Use logical properties/utilities only (`ms-*`, `me-*`, `ps-*`, `pe-*`, `start-*`, `end-*`, `text-start`, `rounded-s-*`, `border-e`, …). Physical `left/right` utilities are banned by a lint rule except where explicitly justified.
+- **R11.3** `<DirectionProvider dir="rtl">` (wrapping Radix's `DirectionProvider`) propagates direction to all primitives; components also respect the nearest `dir` attribute.
+- **R11.4** Directional icons (chevrons, arrows, back/next, breadcrumb separators) mirror in RTL; non-directional icons (play, checkmarks, logos) do not.
+- **R11.5** Keyboard navigation follows visual order in RTL (e.g. `ArrowLeft` moves "forward" in tabs, sliders, carousels, calendars, menus).
+- **R11.6** Sliders, progress bars, carousels, steppers, timelines, pagination and charts render mirrored in RTL where semantically appropriate.
+- **R11.7** Mixed-direction content is handled: inputs for Latin-only data (email, URL, phone, numbers, codes, OTP) are forced `dir="ltr"` even inside an RTL page; free text uses `dir="auto"` unless set.
+- **R11.8** Every component is tested in both LTR and RTL.
 
-## 8. Dhivehi support
+## 12. Dhivehi support
 
-- **R8.1** Dhivehi (`dv`) and English (`en`) are built-in locales. All built-in strings (e.g. "Close", "Next", "No results", "Required", pagination labels, date picker labels, aria-labels) come from a locale dictionary — no hard-coded English.
-- **R8.2** `<OnuProvider locale="dv">` sets locale, direction (auto RTL for `dv`) and fonts in one place. Consumers can override or add locales and individual strings.
-- **R8.3** Thaana font stack configured via `--onu-font-thaana`. Ship an openly-licensed default (e.g. Noto Sans Thaana) and document how to plug in other Thaana fonts (Faruma, MV Waheed, etc.) subject to licensing.
-- **R8.4** Typography tuned for Thaana: adjusted line-height and letter-spacing, no faux italics, correct baseline alignment of Thaana next to Latin text and icons.
-- **R8.5** Dates in Dhivehi: Dhivehi month and weekday names, Dhivehi relative-time strings ("2 ދުވަސް ކުރިން"), and optional Hijri display (see Hijri date component).
-- **R8.6** Numbers use Western Arabic digits by default (as is standard in the Maldives), with formatting via `Intl` and the active locale.
-- **R8.7** Week start is configurable (default Sunday for `dv`, configurable for `en`).
-- **R8.8** Sorting / search in selects and tables handle Thaana text (use `Intl.Collator`).
-- **R8.9** Pluralisation and interpolation in built-in strings are supported for both locales.
+- **R12.1** Dhivehi (`dv`) and English (`en`) are built-in locales. All built-in strings (e.g. "Close", "Next", "No results", "Required", pagination labels, date picker labels, aria-labels) come from a locale dictionary — no hard-coded English.
+- **R12.2** `<OnuProvider locale="dv">` sets locale, direction (auto RTL for `dv`) and fonts in one place. Consumers can override or add locales and individual strings.
+- **R12.3** Thaana font stack configured via `--onu-font-thaana`. The default is Noto Sans Thaana; other Thaana fonts can be plugged in (see §7).
+- **R12.4** Typography tuned for Thaana: adjusted line-height and letter-spacing, no faux italics, correct baseline alignment of Thaana next to Latin text and icons.
+- **R12.5** Dates in Dhivehi: Dhivehi month and weekday names, Dhivehi relative-time strings ("2 ދުވަސް ކުރިން"), and optional Hijri display (see Hijri date component).
+- **R12.6** Numbers use Western Arabic digits by default (as is standard in the Maldives), with formatting via `Intl` and the active locale.
+- **R12.7** Week start is configurable (default Sunday for `dv`, configurable for `en`).
+- **R12.8** Sorting / search in selects and tables handle Thaana text (use `Intl.Collator`).
+- **R12.9** Pluralisation and interpolation in built-in strings are supported for both locales.
 
-## 9. Thaana (JTK) input
+## 13. Thaana (JTK) input
 
 Javaabu currently uses the JTK (JavaScript Thaana Keyboard) approach for typing Thaana on a Latin keyboard. Onu needs a React-native equivalent.
 
-- **R9.1** Build a standalone, framework-agnostic Thaana keyboard engine (`@javaabu/onu/thaana`) with:
+- **R13.1** Build a standalone, framework-agnostic Thaana keyboard engine (`@javaabu/onu/thaana`) with:
   - Phonetic keymap (default, JTK-compatible) and Typewriter keymap; custom keymaps pluggable.
   - Pure functions for Latin → Thaana conversion of a keystroke and of a whole string (useful for paste and tests).
-- **R9.2** React bindings:
+- **R13.2** React bindings:
   - `useThaanaInput(ref, options)` hook that can be attached to any `<input>`, `<textarea>` or `contenteditable`.
   - `<ThaanaInput>` and `<ThaanaTextarea>` components.
-- **R9.3** **Every component that accepts free text** exposes a `thaana` prop (`boolean | ThaanaOptions`), including: Text input, Textarea, Search box, Autocomplete, Searchable select / Multi-select search field, Tags input, Inline edit, Editable select, Combobox-style inputs, Command palette, Translations editor, Notes, Comment thread composer, WYSIWYG and Block editor. Inputs whose content must be Latin (email, password, URL, number, phone, OTP, slug, colour, formula) do **not** offer it.
-- **R9.4** When `thaana` is on, the field sets `dir="rtl"`, `lang="dv"` and the Thaana font automatically.
-- **R9.5** Optional per-field toggle (button and keyboard shortcut) to switch between Thaana and Latin while typing; the current mode is announced to screen readers.
-- **R9.6** Must work with:
+- **R13.3** **Every component that accepts free text** exposes a `thaana` prop (`boolean | ThaanaOptions`), including: Text input, Textarea, Search box, Autocomplete, Searchable select / Multi-select search field, Tags input, Inline edit, Editable select, Combobox-style inputs, Command palette, Translations editor, Notes, Comment thread composer, WYSIWYG and Block editor. Inputs whose content must be Latin (email, password, URL, number, phone, OTP, slug, colour, formula) do **not** offer it.
+- **R13.4** When `thaana` is on, the field sets `dir="rtl"`, `lang="dv"` and the Thaana font automatically.
+- **R13.5** Optional per-field toggle (button and keyboard shortcut) to switch between Thaana and Latin while typing; the current mode is announced to screen readers.
+- **R13.6** Must work with:
   - Caret position and selection replacement (typing over a selection, mid-string inserts).
   - Undo/redo (native undo stack preserved as far as browsers allow).
   - Controlled and uncontrolled inputs, and `react-hook-form`.
@@ -190,55 +297,55 @@ Javaabu currently uses the JTK (JavaScript Thaana Keyboard) approach for typing 
   - **Mobile/Android** soft keyboards (implement via `beforeinput`/`input` events, not only `keydown`, since Android reports keyCode 229).
   - IME composition events (don't interfere with an OS-level Thaana keyboard; if the user already types Thaana natively, pass it through).
   - Paste: configurable — keep as-is (default) or transliterate Latin.
-- **R9.7** 100% unit-test coverage of the keymaps and conversion functions.
+- **R13.7** 100% unit-test coverage of the keymaps and conversion functions.
 
-## 10. Accessibility
+## 14. Accessibility
 
-- **R10.1** Conform to **WCAG 2.2 Level AA** for every component in every state, in both light and dark mode and in LTR and RTL.
-- **R10.2** Follow the WAI-ARIA Authoring Practices pattern for each widget type (combobox, listbox, menu, dialog, tabs, tree, grid, slider, etc.).
-- **R10.3** Full keyboard operability; visible focus indicator (`:focus-visible` ring using `--onu-ring`, ≥ 3:1 contrast, not obscured — WCAG 2.4.11).
-- **R10.4** Focus management: dialogs/drawers trap and restore focus; route-level components provide a Skip link.
-- **R10.5** Minimum target size 24×24 CSS px (WCAG 2.5.8); 44×44 for kiosk density.
-- **R10.6** Colour is never the only means of conveying information (status badges, validation, charts use icon/text/pattern too).
-- **R10.7** Form fields: programmatic labels, `aria-describedby` wiring for help text and errors, `aria-invalid`, `aria-required`, error summaries focusable after submit, live-region announcements for async validation and autosave.
-- **R10.8** Respect `prefers-reduced-motion` and `prefers-contrast`.
-- **R10.9** Charts and maps provide accessible alternatives (data table / text summary, keyboard-operable markers and controls).
-- **R10.10** Media: captions/track support for the media player; alt text required (typed as required prop) for image components.
-- **R10.11** Every component has automated axe tests (zero violations) and documented keyboard interactions; complex widgets also get manual screen-reader checks (NVDA + Firefox, VoiceOver + Safari) recorded in the PR.
-- **R10.12** `lang` attributes set correctly on mixed Dhivehi/English content so screen readers switch voice.
+- **R14.1** Conform to **WCAG 2.2 Level AA** for every component in every state, in both light and dark mode and in LTR and RTL.
+- **R14.2** Follow the WAI-ARIA Authoring Practices pattern for each widget type (combobox, listbox, menu, dialog, tabs, tree, grid, slider, etc.).
+- **R14.3** Full keyboard operability; visible focus indicator (`:focus-visible` ring using `--onu-ring`, ≥ 3:1 contrast, not obscured — WCAG 2.4.11).
+- **R14.4** Focus management: dialogs/drawers trap and restore focus; route-level components provide a Skip link.
+- **R14.5** Minimum target size 24×24 CSS px (WCAG 2.5.8); 44×44 for kiosk density.
+- **R14.6** Colour is never the only means of conveying information (status badges, validation, charts use icon/text/pattern too).
+- **R14.7** Form fields: programmatic labels, `aria-describedby` wiring for help text and errors, `aria-invalid`, `aria-required`, error summaries focusable after submit, live-region announcements for async validation and autosave.
+- **R14.8** Respect `prefers-reduced-motion` and `prefers-contrast`.
+- **R14.9** Charts and maps provide accessible alternatives (data table / text summary, keyboard-operable markers and controls).
+- **R14.10** Media: captions/track support for the media player; alt text required (typed as required prop) for image components.
+- **R14.11** Every component has automated axe tests (zero violations) and documented keyboard interactions; complex widgets also get manual screen-reader checks (NVDA + Firefox, VoiceOver + Safari) recorded in the PR.
+- **R14.12** `lang` attributes set correctly on mixed Dhivehi/English content so screen readers switch voice.
 
-## 11. Style overrides & customisation
+## 15. Style overrides & customisation
 
-- **R11.1** Every component accepts `className`, merged with defaults via `cn()` (`tailwind-merge`) so consumer classes win.
-- **R11.2** Compound components expose a `classNames` prop keyed by slot (e.g. `classNames={{ trigger, content, item }}`) as well as being composable from their parts.
-- **R11.3** Variants defined with `cva` and exported (e.g. `buttonVariants`) so consumers can reuse/extend them.
-- **R11.4** `asChild` (Radix `Slot`) supported wherever rendering a different element makes sense (buttons, links, triggers).
-- **R11.5** All native props and `ref` forwarded to the underlying DOM element; `data-slot`, `data-state`, `data-variant`, `data-size` attributes exposed for styling hooks.
-- **R11.6** Icons are injectable: components accept icon props/slots, and a global icon map can be supplied via `OnuProvider`.
-- **R11.7** No `!important`, no inline styles except where values are dynamic (positions, progress widths).
-- **R11.8** Global defaults (size, variant, radius, density) configurable via `OnuProvider`.
+- **R15.1** Every component accepts `className`, merged with defaults via `cn()` (`tailwind-merge`) so consumer classes win.
+- **R15.2** Compound components expose a `classNames` prop keyed by slot (e.g. `classNames={{ trigger, content, item }}`) as well as being composable from their parts.
+- **R15.3** Variants defined with `cva` and exported (e.g. `buttonVariants`) so consumers can reuse/extend them.
+- **R15.4** `asChild` (Radix `Slot`) supported wherever rendering a different element makes sense (buttons, links, triggers).
+- **R15.5** All native props and `ref` forwarded to the underlying DOM element; `data-slot`, `data-state`, `data-variant`, `data-size` attributes exposed for styling hooks.
+- **R15.6** Icons are injectable: components accept icon props/slots, and a global icon map can be supplied via `OnuProvider` (see §6).
+- **R15.7** No `!important`, no inline styles except where values are dynamic (positions, progress widths).
+- **R15.8** Global defaults (size, variant, radius, density) configurable via `OnuProvider`.
 
-## 12. Framework integration
+## 16. Framework integration
 
-- **R12.1** Framework-agnostic React: works in Vite SPA, Laravel + Inertia (React), and Next.js.
-- **R12.2** Link-rendering components (Link button, Breadcrumbs, Side navigation, Pagination, Nav tabs, Conditional link, …) accept a pluggable link component via `OnuProvider` (`linkComponent={InertiaLink}`) or `asChild`.
-- **R12.3** **Laravel validation compatibility**: Field errors and AJAX validation errors accept Laravel's `422` payload (`{ message, errors: { "field.0.name": [...] } }`) directly, including nested/array dot-notation keys, and map them to fields (also via `react-hook-form` `setError`).
-- **R12.4** Pagination accepts Laravel paginator / API resource `meta` + `links` shapes out of the box.
-- **R12.5** API select / Autocomplete / Dependent select accept a fetcher function, with a default fetcher for Laravel JSON resources; no hard dependency on any HTTP client.
-- **R12.6** CSRF and auth are the consumer's concern; components never perform network requests without a consumer-supplied URL/fetcher.
-- **R12.7** eFaas sign-in button follows eFaas branding guidelines (asset/colours supplied by eFaas, not invented).
+- **R16.1** Framework-agnostic React: works in Vite SPA, Laravel + Inertia (React), and Next.js.
+- **R16.2** Link-rendering components (Link button, Breadcrumbs, Side navigation, Pagination, Nav tabs, Conditional link, …) accept a pluggable link component via `OnuProvider` (`linkComponent={InertiaLink}`) or `asChild`.
+- **R16.3** **Laravel validation compatibility**: Field errors and AJAX validation errors accept Laravel's `422` payload (`{ message, errors: { "field.0.name": [...] } }`) directly, including nested/array dot-notation keys, and map them to fields (also via `react-hook-form` `setError`).
+- **R16.4** Pagination accepts Laravel paginator / API resource `meta` + `links` shapes out of the box.
+- **R16.5** API select / Autocomplete / Dependent select accept a fetcher function, with a default fetcher for Laravel JSON resources; no hard dependency on any HTTP client.
+- **R16.6** CSRF and auth are the consumer's concern; components never perform network requests without a consumer-supplied URL/fetcher.
+- **R16.7** eFaas sign-in button follows eFaas branding guidelines (asset/colours supplied by eFaas, not invented).
 
-## 13. Testing, CI & coverage
+## 17. Testing, CI & coverage
 
-- **R13.1** Every component has tests covering: rendering, variants, controlled/uncontrolled behaviour, keyboard interaction, RTL, dark mode class application, `className`/`classNames` overrides, and axe accessibility.
-- **R13.2** Coverage thresholds enforced in CI (initial target: **90% lines/statements/functions, 85% branches**; 100% for the Thaana engine). CI fails below threshold.
-- **R13.3** Playwright tests run against the examples app (Chromium, Firefox, WebKit) for interaction-heavy components and sample pages, including visual regression snapshots in light/dark × LTR/RTL.
-- **R13.4** GitHub Actions workflows:
+- **R17.1** Every component has tests covering: rendering, variants, controlled/uncontrolled behaviour, keyboard interaction, RTL, dark mode class application, `className`/`classNames` overrides, and axe accessibility.
+- **R17.2** Coverage thresholds enforced in CI (initial target: **90% lines/statements/functions, 85% branches**; 100% for the Thaana engine). CI fails below threshold.
+- **R17.3** Playwright tests run against the examples app (Chromium, Firefox, WebKit) for interaction-heavy components and sample pages, including visual regression snapshots in light/dark × LTR/RTL.
+- **R17.4** GitHub Actions workflows:
   - `ci.yml` (PRs + `main`): install → lint (ESLint, incl. logical-property rule) → format check (Prettier) → typecheck → unit tests with coverage → build package → build examples → build docs → size check.
   - `e2e.yml`: Playwright across browsers.
   - `release.yml`: Changesets version PR + publish to npm with provenance.
-- **R13.5** Coverage uploaded to Codecov (or Coveralls).
-- **R13.6** `README.md` displays badges for: CI test status, coverage, npm version, licence.
+- **R17.5** Coverage uploaded to Codecov (or Coveralls).
+- **R17.6** `README.md` displays badges for: CI test status, coverage, npm version, licence.
 
   ```md
   [![Tests](https://github.com/Javaabu/onu/actions/workflows/ci.yml/badge.svg)](https://github.com/Javaabu/onu/actions/workflows/ci.yml)
@@ -247,20 +354,20 @@ Javaabu currently uses the JTK (JavaScript Thaana Keyboard) approach for typing 
   [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
   ```
 
-## 14. Examples
+## 18. Examples
 
-- **R14.1** An `examples/` directory containing a runnable Vite + React + TypeScript app consuming the package via the workspace (`pnpm` workspaces).
-- **R14.2** **Component showcase**: one page per component demonstrating every variant, size and state (default, hover, focus, disabled, loading, error, empty), with copyable code.
-- **R14.3** Global toolbar on every page to toggle: light/dark, LTR/RTL, `en`/`dv` locale, primary colour (colour picker driving `--onu-primary`), density.
-- **R14.4** **Sample pages** (see §19) built only from Onu components and realistic mock data (Dhivehi + English), demonstrating real-world composition.
-- **R14.5** Deployed as a static site (e.g. GitHub Pages) on every push to `main`, linked from the README and docs.
-- **R14.6** Examples app is used as the Playwright test target.
+- **R18.1** An `examples/` directory containing a runnable Vite + React + TypeScript app consuming the package via the workspace (`pnpm` workspaces).
+- **R18.2** **Component showcase**: one page per component demonstrating every variant, size and state (default, hover, focus, disabled, loading, error, empty), with copyable code.
+- **R18.3** Global toolbar on every page to toggle: light/dark, LTR/RTL, `en`/`dv` locale, primary colour (colour picker driving `--onu-primary`), density.
+- **R18.4** **Sample pages** (see §23) built only from Onu components and realistic mock data (Dhivehi + English), demonstrating real-world composition.
+- **R18.5** Deployed as a static site (e.g. GitHub Pages) on every push to `main`, linked from the README and docs.
+- **R18.6** Examples app is used as the Playwright test target.
 
-## 15. Developer documentation
+## 19. Developer documentation
 
 Docs live in `/docs` and follow the exact format used in [`@javaabu/js-utilities`](https://github.com/Javaabu/js-utilities/tree/main/docs) (Docusaurus-rendered markdown, served on Javaabu's docs site).
 
-- **R15.1** `docs/metadata.json`:
+- **R19.1** `docs/metadata.json`:
   ```json
   {
       "name": "Onu",
@@ -268,7 +375,7 @@ Docs live in `/docs` and follow the exact format used in [`@javaabu/js-utilities
       "version": "1"
   }
   ```
-- **R15.2** Top-level pages, each with front matter (`title`, `sidebar_position`):
+- **R19.2** Top-level pages, each with front matter (`title`, `sidebar_position`):
 
   | File | `sidebar_position` |
   |---|---|
@@ -280,12 +387,12 @@ Docs live in `/docs` and follow the exact format used in [`@javaabu/js-utilities
   | `about-us.md` | 1.6 |
   | `contributing-to-docs.md` | 99 |
 
-- **R15.3** Guide pages (in a `docs/guides/` category): theming, dark mode, RTL, Dhivehi & locales, Thaana input, accessibility, style overrides, forms & Laravel validation, Inertia/Next.js integration.
-- **R15.4** One folder per build-list group, each with a `_category_.json` (`position`, `label`, `collapsible`, `collapsed`, `link.type: "generated-index"`, `link.slug: "/onu/_categories/<group>"`, `link.description`), e.g. `docs/form-scaffolding/`, `docs/text-inputs/`, `docs/date-and-time/`, … matching §18.
-- **R15.5** One markdown file per component with front matter, containing: short description, import snippet, basic usage, props table, variants, slots/`classNames`, RTL & Thaana notes, accessibility notes (keyboard interactions table), and examples. Use Docusaurus admonitions (`:::info`, `:::warning`) where helpful.
-- **R15.6** Docs are updated in the same PR as the component change; CI checks every exported component has a docs page.
+- **R19.3** Guide pages (in a `docs/guides/` category): design language & density, icons (incl. FontAwesome Pro setup), fonts, theming, dark mode, RTL, Dhivehi & locales, Thaana input, accessibility, style overrides, forms & Laravel validation, Inertia/Next.js integration.
+- **R19.4** One folder per build-list group, each with a `_category_.json` (`position`, `label`, `collapsible`, `collapsed`, `link.type: "generated-index"`, `link.slug: "/onu/_categories/<group>"`, `link.description`), e.g. `docs/form-scaffolding/`, `docs/text-inputs/`, `docs/date-and-time/`, … matching §22.
+- **R19.5** One markdown file per component with front matter, containing: short description, import snippet, basic usage, props table, variants, slots/`classNames`, RTL & Thaana notes, accessibility notes (keyboard interactions table), and examples. Use Docusaurus admonitions (`:::info`, `:::warning`) where helpful.
+- **R19.6** Docs are updated in the same PR as the component change; CI checks every exported component has a docs page.
 
-## 16. Repository structure
+## 20. Repository structure
 
 Proposed (pnpm workspace):
 
@@ -293,13 +400,14 @@ Proposed (pnpm workspace):
 onu/
 ├── .changeset/
 ├── .github/workflows/        # ci.yml, e2e.yml, release.yml
-├── docs/                     # Docusaurus-format markdown (see §15)
+├── docs/                     # Docusaurus-format markdown (see §19)
 ├── examples/                 # Vite showcase + sample pages app
 ├── packages/
 │   └── onu/                  # @javaabu/onu
 │       ├── src/
 │       │   ├── components/   # one folder per component (component, test, index)
 │       │   ├── thaana/       # keyboard engine + hooks
+│       │   ├── icons/        # Icon, DynamicIcon, semantic icon maps, Iconify + FontAwesome adapters
 │       │   ├── charts/ maps/ editor/ calendar/ media/
 │       │   ├── hooks/ lib/ locales/ providers/
 │       │   └── styles/       # tokens.css, base.css, tailwind.css
@@ -311,7 +419,7 @@ onu/
 └── REQUIREMENTS.md
 ```
 
-## 17. Component definition of done
+## 21. Component definition of done
 
 A build-list item is ticked only when all of the following are true:
 
@@ -320,6 +428,9 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Works in LTR and RTL, and with `locale="dv"`
 - [ ] `thaana` prop supported (if it accepts free text)
 - [ ] Themed only through tokens (re-colours with `--onu-primary`)
+- [ ] Looks right in every density mode it supports, and outside admin contexts where relevant
+- [ ] Built on the shadcn component / approved library per §4–§5; any in-house build is justified in the PR
+- [ ] Uses semantic icon names so it follows the configured icon set
 - [ ] `className` / `classNames` / `asChild` overrides as applicable
 - [ ] Meets WCAG 2.2 AA; axe tests pass; keyboard interactions documented
 - [ ] Unit tests meeting coverage thresholds
@@ -329,7 +440,7 @@ A build-list item is ticked only when all of the following are true:
 
 ---
 
-## 18. UI build list
+## 22. UI build list
 
 ### Form scaffolding
 - [ ] Form
@@ -576,12 +687,16 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Locale dictionaries (`en`, `dv`)
 - [ ] Thaana keyboard engine + `useThaanaInput`
 - [ ] Design tokens & preset themes
+- [ ] Density modes
+- [ ] `Icon`, `DynamicIcon` and semantic icon maps (Lucide, Iconify, FontAwesome)
+- [ ] Font pack (`fonts.css`)
+- [ ] Dhivehi `date-fns` locale
 - [ ] `cn()` and shared utilities
 - [ ] Visually hidden / live region utilities
 
 ---
 
-## 19. Sample pages
+## 23. Sample pages
 
 All sample pages live in `examples/` and must render correctly in light/dark, LTR/RTL and `en`/`dv`.
 
@@ -689,16 +804,18 @@ All sample pages live in `examples/` and must render correctly in light/dark, LT
 
 ---
 
-## 20. Open questions
+## 24. Open questions
 
 To be resolved before (or while) building the affected components:
 
 1. **Licence** — MIT like other Javaabu packages, or private/internal?
 2. **Map provider** — MapLibre (free, self-hostable tiles) as default, or Google Maps as primary? Which tile provider for the Maldives?
-3. **Thaana fonts** — which commercially licensed fonts (if any) may be bundled vs only referenced?
-4. **Default primary colour** — exact Javaabu/Onu brand colour value.
-5. **Docs hosting** — confirm the Docusaurus docs site that consumes `/docs` (same as js-utilities) and its slug (`/onu`).
-6. **Component semantics to confirm**:
+3. **Thaana fonts**: does Javaabu hold licences for any Maldivian fonts (e.g. Faruma) that could ship as an optional pack, or do we stay with Noto Sans Thaana only?
+4. **FontAwesome Pro**: which Pro licence/Kit should CI use (needs a `FONTAWESOME_NPM_AUTH_TOKEN` secret)? Should the default icon map stay Lucide, or default to FontAwesome for Javaabu's own projects?
+5. **Figma**: do we also need a matching Figma kit (e.g. based on the shadcn Figma kit) for designers?
+6. **Default primary colour** — exact Javaabu/Onu brand colour value.
+7. **Docs hosting** — confirm the Docusaurus docs site that consumes `/docs` (same as js-utilities) and its slug (`/onu`).
+8. **Component semantics to confirm**:
    - *Formula input* — spreadsheet-style expression editor? Which functions/variables?
    - *Field definition editor* / *Custom attribute fields* — schema shape (align with an existing Javaabu Laravel package?).
    - *Multi-language submit* — "Save" + "Save & translate to …" per configured locale?
@@ -706,4 +823,4 @@ To be resolved before (or while) building the affected components:
    - *Reporting-period picker* — fiscal periods (monthly/quarterly/yearly) with custom fiscal year start?
    - *Map navigation* / *Map replay* — data shape for tracks (GeoJSON LineString with timestamps?).
    - *Payment method selector* — which gateways (BML, MIB, MFaisaa, card) and branding assets?
-7. **React Native / Flutter parity** — should token names align with the Flutter design system for cross-platform consistency?
+9. **React Native / Flutter parity** — should token names align with the Flutter design system for cross-platform consistency?
