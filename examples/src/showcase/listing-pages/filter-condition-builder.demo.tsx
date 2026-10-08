@@ -49,7 +49,7 @@ export default function FilterConditionBuilderDemo() {
             { name: "created_at", label: "Created", inputType: "date" },
           ]}
         />
-        <pre className="p-2 text-xs overflow-x-auto rounded-md bg-muted" dir="ltr">
+        <pre className="p-2 text-xs rounded-md bg-muted break-all whitespace-pre-wrap" dir="ltr">
           {formatQuery(query, "sql")}
         </pre>
       </DemoSection>
