@@ -1,5 +1,6 @@
 import * as React from "react"
 import { applyListingState, ListingPage, Select, toast, useListingState, type BulkAction } from "@javaabu/onu"
+import { useExportRows, type ExportColumn } from "@javaabu/onu/export"
 
 import { useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -39,13 +40,26 @@ export default function IndexTablePage() {
   // The "Deleted records" filter picks the source rows, like Laravel's withTrashed / onlyTrashed.
   const trashed = state.filters.trashed
   const source = all.filter((a) => (trashed === "only" ? a.deletedAt : trashed === "with" ? true : !a.deletedAt))
-  const { rows, total } = applyListingState(source, state, {
+  const listingOptions = {
     searchFields,
     filterFns: { ...filterFns, email: emailFilter },
     sortValue: sortValue(labels),
     locale: labels.dv ? "dv" : "en",
-  })
+  }
+  const { rows, total } = applyListingState(source, state, listingOptions)
   const active = all.filter((a) => !a.deletedAt)
+  const exportRows = useExportRows()
+  // Export every row that matches the search and filters, not only this page.
+  const exportColumns: ExportColumn<Application>[] = [
+    { header: tr("Reference", "ރެފަރެންސް"), accessor: "reference" },
+    { header: tr("Name", "ނަން"), accessor: (a) => labels.name(a) },
+    { header: tr("ID card", "އައިޑީ ކާޑު"), accessor: "idCard" },
+    { header: tr("Island", "ރަށް"), accessor: (a) => labels.island(a.island) },
+    { header: tr("Service", "ޚިދުމަތް"), accessor: (a) => labels.service(a.service) },
+    { header: tr("Status", "ސްޓޭޓަސް"), accessor: (a) => labels.status(a.status) },
+    { header: tr("Fee", "ފީ"), accessor: "amount", type: "currency" },
+    { header: tr("Submitted", "ހުށަހެޅި"), accessor: "submitted", type: "date" },
+  ]
   const trashCount = all.length - active.length
   const count = (s: ApplicationStatus) => active.filter((a) => a.status === s).length
 
@@ -132,12 +146,16 @@ export default function IndexTablePage() {
           { value: "approved", label: labels.status("approved"), count: count("approved") },
         ]}
         columnToggle
-        onExport={async (format) => {
-          await wait(1200)
-          toast.success(tr("Export ready", "އެކްސްޕޯޓް ތައްޔާރު"), {
-            description: `applications-2026-10-07.${format === "excel" ? "xlsx" : format}`,
+        onExport={(format) =>
+          exportRows({
+            format,
+            rows: applyListingState(source, { ...state, page: 1, perPage: Infinity }, listingOptions).rows,
+            columns: exportColumns,
+            filename: `applications-${new Date().toISOString().slice(0, 10)}`,
+            title: tr("Applications", "އެޕްލިކޭޝަންތައް"),
+            scope: tr(`${total} applications, current filters`, `${total} އެޕްލިކޭޝަން، މިހާރުގެ ފިލްޓަރުތައް`),
           })
-        }}
+        }
         bulkActions={bulkActions as BulkAction<unknown>[]}
         onBulkSuccess={(message) => toast.success(message)}
         getRowName={(a) => `${a.reference} (${labels.name(a)})`}

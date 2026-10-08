@@ -37,6 +37,8 @@ function Users({ users }: { users: User[] }) {
 }
 ```
 
+Without a server export, `onExport={(format) => exportRows({ format, rows, columns, filename: "users" })}` builds CSV, Excel or PDF in the browser; see [`exportRows`](export-rows).
+
 With a server, call your API with `state.toSearchParams()` (Laravel / spatie-query-builder names: `search`, `sort=-created_at`, `page`, `per_page`, `filter[status][]=active`) and pass the page of rows and the total. The table, pills and empty states follow the same state.
 
 ## Other views

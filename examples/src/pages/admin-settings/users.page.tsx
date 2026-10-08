@@ -18,11 +18,13 @@ import {
   applyListingState,
   toast,
   useListingState,
+  type ApplyListingOptions,
   type BulkAction,
   type DataTableColumn,
   type FilterDefinition,
   type StatusMap,
 } from "@javaabu/onu"
+import { useExportRows } from "@javaabu/onu/export"
 
 import { useDv, useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -49,7 +51,8 @@ export default function UsersPage() {
     suspended: { tone: "danger", label: t(statusNames.suspended) },
   }
 
-  const { rows, total } = applyListingState(users, state, {
+  const exportRows = useExportRows()
+  const listingOptions: ApplyListingOptions<AdminUser> = {
     locale: dv ? "dv" : "en",
     searchFields: (u) => [u.name, u.nameDv, u.email, u.island],
     filterFns: {
@@ -60,7 +63,8 @@ export default function UsersPage() {
     },
     sortValue: (u, id) =>
       id === "name" ? (dv ? u.nameDv : u.name) : id === "lastLogin" ? (u.lastLogin ?? "") : u[id as keyof AdminUser],
-  })
+  }
+  const { rows, total } = applyListingState(users, state, listingOptions)
 
   const filters: FilterDefinition[] = [
     {
@@ -238,7 +242,23 @@ export default function UsersPage() {
           { value: "invited", label: t(statusNames.invited), count: count("invited") },
           { value: "suspended", label: t(statusNames.suspended), count: count("suspended") },
         ]}
-        onExport={() => wait(1000)}
+        onExport={(format) =>
+          exportRows({
+            format,
+            rows: applyListingState(users, { ...state, page: 1, perPage: Infinity }, listingOptions).rows,
+            columns: [
+              { header: tr("Name", "ނަން"), accessor: (u) => (dv ? u.nameDv : u.name) },
+              { header: tr("Email", "އީމެއިލް"), accessor: "email" },
+              { header: tr("Role", "ރޯލް"), accessor: (u) => t(roleNames[u.role]) },
+              { header: tr("Status", "ހާލަތު"), accessor: (u) => t(statusNames[u.status]) },
+              { header: tr("Island", "ރަށް"), accessor: "island" },
+              { header: tr("Two-factor", "ޓޫ ފެކްޓަރ"), accessor: "twoFactor", type: "boolean" },
+              { header: tr("Last login", "އެންމެ ފަހުން ވަދެވުނީ"), accessor: "lastLogin", type: "datetime" },
+            ],
+            filename: "users",
+            title: tr("Users", "މެމްބަރުން"),
+          })
+        }
         columnToggle
         bulkActions={bulkActions as BulkAction<unknown>[]}
         onBulkSuccess={(message) => toast.success(message)}

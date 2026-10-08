@@ -144,6 +144,8 @@ export const listing = {
   exportPdf: "PDF",
   exportAs: "Export as {format}",
   exported: "Export ready",
+  exportGenerated: "Generated {date}",
+  exportRowCount: { one: "{count} row", other: "{count} rows" },
 
   // Search results
   searchResults: "Search results",
@@ -153,6 +155,13 @@ export const listing = {
     other: "{count} results for “{query}”",
   },
   resultsInGroup: { one: "{count} result", other: "{count} results" },
+  showMoreResults: "Show more {group}",
+  loadingMoreResults: "Loading more {group}…",
+  shownMoreResults: {
+    one: "{count} more {group} result shown",
+    other: "{count} more {group} results shown",
+  },
+  showMoreFailed: "Couldn't load more results. Please try again.",
 
   // Kanban / sortable
   dragHandle: "Drag to reorder {name}",
