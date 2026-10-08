@@ -7,6 +7,8 @@ import * as React from "react"
 import { cn } from "../lib/utils"
 import { Select as SelectPrimitive } from "radix-ui"
 
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 
 function Select({
@@ -54,7 +56,7 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <Icon name="chevron-down" className="text-muted-foreground size-4 pointer-events-none" />
+        <Icon name="chevron-down" fallback={ChevronDownIcon} className="text-muted-foreground size-4 pointer-events-none" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   )
@@ -127,7 +129,7 @@ function SelectItem({
     >
       <span className="pointer-events-none absolute end-2 flex size-4 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <Icon name="check" className="pointer-events-none" />
+          <Icon name="check" fallback={CheckIcon} className="pointer-events-none" />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
@@ -158,7 +160,7 @@ function SelectScrollUpButton({
       className={cn("bg-popover z-10 flex cursor-default items-center justify-center py-1 [&_svg:not([class*='size-'])]:size-4", className)}
       {...props}
     >
-      <Icon name="chevron-up" />
+      <Icon name="chevron-up" fallback={ChevronUpIcon} />
     </SelectPrimitive.ScrollUpButton>
   )
 }
@@ -173,7 +175,7 @@ function SelectScrollDownButton({
       className={cn("bg-popover z-10 flex cursor-default items-center justify-center py-1 [&_svg:not([class*='size-'])]:size-4", className)}
       {...props}
     >
-      <Icon name="chevron-down" />
+      <Icon name="chevron-down" fallback={ChevronDownIcon} />
     </SelectPrimitive.ScrollDownButton>
   )
 }

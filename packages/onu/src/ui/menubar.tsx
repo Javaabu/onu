@@ -7,6 +7,8 @@ import * as React from "react"
 import { cn } from "../lib/utils"
 import { Menubar as MenubarPrimitive } from "radix-ui"
 
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { CheckIcon, ChevronRightIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 
 function Menubar({
@@ -133,7 +135,7 @@ function MenubarCheckboxItem({
     >
       <span className="start-1.5 size-4 [&_svg:not([class*='size-'])]:size-4 pointer-events-none absolute flex items-center justify-center">
         <MenubarPrimitive.ItemIndicator>
-          <Icon name="check" />
+          <Icon name="check" fallback={CheckIcon} />
         </MenubarPrimitive.ItemIndicator>
       </span>
       {children}
@@ -161,7 +163,7 @@ function MenubarRadioItem({
     >
       <span className="start-1.5 size-4 [&_svg:not([class*='size-'])]:size-4 pointer-events-none absolute flex items-center justify-center">
         <MenubarPrimitive.ItemIndicator>
-          <Icon name="check" />
+          <Icon name="check" fallback={CheckIcon} />
         </MenubarPrimitive.ItemIndicator>
       </span>
       {children}
@@ -237,7 +239,7 @@ function MenubarSubTrigger({
       {...props}
     >
       {children}
-      <Icon name="chevron-right" className="ms-auto size-4" /* onu: Icon already mirrors in RTL */ />
+      <Icon name="chevron-right" fallback={ChevronRightIcon} className="ms-auto size-4" /* onu: Icon already mirrors in RTL */ />
     </MenubarPrimitive.SubTrigger>
   )
 }

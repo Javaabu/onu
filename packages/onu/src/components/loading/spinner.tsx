@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
+import { Loader2Icon } from "lucide-react"
 
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
@@ -52,7 +53,7 @@ export function Spinner({ size, tone, label, showLabel = false, className, class
       className={cn("gap-2 inline-flex items-center align-middle", className)}
       {...props}
     >
-      <Icon name="loading" className={cn(spinnerVariants({ size, tone }), classNames?.icon)} />
+      <Icon name="loading" fallback={Loader2Icon} className={cn(spinnerVariants({ size, tone }), classNames?.icon)} />
       <span data-slot="spinner-label" className={cn(showLabel ? "text-sm" : "sr-only", classNames?.label)}>
         {text}
       </span>

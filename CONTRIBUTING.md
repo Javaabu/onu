@@ -31,7 +31,8 @@ A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `
 
 - Use logical Tailwind utilities (`ms-`, `pe-`, `start-`, `text-start`, …). ESLint rejects physical `left`/`right` ones.
 - Use theme tokens (`bg-primary`, `text-muted-foreground`), never raw colours.
-- Use `<Icon name="…">` with semantic names, never import Lucide directly in components.
+- Use `<Icon name="…">` (from `src/icons/icon`) with semantic names, so `OnuProvider icons` overrides apply. Never render a Lucide component directly. When a component always shows the same glyph (a spinner, a close button, a chevron), also pass that Lucide icon as `fallback`, e.g. `<Icon name="loading" fallback={Loader2Icon} />`: overrides still win, and the component keeps its glyph outside `OnuProvider`.
+- Never import `src/icons/lucide-map` in a component. `OnuProvider` supplies the default set, so a single component does not ship ~250 icons. ESLint and `src/icons/icon-imports.test.ts` enforce this, and `pnpm --filter @javaabu/onu size` checks the bundle budgets.
 - Prefer shadcn/ui or an approved library (REQUIREMENTS §4) before building from scratch. Record new dependencies in `DEPENDENCIES.md`.
 - Add a changeset: `pnpm changeset`.
 

@@ -3,6 +3,8 @@
 import * as React from "react"
 import { cn } from "../lib/utils"
 
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { ChevronDownIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 import { useFormFieldControl } from "../components/form/form-field"
 
@@ -32,7 +34,7 @@ function NativeSelect({
         className="border-input placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 h-8 w-full min-w-0 appearance-none rounded-lg border bg-transparent py-1 pe-8 ps-2.5 text-sm transition-colors select-none focus-visible:ring-3 aria-invalid:ring-3 data-[size=sm]:h-7 data-[size=sm]:rounded-[min(var(--radius-md),10px)] data-[size=sm]:py-0.5 outline-none disabled:pointer-events-none disabled:cursor-not-allowed"
         {...props}
       />
-      <Icon name="chevron-down" className="text-muted-foreground top-1/2 end-2.5 size-4 -translate-y-1/2 pointer-events-none absolute select-none"
+      <Icon name="chevron-down" fallback={ChevronDownIcon} className="text-muted-foreground top-1/2 end-2.5 size-4 -translate-y-1/2 pointer-events-none absolute select-none"
         aria-hidden="true"
         data-slot="native-select-icon" />
     </div>

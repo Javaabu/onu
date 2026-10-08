@@ -7,6 +7,8 @@ import * as React from "react"
 import { cn } from "../lib/utils"
 import { Accordion as AccordionPrimitive } from "radix-ui"
 
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 
 function Accordion({
@@ -51,12 +53,12 @@ function AccordionTrigger({
         {...props}
       >
         {children}
-        <Icon name="chevron-down" data-slot="accordion-trigger-icon"
+        <Icon name="chevron-down" fallback={ChevronDownIcon} data-slot="accordion-trigger-icon"
          
          
          
           className="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden" />
-        <Icon name="chevron-up" data-slot="accordion-trigger-icon"
+        <Icon name="chevron-up" fallback={ChevronUpIcon} data-slot="accordion-trigger-icon"
          
          
          

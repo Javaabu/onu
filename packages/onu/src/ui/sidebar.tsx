@@ -25,6 +25,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "./tooltip"
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { PanelLeftIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 import { useTranslation } from "../providers/onu-provider"
 
@@ -285,7 +287,7 @@ function SidebarTrigger({
       {...props}
     >
       {/* onu: Icon already mirrors "sidebar" in RTL; rtl:rotate-180 cancelled that out. */}
-      <Icon name="sidebar" />
+      <Icon name="sidebar" fallback={PanelLeftIcon} />
       <span className="sr-only">{t("common.toggleSidebar")}</span>
     </Button>
   )

@@ -388,13 +388,19 @@
       "name": "core (Button)",
       "path": "dist/index.js",
       "import": "{ Button }",
-      "limit": "22 kB"
+      "limit": "13 kB"
+    },
+    {
+      "name": "core (OnuProvider + Button)",
+      "path": "dist/index.js",
+      "import": "{ OnuProvider, Button }",
+      "limit": "51 kB"
     },
     {
       "name": "core (form field + text input)",
       "path": "dist/index.js",
       "import": "{ FormField, TextInput }",
-      "limit": "40 kB"
+      "limit": "31 kB"
     },
     {
       "name": "core (everything)",

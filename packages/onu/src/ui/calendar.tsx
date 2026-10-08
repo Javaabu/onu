@@ -13,6 +13,8 @@ import {
 } from "react-day-picker"
 
 import { Button, buttonVariants } from "./button"
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 
 function Calendar({
@@ -150,20 +152,20 @@ function Calendar({
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
             return (
-              <Icon name="chevron-left" className={cn("size-4", className) /* onu: Icon already mirrors in RTL */}
+              <Icon name="chevron-left" fallback={ChevronLeftIcon} className={cn("size-4", className) /* onu: Icon already mirrors in RTL */}
                 {...props} />
             )
           }
 
           if (orientation === "right") {
             return (
-              <Icon name="chevron-right" className={cn("size-4", className) /* onu: Icon already mirrors in RTL */}
+              <Icon name="chevron-right" fallback={ChevronRightIcon} className={cn("size-4", className) /* onu: Icon already mirrors in RTL */}
                 {...props} />
             )
           }
 
           return (
-            <Icon name="chevron-down" className={cn("size-4", className)}
+            <Icon name="chevron-down" fallback={ChevronDownIcon} className={cn("size-4", className)}
               {...props} />
           )
         },

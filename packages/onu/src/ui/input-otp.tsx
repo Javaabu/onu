@@ -7,6 +7,8 @@ import * as React from "react"
 import { cn } from "../lib/utils"
 import { OTPInput, OTPInputContext } from "input-otp"
 
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { MinusIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 
 function InputOTP({
@@ -81,7 +83,7 @@ function InputOTPSeparator({ ...props }: React.ComponentProps<"div">) {
       role="separator"
       {...props}
     >
-      <Icon name="minus" />
+      <Icon name="minus" fallback={MinusIcon} />
     </div>
   )
 }

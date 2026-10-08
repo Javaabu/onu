@@ -4,6 +4,8 @@ import * as React from "react"
 import { cn } from "../lib/utils"
 import { Slot } from "radix-ui"
 
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 import { useTranslation } from "../providers/onu-provider"
 
@@ -87,7 +89,7 @@ function BreadcrumbSeparator({
       {...props}
     >
       {/* onu: Icon already mirrors directional icons in RTL; an extra rtl:rotate-180 cancelled that out. */}
-      {children ?? <Icon name="chevron-right" />}
+      {children ?? <Icon name="chevron-right" fallback={ChevronRightIcon} />}
     </li>
   )
 }
@@ -108,7 +110,7 @@ function BreadcrumbEllipsis({
       )}
       {...props}
     >
-      <Icon name="more" />
+      <Icon name="more" fallback={MoreHorizontalIcon} />
       <span className="sr-only">{t("common.more")}</span>
     </span>
   )

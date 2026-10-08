@@ -7,6 +7,8 @@ import * as React from "react"
 import { cn } from "../lib/utils"
 import { Checkbox as CheckboxPrimitive } from "radix-ui"
 
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { CheckIcon, MinusIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 
 function Checkbox({
@@ -27,8 +29,8 @@ function Checkbox({
         className="[&>svg]:size-3.5 grid place-content-center text-current transition-none"
       >
         {/* onu: a dash for the indeterminate state */}
-        <Icon name="check" className="[[data-state=indeterminate]_&]:hidden" />
-        <Icon name="minus" className="hidden [[data-state=indeterminate]_&]:block" />
+        <Icon name="check" fallback={CheckIcon} className="[[data-state=indeterminate]_&]:hidden" />
+        <Icon name="minus" fallback={MinusIcon} className="hidden [[data-state=indeterminate]_&]:block" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   )

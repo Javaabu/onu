@@ -7,6 +7,8 @@ import * as React from "react"
 import { cn } from "../lib/utils"
 import { ContextMenu as ContextMenuPrimitive } from "radix-ui"
 
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { CheckIcon, ChevronRightIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 
 function ContextMenu({
@@ -124,7 +126,7 @@ function ContextMenuSubTrigger({
     >
       {children}
       {/* onu: no rtl:rotate-180 here; <Icon> already mirrors chevron-right in RTL, rotating flipped it back. */}
-      <Icon name="chevron-right" className="ms-auto" />
+      <Icon name="chevron-right" fallback={ChevronRightIcon} className="ms-auto" />
     </ContextMenuPrimitive.SubTrigger>
   )
 }
@@ -167,7 +169,7 @@ function ContextMenuCheckboxItem({
     >
       <span className="absolute end-2 pointer-events-none">
         <ContextMenuPrimitive.ItemIndicator>
-          <Icon name="check" />
+          <Icon name="check" fallback={CheckIcon} />
         </ContextMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -195,7 +197,7 @@ function ContextMenuRadioItem({
     >
       <span className="absolute end-2 pointer-events-none">
         <ContextMenuPrimitive.ItemIndicator>
-          <Icon name="check" />
+          <Icon name="check" fallback={CheckIcon} />
         </ContextMenuPrimitive.ItemIndicator>
       </span>
       {children}

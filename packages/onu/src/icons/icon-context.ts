@@ -14,7 +14,10 @@ export interface IconSource {
 }
 
 export interface IconContextValue {
+  /** Project overrides (`OnuProvider icons`). */
   icons?: IconMap
+  /** Default icon set used for names without an override. `OnuProvider` supplies `lucideIconMap`. */
+  defaults?: IconMap
   sources?: IconSource[]
 }
 

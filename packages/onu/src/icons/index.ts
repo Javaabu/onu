@@ -1,4 +1,5 @@
-export { Icon, type IconProps } from "./icon"
+export { Icon, type IconProps } from "./standalone-icon"
+export { fallbackIcon } from "./icon"
 export { DynamicIcon, parseIconId, type DynamicIconProps } from "./dynamic-icon"
 export { IconContext, useIconContext, type IconContextValue, type IconSource } from "./icon-context"
 export { lucideIconMap } from "./lucide-map"

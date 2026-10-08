@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import type { VariantProps } from "class-variance-authority"
+import { Loader2Icon } from "lucide-react"
 import { Slot } from "radix-ui"
 
 import { Icon } from "../../icons/icon"
@@ -85,7 +86,13 @@ export function Button({
 }: ButtonProps) {
   const Comp = asChild ? Slot.Root : "button"
   const start = loading ? (
-    <Icon name="loading" data-icon="inline-start" data-slot="button-spinner" className="animate-spin" />
+    <Icon
+      name="loading"
+      fallback={Loader2Icon}
+      data-icon="inline-start"
+      data-slot="button-spinner"
+      className="animate-spin"
+    />
   ) : (
     renderIcon(startIcon, "inline-start")
   )

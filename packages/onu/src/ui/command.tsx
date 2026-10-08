@@ -18,6 +18,8 @@ import {
   InputGroup,
   InputGroupAddon,
 } from "./input-group"
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { CheckIcon, SearchIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 import { useTranslation } from "../providers/onu-provider"
 
@@ -86,7 +88,7 @@ function CommandInput({
           {...props}
         />
         <InputGroupAddon>
-          <Icon name="search" className="size-4 shrink-0 opacity-50" />
+          <Icon name="search" fallback={SearchIcon} className="size-4 shrink-0 opacity-50" />
         </InputGroupAddon>
       </InputGroup>
     </div>
@@ -163,7 +165,7 @@ function CommandItem({
       {...props}
     >
       {children}
-      <Icon name="check" className="ms-auto opacity-0 group-has-data-[slot=command-shortcut]/command-item:hidden group-data-[checked=true]/command-item:opacity-100" />
+      <Icon name="check" fallback={CheckIcon} className="ms-auto opacity-0 group-has-data-[slot=command-shortcut]/command-item:hidden group-data-[checked=true]/command-item:opacity-100" />
     </CommandPrimitive.Item>
   )
 }
