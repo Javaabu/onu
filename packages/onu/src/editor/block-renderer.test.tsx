@@ -169,6 +169,49 @@ describe("BlockRenderer", () => {
     expect(dvList!.querySelector("p")).toHaveAttribute("dir", "auto")
   })
 
+  it("gives tables the direction of their first strong text, so columns follow it", () => {
+    const cell = (type: "tableHeader" | "tableCell", value: string): JSONContent => ({
+      type,
+      content: value ? [p(text(value))] : [],
+    })
+    const table = (rows: string[][], attrs?: Record<string, unknown>): JSONContent => ({
+      type: "table",
+      attrs,
+      content: rows.map((row, i) => ({
+        type: "tableRow",
+        content: row.map((value) => cell(i === 0 ? "tableHeader" : "tableCell", value)),
+      })),
+    })
+    const { container } = renderWithOnu(
+      <BlockRenderer
+        content={{
+          type: "doc",
+          content: [
+            // First strong text decides, even after a number-only cell.
+            table([
+              ["#", "ރަށް", "Population"],
+              ["1", "ހުޅުމާލެ", "60,000"],
+            ]),
+            table([["Island", "ރަށް"]]),
+            table([["2024", "—"]]),
+            table([["ދިވެހި"]], { dir: "ltr" }),
+          ],
+        }}
+      />,
+      { dir: "ltr" },
+    )
+    const wrappers = container.querySelectorAll<HTMLElement>(".tableWrapper")
+    const tables = container.querySelectorAll<HTMLElement>("table")
+    expect(wrappers).toHaveLength(4)
+    expect([...tables].map((t) => t.getAttribute("dir"))).toEqual(["rtl", "ltr", "auto", "ltr"])
+    expect([...wrappers].map((w) => w.getAttribute("dir"))).toEqual(["rtl", "ltr", "auto", "ltr"])
+    // Cells keep their own auto direction; header text aligns to the logical start.
+    expect(tables[0]!.querySelector("th")).toHaveAttribute("dir", "auto")
+    expect(tables[0]!.querySelector("td")).toHaveAttribute("dir", "auto")
+    expect(container.firstElementChild!.className).toContain("[&_td]:text-start")
+    expect(container.firstElementChild!.className).toContain("[&_th]:text-start")
+  })
+
   it.each(directions)("renders mixed content in %s with Dhivehi labels", async (dir) => {
     renderWithOnu(
       <BlockRenderer

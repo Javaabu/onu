@@ -3,7 +3,7 @@ title: WYSIWYG editor
 sidebar_position: 1
 ---
 
-A rich text editor built on [Tiptap](https://tiptap.dev) (ProseMirror). It has a toolbar for headings, bold, italic, underline, strikethrough, inline code, lists, quotes, links, images, tables, alignment, dividers and undo/redo. Every block gets `dir="auto"`, so mixed Dhivehi and English paragraphs each read in their own direction. Lists and quotes get an explicit `dir` from their first strong character (a container with `dir="auto"` would ignore its paragraphs and fall back to LTR), and `getHTML()` includes it.
+A rich text editor built on [Tiptap](https://tiptap.dev) (ProseMirror). It has a toolbar for headings, bold, italic, underline, strikethrough, inline code, lists, quotes, links, images, tables, alignment, dividers and undo/redo. Every block gets `dir="auto"`, so mixed Dhivehi and English paragraphs each read in their own direction. Lists, quotes and tables get an explicit `dir` from their first strong character (a container with `dir="auto"` would ignore its paragraphs and fall back to LTR), updated while typing, and `getHTML()` includes it. A Dhivehi table therefore has its first column on the right, with cells aligned to their logical start.
 
 Only MIT-licensed Tiptap packages are used. No Tiptap Pro or Cloud extension is needed.
 

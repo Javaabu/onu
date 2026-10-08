@@ -58,7 +58,7 @@ Also `autofocus`, `immediatelyRender` and `onReady`, as on [`WysiwygEditor`](./w
 
 ## RTL and Thaana
 
-The gutter with the handles sits at the inline start, so it is on the right in RTL. Every text block and table cell gets `dir="auto"`; lists and quotes take the direction of their first strong character (updated as you type), so bullets and the quote border sit on the right of Dhivehi text. With `thaana`, typing Latin keys writes Thaana and <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> switches back.
+The gutter with the handles sits at the inline start, so it is on the right in RTL. Every text block and table cell gets `dir="auto"`; lists, quotes and tables take the direction of their first strong character (updated as you type), so bullets, the quote border and the first table column sit on the right of Dhivehi text. Table cells align to their logical start. With `thaana`, typing Latin keys writes Thaana and <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> switches back.
 
 ## Accessibility
 

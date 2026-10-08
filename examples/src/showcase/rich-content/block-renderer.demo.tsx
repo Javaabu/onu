@@ -28,8 +28,15 @@ const unsafe = {
 const t = (text: string) => ({ type: "text", text })
 const para = (text: string) => ({ type: "paragraph", content: [t(text)] })
 const items = (...texts: string[]) => texts.map((text) => ({ type: "listItem", content: [para(text)] }))
+const table = (...rows: string[][]) => ({
+  type: "table",
+  content: rows.map((row, i) => ({
+    type: "tableRow",
+    content: row.map((text) => ({ type: i === 0 ? "tableHeader" : "tableCell", content: [para(text)] })),
+  })),
+})
 
-/** Lists and quotes take their direction from their text, whatever the page direction. */
+/** Lists, quotes and tables take their direction from their text, whatever the page direction. */
 const dhivehiArticle = {
   type: "doc",
   content: [
@@ -39,6 +46,8 @@ const dhivehiArticle = {
     { type: "orderedList", content: items("2024 ގައި ފެށުނު", "ދެވަނަ ބައި") },
     { type: "blockquote", content: [para("« ރީފުތައް ރައްކާތެރިކުރުމަކީ އަޅުގަނޑުމެންގެ ޒިންމާއެކެވެ. »")] },
     { type: "bulletList", content: items("An English list inside a Dhivehi article", "keeps its own direction") },
+    table(["ރަށް", "އަތޮޅު", "އާބާދީ"], ["ހުޅުމާލެ", "ކ. އަތޮޅު", "60,000"], ["ފުވައްމުލައް", "ޏ. އަތޮޅު", "13,000"]),
+    table(["Island", "Atoll", "Population"], ["Hulhumalé", "Kaafu", "60,000"], ["Addu City", "Seenu", "35,000"]),
   ],
 }
 
@@ -50,7 +59,7 @@ export default function BlockRendererDemo() {
       </DemoSection>
       <DemoSection
         title="Dhivehi article"
-        description="Lists and quotes follow their own text: bullets, numbers and the quote border sit at the inline start."
+        description="Lists, quotes and tables follow their own text: bullets, numbers, the quote border and the first table column sit at the inline start."
         className="block"
       >
         <BlockRenderer content={dhivehiArticle} className="max-w-3xl" />
