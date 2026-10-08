@@ -1,0 +1,800 @@
+/*
+ * Chakra: a friendly, clean and accessible admin look inspired by the Chakra UI
+ * design language (recreated with Onu; no Chakra code or assets). White cards on
+ * a gray.50 page, generous radii, soft layered shadows, a saturated 50–900 brand
+ * scale, subtle badges, icon tiles, and Chakra's soft focus glow.
+ *
+ * Every rule is scoped to `.design-chakra` (directly, or through
+ * `:root:has(.design-chakra)` so portalled menus and drawers match too).
+ *
+ * Re-branding: the whole scale derives from `--onu-primary` with color-mix in
+ * oklab. A teal default ships only while no `--onu-primary` is set inline on
+ * <html> (the examples' Customize panel does that), so a chosen primary wins.
+ */
+
+/* ---------------------------------------------------------------- */
+/* Theme tokens: gray.50 / white by day, gray.900 / gray.800 by night */
+/* ---------------------------------------------------------------- */
+
+:root:has(.design-chakra):not([style*="--onu-primary"]) {
+  --onu-primary: oklch(0.52 0.095 192);
+}
+
+:root:has(.design-chakra) {
+  --onu-background: oklch(0.982 0.003 248);
+  --onu-foreground: oklch(0.255 0.026 262);
+  --onu-card: oklch(1 0 0);
+  --onu-card-foreground: oklch(0.255 0.026 262);
+  --onu-popover: oklch(1 0 0);
+  --onu-popover-foreground: oklch(0.255 0.026 262);
+  --onu-neutral-secondary: oklch(0.955 0.006 255);
+  --onu-neutral-secondary-foreground: oklch(0.3 0.03 260);
+  --onu-neutral-muted: oklch(0.962 0.005 255);
+  --onu-neutral-muted-foreground: oklch(0.47 0.03 257);
+  --onu-neutral-accent: oklch(0.955 0.006 255);
+  --onu-neutral-accent-foreground: oklch(0.255 0.026 262);
+  --onu-neutral-border: oklch(0.928 0.011 256);
+  --onu-neutral-input: oklch(0.9 0.013 256);
+  --onu-neutral-sidebar: oklch(0.982 0.003 248);
+  --onu-sidebar-foreground: oklch(0.3 0.03 260);
+  --onu-neutral-sidebar-accent: oklch(1 0 0);
+  --onu-neutral-sidebar-accent-foreground: oklch(0.255 0.026 262);
+  --onu-neutral-sidebar-border: oklch(0.928 0.011 256);
+  --onu-radius: 0.5rem;
+  --onu-ring: var(--c-500);
+
+  /* Brand scale, 50–900, from the primary. */
+  --c-base: var(--onu-primary);
+  --c-50: color-mix(in oklab, var(--c-base) 7%, white);
+  --c-100: color-mix(in oklab, var(--c-base) 15%, white);
+  --c-200: color-mix(in oklab, var(--c-base) 32%, white);
+  --c-300: color-mix(in oklab, var(--c-base) 52%, white);
+  --c-400: color-mix(in oklab, var(--c-base) 76%, white);
+  --c-500: var(--c-base);
+  --c-600: color-mix(in oklab, var(--c-base), black 14%);
+  --c-700: color-mix(in oklab, var(--c-base), black 28%);
+  --c-800: color-mix(in oklab, var(--c-base), black 42%);
+  --c-900: color-mix(in oklab, var(--c-base), black 56%);
+
+  /* Secondary accents by hue rotation (purple-ish and a warm third), with fallbacks. */
+  --c-alt-base: color-mix(in oklab, var(--c-base) 45%, oklch(0.55 0.2 300));
+  --c-alt2-base: color-mix(in oklab, var(--c-base) 35%, oklch(0.68 0.17 50));
+
+  /* Semantic roles that flip with the theme. */
+  --c-solid: var(--c-500);
+  --c-accent: var(--c-500);
+  --c-alt: var(--c-alt-base);
+  --c-alt2: var(--c-alt2-base);
+  --c-subtle-bg: var(--c-100);
+  --c-subtle-fg: var(--c-800);
+  --c-alt-subtle-bg: color-mix(in oklab, var(--c-alt-base) 14%, white);
+  --c-alt-subtle-fg: color-mix(in oklab, var(--c-alt-base), black 42%);
+  --c-alt2-subtle-bg: color-mix(in oklab, var(--c-alt2-base) 16%, white);
+  --c-alt2-subtle-fg: color-mix(in oklab, var(--c-alt2-base), black 50%);
+  --c-track: oklch(0.94 0.008 256);
+
+  /* Chakra-style layered shadows. */
+  --c-shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 5%);
+  --c-shadow-md: 0 1px 2px 0 oklch(0 0 0 / 4%), 0 4px 10px -2px oklch(0.3 0.03 260 / 7%);
+  --c-shadow-lg: 0 2px 4px -1px oklch(0 0 0 / 5%), 0 12px 24px -6px oklch(0.3 0.03 260 / 12%);
+  --c-glow: 0 0 0 3px color-mix(in oklab, var(--c-500) 40%, transparent);
+
+  --onu-chart-1: var(--c-accent);
+  --onu-chart-2: var(--c-alt);
+  --onu-chart-3: var(--c-alt2);
+  --onu-chart-4: var(--c-300);
+  --onu-chart-5: color-mix(in oklab, var(--c-alt) 50%, white);
+}
+
+@supports (color: oklch(from red l c h)) {
+  :root:has(.design-chakra) {
+    --c-alt-base: oklch(from var(--c-base) max(l, 0.5) max(c, 0.12) calc(h + 95));
+    --c-alt2-base: oklch(from var(--c-base) max(l, 0.62) max(c, 0.13) calc(h - 140));
+  }
+}
+
+:root:is(.dark, [data-theme="dark"]):has(.design-chakra) {
+  /* Chakra dark: brand.200 accents with dark text on solid controls. */
+  --onu-primary-dark: color-mix(in oklab, var(--onu-primary) 58%, white);
+  --onu-primary-foreground: oklch(0.2 0.02 262);
+  --onu-background: oklch(0.2 0.017 272);
+  --onu-foreground: oklch(0.94 0.006 255);
+  --onu-card: oklch(0.245 0.022 263);
+  --onu-card-foreground: oklch(0.94 0.006 255);
+  --onu-popover: oklch(0.27 0.024 262);
+  --onu-popover-foreground: oklch(0.94 0.006 255);
+  --onu-neutral-secondary: oklch(0.31 0.028 258);
+  --onu-neutral-secondary-foreground: oklch(0.93 0.006 255);
+  --onu-neutral-muted: oklch(0.29 0.026 260);
+  --onu-neutral-muted-foreground: oklch(0.76 0.025 257);
+  --onu-neutral-accent: oklch(0.31 0.028 258);
+  --onu-neutral-accent-foreground: oklch(0.96 0.005 255);
+  --onu-neutral-border: oklch(0.335 0.03 258);
+  --onu-neutral-input: oklch(0.38 0.03 258);
+  --onu-neutral-sidebar: oklch(0.2 0.017 272);
+  --onu-sidebar-foreground: oklch(0.88 0.012 255);
+  --onu-neutral-sidebar-accent: oklch(0.245 0.022 263);
+  --onu-neutral-sidebar-accent-foreground: oklch(0.96 0.005 255);
+  --onu-neutral-sidebar-border: oklch(0.31 0.028 258);
+  --onu-ring: var(--c-300);
+
+  --c-solid: var(--c-200);
+  --c-accent: var(--c-300);
+  --c-alt: color-mix(in oklab, var(--c-alt-base) 70%, white);
+  --c-alt2: color-mix(in oklab, var(--c-alt2-base) 75%, white);
+  --c-subtle-bg: color-mix(in oklab, var(--c-200) 16%, transparent);
+  --c-subtle-fg: var(--c-200);
+  --c-alt-subtle-bg: color-mix(in oklab, var(--c-alt) 18%, transparent);
+  --c-alt-subtle-fg: color-mix(in oklab, var(--c-alt-base) 40%, white);
+  --c-alt2-subtle-bg: color-mix(in oklab, var(--c-alt2) 18%, transparent);
+  --c-alt2-subtle-fg: color-mix(in oklab, var(--c-alt2-base) 40%, white);
+  --c-track: oklch(0.33 0.028 258);
+
+  --c-shadow-sm: 0 0 0 1px oklch(0 0 0 / 10%);
+  --c-shadow-md: 0 0 0 1px oklch(0 0 0 / 10%), 0 5px 10px oklch(0 0 0 / 20%);
+  --c-shadow-lg: 0 0 0 1px oklch(0 0 0 / 10%), 0 5px 10px oklch(0 0 0 / 20%), 0 15px 40px oklch(0 0 0 / 40%);
+  --c-glow: 0 0 0 3px color-mix(in oklab, var(--c-300) 45%, transparent);
+
+  --onu-chart-1: var(--c-accent);
+  --onu-chart-2: var(--c-alt);
+  --onu-chart-3: var(--c-alt2);
+  --onu-chart-4: var(--c-500);
+  --onu-chart-5: color-mix(in oklab, var(--c-alt-base) 40%, white);
+}
+
+/* ---------------------------------------------------------------- */
+/* Page and typography                                               */
+/* ---------------------------------------------------------------- */
+
+.design-chakra {
+  background-color: var(--background);
+  color: var(--foreground);
+  overflow-x: clip;
+}
+
+.design-chakra :is(h1, h2, h3, .ck-heading) {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.design-chakra :is(h1, h2, h3, .ck-heading):lang(dv) {
+  letter-spacing: 0;
+}
+.design-chakra .ck-overline {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.design-chakra .ck-overline:lang(dv) {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Chakra's soft focus glow everywhere inside the design. */
+.design-chakra :is(a, button, input, select, textarea, [tabindex], [role="tab"], [role="checkbox"]):focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: var(--c-glow);
+}
+
+/* ---------------------------------------------------------------- */
+/* Surfaces: white cards, rounded-xl, layered shadow                 */
+/* ---------------------------------------------------------------- */
+
+.design-chakra :is([data-slot="card"], .ck-card, [data-slot="stat-tile"]) {
+  background-color: var(--card);
+  border-radius: 0.75rem;
+  box-shadow: var(--c-shadow-md);
+  --tw-ring-shadow: 0 0 #0000;
+  border: 1px solid transparent;
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra :is([data-slot="card"], .ck-card, [data-slot="stat-tile"]) {
+  border-color: var(--border);
+}
+.design-chakra .ck-card-lift {
+  transition:
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+.design-chakra .ck-card-lift:hover {
+  box-shadow: var(--c-shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* Table wrapper as a card; Chakra's uppercase small table head. */
+.design-chakra [data-slot="data-table"] > div:has([data-slot="data-table-table"]) {
+  background-color: var(--card);
+  border-color: transparent;
+  border-radius: 0.75rem;
+  box-shadow: var(--c-shadow-md);
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra [data-slot="data-table"] > div:has([data-slot="data-table-table"]) {
+  border-color: var(--border);
+}
+.design-chakra :is([data-slot="data-table-table"], .ck-table) thead :is(th, th button) {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.design-chakra :is([data-slot="data-table-table"], .ck-table) thead :is(th, th button):lang(dv) {
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 0.8125rem;
+}
+.design-chakra :is([data-slot="data-table-table"], .ck-table) thead tr {
+  background-color: color-mix(in oklab, var(--muted) 70%, transparent);
+}
+.design-chakra :is([data-slot="data-table-table"], .ck-table) :is(td, th):first-child {
+  padding-inline-start: 1rem;
+}
+.design-chakra :is([data-slot="data-table-table"], .ck-table) :is(td, th):last-child {
+  padding-inline-end: 1rem;
+}
+.design-chakra [data-slot="data-table-table"] tbody td {
+  padding-block: 0.75rem;
+}
+.design-chakra [data-slot="data-table-cards"] > li {
+  background-color: var(--card);
+  border-radius: 0.75rem;
+  box-shadow: var(--c-shadow-md);
+}
+
+/* List and grid views as cards too. */
+.design-chakra :is([data-slot="grid-view"], [data-slot="list-view"]) > li {
+  background-color: var(--card);
+  border-radius: 0.75rem;
+  box-shadow: var(--c-shadow-md);
+}
+
+/* ---------------------------------------------------------------- */
+/* Controls: buttons, tabs, inputs                                   */
+/* ---------------------------------------------------------------- */
+
+/* Solid primary buttons: a little heavier, brand.200 in dark mode. */
+.design-chakra [data-slot="button"]:is([data-variant="default"], .ck-solid) {
+  font-weight: 600;
+  background-color: var(--c-solid);
+  box-shadow: var(--c-shadow-sm);
+}
+.design-chakra [data-slot="button"]:is([data-variant="default"], .ck-solid):hover {
+  background-color: color-mix(in oklab, var(--c-solid), black 10%);
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra [data-slot="button"]:is([data-variant="default"], .ck-solid):hover {
+  background-color: color-mix(in oklab, var(--c-solid), white 18%);
+}
+
+/* "Subtle" variant: brand.100 background, brand.800 text. */
+.design-chakra .ck-subtle {
+  background-color: var(--c-subtle-bg);
+  color: var(--c-subtle-fg);
+  font-weight: 600;
+  border-color: transparent;
+}
+.design-chakra .ck-subtle:hover {
+  background-color: color-mix(in oklab, var(--c-subtle-bg), var(--c-500) 12%);
+  color: var(--c-subtle-fg);
+}
+/* Outline with brand text. */
+.design-chakra .ck-outline {
+  border-color: color-mix(in oklab, var(--c-accent) 45%, var(--border));
+  color: var(--c-subtle-fg);
+  font-weight: 600;
+  background-color: transparent;
+}
+.design-chakra .ck-outline:hover {
+  background-color: var(--c-subtle-bg);
+}
+.design-chakra .ck-ghost {
+  color: var(--c-subtle-fg);
+  font-weight: 600;
+}
+.design-chakra .ck-ghost:hover {
+  background-color: var(--c-subtle-bg);
+}
+
+/* Inputs: Chakra's filled-ish look with a brand focus border. */
+.design-chakra :is(input, [data-slot="input-group"]) {
+  border-radius: 0.5rem;
+}
+.design-chakra [data-slot="input"]:focus-visible,
+.design-chakra [data-slot="input-group"]:focus-within {
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 1px var(--c-accent);
+}
+
+/* Tabs: soft-rounded pills. */
+.design-chakra .ck-tabs [data-slot="tabs-list"] {
+  background: transparent;
+  gap: 0.25rem;
+  padding: 0;
+  height: auto;
+}
+.design-chakra .ck-tabs [data-slot="tabs-trigger"] {
+  border-radius: 9999px;
+  padding: 0.375rem 0.875rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  border: 0;
+  box-shadow: none;
+  min-height: 2.25rem;
+}
+.design-chakra .ck-tabs [data-slot="tabs-trigger"]:hover {
+  color: var(--foreground);
+  background-color: var(--muted);
+}
+.design-chakra .ck-tabs [data-slot="tabs-trigger"][data-state="active"],
+.design-chakra .ck-tabs [data-slot="tabs-trigger"][aria-selected="true"] {
+  background-color: var(--c-subtle-bg);
+  color: var(--c-subtle-fg);
+}
+.design-chakra .ck-tabs [data-slot="tabs-trigger"]::after {
+  display: none;
+}
+.design-chakra .ck-tabs [data-slot="tabs-trigger"] [data-slot="badge"] {
+  background-color: var(--card);
+  color: inherit;
+  font-weight: 700;
+}
+.design-chakra .ck-tabs [data-slot="tabs-trigger"]:focus-visible {
+  box-shadow: var(--c-glow);
+}
+
+/* ---------------------------------------------------------------- */
+/* Badges, tags, progress, avatars                                   */
+/* ---------------------------------------------------------------- */
+
+.design-chakra .ck-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.375rem;
+  padding: 0.0625rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background-color: var(--c-subtle-bg);
+  color: var(--c-subtle-fg);
+}
+.design-chakra .ck-badge:lang(dv) {
+  text-transform: none;
+  letter-spacing: 0;
+}
+.design-chakra .ck-badge--alt {
+  background-color: var(--c-alt-subtle-bg);
+  color: var(--c-alt-subtle-fg);
+}
+.design-chakra .ck-badge--alt2 {
+  background-color: var(--c-alt2-subtle-bg);
+  color: var(--c-alt2-subtle-fg);
+}
+.design-chakra .ck-badge--solid {
+  background-color: var(--c-solid);
+  color: var(--primary-foreground);
+}
+
+/* Status badges as Chakra "subtle" badges (semantic hue kept, Chakra shape). */
+.design-chakra [data-slot="status-badge"] {
+  border-radius: 0.375rem;
+  font-weight: 700;
+}
+
+/* Tags with close buttons in the brand. */
+.design-chakra .ck-tag {
+  border-radius: 9999px;
+  background-color: var(--c-subtle-bg);
+  color: var(--c-subtle-fg);
+  font-weight: 600;
+}
+.design-chakra .ck-tag--alt {
+  background-color: var(--c-alt-subtle-bg);
+  color: var(--c-alt-subtle-fg);
+}
+.design-chakra .ck-tag--alt2 {
+  background-color: var(--c-alt2-subtle-bg);
+  color: var(--c-alt2-subtle-fg);
+}
+.design-chakra .ck-tag button:hover {
+  background-color: color-mix(in oklab, currentColor 14%, transparent);
+}
+
+/* Progress: brand track and fill. */
+.design-chakra [data-slot="progress-bar-track"] {
+  background-color: var(--c-track);
+}
+.design-chakra .ck-progress--brand [data-slot="progress-bar-indicator"] {
+  background-color: var(--c-accent);
+}
+.design-chakra .ck-progress--alt [data-slot="progress-bar-indicator"] {
+  background-color: var(--c-alt);
+}
+.design-chakra .ck-progress--alt2 [data-slot="progress-bar-indicator"] {
+  background-color: var(--c-alt2);
+}
+
+/* Avatars with coloured backgrounds (white text on the 600 shades, dark on 200 in dark mode). */
+.design-chakra .ck-av-0 {
+  background-color: var(--c-600);
+  color: white;
+}
+.design-chakra .ck-av-1 {
+  background-color: color-mix(in oklab, var(--c-alt-base), black 18%);
+  color: white;
+}
+.design-chakra .ck-av-2 {
+  background-color: color-mix(in oklab, var(--c-alt2-base), black 32%);
+  color: white;
+}
+.design-chakra .ck-av-3 {
+  background-color: var(--c-800);
+  color: white;
+}
+.design-chakra .ck-av-4 {
+  background-color: color-mix(in oklab, var(--c-alt-base), black 45%);
+  color: white;
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra :is(.ck-av-0, .ck-av-1, .ck-av-2, .ck-av-3, .ck-av-4) {
+  color: oklch(0.2 0.02 262);
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra .ck-av-0 {
+  background-color: var(--c-200);
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra .ck-av-1 {
+  background-color: var(--c-alt);
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra .ck-av-2 {
+  background-color: var(--c-alt2);
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra .ck-av-3 {
+  background-color: var(--c-300);
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra .ck-av-4 {
+  background-color: color-mix(in oklab, var(--c-alt-base) 50%, white);
+}
+
+/* ---------------------------------------------------------------- */
+/* Icon tiles (stats, sidebar)                                       */
+/* ---------------------------------------------------------------- */
+
+.design-chakra .ck-icon-tile {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border-radius: 0.75rem;
+  color: white;
+  background-color: var(--c-500);
+  box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--c-500) 60%, transparent);
+}
+.design-chakra .ck-icon-tile svg {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+}
+.design-chakra .ck-icon-tile--alt {
+  background-color: var(--c-alt-base);
+  box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--c-alt-base) 60%, transparent);
+}
+.design-chakra .ck-icon-tile--alt2 {
+  background-color: color-mix(in oklab, var(--c-alt2-base), black 8%);
+  box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--c-alt2-base) 60%, transparent);
+}
+.design-chakra .ck-icon-tile--dark {
+  background-color: var(--c-800);
+  box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--c-800) 60%, transparent);
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra .ck-icon-tile {
+  color: oklch(0.2 0.02 262);
+  background-color: var(--c-200);
+  box-shadow: none;
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra .ck-icon-tile--alt {
+  background-color: var(--c-alt);
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra .ck-icon-tile--alt2 {
+  background-color: var(--c-alt2);
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra .ck-icon-tile--dark {
+  background-color: var(--c-300);
+}
+.design-chakra .ck-icon-tile--sm {
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: 0.5rem;
+}
+.design-chakra .ck-icon-tile--sm svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Stat (StatLabel / StatNumber / StatHelpText)                      */
+/* ---------------------------------------------------------------- */
+
+.design-chakra [data-slot="stat-tile"] {
+  padding: 1.125rem 1.25rem;
+}
+.design-chakra [data-slot="stat-tile"]:has(.ck-icon-tile) {
+  padding-inline-end: 4.5rem;
+}
+.design-chakra [data-slot="stat-tile-label"] {
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+.design-chakra [data-slot="stat-tile-value"] {
+  font-weight: 700;
+}
+.design-chakra .ck-stat-arrow {
+  display: inline-block;
+  inline-size: 0;
+  block-size: 0;
+  border-inline: 0.3rem solid transparent;
+  vertical-align: middle;
+  margin-inline-end: 0.25rem;
+}
+.design-chakra .ck-stat-arrow--up {
+  border-block-end: 0.45rem solid currentColor;
+}
+.design-chakra .ck-stat-arrow--down {
+  border-block-start: 0.45rem solid currentColor;
+}
+
+/* ---------------------------------------------------------------- */
+/* App shell                                                         */
+/* ---------------------------------------------------------------- */
+
+.design-chakra [data-slot="app-layout-body"] {
+  background-color: var(--background);
+}
+.design-chakra [data-slot="sidebar-inner"] {
+  background-color: var(--background);
+}
+.design-chakra [data-slot="sidebar-container"] {
+  border-inline-end-color: transparent;
+}
+
+/* Nav items: icon in a rounded square; the active item lifts into a white card. */
+.design-chakra [data-sidebar="menu-button"] {
+  block-size: 3rem;
+  border-radius: 0.75rem;
+  gap: 0.75rem;
+  padding-inline: 0.625rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+.design-chakra [data-sidebar="menu-button"] > svg {
+  box-sizing: content-box;
+  padding: 0.5rem;
+  border-radius: 0.625rem;
+  background-color: var(--card);
+  color: var(--c-accent);
+  box-shadow: var(--c-shadow-md);
+}
+.design-chakra [data-sidebar="menu-button"]:hover {
+  background-color: color-mix(in oklab, var(--card) 70%, transparent);
+  color: var(--foreground);
+}
+.design-chakra [data-sidebar="menu-button"][data-active="true"] {
+  background-color: var(--card);
+  color: var(--foreground);
+  box-shadow: var(--c-shadow-md);
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra [data-sidebar="menu-button"][data-active="true"] {
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.design-chakra [data-sidebar="menu-button"][data-active="true"] > svg {
+  background-color: var(--c-500);
+  color: white;
+  box-shadow: 0 4px 10px -3px color-mix(in oklab, var(--c-500) 70%, transparent);
+}
+:root:is(.dark, [data-theme="dark"]) .design-chakra [data-sidebar="menu-button"][data-active="true"] > svg {
+  background-color: var(--c-200);
+  color: oklch(0.2 0.02 262);
+}
+.design-chakra [data-sidebar="menu-badge"] {
+  inset-block-start: 50% !important;
+  transform: translateY(-50%);
+  inset-inline-end: 0.625rem;
+  background-color: var(--c-subtle-bg);
+  color: var(--c-subtle-fg);
+  border-radius: 9999px;
+  padding-inline: 0.5rem;
+  font-weight: 700;
+}
+.design-chakra [data-sidebar="group-label"] {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.design-chakra [data-sidebar="group-label"]:lang(dv) {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* The brand divider under the logo (fades at both ends). */
+.design-chakra .ck-divider {
+  block-size: 1px;
+  background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+/* Help card at the foot of the sidebar: brand gradient with soft circles. */
+.design-chakra .ck-help {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  color: white;
+  background:
+    radial-gradient(120% 90% at 100% 0%, color-mix(in oklab, var(--c-alt-base) 70%, transparent), transparent 60%),
+    linear-gradient(135deg, var(--c-600), var(--c-800));
+}
+.design-chakra .ck-help::before,
+.design-chakra .ck-help::after {
+  content: "";
+  position: absolute;
+  border-radius: 9999px;
+  background: oklch(1 0 0 / 10%);
+  pointer-events: none;
+}
+.design-chakra .ck-help::before {
+  inline-size: 7rem;
+  block-size: 7rem;
+  inset-block-start: -2.5rem;
+  inset-inline-end: -2rem;
+}
+.design-chakra .ck-help::after {
+  inline-size: 4rem;
+  block-size: 4rem;
+  inset-block-end: -1.5rem;
+  inset-inline-start: 30%;
+}
+.design-chakra .ck-help > * {
+  position: relative;
+  z-index: 1;
+}
+.design-chakra .ck-help .ck-help__btn {
+  background-color: white;
+  color: var(--c-800);
+  font-weight: 700;
+}
+.design-chakra .ck-help .ck-help__btn:hover {
+  background-color: oklch(1 0 0 / 88%);
+}
+
+/* Header: transparent until scrolled, then a soft glassy bar. */
+.design-chakra [data-slot="app-header"] {
+  background-color: color-mix(in oklab, var(--background) 82%, transparent);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  border-block-end-color: transparent;
+  block-size: auto;
+  min-block-size: 4.25rem;
+  padding-block: 0.625rem;
+}
+
+/* Hero banner on the dashboard: a brand gradient card with a soft wave. */
+.design-chakra .ck-banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  color: white;
+  background:
+    radial-gradient(60% 120% at 100% 0%, color-mix(in oklab, var(--c-alt-base) 60%, transparent), transparent 60%),
+    radial-gradient(50% 90% at 0% 100%, color-mix(in oklab, var(--c-300) 40%, transparent), transparent 70%),
+    linear-gradient(120deg, var(--c-700), var(--c-900));
+  box-shadow: var(--c-shadow-lg);
+}
+.design-chakra .ck-banner__rings {
+  position: absolute;
+  inset-block: -40%;
+  inset-inline-end: -10%;
+  inline-size: 60%;
+  pointer-events: none;
+  background: repeating-radial-gradient(circle at 100% 50%, oklch(1 0 0 / 8%) 0 1px, transparent 1px 28px);
+  mask-image: linear-gradient(90deg, transparent, black 60%);
+}
+.design-chakra .ck-banner > :not(.ck-banner__rings) {
+  position: relative;
+}
+.design-chakra .ck-banner .ck-banner__muted {
+  color: oklch(1 0 0 / 86%);
+}
+.design-chakra .ck-banner .ck-banner__btn {
+  background-color: white;
+  color: var(--c-800);
+  font-weight: 700;
+}
+.design-chakra .ck-banner .ck-banner__btn:hover {
+  background-color: oklch(1 0 0 / 90%);
+}
+.design-chakra .ck-banner .ck-banner__ghost {
+  color: white;
+  border-color: oklch(1 0 0 / 45%);
+  background: oklch(1 0 0 / 8%);
+  font-weight: 600;
+}
+.design-chakra .ck-banner .ck-banner__ghost:hover {
+  background: oklch(1 0 0 / 16%);
+  color: white;
+}
+
+/* Timeline: brand dots on a hairline. */
+.design-chakra .ck-timeline {
+  position: relative;
+}
+.design-chakra .ck-timeline > li {
+  position: relative;
+  padding-inline-start: 2.25rem;
+  padding-block-end: 1.125rem;
+}
+.design-chakra .ck-timeline > li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0.6875rem;
+  inset-block: 1.75rem 0;
+  inline-size: 2px;
+  border-radius: 2px;
+  background-color: var(--border);
+}
+.design-chakra .ck-timeline > li:last-child::before {
+  display: none;
+}
+.design-chakra .ck-timeline__dot {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  border-radius: 9999px;
+  background-color: var(--c-subtle-bg);
+  color: var(--c-subtle-fg);
+}
+.design-chakra .ck-timeline__dot svg {
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+}
+.design-chakra .ck-timeline__dot--alt {
+  background-color: var(--c-alt-subtle-bg);
+  color: var(--c-alt-subtle-fg);
+}
+.design-chakra .ck-timeline__dot--alt2 {
+  background-color: var(--c-alt2-subtle-bg);
+  color: var(--c-alt2-subtle-fg);
+}
+
+/* Segmented view switch with a white thumb. */
+.design-chakra [data-slot="view-switcher"],
+.design-chakra .ck-segment {
+  border-radius: 0.5rem;
+}
+
+/* Motion: gentle, and none at all when reduced. */
+@media (prefers-reduced-motion: reduce) {
+  .design-chakra *,
+  .design-chakra *::before,
+  .design-chakra *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+  .design-chakra .ck-card-lift:hover {
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .design-chakra :is(.ck-banner, .ck-help) {
+    background: Canvas;
+    color: CanvasText;
+    border: 1px solid CanvasText;
+  }
+}
