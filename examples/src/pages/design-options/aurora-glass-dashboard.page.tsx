@@ -1,33 +1,20 @@
 import * as React from "react"
 import {
-  AppHeader,
-  AppLayout,
-  AppSidebar,
   Button,
   Card,
   DataTable,
   Icon,
-  KeyboardKey,
-  LanguageSwitcher,
-  Logo,
-  NotificationCenter,
   ProgressBar,
-  SearchBox,
   StatusBadge,
-  ThemeToggle,
   Timeline,
   UserAvatar,
-  UserProfile,
   toast,
   type DataTableColumn,
-  type NavGroup,
 } from "@javaabu/onu"
 import { BarChart, PieChart, StatTile, StatTiles, TimeSeriesChart } from "@javaabu/onu/charts"
 
-import { useSettings } from "../../settings"
 import { useDv, useTr } from "../_shared/i18n"
-import { routes } from "../_shared/routes"
-import { AuroraMark, AuroraRoot } from "./_aurora-glass"
+import { AG_NOW, AG_ROUTES, AuroraRoot, AuroraShell } from "./_aurora-glass"
 
 export const meta = {
   title: "Aurora Glass · Dashboard",
@@ -37,11 +24,8 @@ export const meta = {
   description: "An operations command centre in frosted glass: glass sidebar, glowing charts and live status.",
 }
 
-const SELF = "/pages/design-options/aurora-glass-dashboard"
-const INDEX = "/pages/design-options/aurora-glass-index"
-
 // Fixed demo data and times, so the page (and its screenshots) are stable.
-const NOW = new Date("2026-10-08T10:42:00+05:00")
+const NOW = AG_NOW
 const START = Date.parse("2026-09-09T00:00:00Z")
 const DAY = 86_400_000
 const requests = Array.from({ length: 30 }, (_, i) => {
@@ -66,42 +50,9 @@ interface Transaction {
   minutesAgo: number
 }
 
-function Language() {
-  const { settings, update } = useSettings()
-  return (
-    <LanguageSwitcher
-      variant="menu"
-      value={settings.locale}
-      onChange={(code) => update({ locale: code as "en" | "dv" })}
-      size="sm"
-    />
-  )
-}
-
 export default function AuroraGlassDashboardPage() {
   const tr = useTr()
   const dv = useDv()
-
-  const nav: NavGroup[] = [
-    {
-      items: [
-        { label: tr("Command centre", "ކޮމާންޑް ސެންޓަރ"), href: SELF, icon: "monitor" },
-        { label: tr("Requests", "ރިކުއެސްޓް"), href: routes.adminRecords.indexTable, icon: "file-text", badge: 24 },
-        { label: tr("Payments", "ފައިސާ"), href: routes.citizen.payments, icon: "credit-card" },
-        { label: tr("Citizens", "ރައްޔިތުން"), href: routes.adminSettings.users, icon: "users" },
-        { label: tr("Islands", "ރަށްރަށް"), href: routes.public.services, icon: "map-pin" },
-      ],
-    },
-    {
-      label: tr("Platform", "ޕްލެޓްފޯމް"),
-      items: [
-        { label: tr("Incidents", "ހާދިސާތައް"), href: routes.adminRecords.activityLog, icon: "warning", badge: 2 },
-        { label: tr("Integrations", "އިންޓަގްރޭޝަން"), href: routes.adminSettings.apiKeys, icon: "key" },
-        { label: tr("Audit log", "އޮޑިޓް ލޮގް"), href: routes.adminRecords.activityLog, icon: "history" },
-        { label: tr("Settings", "ސެޓިންގްސް"), href: routes.adminSettings.settings, icon: "settings" },
-      ],
-    },
-  ]
 
   const services = [
     { id: "permits", label: tr("Building permits", "ބިނާކުރުމުގެ ހުއްދަ") },
@@ -239,96 +190,7 @@ export default function AuroraGlassDashboardPage() {
 
   return (
     <AuroraRoot>
-      <AppLayout
-        contentWidth="wide"
-        classNames={{ body: "bg-transparent", main: "md:p-8 lg:px-10" }}
-        sidebar={
-          <AppSidebar
-            variant="floating"
-            collapsible="icon"
-            groups={nav}
-            currentHref={SELF}
-            header={
-              <Logo
-                alt="Raajje Cloud"
-                href={INDEX}
-                text={<span className="ag-title">{tr("Raajje Cloud", "ރާއްޖެ ކްލައުޑް")}</span>}
-              >
-                <AuroraMark />
-              </Logo>
-            }
-            footer={
-              <div className="gap-3 grid">
-                <div className="ag-chip p-3 text-xs gap-1 grid rounded-xl group-data-[collapsible=icon]:hidden">
-                  <span className="gap-2 font-medium flex items-center">
-                    <span className="ag-pulse" aria-hidden />
-                    {tr("All systems normal", "ހުރިހާ ސިސްޓަމެއް ރަނގަޅު")}
-                  </span>
-                  <span className="text-muted-foreground">{tr("Region: Malé · 12 ms", "ރީޖަން: މާލެ · 12 ms")}</span>
-                </div>
-                <UserProfile
-                  name={tr("Aishath Shifa", "އައިޝަތު ޝިފާ")}
-                  subtitle={tr("Duty officer", "ޑިއުޓީ އޮފިސަރ")}
-                  profileHref={routes.adminSettings.userProfile}
-                  settingsHref={routes.adminSettings.settings}
-                  onSignOut={() => {}}
-                  side="top"
-                />
-              </div>
-            }
-          />
-        }
-        header={
-          <AppHeader
-            sidebarTrigger
-            className="ag-header"
-            actions={
-              <>
-                <Language />
-                <ThemeToggle />
-                <NotificationCenter
-                  now={NOW}
-                  notifications={[
-                    {
-                      id: "1",
-                      title: tr("SMS delivery is slow in Haa Dhaalu", "ހދ ގައި އެސްއެމްއެސް ލަސް"),
-                      description: tr("Retrying through the backup carrier", "ބެކަޕް ކެރިއަރ މެދުވެރިކޮށް"),
-                      time: minutesAgo(6),
-                      variant: "warning",
-                    },
-                    {
-                      id: "2",
-                      title: tr("Daily reconciliation complete", "ދުވަހުގެ ރިކަންސިލިއޭޝަން ނިމިއްޖެ"),
-                      time: minutesAgo(58),
-                      variant: "success",
-                    },
-                    {
-                      id: "3",
-                      title: tr("Fuvahmulah council joined", "ފުވައްމުލައް ކައުންސިލް ގުޅިއްޖެ"),
-                      time: minutesAgo(180),
-                      variant: "info",
-                      read: true,
-                    },
-                  ]}
-                  onMarkRead={() => {}}
-                />
-              </>
-            }
-          >
-            <div className="max-w-md gap-2 flex w-full items-center">
-              <SearchBox
-                aria-label={tr("Search requests, citizens and islands", "ރިކުއެސްޓް، ރައްޔިތުން އަދި ރަށް ހޯއްދަވާ")}
-                placeholder={tr("Search or jump to…", "ހޯއްދަވާ…")}
-                thaana={dv}
-                landmark
-                className="flex-1"
-                classNames={{ root: "ag-field rounded-xl" }}
-              />
-              <KeyboardKey keys="mod+k" platform="mac" className="lg:inline-flex hidden" />
-            </div>
-          </AppHeader>
-        }
-      >
+      <AuroraShell current={AG_ROUTES.dashboard}>
         <div className="gap-6 grid">
           {/* Title */}
           <div className="gap-4 lg:flex-row lg:items-end flex flex-col justify-between">
@@ -596,7 +458,7 @@ export default function AuroraGlassDashboardPage() {
             </Card>
           </div>
         </div>
-      </AppLayout>
+      </AuroraShell>
     </AuroraRoot>
   )
 }
