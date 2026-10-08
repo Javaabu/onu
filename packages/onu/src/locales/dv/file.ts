@@ -109,6 +109,16 @@ export const file = {
   downloadFile: "{name} ޑައުންލޯޑްކުރޭ",
   downloadIn: "{name} {language} ބަހުން ޑައުންލޯޑްކުރޭ",
 
+  // QR code
+  qrCode: "ކިއުއާރް ކޯޑު",
+  qrActions: "ކިއުއާރް ކޯޑާ ގުޅޭ ކަންކަން",
+  qrDownloadPng: "PNG ޑައުންލޯޑްކުރޭ",
+  qrDownloadSvg: "SVG ޑައުންލޯޑްކުރޭ",
+  qrCopyValue: "ލިޔުން ކޮޕީކުރޭ",
+  qrCopied: "ލިޔުން ކޮޕީކުރެވިއްޖެ",
+  qrCopyFailed: "ކޮޕީ ނުކުރެވުނު",
+  qrTooLong: "މި ލިޔުން ކިއުއާރް ކޯޑަކަށް ވަދެވޭވަރަށް ވުރެ ދިގު.",
+
   // Video embed
   playVideo: "ވީޑިއޯ ކުޅުވާ: {title}",
 

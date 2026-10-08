@@ -34,7 +34,7 @@ export const proseVariants = cva(
     // Tables scroll inside their own container (R3.21)
     "[&_.tableWrapper]:my-4 [&_.tableWrapper]:overflow-x-auto",
     "[&_table]:text-sm [&_table]:w-full [&_table]:border-collapse",
-    "[&_td]:px-3 [&_td]:py-2 [&_td]:border [&_td]:border-border [&_td]:align-top",
+    "[&_td]:px-3 [&_td]:py-2 [&_td]:border [&_td]:border-border [&_td]:text-start [&_td]:align-top",
     "[&_th]:px-3 [&_th]:py-2 [&_th]:font-medium [&_th]:border [&_th]:border-border [&_th]:bg-muted [&_th]:text-start [&_th]:align-top",
     "[&_td>p]:my-0 [&_th>p]:my-0",
     // Callouts

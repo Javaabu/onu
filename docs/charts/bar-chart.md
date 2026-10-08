@@ -82,12 +82,26 @@ The helpers `formatMVR(value, numberLocale?)`, `formatValue`, `computeDelta` and
 | `loading`              | `boolean`                                                    | `false`              | Skeleton instead of the chart                         |
 | `emptyMessage`         | `ReactNode`                                                  | "No data to show"    | Shown without data                                    |
 | `summary`              | `string`                                                     | generated            | Replace the screen-reader summary                     |
-| `animate`              | `boolean`                                                    | `true`               | Always off under `prefers-reduced-motion`             |
+| `animate`              | `boolean`                                                    | `true`               | Off under reduced motion or `ChartAnimationProvider`  |
 | `actions`              | `ReactNode`                                                  |                      | Extra header controls                                 |
 | `className`            | `string`                                                     |                      | Classes for the `<figure>`                            |
 | `classNames`           | `{ root, header, title, description, toggle, chart, table }` |                      | Classes per part                                      |
 
 `ref` points at the `<figure>`. Every Onu chart (`LineChart`, `PieChart`, `TimeSeriesChart`, `PeriodComparisonChart`, `MapChart`) shares the props from `title` to `classNames` that are not specific to bars.
+
+## Animation
+
+Charts animate on mount unless `animate={false}`. Animation is always off when the user prefers reduced motion (`prefers-reduced-motion: reduce`, R14.8): every Onu chart then passes `isAnimationActive={false}` to its Recharts series and tooltip. To turn it off for a whole area, for example print views, kiosks or screenshot tests, wrap it in `ChartAnimationProvider`:
+
+```tsx
+import { ChartAnimationProvider } from "@javaabu/onu/charts"
+
+<ChartAnimationProvider animate={false}>
+  <Dashboard />
+</ChartAnimationProvider>
+```
+
+Reduced motion still wins inside `<ChartAnimationProvider animate>`. `useChartAnimation(animate?)` returns the combined result for custom charts built on the primitives below. The visual regression tests emulate reduced motion (Playwright `reducedMotion: "reduce"`), so chart screenshots are stable.
 
 ## Primitives
 

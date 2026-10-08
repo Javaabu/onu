@@ -80,6 +80,42 @@ describe("WysiwygEditor", () => {
     expect(onChange).toHaveBeenLastCalledWith(expect.stringContaining('<ol dir="rtl">'), editor)
   })
 
+  it("resolves table direction from the cells while editing and in the HTML", async () => {
+    const onChange = vi.fn()
+    const { editor, textbox } = await setup({
+      defaultValue:
+        "<table><tbody><tr><th><p>ރަށް</p></th><th><p>Island</p></th></tr><tr><td><p>ހުޅުމާލެ</p></td><td><p>Hulhumalé</p></td></tr></tbody></table>",
+      onChange,
+    })
+    const wrapper = () => textbox.querySelector<HTMLElement>(".tableWrapper")!
+    // The live table view takes the direction on its wrapper; the table inherits it.
+    expect(wrapper()).toHaveAttribute("dir", "rtl")
+    expect(textbox.querySelector("table")).not.toHaveAttribute("dir")
+    expect(textbox.querySelector("td")).toHaveAttribute("dir", "auto")
+    expect(editor.getHTML()).toContain('<div class="tableWrapper" dir="rtl"><table dir="rtl"')
+
+    // An empty table is auto until its first strong text is typed.
+    act(() => {
+      editor.commands.setContent("<p>Intro</p>", { emitUpdate: false })
+      editor.chain().focus("end").insertTable({ rows: 2, cols: 2, withHeaderRow: true }).run()
+    })
+    expect(wrapper()).toHaveAttribute("dir", "auto")
+    act(() => {
+      editor.commands.insertContent("ދިވެހި")
+    })
+    expect(wrapper()).toHaveAttribute("dir", "rtl")
+    expect(onChange).toHaveBeenLastCalledWith(expect.stringContaining('<table dir="rtl"'), editor)
+
+    // An explicit direction from pasted HTML wins and stays on the table.
+    act(() => {
+      editor.commands.setContent('<table dir="ltr"><tbody><tr><td><p>ދިވެހި</p></td></tr></tbody></table>', {
+        emitUpdate: false,
+      })
+    })
+    expect(textbox.querySelector("table")).toHaveAttribute("dir", "ltr")
+    expect(editor.getHTML()).toContain('<table dir="ltr"')
+  })
+
   it("emits Tiptap JSON when given JSON", async () => {
     const onChange = vi.fn()
     const { editor } = await setup({

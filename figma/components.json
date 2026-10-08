@@ -491,6 +491,12 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
+  "files-and-media/qr-code": {
+    "title": "QrCode",
+    "component": "QrCode",
+    "import": "@javaabu/onu/media",
+    "figmaUrl": null
+  },
   "files-and-media/upload-progress": {
     "title": "UploadProgress",
     "component": "UploadProgress",

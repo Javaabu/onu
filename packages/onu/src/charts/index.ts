@@ -13,8 +13,11 @@ export {
 
 export * from "./format"
 export {
+  ChartAnimationProvider,
   ChartDataTable,
   chartColor,
+  useChartAnimation,
+  type ChartAnimationProviderProps,
   type ChartBaseProps,
   type ChartDatum,
   type ChartFrameClassNames,

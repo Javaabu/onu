@@ -328,6 +328,28 @@ describe("BlockEditor", () => {
     expect(blocks(editor)).toEqual(["paragraph", "paragraph"])
   })
 
+  it("gives tables the direction of their first strong text while typing", async () => {
+    const onChange = vi.fn()
+    const { editor, textbox } = await setup({ onChange })
+    act(() => {
+      editor.chain().focus().insertTable({ rows: 2, cols: 3, withHeaderRow: true }).run()
+    })
+    const wrapper = () => textbox.querySelector<HTMLElement>(".tableWrapper")!
+    expect(wrapper()).toHaveAttribute("dir", "auto")
+    act(() => {
+      editor.commands.insertContent("2026 ")
+    })
+    // Digits are not strong: still auto.
+    expect(wrapper()).toHaveAttribute("dir", "auto")
+    act(() => {
+      editor.commands.insertContent("ރަށް")
+    })
+    expect(wrapper()).toHaveAttribute("dir", "rtl")
+    // The JSON keeps no direction (it is worked out again on render), so content stays editable both ways.
+    const table = (onChange.mock.lastCall?.[0] as JSONContent).content!.find((n) => n.type === "table")!
+    expect(table.attrs?.dir ?? null).toBeNull()
+  })
+
   it("is read-only without handles or toolbar", async () => {
     const { textbox } = await setup({ readOnly: true, defaultValue: "<p>Fixed</p>" })
     expect(textbox).toHaveAttribute("contenteditable", "false")

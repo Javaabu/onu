@@ -3,6 +3,7 @@ export {}
 // Text inputs group
 export * from "./signature-pad"
 export * from "./qr-code-scanner"
+export * from "./qr-code"
 // Files and media group
 export { cropImage, cropImageToFile, loadImage, rotatedSize, type CropImageOptions, type PixelCrop } from "./crop-image"
 export { ImageCropper, type ImageCropperProps, type ImageCropperHandle, type AspectOption } from "./image-cropper"

@@ -130,6 +130,7 @@ export function LineChart({
               width="auto"
             />
             <ChartTooltip
+              isAnimationActive={isAnimationActive}
               trigger={trigger}
               content={
                 <ChartTooltipContent

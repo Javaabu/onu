@@ -47,7 +47,7 @@ export interface ChartBaseProps {
   loading?: boolean
   /** Shown when there is no data. Defaults to "No data to show". */
   emptyMessage?: React.ReactNode
-  /** Animate on mount. Always off under `prefers-reduced-motion`. Default `true`. */
+  /** Animate on mount. Always off under `prefers-reduced-motion` or inside `<ChartAnimationProvider animate={false}>`. Default `true`. */
   animate?: boolean
   /** Chart height in px. Width follows the container. */
   height?: number
@@ -72,10 +72,32 @@ export function useReducedMotion() {
   return useMediaQuery("(prefers-reduced-motion: reduce)")
 }
 
-/** Whether charts should animate: the prop, and never under reduced motion. */
+const ChartAnimationContext = React.createContext(true)
+
+export interface ChartAnimationProviderProps {
+  /** `false` turns animation off for every Onu chart inside. */
+  animate: boolean
+  children?: React.ReactNode
+}
+
+/**
+ * Turns animation off (or back on) for every Onu chart inside, e.g. for
+ * screenshots, print views or kiosks. `prefers-reduced-motion` always wins:
+ * charts never animate under it, whatever this says.
+ */
+export function ChartAnimationProvider({ animate, children }: ChartAnimationProviderProps) {
+  return <ChartAnimationContext.Provider value={animate}>{children}</ChartAnimationContext.Provider>
+}
+
+/**
+ * Whether charts should animate: the `animate` prop and the nearest
+ * {@link ChartAnimationProvider}, and never under `prefers-reduced-motion`.
+ * Charts pass the result to every Recharts `isAnimationActive` (series and tooltip).
+ */
 export function useChartAnimation(animate = true) {
   const reduced = useReducedMotion()
-  return animate && !reduced
+  const enabled = React.useContext(ChartAnimationContext)
+  return animate && enabled && !reduced
 }
 
 /** Tooltips open on tap on touch screens (no hover), on hover elsewhere (R3.26). */

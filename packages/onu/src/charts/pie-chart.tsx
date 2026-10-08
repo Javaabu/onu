@@ -144,6 +144,7 @@ export function PieChart({
         >
           <RechartsPieChart accessibilityLayer aria-labelledby={titleId} aria-describedby={summaryId}>
             <ChartTooltip
+              isAnimationActive={isAnimationActive}
               trigger={trigger}
               content={
                 <ChartTooltipContent

@@ -102,7 +102,7 @@ export function detectDirection(text: string | null | undefined): "ltr" | "rtl" 
 }
 
 /**
- * The direction a container block (list, quote) should take from its content:
+ * The direction a container block (list, quote, table) should take from its content:
  * an explicit `dir` on the first descendant that has one, else the first strong
  * character of its text. Code (which is always LTR) is skipped. `null` when the
  * block has no strong text yet.
@@ -126,11 +126,17 @@ export function resolveBlockDirection(node: PMNode): "ltr" | "rtl" | null {
 /**
  * Container blocks whose `dir` is resolved from their content rather than left
  * as `dir="auto"`: the browser's auto-direction skips descendants that have their
- * own `dir` (every paragraph inside does), so `dir="auto"` on a list or quote
- * always fell back to LTR, putting bullets and the quote border on the wrong side
- * of Dhivehi text.
+ * own `dir` (every paragraph inside does), so `dir="auto"` on a list, quote or
+ * table always fell back to LTR, putting bullets, the quote border and the first
+ * table column on the wrong side of Dhivehi text.
  */
-export const DIRECTIONAL_CONTAINERS = ["blockquote", "bulletList", "orderedList"]
+export const DIRECTIONAL_CONTAINERS = ["blockquote", "bulletList", "orderedList", "table"]
+
+/** Reads an explicit `dir="ltr" | "rtl"` from pasted or saved HTML. */
+const parseDir = (element: HTMLElement) => {
+  const dir = element.getAttribute("dir")
+  return dir === "ltr" || dir === "rtl" ? dir : null
+}
 
 const autoDirectionKey = new PluginKey<DecorationSet>("onuAutoDirection")
 
@@ -148,9 +154,9 @@ function containerDecorations(doc: PMNode, types: string[]): DecorationSet {
 /**
  * Renders `dir="auto"` on every text block, so each paragraph of mixed
  * Dhivehi/English content takes its direction from its own first strong
- * character (R11.7). Lists and quotes get the direction of their first strong
- * character instead (see {@link DIRECTIONAL_CONTAINERS}), kept up to date while
- * editing. An explicit `dir` in pasted HTML is kept.
+ * character (R11.7). Lists, quotes and tables get the direction of their first
+ * strong character instead (see {@link DIRECTIONAL_CONTAINERS}), kept up to date
+ * while editing. An explicit `dir` in pasted HTML is kept.
  */
 export const AutoDirection = Extension.create<{ types: string[]; containers: string[] }>({
   name: "autoDirection",
@@ -167,11 +173,21 @@ export const AutoDirection = Extension.create<{ types: string[]; containers: str
         attributes: {
           dir: {
             default: null,
-            parseHTML: (element) => {
-              const dir = element.getAttribute("dir")
-              return dir === "ltr" || dir === "rtl" ? dir : null
-            },
+            parseHTML: parseDir,
             renderHTML: (attributes) => ({ dir: (attributes.dir as string | null) ?? "auto" }),
+          },
+        },
+      },
+      {
+        // Tables render only an explicit `dir`: the live editor's table view copies
+        // these attributes onto the <table> once, so a `dir="auto"` there would
+        // override the resolved direction set on its wrapper while typing.
+        types: ["table"],
+        attributes: {
+          dir: {
+            default: null,
+            parseHTML: parseDir,
+            renderHTML: (attributes) => (attributes.dir ? { dir: attributes.dir as string } : {}),
           },
         },
       },
@@ -196,20 +212,38 @@ export const AutoDirection = Extension.create<{ types: string[]; containers: str
   },
 })
 
-/** Wraps a list/quote node so its rendered HTML carries the direction resolved from its content. */
+/**
+ * Wraps a list/quote/table node so its rendered HTML carries the direction
+ * resolved from its content. A table's scroll wrapper gets it too, so it
+ * scrolls from the table's inline start.
+ */
 function withResolvedDirection(extension: AnyExtension): AnyExtension {
   if (extension.type !== "node" || !DIRECTIONAL_CONTAINERS.includes(extension.name)) return extension
   return (extension as Node).extend({
     renderHTML({ node, HTMLAttributes }) {
       const attributes = HTMLAttributes as Record<string, unknown>
-      const dir = attributes.dir === "ltr" || attributes.dir === "rtl" ? attributes.dir : resolveBlockDirection(node)
-      return this.parent!({ node, HTMLAttributes: { ...attributes, dir: dir ?? "auto" } })
+      const explicit = attributes.dir === "ltr" || attributes.dir === "rtl" ? attributes.dir : null
+      const dir = explicit ?? resolveBlockDirection(node) ?? "auto"
+      const spec = this.parent!({ node, HTMLAttributes: { ...attributes, dir } })
+      // TableKit's `renderWrapper` output: ["div", { class: "tableWrapper" }, ["table", …]].
+      if (Array.isArray(spec) && spec[0] === "div") {
+        const [tag, wrapper, ...children] = spec as unknown as [string, Record<string, unknown>, ...unknown[]]
+        return [tag, { ...wrapper, dir }, ...children] as unknown as typeof spec
+      }
+      return spec
     },
   })
 }
 
 /** StarterKit with direction-resolving lists and quotes, for the editors, `getHTML()` and the renderer. */
 const DirectionalStarterKit = StarterKit.extend({
+  addExtensions() {
+    return (this.parent?.() ?? []).map(withResolvedDirection)
+  },
+})
+
+/** TableKit whose tables take the direction of their first strong text, so columns run from its inline start. */
+const DirectionalTableKit = TableKit.extend({
   addExtensions() {
     return (this.parent?.() ?? []).map(withResolvedDirection)
   },
@@ -361,7 +395,7 @@ export function createSchemaExtensions({ headingLevels = [1, 2, 3], blocks = tru
       trailingNode: false,
     }),
     Image.configure({ allowBase64: true, HTMLAttributes: { loading: "lazy" } }),
-    TableKit.configure({ table: { resizable: false, renderWrapper: true } }),
+    DirectionalTableKit.configure({ table: { resizable: false, renderWrapper: true } }),
     TextAlign.configure({
       types: ["heading", "paragraph"],
       alignments: [...ALIGNMENTS],
