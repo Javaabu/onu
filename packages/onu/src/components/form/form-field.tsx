@@ -117,7 +117,7 @@ export function FormField({
         data-label-layout={layout}
         data-invalid={invalid || undefined}
         data-disabled={disabled || undefined}
-        className={cn("@container/form-field w-full", className)}
+        className={cn("min-w-0 @container/form-field w-full", className)}
         {...props}
       >
         <div

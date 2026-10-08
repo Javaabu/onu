@@ -22,12 +22,7 @@ function EditPageDemo() {
   const [documents, setDocuments] = React.useState<DropzoneFile[]>(saved)
   return (
     <>
-      <FormField
-        label="Supporting documents"
-        name="documents"
-        className="min-w-0"
-        help="Saved files are listed; remove or add more."
-      >
+      <FormField label="Supporting documents" name="documents" help="Saved files are listed; remove or add more.">
         <DropzoneUploader
           upload={fakeUpload}
           value={documents}
