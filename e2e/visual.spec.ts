@@ -26,8 +26,14 @@ for (const route of [...demoRoutes, ...pageRoutes]) {
         // running app), with fonts loaded before any chart measures its text.
         await openWithFonts(page, route)
         await settle(page)
+        // Grow the viewport to the page height ourselves instead of `fullPage`: a full-page
+        // capture resizes the viewport during the capture, and charts that re-render then are
+        // caught mid-layout. Resizing first lets them settle before the screenshot.
+        const height = await page.evaluate(() => document.documentElement.scrollHeight)
+        await page.setViewportSize({ width: size.width, height: Math.max(size.height, height) })
+        await settle(page)
         const name = `${route.replace(/[^a-z0-9]+/gi, "-")}-${variant.name}-${size.name}.png`
-        await expect(page).toHaveScreenshot(name, { fullPage: true })
+        await expect(page).toHaveScreenshot(name)
       }
     })
   }

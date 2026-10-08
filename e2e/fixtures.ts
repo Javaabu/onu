@@ -52,6 +52,19 @@ export async function openWithFonts(page: Page, route: string) {
 export async function settle(page: Page) {
   await page.evaluate(() => document.fonts.ready)
   if (!(await page.locator(".recharts-wrapper").count())) return
+  // Under load ResponsiveContainer can draw at the final size while its wrapper still has the
+  // initial dimension, so the SVG is shown scaled down. Wait until every chart is drawn 1:1.
+  await page.waitForFunction(
+    () =>
+      [...document.querySelectorAll<SVGSVGElement>(".recharts-surface")].every((svg) => {
+        const r = svg.getBoundingClientRect()
+        const w = Number(svg.getAttribute("width"))
+        const h = Number(svg.getAttribute("height"))
+        return !w || !h || (Math.abs(r.width - w) < 1 && Math.abs(r.height - h) < 1)
+      }),
+    undefined,
+    { timeout: 15_000 },
+  )
   let previous = ""
   for (let i = 0; i < 20; i++) {
     await page.waitForTimeout(100)

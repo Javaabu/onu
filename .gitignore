@@ -9,3 +9,4 @@ playwright-report
 test-results
 /test-results
 .claude/worktrees/
+e2e/*-snapshots/

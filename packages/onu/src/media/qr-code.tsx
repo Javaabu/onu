@@ -204,7 +204,25 @@ function saveBlob(blob: Blob, filename: string) {
 }
 
 function isTransparent(color: string) {
-  return !color || color === "transparent" || /^rgba\(.*,\s*0\)$/.test(color)
+  return !color || color === "transparent" || /^rgba\(.*,\s*0\)$/.test(color) || /\/\s*0%?\s*\)$/.test(color)
+}
+
+/**
+ * Converts any CSS colour (e.g. the theme's `oklch(...)`) to `#rrggbb` by painting one pixel,
+ * so downloaded files open in viewers that only know sRGB. Returns the input when there is no canvas.
+ */
+export function toHexColor(color: string): string {
+  try {
+    const ctx = document.createElement("canvas").getContext("2d", { willReadFrequently: true })
+    if (!ctx) return color
+    ctx.fillStyle = "#000"
+    ctx.fillStyle = color
+    ctx.fillRect(0, 0, 1, 1)
+    const [r = 0, g = 0, b = 0] = ctx.getImageData(0, 0, 1, 1).data
+    return `#${[r, g, b].map((n) => n.toString(16).padStart(2, "0")).join("")}`
+  } catch {
+    return color
+  }
 }
 
 export const qrCodeVariants = cva("block h-auto max-w-full shrink-0 rounded-md", {
@@ -306,7 +324,7 @@ export function QrCode({
     const computed = svgRef.current ? getComputedStyle(svgRef.current) : null
     const foreground = computed?.color || "black"
     const bg = computed?.backgroundColor ?? ""
-    return { foreground, background: isTransparent(bg) ? "white" : bg }
+    return { foreground: toHexColor(foreground), background: isTransparent(bg) ? "#ffffff" : toHexColor(bg) }
   }
 
   const save = async (format: QrCodeDownloadFormat) => {

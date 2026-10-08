@@ -4,7 +4,16 @@ import { encode } from "uqr"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../test/utils"
-import { encodeQrCode, QrCode, qrCodePath, qrCodeToPng, qrCodeToSvg, qrCodeVariants, qrLogoBox } from "./qr-code"
+import {
+  encodeQrCode,
+  QrCode,
+  qrCodePath,
+  qrCodeToPng,
+  qrCodeToSvg,
+  qrCodeVariants,
+  qrLogoBox,
+  toHexColor,
+} from "./qr-code"
 
 const URL_VALUE = "https://verify.trade.gov.mv/BL-2026-04417"
 
@@ -131,6 +140,14 @@ describe("QR helpers", () => {
     expect(ctx.drawImage).not.toHaveBeenCalled()
   })
 
+  it("converts theme colours to sRGB hex for downloads", () => {
+    const ctx = { fillStyle: "", fillRect: vi.fn(), getImageData: () => ({ data: [16, 32, 255, 255] }) }
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(ctx as never)
+    expect(toHexColor("oklch(0.5 0.2 260)")).toBe("#1020ff")
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null)
+    expect(toHexColor("oklch(0.5 0.2 260)")).toBe("oklch(0.5 0.2 260)")
+  })
+
   it("rejects when the canvas cannot export", async () => {
     mockCanvas({ blob: false })
     await expect(qrCodeToPng(encodeQrCode("a"))).rejects.toThrow()
@@ -238,8 +255,10 @@ describe("QrCode", () => {
     await waitFor(() => expect(onDownload).toHaveBeenCalledWith("png", expect.any(Blob)))
     expect(onDownload.mock.calls[0]![1].type).toBe("image/png")
     const m = encodeQrCode("hello")
-    expect(sizes[0]).toBe((m.size + 8) * Math.round(512 / (m.size + 8)))
-    expect(ctx.fillRect).toHaveBeenCalledTimes(1 + darkCount(m.modules))
+    expect(sizes.at(-1)).toBe((m.size + 8) * Math.round(512 / (m.size + 8)))
+    // Ignore the 1×1 pixel used to convert theme colours to hex.
+    const draws = ctx.fillRect.mock.calls.filter((args) => args[2] !== 1)
+    expect(draws).toHaveLength(1 + darkCount(m.modules))
   })
 
   it("keeps working when the PNG export fails", async () => {
