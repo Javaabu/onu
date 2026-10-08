@@ -235,11 +235,11 @@ export function Home() {
       <div className="relative isolate overflow-hidden">
         <div
           aria-hidden
-          className="inset-x-0 top-0 pointer-events-none absolute -z-10 h-[36rem] bg-linear-to-b from-primary/15 via-primary/5 to-transparent"
+          className="inset-0 pointer-events-none absolute -z-10 bg-linear-to-b from-primary/15 via-primary/5 to-transparent"
         />
         <div
           aria-hidden
-          className="top-10 blur-3xl pointer-events-none absolute start-1/2 -z-10 size-[28rem] max-w-full -translate-x-1/2 rounded-full bg-primary/15 rtl:translate-x-1/2"
+          className="-top-32 blur-3xl pointer-events-none absolute start-1/2 -z-10 size-[28rem] max-w-full -translate-x-1/2 rounded-full bg-primary/15 rtl:translate-x-1/2"
         />
         <Hero
           className="bg-transparent"

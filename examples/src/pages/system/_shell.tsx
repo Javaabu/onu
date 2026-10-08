@@ -4,8 +4,7 @@ import { LanguageSwitcher, Logo, ThemeToggle } from "@javaabu/onu"
 import { useSettings } from "../../settings"
 import { useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
-
-const logoSrc = `${import.meta.env.BASE_URL}favicon.svg`
+import { BrandMark } from "../../components/layout"
 
 /**
  * Bare frame for full-page system states (500, 503) shown when the app shell
@@ -17,7 +16,12 @@ export function SystemShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-svh flex-col bg-background">
       <header className="gap-2 px-4 py-3 flex items-center justify-between border-b">
-        <Logo src={logoSrc} alt="Onu" text={tr("eServices", "އީ ސަރވިސަސް")} href={routes.public.home} />
+        <Logo
+          children={<BrandMark className="size-7" />}
+          alt="Onu"
+          text={tr("eServices", "އީ ސަރވިސަސް")}
+          href={routes.public.home}
+        />
         <div className="gap-1 flex items-center">
           <LanguageSwitcher
             value={settings.locale}

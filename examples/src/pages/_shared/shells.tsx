@@ -21,8 +21,8 @@ import {
 import { useSettings } from "../../settings"
 import { useTr } from "./i18n"
 import { routes } from "./routes"
+import { BrandMark } from "../../components/layout"
 
-const logoSrc = `${import.meta.env.BASE_URL}favicon.svg`
 // Fixed demo times, computed once (not during render).
 const NOW = Date.now()
 
@@ -126,7 +126,7 @@ export function AdminShell({
           currentHref={current}
           header={
             <Logo
-              src={logoSrc}
+              children={<BrandMark className="size-7" />}
               alt="Onu"
               text={tr("Onu Admin", "އޮނު އެޑްމިން")}
               href={routes.adminRecords.dashboard}
@@ -205,7 +205,7 @@ export function CitizenShell({ breadcrumbs = [], children }: { breadcrumbs?: Cru
             currentHref={current}
             header={
               <Logo
-                src={logoSrc}
+                children={<BrandMark className="size-7" />}
                 alt="eServices"
                 text={tr("eServices", "އީ ސަރވިސަސް")}
                 href={routes.citizen.dashboard}
@@ -254,7 +254,7 @@ export function PortalShell({ children, className }: { children: React.ReactNode
           {/* TopNav shows `logo` only in its phone drawer; the bar shows it here. */}
           <div className="md:block hidden shrink-0">
             <Logo
-              src={logoSrc}
+              children={<BrandMark className="size-7" />}
               alt="Onu"
               text={tr("Ministry of Services", "ޚިދުމަތްތަކުގެ ވުޒާރާ")}
               href={routes.public.home}
@@ -265,7 +265,7 @@ export function PortalShell({ children, className }: { children: React.ReactNode
             currentHref={current}
             logo={
               <Logo
-                src={logoSrc}
+                children={<BrandMark className="size-7" />}
                 alt="Onu"
                 text={tr("Ministry of Services", "ޚިދުމަތްތަކުގެ ވުޒާރާ")}
                 href={routes.public.home}
@@ -288,7 +288,14 @@ export function PortalShell({ children, className }: { children: React.ReactNode
         {children}
       </main>
       <SiteFooter
-        logo={<Logo src={logoSrc} alt="" text={tr("Ministry of Services", "ޚިދުމަތްތަކުގެ ވުޒާރާ")} href={null} />}
+        logo={
+          <Logo
+            children={<BrandMark className="size-7" />}
+            alt=""
+            text={tr("Ministry of Services", "ޚިދުމަތްތަކުގެ ވުޒާރާ")}
+            href={null}
+          />
+        }
         description={tr("Government services for every island.", "ކޮންމެ ރަށަކަށް ސަރުކާރުގެ ޚިދުމަތް.")}
         columns={[
           {
@@ -327,7 +334,12 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-svh flex-col bg-muted/40">
       <div className="gap-2 p-4 flex items-center justify-between">
-        <Logo src={logoSrc} alt="Onu" text={tr("eServices", "އީ ސަރވިސަސް")} href={routes.public.home} />
+        <Logo
+          children={<BrandMark className="size-7" />}
+          alt="Onu"
+          text={tr("eServices", "އީ ސަރވިސަސް")}
+          href={routes.public.home}
+        />
         <Language />
       </div>
       <main id="main" className="px-4 pb-16 pt-4 sm:items-center flex flex-1 items-start justify-center">
@@ -344,7 +356,7 @@ export function KioskShell({ children, className }: { children: React.ReactNode;
     <Density value="touch" className="flex min-h-svh flex-col bg-background">
       <header className="gap-4 px-6 py-4 flex items-center justify-between border-b">
         <Logo
-          src={logoSrc}
+          children={<BrandMark className="size-7" />}
           alt="Onu"
           text={tr("Self-service kiosk", "ސެލްފް ސަރވިސް ކިއޮސްކް")}
           href={routes.kiosk.start}

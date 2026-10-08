@@ -36,6 +36,21 @@ function GitHubIcon({ className }: { className?: string }) {
   )
 }
 
+/** The Onu mark, drawn in the current primary colour so it re-brands with the theme. */
+export function BrandMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" aria-hidden className={cn("size-6 shrink-0 text-primary", className)}>
+      <rect width="32" height="32" rx="8" className="fill-current" />
+      <path
+        d="M11 6v20M21 6v20M8 12h6M18 18h6"
+        className="stroke-primary-foreground"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
 export function Logo({ className }: { className?: string }) {
   return (
     <Link
@@ -45,15 +60,7 @@ export function Logo({ className }: { className?: string }) {
         className,
       )}
     >
-      <svg viewBox="0 0 32 32" aria-hidden className="size-6 text-primary">
-        <rect width="32" height="32" rx="8" className="fill-current" />
-        <path
-          d="M11 6v20M21 6v20M8 12h6M18 18h6"
-          className="stroke-primary-foreground"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-      </svg>
+      <BrandMark />
       <span className="tracking-tight">Onu</span>
     </Link>
   )
