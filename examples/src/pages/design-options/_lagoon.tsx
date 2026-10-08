@@ -1,7 +1,32 @@
 import * as React from "react"
-import { LanguageSwitcher, cn } from "@javaabu/onu"
+import { useLocation } from "react-router"
+import {
+  AppHeader,
+  AppLayout,
+  AppSidebar,
+  LanguageSwitcher,
+  Logo,
+  NotificationCenter,
+  SearchBox,
+  ThemeToggle,
+  UserProfile,
+  cn,
+  type NavGroup,
+} from "@javaabu/onu"
 
 import { useSettings } from "../../settings"
+import { useDv, useTr } from "../_shared/i18n"
+import { routes } from "../_shared/routes"
+
+/** Routes of the Lagoon pages. */
+export const LAGOON = {
+  landing: "/pages/design-options/lagoon-landing",
+  index: "/pages/design-options/lagoon-index",
+  dashboard: "/pages/design-options/lagoon-dashboard",
+} as const
+
+// Fixed demo time (no clocks during render).
+const NOW = new Date("2026-10-08T10:42:00")
 
 /** Language switcher bound to the showcase settings. */
 export function LagoonLanguage({ variant = "menu" }: { variant?: "select" | "menu" }) {
@@ -196,5 +221,134 @@ export function AtollMap({ label, equator, className }: { label: string; equator
         />
       ))}
     </svg>
+  )
+}
+
+/** The eRaajje Desk app shell: floating sand sidebar, glass header. Shared by the dashboard and the index. */
+export function LagoonShell({ children, className }: { children: React.ReactNode; className?: string }) {
+  const tr = useTr()
+  const dv = useDv()
+  const current = useLocation().pathname
+
+  const groups: NavGroup[] = [
+    {
+      items: [
+        { label: tr("Overview", "ޚުލާޞާ"), href: LAGOON.dashboard, icon: "home" },
+        { label: tr("Applications", "އެޕްލިކޭޝަންތައް"), href: LAGOON.index, icon: "file-text", badge: 24 },
+        { label: tr("Queue", "ކިއު"), href: routes.kiosk.start, icon: "clock", badge: 7 },
+        { label: tr("Appointments", "އެޕޮއިންޓްމަންޓް"), href: routes.public.events, icon: "calendar" },
+        { label: tr("Islands", "ރަށްތައް"), href: routes.maps.zones, icon: "map-pin" },
+      ],
+    },
+    {
+      label: tr("Services", "ޚިދުމަތްތައް"),
+      items: [
+        { label: tr("Payments", "ފައިސާ"), href: routes.citizen.payments, icon: "credit-card" },
+        { label: tr("Citizens", "ރައްޔިތުން"), href: routes.adminSettings.users, icon: "users" },
+        { label: tr("Reports", "ރިޕޯޓް"), href: routes.maps.reports, icon: "table" },
+      ],
+    },
+    {
+      label: tr("Council", "ކައުންސިލް"),
+      items: [
+        { label: tr("Notices", "އިޢުލާން"), href: routes.public.news, icon: "megaphone" },
+        { label: tr("Settings", "ސެޓިންގްސް"), href: routes.adminSettings.settings, icon: "settings" },
+      ],
+    },
+  ]
+
+  return (
+    <div className={cn("design-lagoon lg-desk", className)}>
+      <AppLayout
+        contentWidth="wide"
+        sidebar={
+          <AppSidebar
+            variant="floating"
+            collapsible="icon"
+            groups={groups}
+            currentHref={current}
+            match="exact"
+            header={
+              <Logo
+                alt=""
+                href={LAGOON.dashboard}
+                children={<LagoonMark />}
+                text={
+                  <span className="leading-tight flex flex-col">
+                    <span className="lg-serif text-base font-semibold">{tr("eRaajje Desk", "އީރާއްޖެ ޑެސްކް")}</span>
+                    <span className="text-xs font-normal text-muted-foreground">
+                      {tr("Thinadhoo Council", "ތިނަދޫ ކައުންސިލް")}
+                    </span>
+                  </span>
+                }
+              />
+            }
+            footer={
+              <UserProfile
+                name={tr("Mariyam Shiuna", "މަރިޔަމް ޝިއުނާ")}
+                subtitle={tr("Front desk", "ފްރަންޓް ޑެސްކް")}
+                profileHref={routes.adminSettings.userProfile}
+                settingsHref={routes.adminSettings.settings}
+                onSignOut={() => {}}
+                side="top"
+              />
+            }
+          />
+        }
+        header={
+          <AppHeader
+            sidebarTrigger
+            variant="plain"
+            className="lg-header"
+            actions={
+              <>
+                <LagoonLanguage />
+                <ThemeToggle />
+                <NotificationCenter
+                  now={NOW}
+                  notifications={[
+                    {
+                      id: "1",
+                      title: tr("Ticket A-043 checked in from home", "A-043 ގޭގައި ހުރެ ޗެކްއިން ކޮށްފި"),
+                      time: new Date("2026-10-08T10:30:00"),
+                      variant: "info",
+                    },
+                    {
+                      id: "2",
+                      title: tr("Payment received: MVR 250.00", "ފައިސާ ލިބިއްޖެ: ރ 250.00"),
+                      time: new Date("2026-10-08T09:12:00"),
+                      variant: "success",
+                    },
+                    {
+                      id: "3",
+                      title: tr("Ferry delayed to Madaveli", "މަޑަވެލި ފެރީ ލަސްވެއްޖެ"),
+                      time: new Date("2026-10-08T07:50:00"),
+                      variant: "warning",
+                      read: true,
+                    },
+                  ]}
+                  onMarkRead={() => {}}
+                />
+              </>
+            }
+          >
+            <div className="max-w-md min-w-0 sm:block hidden flex-1">
+              <SearchBox
+                aria-label={tr(
+                  "Search citizens, tickets and references",
+                  "ރައްޔިތުން، ޓިކެޓް އަދި ރެފަރެންސް ހޯއްދަވާ",
+                )}
+                placeholder={tr("Search citizens, tickets, references…", "ރައްޔިތުން، ޓިކެޓް، ރެފަރެންސް…")}
+                thaana={dv}
+                submitOnBlur={false}
+                classNames={{ root: "rounded-full bg-card/70" }}
+              />
+            </div>
+          </AppHeader>
+        }
+      >
+        {children}
+      </AppLayout>
+    </div>
   )
 }
