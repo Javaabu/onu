@@ -1,0 +1,584 @@
+/*
+ * Aurora Glass: a design option for the Onu product look.
+ *
+ * Dark-first and futuristic-calm: a slowly drifting aurora built from the brand
+ * primary and two analogous hues, film grain, frosted-glass panels with 1px
+ * luminous gradient borders, soft glow on primary actions and a cursor spotlight
+ * on cards. Light mode is pearly frosted glass over a pale aurora.
+ *
+ * Every colour derives from Onu tokens (--primary, --card, --foreground, …), so the
+ * "Customize" primary colour re-brands the whole design. Every rule is scoped to
+ * `.design-aurora-glass` (the page root) or `.ag-portal` (set on <body> while an
+ * Aurora page is mounted, for sheets and popovers rendered in portals).
+ */
+
+/* ------------------------------------------------------------------ tokens */
+
+.design-aurora-glass,
+.ag-portal {
+  /* The aurora hues: primary plus two analogous neighbours. */
+  --ag-a: var(--primary);
+  --ag-b: color-mix(in oklab, var(--primary) 55%, oklch(0.72 0.14 215));
+  --ag-c: color-mix(in oklab, var(--primary) 45%, oklch(0.62 0.2 290));
+
+  /* How strongly the aurora shows, and the page surface it glows over. */
+  --ag-aurora: 40%;
+  --ag-bg: color-mix(in oklab, var(--background) 96%, var(--primary));
+
+  /* Glass. */
+  --ag-glass-top: color-mix(in oklab, var(--card) 78%, transparent);
+  --ag-glass: color-mix(in oklab, var(--card) 60%, transparent);
+  --ag-glass-solid: color-mix(in oklab, var(--card) 88%, transparent);
+  --ag-edge-hi: color-mix(in oklab, white 95%, transparent);
+  --ag-edge-lo: color-mix(in oklab, var(--foreground) 9%, transparent);
+  --ag-edge-tint: color-mix(in oklab, var(--ag-a) 40%, transparent);
+  --ag-highlight: inset 0 1px 0 0 color-mix(in oklab, white 85%, transparent);
+  --ag-shadow:
+    0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent),
+    0 18px 50px -20px color-mix(in oklab, var(--ag-a) 32%, transparent);
+  --ag-glow: color-mix(in oklab, var(--ag-a) 45%, transparent);
+  --ag-blur: 18px;
+
+  /* Display type. */
+  --ag-ink-a: color-mix(in oklab, var(--ag-a), var(--foreground) 30%);
+  --ag-ink-b: color-mix(in oklab, var(--ag-b), var(--foreground) 35%);
+  --ag-grain-opacity: 0.05;
+}
+
+@supports (color: oklch(from red l c h)) {
+  .design-aurora-glass,
+  .ag-portal {
+    --ag-b: oklch(from var(--primary) l max(c, 0.11) calc(h + 50));
+    --ag-c: oklch(from var(--primary) l max(c, 0.11) calc(h + 105));
+  }
+}
+
+:is(.dark, [data-theme="dark"]) :is(.design-aurora-glass, .ag-portal),
+:is(.dark, [data-theme="dark"]):is(.ag-portal) {
+  --ag-aurora: 58%;
+  --ag-bg: color-mix(in oklab, color-mix(in oklab, var(--background), black 38%) 94%, var(--primary));
+  --ag-glass-top: color-mix(in oklab, var(--card) 62%, transparent);
+  --ag-glass: color-mix(in oklab, var(--card) 40%, transparent);
+  --ag-glass-solid: color-mix(in oklab, var(--card) 80%, transparent);
+  --ag-edge-hi: color-mix(in oklab, white 26%, transparent);
+  --ag-edge-lo: color-mix(in oklab, white 6%, transparent);
+  --ag-edge-tint: color-mix(in oklab, var(--ag-a) 55%, transparent);
+  --ag-highlight: inset 0 1px 0 0 color-mix(in oklab, white 10%, transparent);
+  --ag-shadow:
+    0 1px 1px color-mix(in oklab, black 30%, transparent), 0 24px 60px -24px color-mix(in oklab, black 70%, transparent);
+  --ag-glow: color-mix(in oklab, var(--ag-a) 55%, transparent);
+  --ag-ink-a: color-mix(in oklab, var(--ag-a), var(--foreground) 12%);
+  --ag-ink-b: color-mix(in oklab, var(--ag-b), var(--foreground) 15%);
+  --ag-grain-opacity: 0.08;
+}
+
+/* ------------------------------------------------------------------- root */
+
+.design-aurora-glass {
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  overflow-x: clip;
+  background-color: var(--ag-bg);
+  color: var(--foreground);
+}
+
+/* The aurora: three blurred colour fields drifting slowly behind everything. */
+.design-aurora-glass .ag-aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.design-aurora-glass .ag-aurora__field {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.9;
+  will-change: transform;
+}
+.design-aurora-glass .ag-aurora__field--a {
+  inset-block-start: -18vmax;
+  inset-inline-start: -10vmax;
+  width: 60vmax;
+  height: 42vmax;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--ag-a) var(--ag-aurora), transparent),
+    transparent
+  );
+  animation: ag-drift-a 42s ease-in-out infinite alternate;
+}
+.design-aurora-glass .ag-aurora__field--b {
+  inset-block-start: -12vmax;
+  inset-inline-end: -14vmax;
+  width: 55vmax;
+  height: 48vmax;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--ag-b) var(--ag-aurora), transparent),
+    transparent
+  );
+  animation: ag-drift-b 52s ease-in-out infinite alternate;
+}
+.design-aurora-glass .ag-aurora__field--c {
+  inset-block-start: 8vh;
+  inset-inline-start: 30vw;
+  width: 46vmax;
+  height: 30vmax;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--ag-c) calc(var(--ag-aurora) * 0.8), transparent),
+    transparent
+  );
+  animation: ag-drift-c 60s ease-in-out infinite alternate;
+}
+/* A low glow along the bottom edge, so lower sections sit in colour too. */
+.design-aurora-glass .ag-aurora__field--d {
+  inset-block-end: -22vmax;
+  inset-inline-end: 5vw;
+  width: 60vmax;
+  height: 36vmax;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--ag-c) calc(var(--ag-aurora) * 0.6), transparent),
+    transparent
+  );
+  animation: ag-drift-b 70s ease-in-out infinite alternate-reverse;
+}
+/* A curtain of light: thin vertical ribbons that make it read as an aurora, not a blur. */
+.design-aurora-glass .ag-aurora__curtain {
+  position: absolute;
+  inset-block-start: -10vh;
+  inset-inline: -10vw;
+  height: 70vh;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 3vw,
+    color-mix(in oklab, var(--ag-b) 22%, transparent) 3.4vw,
+    transparent 4.6vw 7vw
+  );
+  mask-image: radial-gradient(60% 55% at 50% 20%, black, transparent 75%);
+  filter: blur(14px);
+  opacity: 0.5;
+  transform: skewX(-12deg);
+  animation: ag-curtain 30s ease-in-out infinite alternate;
+}
+:is(.dark, [data-theme="dark"]) .design-aurora-glass .ag-aurora__curtain {
+  opacity: 0.7;
+}
+/* Film grain over the aurora. */
+.design-aurora-glass .ag-aurora__grain {
+  position: absolute;
+  inset: 0;
+  opacity: var(--ag-grain-opacity);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes ag-drift-a {
+  to {
+    transform: translate3d(12vw, 8vh, 0) scale(1.15) rotate(8deg);
+  }
+}
+@keyframes ag-drift-b {
+  to {
+    transform: translate3d(-14vw, 12vh, 0) scale(0.9) rotate(-10deg);
+  }
+}
+@keyframes ag-drift-c {
+  to {
+    transform: translate3d(-10vw, -14vh, 0) scale(1.2);
+  }
+}
+@keyframes ag-curtain {
+  to {
+    transform: skewX(-4deg) translateX(6vw);
+    opacity: 0.35;
+  }
+}
+
+/* A faint engineering grid, faded out from the centre (hero, CTA). */
+.design-aurora-glass .ag-grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--foreground) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 7%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(70% 60% at 50% 30%, black, transparent 80%);
+}
+
+/* ------------------------------------------------------------------ glass */
+
+.design-aurora-glass .ag-glass,
+.ag-portal .ag-glass {
+  position: relative;
+  isolation: isolate;
+  border-color: transparent;
+  background-color: transparent;
+  background-image: linear-gradient(180deg, var(--ag-glass-top), var(--ag-glass));
+  backdrop-filter: blur(var(--ag-blur)) saturate(165%);
+  box-shadow: var(--ag-shadow), var(--ag-highlight);
+}
+.design-aurora-glass .ag-glass--solid {
+  background-image: linear-gradient(180deg, var(--ag-glass-solid), var(--ag-glass-solid));
+}
+/* 1px luminous border: a gradient ring cut out with a mask. */
+.design-aurora-glass .ag-glass::before,
+.ag-portal .ag-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      260px circle at var(--mx, 50%) var(--my, -200px),
+      color-mix(in oklab, var(--ag-a) var(--ag-spot-edge, 0%), transparent),
+      transparent 70%
+    ),
+    linear-gradient(160deg, var(--ag-edge-hi), var(--ag-edge-lo) 35%, var(--ag-edge-lo) 65%, var(--ag-edge-tint));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+/* Cursor spotlight (pointer position set by the page on mouse move). */
+.design-aurora-glass .ag-spot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in oklab, var(--ag-a) 14%, transparent),
+    transparent 65%
+  );
+}
+.design-aurora-glass .ag-spot:hover {
+  --ag-spot-edge: 85%;
+}
+.design-aurora-glass .ag-spot:hover::after {
+  opacity: 1;
+}
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .design-aurora-glass .ag-spot::after {
+    display: none;
+  }
+  .design-aurora-glass .ag-spot:hover {
+    --ag-spot-edge: 0%;
+  }
+}
+
+/* Keyboard focus on a linked glass card stays visible. */
+.design-aurora-glass .ag-glass:has(:focus-visible) {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+/* Small inline glass chips (eyebrow pill, status pill). */
+.design-aurora-glass .ag-chip {
+  position: relative;
+  isolation: isolate;
+  background-image: linear-gradient(180deg, var(--ag-glass-top), var(--ag-glass));
+  backdrop-filter: blur(12px) saturate(160%);
+  box-shadow:
+    var(--ag-highlight),
+    0 0 0 1px var(--ag-edge-lo),
+    0 6px 24px -10px var(--ag-glow);
+}
+
+/* A glowing status dot. */
+.design-aurora-glass .ag-pulse {
+  position: relative;
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--success);
+  box-shadow: 0 0 10px 1px color-mix(in oklab, var(--success) 70%, transparent);
+}
+.design-aurora-glass .ag-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: ag-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+.design-aurora-glass .ag-pulse--primary {
+  background: var(--ag-a);
+  box-shadow: 0 0 10px 1px var(--ag-glow);
+}
+@keyframes ag-ping {
+  75%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------------- actions */
+
+/* Primary action with a soft outer glow and a lit top edge. */
+.design-aurora-glass .ag-glow {
+  background-image: linear-gradient(180deg, color-mix(in oklab, var(--primary), white 8%), var(--primary));
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, white 30%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--primary), black 8%),
+    0 8px 28px -8px var(--ag-glow),
+    0 0 40px -12px var(--ag-glow);
+  transition:
+    box-shadow 200ms ease,
+    transform 200ms ease,
+    filter 200ms ease;
+}
+.design-aurora-glass .ag-glow:hover {
+  filter: brightness(1.06);
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, white 35%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--primary), black 8%),
+    0 10px 34px -8px var(--ag-glow),
+    0 0 60px -10px var(--ag-glow);
+}
+.design-aurora-glass .ag-glow:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+/* Secondary action: a glass button. */
+.design-aurora-glass .ag-ghost {
+  background-color: transparent;
+  background-image: linear-gradient(180deg, var(--ag-glass-top), var(--ag-glass));
+  backdrop-filter: blur(12px) saturate(160%);
+  border-color: transparent;
+  box-shadow:
+    var(--ag-highlight),
+    0 0 0 1px var(--ag-edge-lo);
+}
+.design-aurora-glass .ag-ghost:hover {
+  box-shadow:
+    var(--ag-highlight),
+    0 0 0 1px var(--ag-edge-tint),
+    0 0 24px -8px var(--ag-glow);
+}
+
+/* Inputs: glow when focused. */
+.design-aurora-glass .ag-field {
+  background-color: color-mix(in oklab, var(--card) 55%, transparent);
+  backdrop-filter: blur(12px);
+  transition: box-shadow 200ms ease;
+}
+.design-aurora-glass .ag-field:focus-within {
+  box-shadow:
+    0 0 0 3px color-mix(in oklab, var(--ring) 30%, transparent),
+    0 0 28px -4px var(--ag-glow);
+}
+
+/* --------------------------------------------------------------- type */
+
+.design-aurora-glass .ag-display {
+  font-weight: 620;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  font-feature-settings: "ss01", "cv11";
+}
+.design-aurora-glass .ag-title {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.design-aurora-glass :lang(dv) .ag-display,
+.design-aurora-glass :lang(dv) .ag-title,
+.design-aurora-glass:lang(dv) .ag-display,
+.design-aurora-glass:lang(dv) .ag-title {
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+/* Gradient ink. `color` stays solid (for contrast tools and forced colours). */
+.design-aurora-glass .ag-ink {
+  color: var(--foreground);
+  background-image: linear-gradient(
+    100deg,
+    var(--foreground) 5%,
+    var(--ag-ink-a) 40%,
+    var(--ag-ink-b) 75%,
+    var(--foreground) 105%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@media (forced-colors: active) {
+  .design-aurora-glass .ag-ink {
+    -webkit-text-fill-color: currentColor;
+  }
+}
+.design-aurora-glass .ag-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--primary-subtle-foreground);
+}
+.design-aurora-glass:lang(dv) .ag-eyebrow,
+.design-aurora-glass :lang(dv) .ag-eyebrow {
+  letter-spacing: 0;
+}
+/* Big glowing numbers (stats band). */
+.design-aurora-glass .ag-figure {
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 32px var(--ag-glow);
+}
+
+/* --------------------------------------------------------- product mock */
+
+.design-aurora-glass .ag-stage {
+  perspective: 2000px;
+}
+.design-aurora-glass .ag-window {
+  transform: rotateX(8deg) scale(0.98);
+  transform-origin: 50% 0;
+  transition: transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.design-aurora-glass .ag-stage:hover .ag-window,
+.design-aurora-glass .ag-stage:focus-within .ag-window {
+  transform: rotateX(0deg) scale(1);
+}
+/* The glow pooled under the product window. */
+.design-aurora-glass .ag-stage__glow {
+  position: absolute;
+  inset-inline: 8%;
+  inset-block-start: 10%;
+  height: 70%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--ag-glow), transparent);
+  filter: blur(40px);
+}
+@media (max-width: 767px) {
+  .design-aurora-glass .ag-window {
+    transform: none;
+  }
+}
+
+/* ----------------------------------------------------------------- charts */
+
+/* Glowing lines and areas that fade into the glass. */
+.design-aurora-glass .ag-chart .recharts-line-curve,
+.design-aurora-glass .ag-chart .recharts-area-curve {
+  filter: drop-shadow(0 0 6px var(--ag-glow));
+  stroke-width: 2.25px;
+}
+.design-aurora-glass .ag-chart .recharts-area-area[fill="var(--color-requests)"] {
+  fill: url(#ag-fade-a);
+  fill-opacity: 1;
+}
+.design-aurora-glass .ag-chart .recharts-area-area[fill="var(--color-resolved)"] {
+  fill: url(#ag-fade-b);
+  fill-opacity: 1;
+}
+.design-aurora-glass .ag-chart .recharts-area-area[fill="var(--color-sessions)"] {
+  fill: url(#ag-fade-a);
+  fill-opacity: 1;
+}
+.design-aurora-glass .ag-chart .recharts-cartesian-grid line {
+  stroke: color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+.design-aurora-glass .ag-chart .recharts-pie-sector path,
+.design-aurora-glass .ag-chart .recharts-bar-rectangle path {
+  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--ag-a) 30%, transparent));
+}
+.design-aurora-glass .ag-chart .recharts-pie-sector path {
+  stroke: var(--ag-bg);
+}
+
+/* Inside the tilted product window, SVG filters can drop out of the 3D layer: keep it plain. */
+.design-aurora-glass .ag-window .ag-chart .recharts-line-curve,
+.design-aurora-glass .ag-window .ag-chart .recharts-area-curve {
+  filter: none;
+}
+
+/* Stat tiles become glass. */
+.design-aurora-glass [data-slot="stat-tile"] {
+  background-color: transparent;
+}
+
+/* --------------------------------------------------------------- app shell */
+
+.design-aurora-glass [data-slot="sidebar-inner"] {
+  background-color: transparent;
+  background-image: linear-gradient(180deg, var(--ag-glass-top), var(--ag-glass));
+  backdrop-filter: blur(24px) saturate(170%);
+  box-shadow:
+    var(--ag-shadow),
+    var(--ag-highlight),
+    0 0 0 1px var(--ag-edge-lo);
+  border-radius: calc(var(--radius) + 0.5rem);
+}
+.design-aurora-glass [data-slot="sidebar-inner"] [data-active="true"] {
+  background-color: color-mix(in oklab, var(--ag-a) 16%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--ag-a) 35%, transparent),
+    0 0 22px -8px var(--ag-glow);
+  color: var(--foreground);
+}
+.design-aurora-glass .ag-header {
+  background-color: color-mix(in oklab, var(--ag-bg) 55%, transparent);
+  backdrop-filter: blur(20px) saturate(170%);
+  border-color: var(--ag-edge-lo);
+}
+
+/* Portaled surfaces (phone sidebar sheet, popovers, menus) while an Aurora page is open. */
+.ag-portal [data-slot="sidebar"][data-mobile="true"],
+.ag-portal [data-slot="popover-content"],
+.ag-portal [data-slot="dropdown-menu-content"] {
+  background-color: var(--ag-glass-solid);
+  backdrop-filter: blur(24px) saturate(170%);
+}
+
+/* ------------------------------------------------------------ table */
+
+.design-aurora-glass .ag-table thead tr,
+.design-aurora-glass .ag-table tbody tr {
+  border-color: var(--ag-edge-lo);
+}
+.design-aurora-glass .ag-table tbody tr:hover {
+  background-color: color-mix(in oklab, var(--ag-a) 7%, transparent);
+}
+
+/* ------------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .design-aurora-glass *,
+  .design-aurora-glass *::before,
+  .design-aurora-glass *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .design-aurora-glass .ag-window {
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------- brand mark */
+
+.design-aurora-glass .ag-mark-line {
+  stroke: color-mix(in oklab, white 94%, var(--ag-a));
+}
+.design-aurora-glass .ag-mark-dot {
+  fill: color-mix(in oklab, white 94%, var(--ag-a));
+}
