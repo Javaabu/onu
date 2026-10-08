@@ -26,6 +26,8 @@ mapRef.current?.fitBounds(boundsOf(points)!)
 Without a Google Maps API key the map renders a labelled **schematic preview** (no tiles, no network) instead of crashing. Everything else, including the text alternative, keeps working. See [MapProvider](./map-provider).
 :::
 
+Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provider#verified-against-google-maps-js-api)): map instance, advanced markers, polygons, polylines, circles, `mapRef.panTo` / `fitBounds` from buttons outside the map, marker click selection, and light/dark (the camera is kept when the colour scheme switches).
+
 ## Props
 
 | Prop                      | Type                                            | Default         | Description                                     |

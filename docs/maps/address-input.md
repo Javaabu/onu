@@ -17,6 +17,8 @@ Submits `address[atoll]`, `address[island]`, `address[road]`, `address[house]` a
 - Pass `islands` (`{ value, label, dvLabel?, atoll, position? }[]`, usually from your API) to choose the island from a list filtered by atoll; picking an island sets its atoll. Without it the island is a text field.
 - With `pin`, the map follows the chosen island or atoll until a pin is placed.
 
+Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provider#verified-against-google-maps-js-api)): clicking the pin map sets `location` and places the pin.
+
 ## Props
 
 | Prop                                  | Type                                                                                          | Default   | Description                                       |

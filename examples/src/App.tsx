@@ -24,6 +24,7 @@ import {
   Toaster,
   TooltipProvider,
 } from "@javaabu/onu"
+import { googleMapsAdapter, MapProvider } from "@javaabu/onu/maps"
 
 import { Toolbar } from "./components/toolbar"
 import { demos, groupBy, pages, type Entry } from "./registry"
@@ -35,6 +36,15 @@ const RouterLink = React.forwardRef<
 >(function RouterLink({ href, ...props }, ref) {
   return <Link ref={ref} to={href} {...props} />
 })
+
+/**
+ * `VITE_GOOGLE_MAPS_FORCE=1` runs every map on the real Google Maps adapter even
+ * without `VITE_GOOGLE_MAPS_API_KEY`, for local verification. Google then loads in
+ * development mode (watermarked, "NoApiKeys" console warnings); set
+ * `VITE_GOOGLE_MAPS_MAP_ID=DEMO_MAP_ID` for advanced markers. Examples only: the
+ * library still uses the placeholder when an app has no key.
+ */
+const forceGoogleMaps = import.meta.env.VITE_GOOGLE_MAPS_FORCE === "1"
 
 function Providers({ children }: { children: React.ReactNode }) {
   const { settings } = useSettings()
@@ -50,7 +60,9 @@ function Providers({ children }: { children: React.ReactNode }) {
         mapId: import.meta.env.VITE_GOOGLE_MAPS_MAP_ID,
       }}
     >
-      <TooltipProvider>{children}</TooltipProvider>
+      <TooltipProvider>
+        {forceGoogleMaps ? <MapProvider adapter={googleMapsAdapter}>{children}</MapProvider> : children}
+      </TooltipProvider>
       <Toaster />
     </OnuProvider>
   )

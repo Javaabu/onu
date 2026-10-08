@@ -26,6 +26,8 @@ Each marker: `{ id, position, title, tone?, description? }`. Onu never makes req
 Without a Google Maps API key the map renders a labelled **schematic preview** (no tiles, no network) instead of crashing. Everything else, including the text alternative, keeps working. See [MapProvider](./map-provider).
 :::
 
+Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provider#verified-against-google-maps-js-api)): markers load for the visible area, `@googlemaps/markerclusterer` clusters them, and a cluster click zooms in.
+
 ## Props
 
 | Prop                                            | Type                                         | Default | Description                                        |

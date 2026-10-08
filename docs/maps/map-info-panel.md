@@ -28,6 +28,8 @@ import { MapInfoPanel, MapView, MapMarker } from "@javaabu/onu/maps"
 
 The bottom sheet is shadcn's `Drawer` (drag down to dismiss).
 
+Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provider#verified-against-google-maps-js-api)): the panel opens over a Google map when a marker is clicked.
+
 ## Props
 
 | Prop                      | Type                              | Default  | Description                       |

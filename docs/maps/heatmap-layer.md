@@ -19,6 +19,8 @@ import { HeatmapLayer, MapView, MapLegend, HEATMAP_TONES, toneVar } from "@javaa
 Without a Google Maps API key the map renders a labelled **schematic preview** (no tiles, no network) instead of crashing. Everything else, including the text alternative, keeps working. See [MapProvider](./map-provider).
 :::
 
+Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provider#verified-against-google-maps-js-api)): the deck.gl `HeatmapLayer` attaches through `GoogleMapsOverlay` and renders over the tiles.
+
 ## Props
 
 | Prop        | Type                                      | Default              | Description                    |

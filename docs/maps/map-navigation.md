@@ -26,6 +26,8 @@ Routing: with Google Maps the **Directions service** is used. Without one (no ke
 Without a Google Maps API key the map renders a labelled **schematic preview** (no tiles, no network) instead of crashing. Everything else, including the text alternative, keeps working. See [MapProvider](./map-provider).
 :::
 
+Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provider#verified-against-google-maps-js-api)): markers, the dashed fallback line and the step list; a step click pans. Without an API key Google denies the Directions request and the straight-line fallback with its notice is shown, so routed directions were not verified.
+
 ## Props
 
 | Prop                                                      | Type                                  | Default  | Description                           |

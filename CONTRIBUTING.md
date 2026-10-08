@@ -10,6 +10,8 @@ pnpm install
 pnpm dev   # examples app at http://localhost:5173
 ```
 
+Maps in the examples app use Google Maps when `VITE_GOOGLE_MAPS_API_KEY` (and optionally `VITE_GOOGLE_MAPS_MAP_ID`) is set, and the keyless placeholder otherwise. To try the real Google adapter without a key (development mode, watermarked), set `VITE_GOOGLE_MAPS_FORCE=1 VITE_GOOGLE_MAPS_MAP_ID=DEMO_MAP_ID`. See [MapProvider](docs/maps/map-provider.md#verified-against-google-maps-js-api).
+
 ## Definition of done
 
 A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `dv` locale, `thaana` prop for free text, tokens-only colours, responsive and touch-friendly, `className`/`classNames`/`asChild` overrides, WCAG 2.2 AA with axe tests, unit tests, a showcase demo in `examples/src/showcase`, a docs page in `docs/`, and a changeset.

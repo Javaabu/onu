@@ -23,10 +23,19 @@ const h = vi.hoisted(() => {
     getCenter: vi.fn(() => latLng(4.17, 73.5)),
     getBounds: vi.fn(() => ({ toJSON: () => ({ north: 5, south: 4, east: 74, west: 73 }) })),
     getZoom: vi.fn((): number | undefined => 12),
+    getProjection: vi.fn((): object | undefined => ({})),
+    moveCamera: vi.fn(),
+    listeners: {} as Record<string, () => void>,
+    addListener: vi.fn((event: string, cb: () => void) => {
+      map.listeners[event] = cb
+      return { remove: vi.fn() }
+    }),
   }
+  const once: { event: string; cb: () => void; remove: ReturnType<typeof vi.fn> }[] = []
   return {
     latLng,
     map,
+    once,
     props: {} as Record<string, Record<string, unknown>[]>,
     libraries: {} as Record<string, unknown>,
     draws: [] as {
@@ -36,6 +45,7 @@ const h = vi.hoisted(() => {
       addFeatures: ReturnType<typeof vi.fn>
       selectFeature: ReturnType<typeof vi.fn>
       stop: ReturnType<typeof vi.fn>
+      started: number
       snapshot: unknown[]
       options: Record<string, unknown>
     }[],
@@ -98,10 +108,15 @@ vi.mock("terra-draw", () => {
   class TerraDraw {
     handlers: Record<string, (...args: unknown[]) => void> = {}
     setMode = vi.fn()
-    clear = vi.fn()
+    // Like terra-draw, clearing reports the removed features as a delete.
+    clear = vi.fn(() => this.handlers.change?.(["old"], "delete"))
     addFeatures = vi.fn()
     selectFeature = vi.fn()
-    stop = vi.fn()
+    stop = vi.fn(() => {
+      this.enabled = false
+    })
+    started = 0
+    enabled = false
     snapshot: unknown[] = []
     constructor(public options: Record<string, unknown>) {
       h.draws.push(this)
@@ -110,6 +125,8 @@ vi.mock("terra-draw", () => {
       this.handlers[event] = cb
     }
     start() {
+      this.started++
+      this.enabled = true
       this.handlers.ready?.()
     }
     getSnapshot() {
@@ -171,9 +188,21 @@ beforeEach(() => {
   h.draws.length = 0
   h.overlays.length = 0
   h.clusterers.length = 0
+  h.once.length = 0
   for (const key of Object.keys(h.libraries)) delete h.libraries[key]
   vi.clearAllMocks()
-  ;(globalThis as unknown as { google: unknown }).google = { maps: { TravelMode: { DRIVING: "DRIVING" } } }
+  ;(globalThis as unknown as { google: unknown }).google = {
+    maps: {
+      TravelMode: { DRIVING: "DRIVING" },
+      event: {
+        addListenerOnce: (_target: unknown, event: string, cb: () => void) => {
+          const listener = { event, cb, remove: vi.fn() }
+          h.once.push(listener)
+          return listener
+        },
+      },
+    },
+  }
 })
 
 function renderGoogle(ui: React.ReactElement, options: Parameters<typeof renderWithOnu>[1] = {}) {
@@ -214,6 +243,24 @@ describe("Google Maps adapter", () => {
       provider: { maps: { googleMapsApiKey: "k", mapId: "light", darkMapId: "dark" } },
     })
     expect(last("Map")).toMatchObject({ mapId: "dark", colorScheme: "DARK" })
+  })
+
+  it("keeps the camera when the map is recreated for a new colour scheme", () => {
+    const { rerender } = renderGoogle(
+      <MapProvider colorScheme="light">
+        <MapView />
+      </MapProvider>,
+    )
+    expect(h.map.moveCamera).not.toHaveBeenCalled()
+    act(() => h.map.listeners.idle!())
+    // The camera is fixed at creation; the next map instance starts where this one was.
+    rerender(
+      <MapProvider colorScheme="dark">
+        <MapView />
+      </MapProvider>,
+    )
+    expect(last("Map")).toMatchObject({ colorScheme: "DARK" })
+    expect(h.map.moveCamera).toHaveBeenCalledWith({ center: { lat: 4.17, lng: 73.5 }, zoom: 12 })
   })
 
   it("forwards camera control to the Google map", () => {
@@ -338,6 +385,8 @@ describe("Google Maps adapter", () => {
     await waitFor(() => expect(draw.addFeatures).toHaveBeenCalled())
     expect(draw.addFeatures.mock.calls[0]![0][0].geometry.coordinates[0]).toHaveLength(4)
     expect(draw.setMode).toHaveBeenLastCalledWith("view")
+    // Loading the value into terra-draw is not a user edit.
+    expect(onChange).not.toHaveBeenCalled()
 
     rerender(
       <MapView>
@@ -451,6 +500,74 @@ describe("Google Maps adapter", () => {
     expect(draw.stop).toHaveBeenCalled()
   })
 
+  it("reloads the shapes into a new terra-draw instance when the tone changes", async () => {
+    const shapes = [
+      {
+        id: "z1",
+        path: [
+          { lat: 0, lng: 0 },
+          { lat: 0, lng: 1 },
+          { lat: 1, lng: 1 },
+        ],
+      },
+    ]
+    function Draw({ tone }: { tone: "primary" | "chart-2" }) {
+      const { adapter } = useMapEngine()
+      const D = adapter.Draw
+      return <D kind="polygon" shapes={shapes} onChange={() => {}} mode="view" tone={tone} />
+    }
+    const { rerender } = renderGoogle(
+      <MapView>
+        <Draw tone="primary" />
+      </MapView>,
+    )
+    await waitFor(() => expect(h.draws[0]?.addFeatures).toHaveBeenCalledTimes(1))
+    rerender(
+      <MapView>
+        <Draw tone="chart-2" />
+      </MapView>,
+    )
+    await waitFor(() => expect(h.draws[1]?.addFeatures).toHaveBeenCalledTimes(1))
+    expect(h.draws[0]!.stop).toHaveBeenCalled()
+    expect(h.draws[1]!.addFeatures.mock.calls[0]![0][0].id).toBe("z1")
+  })
+
+  it("starts terra-draw only once the map has a projection", async () => {
+    function Draw() {
+      const { adapter } = useMapEngine()
+      const D = adapter.Draw
+      return <D kind="polygon" shapes={[]} onChange={() => {}} mode="draw" />
+    }
+    h.map.getProjection.mockReturnValue(undefined)
+    const { unmount } = renderGoogle(
+      <MapView>
+        <Draw />
+      </MapView>,
+    )
+    await waitFor(() => expect(h.once).toHaveLength(1))
+    const draw = h.draws[0]!
+    expect(h.once[0]!.event).toBe("projection_changed")
+    expect(draw.started).toBe(0)
+    act(() => h.once[0]!.cb())
+    expect(draw.started).toBe(1)
+    expect(draw.setMode).toHaveBeenLastCalledWith("polygon")
+    unmount()
+    expect(draw.stop).toHaveBeenCalledTimes(1)
+
+    // Unmounted before the map is ready: the listener goes, and terra-draw never starts.
+    const second = renderGoogle(
+      <MapView>
+        <Draw />
+      </MapView>,
+    )
+    await waitFor(() => expect(h.once).toHaveLength(2))
+    second.unmount()
+    expect(h.once[1]!.remove).toHaveBeenCalled()
+    expect(h.draws[1]!.started).toBe(0)
+    expect(h.draws[1]!.stop).not.toHaveBeenCalled()
+    h.map.getProjection.mockReturnValue({})
+  })
+
   it("renders heatmaps and trails with deck.gl's GoogleMapsOverlay", async () => {
     function Trail({ n }: { n: number }) {
       const { adapter } = useMapEngine()
@@ -489,12 +606,11 @@ describe("Google Maps adapter", () => {
     class AdvancedMarkerElement {
       listeners: Record<string, () => void> = {}
       constructor(public options: Record<string, unknown>) {}
-      addListener(name: string, cb: () => void) {
+      addEventListener(name: string, cb: () => void) {
         this.listeners[name] = cb
       }
     }
     class PinElement {
-      element = document.createElement("div")
       constructor(public options: Record<string, unknown>) {}
     }
     h.libraries.marker = { AdvancedMarkerElement, PinElement }
@@ -522,7 +638,8 @@ describe("Google Maps adapter", () => {
     const clusterer = h.clusterers[0]!
     const markers = clusterer.addMarkers.mock.calls[0]![0] as AdvancedMarkerElement[]
     expect(markers).toHaveLength(2)
-    markers[1]!.listeners.click!()
+    expect(markers[0]!.options.content).toBeInstanceOf(PinElement)
+    markers[1]!.listeners["gmp-click"]!()
     expect(onMarkerClick).toHaveBeenCalledWith("b")
     const cluster = clusterer.options.renderer.render({
       count: 7,
