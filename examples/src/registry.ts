@@ -10,6 +10,7 @@ export interface EntryMeta {
 }
 
 export interface Entry {
+  /** Path under `showcase/` or `pages/` without the suffix, e.g. `text-inputs/text-input`. */
   slug: string
   meta: EntryMeta
   Component: ComponentType
@@ -80,4 +81,111 @@ export function groupBy(entries: Entry[]) {
     groups.set(entry.meta.group, list)
   }
   return groups
+}
+
+/* ------------------------------------------------------------------ */
+/* Docs navigation model: sections → categories → items.               */
+/* ------------------------------------------------------------------ */
+
+export interface NavItem {
+  title: string
+  /** Router path, e.g. `/components/text-inputs/text-input`. */
+  href: string
+  /** Category label shown in breadcrumbs and search. */
+  group: string
+  description?: string
+  entry?: Entry
+}
+
+export interface NavCategory {
+  /** Folder name, e.g. `text-inputs`. */
+  id: string
+  label: string
+  items: NavItem[]
+}
+
+export interface NavSection {
+  id: "getting-started" | "components" | "pages"
+  label: string
+  /** Index route for the section (header links, breadcrumbs). */
+  href: string
+  categories: NavCategory[]
+}
+
+const FOUNDATIONS = "Foundations"
+
+function toItem(base: string, entry: Entry): NavItem {
+  return {
+    title: entry.meta.title,
+    href: `${base}/${entry.slug}`,
+    group: entry.meta.group,
+    description: entry.meta.description,
+    entry,
+  }
+}
+
+function categorise(base: string, entries: Entry[]): NavCategory[] {
+  return [...groupBy(entries)].map(([label, list]) => ({
+    id: list[0]!.slug.split("/")[0]!,
+    label,
+    items: list.map((e) => toItem(base, e)),
+  }))
+}
+
+export const introduction: NavItem = {
+  title: "Introduction",
+  href: "/",
+  group: "Getting started",
+  description: "Javaabu's React UI library: shadcn/ui based, RTL and Dhivehi first.",
+}
+
+export const navSections: NavSection[] = [
+  {
+    id: "getting-started",
+    label: "Getting started",
+    href: "/",
+    categories: [
+      {
+        id: "getting-started",
+        label: "Getting started",
+        items: [
+          introduction,
+          ...demos.filter((d) => d.meta.group === FOUNDATIONS).map((e) => toItem("/components", e)),
+        ],
+      },
+    ],
+  },
+  {
+    id: "components",
+    label: "Components",
+    href: "/components",
+    categories: categorise(
+      "/components",
+      demos.filter((d) => d.meta.group !== FOUNDATIONS),
+    ),
+  },
+  { id: "pages", label: "Sample pages", href: "/pages", categories: categorise("/pages", pages) },
+]
+
+/** Every nav item in sidebar order. */
+export const navItems: NavItem[] = navSections.flatMap((s) => s.categories.flatMap((c) => c.items))
+
+/** Finds the section, category and item for a router path. */
+export function locate(pathname: string) {
+  for (const section of navSections) {
+    for (const category of section.categories) {
+      const item = category.items.find((i) => i.href === pathname)
+      if (item) return { section, category, item }
+    }
+  }
+  return null
+}
+
+/** Previous and next items in the docs reading order (getting started, then components). */
+export function neighbours(pathname: string) {
+  const docs = navSections.filter((s) => s.id !== "pages").flatMap((s) => s.categories.flatMap((c) => c.items))
+  const list = pathname.startsWith("/pages/") ? navSections[2]!.categories.flatMap((c) => c.items) : docs
+  const index = list.findIndex((i) => i.href === pathname)
+  if (index === -1) return { prev: undefined, next: undefined }
+  return { prev: list[index - 1], next: list[index + 1] }
 }

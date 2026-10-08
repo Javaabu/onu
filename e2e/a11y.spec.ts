@@ -3,9 +3,9 @@ import AxeBuilder from "@axe-core/playwright"
 import { applyVariant, expect, test } from "./fixtures"
 import { demoRoutes, pageRoutes, variants } from "./routes"
 
-// Accessibility scan of every demo and sample page (REQUIREMENTS R14.11), in light LTR and dark RTL.
+// Accessibility scan of the docs home and indexes, every demo and every sample page (REQUIREMENTS R14.11), in light LTR and dark RTL.
 for (const variant of variants) {
-  for (const route of [...demoRoutes, ...pageRoutes]) {
+  for (const route of ["/#/", "/#/components", "/#/pages", ...demoRoutes, ...pageRoutes]) {
     test(`a11y ${variant.name} ${route}`, async ({ page, pageErrors }, testInfo) => {
       test.skip(
         testInfo.project.name !== "chromium" && testInfo.project.name !== "mobile-chrome",
