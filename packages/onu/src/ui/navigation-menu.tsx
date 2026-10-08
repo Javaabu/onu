@@ -5,6 +5,8 @@ import { cva } from "class-variance-authority"
 import { cn } from "../lib/utils"
 import { NavigationMenu as NavigationMenuPrimitive } from "radix-ui"
 
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { ChevronDownIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 
 function NavigationMenu({
@@ -76,7 +78,7 @@ function NavigationMenuTrigger({
       {...props}
     >
       {children}{" "}
-      <Icon name="chevron-down" className="relative top-px ms-1 size-3 transition duration-300 group-data-open/navigation-menu-trigger:rotate-180 group-data-popup-open/navigation-menu-trigger:rotate-180"
+      <Icon name="chevron-down" fallback={ChevronDownIcon} className="relative top-px ms-1 size-3 transition duration-300 group-data-open/navigation-menu-trigger:rotate-180 group-data-popup-open/navigation-menu-trigger:rotate-180"
         aria-hidden="true" />
     </NavigationMenuPrimitive.Trigger>
   )

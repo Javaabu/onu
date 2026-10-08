@@ -8,6 +8,8 @@ import { cn } from "../lib/utils"
 import { Dialog as DialogPrimitive } from "radix-ui"
 
 import { Button } from "./button"
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { XIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 import { useTranslation } from "../providers/onu-provider"
 
@@ -71,7 +73,7 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close data-slot="dialog-close" asChild>
             <Button variant="ghost" className="absolute top-2 end-2" size="icon-sm">
-              <Icon name="close" />
+              <Icon name="close" fallback={XIcon} />
               <span className="sr-only"><CloseLabel /></span>
             </Button>
           </DialogPrimitive.Close>

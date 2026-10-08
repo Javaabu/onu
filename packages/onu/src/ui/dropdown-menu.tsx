@@ -7,6 +7,8 @@ import * as React from "react"
 import { cn } from "../lib/utils"
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui"
 
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { CheckIcon, ChevronRightIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 
 function DropdownMenu({
@@ -112,7 +114,7 @@ function DropdownMenuCheckboxItem({
         data-slot="dropdown-menu-checkbox-item-indicator"
       >
         <DropdownMenuPrimitive.ItemIndicator>
-          <Icon name="check" />
+          <Icon name="check" fallback={CheckIcon} />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -154,7 +156,7 @@ function DropdownMenuRadioItem({
         data-slot="dropdown-menu-radio-item-indicator"
       >
         <DropdownMenuPrimitive.ItemIndicator>
-          <Icon name="check" />
+          <Icon name="check" fallback={CheckIcon} />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -231,7 +233,7 @@ function DropdownMenuSubTrigger({
     >
       {children}
       {/* onu: no rtl:rotate-180 here; <Icon> already mirrors chevron-right in RTL, rotating flipped it back. */}
-      <Icon name="chevron-right" className="ms-auto" />
+      <Icon name="chevron-right" fallback={ChevronRightIcon} className="ms-auto" />
     </DropdownMenuPrimitive.SubTrigger>
   )
 }

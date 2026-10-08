@@ -19,6 +19,20 @@ import { Icon } from '@javaabu/onu';
 | `label` | Accessible name. Without it the icon is decorative |
 | `size` | `xs`, `sm`, `md`, `lg`, `xl` or a number of pixels |
 | `flip` | Force RTL mirroring on/off (on by default for directional icons) |
+| `fallback` | Icon component or element used when no icon set has `name` |
+
+# How names are resolved
+
+`<Icon name="…">` looks for the name in this order:
+
+1. your overrides from `OnuProvider icons={…}`
+2. the default Lucide set (`lucideIconMap`), which `OnuProvider` supplies
+3. the `fallback` prop
+4. a generic alert icon
+
+Onu's components get the default set from `OnuProvider` instead of importing it, so a page that uses only a few components does not ship all ~250 default icons with each one. For example, importing just `Button` is about 12 kB (brotli) rather than 21 kB. Components that always show the same glyph, such as `Spinner`, a button's loading spinner, dialog close buttons and menu chevrons, pass that Lucide icon as `fallback`. They work even outside `OnuProvider`, and your `icons` overrides still replace them.
+
+Wrap your app in `OnuProvider` (see [Installation](../installation-and-setup)). Outside it, icons chosen by name at runtime, such as `<Button startIcon="add">`, fall back to the generic icon. The `Icon` you import from `@javaabu/onu` is the exception: it includes the default set, so it resolves every name anywhere.
 
 # FontAwesome Pro
 

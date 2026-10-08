@@ -62,6 +62,31 @@ export default tseslint.config(
     },
   },
   {
+    // The full Lucide map (~250 icons) reaches components through OnuProvider's icon context.
+    // Importing it directly puts it in every bundle that uses that component.
+    files: ["packages/onu/src/**/*.{ts,tsx}"],
+    ignores: [
+      "packages/onu/src/icons/index.ts",
+      "packages/onu/src/icons/standalone-icon.tsx",
+      "packages/onu/src/providers/onu-provider.tsx",
+      "**/*.test.{ts,tsx}",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["**/lucide-map"],
+              message:
+                "Use <Icon name> (the default set comes from OnuProvider); for a fixed glyph pass fallback={LucideIcon}. See CONTRIBUTING.md › Icons.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ["**/*.{js,mjs,cjs}"],
     languageOptions: { globals: { ...globals.node } },
   },

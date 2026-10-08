@@ -6,6 +6,7 @@ import { Direction } from "radix-ui"
 import { createTranslator, mergeMessages } from "../i18n/translate"
 import type { OnuLocale, PartialMessages, Translate } from "../i18n/types"
 import { IconContext, type IconSource } from "../icons/icon-context"
+import { lucideIconMap } from "../icons/lucide-map"
 import type { IconMap } from "../icons/types"
 import { en, locales } from "../locales"
 
@@ -114,7 +115,11 @@ export function OnuProvider({
     html.dataset.density = density
   }, [syncDocument, locale.code, dir, density])
 
-  const iconValue = React.useMemo(() => ({ icons, sources: iconSources }), [icons, iconSources])
+  // The default Lucide set is supplied here, not imported by <Icon>, so components with fixed glyphs stay small.
+  const iconValue = React.useMemo(
+    () => ({ icons, sources: iconSources, defaults: lucideIconMap }),
+    [icons, iconSources],
+  )
 
   return (
     <OnuContext.Provider value={value}>
@@ -125,7 +130,12 @@ export function OnuProvider({
   )
 }
 
-/** Onu context. Works without a provider (English, LTR). */
+/**
+ * Onu context. Without a provider it falls back to English and LTR. Icons are the
+ * exception: icon names that components choose at runtime (e.g. `<Button startIcon="add">`)
+ * need `OnuProvider`, which supplies the default icon set. Fixed glyphs (spinners, close
+ * buttons, chevrons) and the `Icon` exported from the package root work without it.
+ */
 export function useOnu() {
   return React.useContext(OnuContext)
 }

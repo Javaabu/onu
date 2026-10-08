@@ -25,7 +25,6 @@ import {
   ChevronsUpDownIcon,
   ChevronsUpIcon,
   ChevronUpIcon,
-  CircleAlertIcon,
   CircleCheckIcon,
   CircleHelpIcon,
   CircleIcon,
@@ -277,6 +276,3 @@ export const lucideIconMap: Record<SemanticIconName, IconComponent> = {
   "zoom-in": ZoomInIcon,
   "zoom-out": ZoomOutIcon,
 }
-
-/** Lucide icon used when a name is not in any map. */
-export const fallbackIcon: IconComponent = CircleAlertIcon

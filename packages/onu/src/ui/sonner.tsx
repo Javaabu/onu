@@ -6,6 +6,8 @@
 import { useTheme } from "../providers/theme-provider"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { CircleCheckIcon, InfoIcon, Loader2Icon, OctagonXIcon, TriangleAlertIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 
 const Toaster = ({ ...props }: ToasterProps) => {
@@ -17,19 +19,19 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       icons={{
         success: (
-          <Icon name="success" className="size-4" />
+          <Icon name="success" fallback={CircleCheckIcon} className="size-4" />
         ),
         info: (
-          <Icon name="info" className="size-4" />
+          <Icon name="info" fallback={InfoIcon} className="size-4" />
         ),
         warning: (
-          <Icon name="warning" className="size-4" />
+          <Icon name="warning" fallback={TriangleAlertIcon} className="size-4" />
         ),
         error: (
-          <Icon name="error" className="size-4" />
+          <Icon name="error" fallback={OctagonXIcon} className="size-4" />
         ),
         loading: (
-          <Icon name="loading" className="size-4 animate-spin" />
+          <Icon name="loading" fallback={Loader2Icon} className="size-4 animate-spin" />
         ),
       }}
       style={

@@ -4,6 +4,8 @@ import * as React from "react"
 import { cn } from "../lib/utils"
 
 import { Button } from "./button"
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 import { useTranslation } from "../providers/onu-provider"
 
@@ -82,7 +84,7 @@ function PaginationPrevious({
       {...props}
     >
       {/* onu: Icon already mirrors in RTL */}
-      <Icon name="chevron-left" data-icon="inline-start" />
+      <Icon name="chevron-left" fallback={ChevronLeftIcon} data-icon="inline-start" />
       <span className="hidden sm:block">
         {text ?? t("common.previous")}
       </span>
@@ -105,7 +107,7 @@ function PaginationNext({
     >
       <span className="hidden sm:block">{text ?? t("common.next")}</span>
       {/* onu: Icon already mirrors in RTL */}
-      <Icon name="chevron-right" data-icon="inline-end" />
+      <Icon name="chevron-right" fallback={ChevronRightIcon} data-icon="inline-end" />
     </PaginationLink>
   )
 }
@@ -125,7 +127,7 @@ function PaginationEllipsis({
       )}
       {...props}
     >
-      <Icon name="more" />
+      <Icon name="more" fallback={MoreHorizontalIcon} />
       <span className="sr-only">{t("common.morePages")}</span>
     </span>
   )

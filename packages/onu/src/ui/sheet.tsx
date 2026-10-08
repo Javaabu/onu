@@ -8,6 +8,8 @@ import { cn } from "../lib/utils"
 import { Dialog as SheetPrimitive } from "radix-ui"
 
 import { Button } from "./button"
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { XIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 import { useTranslation } from "../providers/onu-provider"
 
@@ -75,7 +77,7 @@ function SheetContent({
         {showCloseButton && (
           <SheetPrimitive.Close data-slot="sheet-close" asChild>
             <Button variant="ghost" className="absolute top-3 end-3" size="icon-sm">
-              <Icon name="close" />
+              <Icon name="close" fallback={XIcon} />
               <span className="sr-only"><CloseLabel /></span>
             </Button>
           </SheetPrimitive.Close>

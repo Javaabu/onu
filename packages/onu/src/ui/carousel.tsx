@@ -10,6 +10,8 @@ import useEmblaCarousel, {
 } from "embla-carousel-react"
 
 import { Button } from "./button"
+// onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 // onu: direction and translated labels.
 import { useOnu } from "../providers/onu-provider"
@@ -207,7 +209,7 @@ function CarouselPrevious({
       {...props}
     >
       {/* onu: the Icon already mirrors in RTL; translated label. */}
-      <Icon name="chevron-left" />
+      <Icon name="chevron-left" fallback={ChevronLeftIcon} />
       <span className="sr-only">{t("common.previousSlide")}</span>
     </Button>
   )
@@ -239,7 +241,7 @@ function CarouselNext({
       {...props}
     >
       {/* onu: the Icon already mirrors in RTL; translated label. */}
-      <Icon name="chevron-right" />
+      <Icon name="chevron-right" fallback={ChevronRightIcon} />
       <span className="sr-only">{t("common.nextSlide")}</span>
     </Button>
   )
