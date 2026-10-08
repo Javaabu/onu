@@ -49,6 +49,19 @@ Components only talk to a small `MapAdapter` interface (map, marker, circle, pol
 <MapProvider adapter={myAdapter}>…</MapProvider>
 ```
 
+## Verified against Google Maps JS API
+
+The Google adapter was driven end to end in Chromium (Playwright) against the real **Maps JavaScript API 3.66.7** (`weekly` channel, loaded by `@vis.gl/react-google-maps` 1.10), with `DEMO_MAP_ID`, terra-draw 1.37 + terra-draw-google-maps-adapter 1.7, deck.gl 9.4 and `@googlemaps/markerclusterer` 2.6. Every maps showcase demo and the Maps and operations sample pages were checked in light/LTR/English and dark/RTL/Dhivehi:
+
+- the script loads once, every map creates a `google.maps.Map` with tiles, advanced markers, polygons, polylines and circles;
+- clicks, marker selection, panning from a list outside the map, `fitBounds` / initial fit, and keeping the camera when the colour scheme switches;
+- terra-draw drawing and vertex editing (polygon and route), clustering, and deck.gl heatmap and trail overlays;
+- `colorScheme` follows dark mode, and with `dv` Google's labels fall back to English while Onu's UI is Dhivehi and RTL.
+
+Limitations of that run: it had **no API key**, so Google showed its "for development purposes only" watermark and dialog, logged `NoApiKeys` / `InvalidKey` / `ApiProjectMapError`, and drew the map as a raster map. Services that need a key were not verified: geocoding search (`search={true}`) and routed directions (`MapNavigation` fell back to straight lines, as designed). Google also logs that `DirectionsService` is deprecated in favour of `google.maps.routes.Route.computeRoutes` (still supported). `@googlemaps/markerclusterer` 2.6 logs a deprecation warning about `addListener` on its cluster markers.
+
+To repeat the check in the examples app without a key, build it with `VITE_GOOGLE_MAPS_FORCE=1 VITE_GOOGLE_MAPS_MAP_ID=DEMO_MAP_ID`. The flag only exists in the examples app: it wraps the app in `<MapProvider adapter={googleMapsAdapter}>`. The library itself still uses the placeholder when an app sets no key.
+
 ## Props
 
 | Prop          | Type                | Default                             | Description                            |

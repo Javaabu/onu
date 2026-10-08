@@ -20,6 +20,8 @@ Each stop: `{ id, label, position: LatLng | null }`. Submits `stops[0][label]`, 
 Without a Google Maps API key the map renders a labelled **schematic preview** (no tiles, no network) instead of crashing. Everything else, including the text alternative, keeps working. See [MapProvider](./map-provider).
 :::
 
+Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provider#verified-against-google-maps-js-api)): clicking the map adds a stop, and the stops and path render.
+
 ## Props
 
 | Prop                                          | Type                                | Default | Description                  |

@@ -34,6 +34,8 @@ The search box is also available on its own as `PlaceSearchBox`, and its state a
 Without a Google Maps API key the map renders a labelled **schematic preview** (no tiles, no network) instead of crashing. Everything else, including the text alternative, keeps working. See [MapProvider](./map-provider).
 :::
 
+Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provider#verified-against-google-maps-js-api)): clicking the map moves the pin and the value, and an empty picker places a pin on click.
+
 ## Props
 
 | Prop                                  | Type                                     | Default        | Description                                 |

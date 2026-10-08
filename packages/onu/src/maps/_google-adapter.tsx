@@ -102,6 +102,28 @@ function InitialFit({ bounds, doneRef }: { bounds?: LatLngBounds; doneRef: React
   return null
 }
 
+type Camera = { center: LatLng; zoom: number }
+
+/**
+ * Remembers the camera across map instances. The map is recreated when the colour
+ * scheme or Map ID changes (both are fixed at creation), and should reopen where the
+ * user left it instead of jumping back to the initial centre and zoom.
+ */
+function CameraMemory({ memory }: { memory: React.RefObject<Camera | null> }) {
+  const map = useMap()
+  React.useEffect(() => {
+    if (!map) return
+    if (memory.current) map.moveCamera(memory.current)
+    const listener = map.addListener("idle", () => {
+      const center = map.getCenter()
+      const zoom = map.getZoom()
+      if (center && zoom !== undefined) memory.current = { center: center.toJSON(), zoom }
+    })
+    return () => listener.remove()
+  }, [map, memory])
+  return null
+}
+
 function GoogleMapView({
   label,
   defaultCenter,
@@ -117,8 +139,9 @@ function GoogleMapView({
   className,
   children,
 }: AdapterMapProps) {
-  // Outside the keyed map, so switching light/dark doesn't fit again.
+  // Outside the keyed map, so switching light/dark keeps the camera and doesn't fit again.
   const fitted = React.useRef(false)
+  const camera = React.useRef<Camera | null>(null)
   return (
     <div role="region" aria-label={label} data-slot="google-map" className={cn("relative size-full", className)}>
       <GoogleMap
@@ -142,6 +165,7 @@ function GoogleMapView({
           if (view) onViewChange?.(view)
         }}
       >
+        <CameraMemory memory={camera} />
         <HandleBinder handleRef={handleRef} />
         <InitialFit bounds={defaultBounds} doneRef={fitted} />
         {children}
@@ -306,6 +330,9 @@ function GoogleDraw({
   const { colors } = useMapEngine()
   const [draw, setDraw] = React.useState<TerraDrawInstance | null>(null)
   const lastEmitted = React.useRef<string>("")
+  // Set while the value is pushed into terra-draw: its `clear()` reports a delete,
+  // which must not be echoed back as the user removing every shape.
+  const syncing = React.useRef(false)
   const callbacks = React.useRef({ onChange, onSelect, onFinish })
   React.useEffect(() => {
     callbacks.current = { onChange, onSelect, onFinish }
@@ -316,6 +343,7 @@ function GoogleDraw({
     if (!map) return
     let cancelled = false
     let instance: TerraDrawInstance | null = null
+    let waitForProjection: google.maps.MapsEventListener | null = null
     Promise.all([import("terra-draw"), import("terra-draw-google-maps-adapter")]).then(([td, tdg]) => {
       if (cancelled) return
       const lineStyles = { lineStringColor: color as `#${string}`, lineStringWidth: 4 }
@@ -376,16 +404,26 @@ function GoogleDraw({
         if (context.action === "draw") callbacks.current.onFinish?.(String(id))
       })
       instance.on("change", (_ids, type) => {
-        if (type === "delete") emit()
+        if (type === "delete" && !syncing.current) emit()
       })
       instance.on("select", (id) => callbacks.current.onSelect?.(String(id)))
       instance.on("deselect", () => callbacks.current.onSelect?.(null))
       instance.on("ready", () => !cancelled && setDraw(instance))
-      instance.start()
+      // terra-draw binds its pointer listeners to the map's rendered panes, which only
+      // exist once the map has a projection. Starting earlier throws inside terra-draw.
+      if (map.getProjection()) instance.start()
+      else
+        waitForProjection = google.maps.event.addListenerOnce(map, "projection_changed", () => {
+          waitForProjection = null
+          if (!cancelled) instance?.start()
+        })
     })
     return () => {
       cancelled = true
-      instance?.stop()
+      waitForProjection?.remove()
+      if (instance?.enabled) instance.stop()
+      // The next instance (new tone or kind) starts empty: load the shapes into it again.
+      lastEmitted.current = ""
       setDraw(null)
     }
   }, [map, kind, color])
@@ -396,8 +434,13 @@ function GoogleDraw({
     const serialized = JSON.stringify(shapes)
     if (serialized === lastEmitted.current) return
     lastEmitted.current = serialized
-    draw.clear()
-    draw.addFeatures(toFeatures(shapes, kind) as Parameters<TerraDrawInstance["addFeatures"]>[0])
+    syncing.current = true
+    try {
+      draw.clear()
+      draw.addFeatures(toFeatures(shapes, kind) as Parameters<TerraDrawInstance["addFeatures"]>[0])
+    } finally {
+      syncing.current = false
+    }
   }, [draw, shapes, kind])
 
   React.useEffect(() => {
@@ -568,13 +611,15 @@ function GoogleClusters({ markers, selectedId, onMarkerClick }: AdapterClusterPr
         glyphColor: colors.background,
         scale: m.id === selectedId ? 1.25 : 1,
       })
+      // PinElement is itself the marker content (`pin.element` is deprecated), and
+      // `gmp-click` replaces the deprecated `addListener("click")`.
       const el = new markerLib.AdvancedMarkerElement({
         position: m.position,
         title: m.title,
-        content: pin.element,
+        content: pin,
         gmpClickable: true,
       })
-      el.addListener("click", () => clickRef.current?.(m.id))
+      el.addEventListener("gmp-click", () => clickRef.current?.(m.id))
       return el
     })
     clusterer.clearMarkers()
