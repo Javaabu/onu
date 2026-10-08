@@ -51,18 +51,6 @@ export function AuroraRoot({ className, children }: { className?: string; childr
         <div className="ag-aurora__curtain" />
         <div className="ag-aurora__grain" />
       </div>
-      <svg aria-hidden width="0" height="0" className="absolute">
-        <defs>
-          <linearGradient id="ag-fade-a" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" style={{ stopColor: "var(--ag-a)", stopOpacity: 0.45 }} />
-            <stop offset="100%" style={{ stopColor: "var(--ag-a)", stopOpacity: 0 }} />
-          </linearGradient>
-          <linearGradient id="ag-fade-b" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" style={{ stopColor: "var(--ag-b)", stopOpacity: 0.35 }} />
-            <stop offset="100%" style={{ stopColor: "var(--ag-b)", stopOpacity: 0 }} />
-          </linearGradient>
-        </defs>
-      </svg>
       {children}
     </div>
   )

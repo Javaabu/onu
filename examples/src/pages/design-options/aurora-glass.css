@@ -483,18 +483,6 @@
   filter: drop-shadow(0 0 6px var(--ag-glow));
   stroke-width: 2.25px;
 }
-.design-aurora-glass .ag-chart .recharts-area-area[fill="var(--color-requests)"] {
-  fill: url(#ag-fade-a);
-  fill-opacity: 1;
-}
-.design-aurora-glass .ag-chart .recharts-area-area[fill="var(--color-resolved)"] {
-  fill: url(#ag-fade-b);
-  fill-opacity: 1;
-}
-.design-aurora-glass .ag-chart .recharts-area-area[fill="var(--color-sessions)"] {
-  fill: url(#ag-fade-a);
-  fill-opacity: 1;
-}
 .design-aurora-glass .ag-chart .recharts-cartesian-grid line {
   stroke: color-mix(in oklab, var(--foreground) 8%, transparent);
 }
