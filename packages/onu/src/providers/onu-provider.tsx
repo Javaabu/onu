@@ -130,7 +130,12 @@ export function OnuProvider({
   )
 }
 
-/** Onu context. Works without a provider (English, LTR). */
+/**
+ * Onu context. Without a provider it falls back to English and LTR. Icons are the
+ * exception: icon names that components choose at runtime (e.g. `<Button startIcon="add">`)
+ * need `OnuProvider`, which supplies the default icon set. Fixed glyphs (spinners, close
+ * buttons, chevrons) and the `Icon` exported from the package root work without it.
+ */
 export function useOnu() {
   return React.useContext(OnuContext)
 }

@@ -5,7 +5,7 @@
  *
  *   1. resolve `cn-*` style classes with the chosen style (default: nova)
  *   2. physical → logical classes for RTL (`ml-2` → `ms-2`, …)
- *   3. icon placeholders → Onu's semantic <Icon name="…" /> (R6.5)
+ *   3. icon placeholders → Onu's semantic <Icon name="…" fallback={Glyph} /> (R6.5, see shadcn-icons.mjs)
  *   4. registry import aliases → package-relative imports
  *
  * Usage:
@@ -22,6 +22,8 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { createRequire } from "node:module"
 import { createStyleMap, transformDirection, transformStyle } from "shadcn/utils"
+
+import { readLucideMap, replaceIcons } from "./shadcn-icons.mjs"
 
 const here = path.dirname(fileURLToPath(import.meta.url))
 const outDir = path.resolve(here, "../src/ui")
@@ -48,38 +50,6 @@ const SKIP = new Set([
   "questionnaire.tsx",
 ])
 
-/** Lucide names used by shadcn → Onu semantic icon names. */
-const ICON_NAMES = {
-  CheckIcon: "check",
-  ChevronDownIcon: "chevron-down",
-  ChevronLeftIcon: "chevron-left",
-  ChevronRightIcon: "chevron-right",
-  ChevronUpIcon: "chevron-up",
-  ArrowDownIcon: "arrow-down",
-  ArrowLeftIcon: "arrow-left",
-  ArrowRightIcon: "arrow-right",
-  CircleCheckIcon: "success",
-  InfoIcon: "info",
-  MinusIcon: "minus",
-  MoreHorizontalIcon: "more",
-  OctagonXIcon: "error",
-  PanelLeftIcon: "sidebar",
-  SearchIcon: "search",
-  TriangleAlertIcon: "warning",
-  XIcon: "close",
-  Loader2Icon: "loading",
-  LoaderIcon: "loading",
-  CircleIcon: "dot",
-  GripVerticalIcon: "grip-vertical",
-}
-
-function kebab(name) {
-  return name
-    .replace(/Icon$/, "")
-    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
-    .toLowerCase()
-}
-
 if (!src) {
   src = mkdtempSync(path.join(tmpdir(), "shadcn-"))
   console.log(`Cloning shadcn-ui/ui into ${src} …`)
@@ -101,19 +71,7 @@ if (!existsSync(uiDir) || !existsSync(styleFile)) {
 }
 
 const styleMap = createStyleMap(readFileSync(styleFile, "utf8"))
-
-function replaceIcons(code) {
-  let used = false
-  const out = code.replace(/<IconPlaceholder\b([\s\S]*?)\/>/g, (_, attrs) => {
-    used = true
-    const lucide = /lucide=(?:"([A-Za-z0-9]+)"|\{([^}]+)\})/.exec(attrs)
-    const rest = attrs.replace(/\s(lucide|tabler|hugeicons|phosphor|remixicon)=(?:"[^"]*"|\{[^}]*\})/g, "").trim()
-    const name = lucide?.[1] ? `"${ICON_NAMES[lucide[1]] ?? kebab(lucide[1])}"` : `{${lucide?.[2] ?? '"dot"'}}`
-    return `<Icon name=${name}${rest ? " " + rest : ""} />`
-  })
-  if (!used) return code.replace(/import \{ IconPlaceholder \} from "[^"]+"\n/, "")
-  return out.replace(/import \{ IconPlaceholder \} from "[^"]+"/, 'import { Icon } from "../icons/icon"')
-}
+const lucideMap = readLucideMap()
 
 function rewriteImports(code) {
   return code
@@ -136,7 +94,7 @@ for (const file of files) {
   code = code.replace(/ cn-[a-z0-9-]+(?=[ "'`])/g, "").replace(/(["'`])cn-[a-z0-9-]+ ?/g, "$1")
   // <Icon> already mirrors directional icons in RTL; shadcn's extra rotation would flip them back.
   code = code.replace(/ ?rtl:rotate-180 ?/g, (m) => (m.startsWith(" ") && m.endsWith(" ") ? " " : ""))
-  code = replaceIcons(code)
+  code = replaceIcons(code, lucideMap)
   code = rewriteImports(code)
   const header = `// Vendored from shadcn/ui (radix base, ${style} style, RTL) by scripts/sync-shadcn.mjs.\n// Onu changes are marked with "onu:" comments; keep them when re-syncing.\n`
   code = code.startsWith('"use client"') ? code.replace('"use client"\n', `"use client"\n\n${header}`) : header + code
