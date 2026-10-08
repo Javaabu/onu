@@ -4,12 +4,23 @@
  * Derived shades use color-mix() (baseline browsers); automatic contrast uses
  * relative colour syntax where supported (R9.2, R9.3).
  *
+ * Brand tint: the neutrals (secondary, muted, accent, border, input and the sidebar
+ * ones) are mixed with a little of the primary colour, so setting --onu-primary
+ * re-brands hovers, selected items, borders and the sidebar too, not just buttons.
+ * The neutral starting points are --onu-neutral-* (from tokens.json); the mix
+ * strengths are the --tint-* variables below (a percentage of primary).
+ *   - --onu-tint scales every mix: 100% (default), 50% for half, 0% for plain neutrals.
+ *     `data-onu-tint="none"` on any element does the same as --onu-tint: 0%.
+ *   - Setting a token itself (e.g. --onu-accent) replaces the tinted value.
+ * Mixing is in oklab: oklch mixing swings the hue of near-greys.
+ *
  * Scoped themes (R9.6): set tokens on any element together with the
  * `data-onu-theme` attribute so the derived variables are recomputed there:
  *   <section data-onu-theme style="--onu-primary: oklch(0.6 0.2 260)">…</section>
  */
 :root,
 [data-onu-theme],
+[data-onu-tint],
 .dark,
 [data-theme="dark"] {
   --primary: var(--onu-primary);
@@ -25,12 +36,57 @@
   --card-foreground: var(--onu-card-foreground);
   --popover: var(--onu-popover);
   --popover-foreground: var(--onu-popover-foreground);
-  --secondary: var(--onu-secondary);
-  --secondary-foreground: var(--onu-secondary-foreground);
-  --muted: var(--onu-muted);
-  --muted-foreground: var(--onu-muted-foreground);
-  --accent: var(--onu-accent);
-  --accent-foreground: var(--onu-accent-foreground);
+  --secondary: var(
+    --onu-secondary,
+    color-mix(
+      in oklab,
+      color-mix(in oklab, var(--primary) var(--tint-secondary), var(--onu-neutral-secondary)) var(--onu-tint, 100%),
+      var(--onu-neutral-secondary)
+    )
+  );
+  --secondary-foreground: var(
+    --onu-secondary-foreground,
+    color-mix(
+      in oklab,
+      color-mix(in oklab, var(--primary) var(--tint-secondary-foreground), var(--onu-neutral-secondary-foreground))
+        var(--onu-tint, 100%),
+      var(--onu-neutral-secondary-foreground)
+    )
+  );
+  --muted: var(
+    --onu-muted,
+    color-mix(
+      in oklab,
+      color-mix(in oklab, var(--primary) var(--tint-muted), var(--onu-neutral-muted)) var(--onu-tint, 100%),
+      var(--onu-neutral-muted)
+    )
+  );
+  --muted-foreground: var(
+    --onu-muted-foreground,
+    color-mix(
+      in oklab,
+      color-mix(in oklab, var(--primary) var(--tint-muted-foreground), var(--onu-neutral-muted-foreground))
+        var(--onu-tint, 100%),
+      var(--onu-neutral-muted-foreground)
+    )
+  );
+  --accent: var(
+    --onu-accent,
+    color-mix(
+      in oklab,
+      color-mix(in oklab, var(--primary) var(--tint-accent), var(--onu-neutral-accent)) var(--onu-tint, 100%),
+      var(--onu-neutral-accent)
+    )
+  );
+  --accent-foreground: var(
+    --onu-accent-foreground,
+    color-mix(
+      in oklab,
+      color-mix(in oklab, var(--primary) var(--tint-accent-foreground), var(--onu-neutral-accent-foreground))
+        var(--onu-tint, 100%),
+      var(--onu-neutral-accent-foreground)
+    )
+  );
   --destructive: var(--onu-destructive);
   --destructive-foreground: var(--onu-destructive-foreground);
   --success: var(--onu-success);
@@ -39,8 +95,22 @@
   --warning-foreground: var(--onu-warning-foreground);
   --info: var(--onu-info);
   --info-foreground: var(--onu-info-foreground);
-  --border: var(--onu-border);
-  --input: var(--onu-input);
+  --border: var(
+    --onu-border,
+    color-mix(
+      in oklab,
+      color-mix(in oklab, var(--primary) var(--tint-border), var(--onu-neutral-border)) var(--onu-tint, 100%),
+      var(--onu-neutral-border)
+    )
+  );
+  --input: var(
+    --onu-input,
+    color-mix(
+      in oklab,
+      color-mix(in oklab, var(--primary) var(--tint-input), var(--onu-neutral-input)) var(--onu-tint, 100%),
+      var(--onu-neutral-input)
+    )
+  );
   --ring: var(--onu-ring, var(--primary));
 
   --chart-1: var(--onu-chart-1, var(--primary));
@@ -52,13 +122,48 @@
   --chart-7: var(--onu-chart-7);
   --chart-8: var(--onu-chart-8);
 
-  --sidebar: var(--onu-sidebar);
+  --sidebar: var(
+    --onu-sidebar,
+    color-mix(
+      in oklab,
+      color-mix(in oklab, var(--primary) var(--tint-sidebar), var(--onu-neutral-sidebar)) var(--onu-tint, 100%),
+      var(--onu-neutral-sidebar)
+    )
+  );
   --sidebar-foreground: var(--onu-sidebar-foreground);
   --sidebar-primary: var(--onu-sidebar-primary, var(--primary));
   --sidebar-primary-foreground: var(--onu-sidebar-primary-foreground, var(--primary-foreground));
-  --sidebar-accent: var(--onu-sidebar-accent);
-  --sidebar-accent-foreground: var(--onu-sidebar-accent-foreground);
-  --sidebar-border: var(--onu-sidebar-border);
+  --sidebar-accent: var(
+    --onu-sidebar-accent,
+    color-mix(
+      in oklab,
+      color-mix(in oklab, var(--primary) var(--tint-sidebar-accent), var(--onu-neutral-sidebar-accent))
+        var(--onu-tint, 100%),
+      var(--onu-neutral-sidebar-accent)
+    )
+  );
+  --sidebar-accent-foreground: var(
+    --onu-sidebar-accent-foreground,
+    color-mix(
+      in oklab,
+      color-mix(
+          in oklab,
+          var(--primary) var(--tint-sidebar-accent-foreground),
+          var(--onu-neutral-sidebar-accent-foreground)
+        )
+        var(--onu-tint, 100%),
+      var(--onu-neutral-sidebar-accent-foreground)
+    )
+  );
+  --sidebar-border: var(
+    --onu-sidebar-border,
+    color-mix(
+      in oklab,
+      color-mix(in oklab, var(--primary) var(--tint-sidebar-border), var(--onu-neutral-sidebar-border))
+        var(--onu-tint, 100%),
+      var(--onu-neutral-sidebar-border)
+    )
+  );
   --sidebar-ring: var(--ring);
 
   --radius: var(--onu-radius);
@@ -72,6 +177,7 @@
 @supports (color: oklch(from red l c h)) {
   :root,
   [data-onu-theme],
+  [data-onu-tint],
   .dark,
   [data-theme="dark"] {
     --primary-foreground: var(
@@ -83,17 +189,61 @@
 
 /* Dark mode: lift the brand colour so it keeps contrast on dark surfaces (R10.4). */
 .dark,
-[data-theme="dark"] {
+[data-theme="dark"],
+:is(.dark, [data-theme="dark"]) :is([data-onu-theme], [data-onu-tint]) {
   --primary: var(--onu-primary-dark, color-mix(in oklab, var(--onu-primary), white 18%));
   --primary-hover: color-mix(in oklab, var(--primary), white 10%);
   --primary-active: color-mix(in oklab, var(--primary), white 18%);
+  /* Dark cards and the sidebar are lighter than the page, so the subtle tint needs more primary to show on them. */
+  --primary-subtle: color-mix(in oklab, var(--primary) 20%, var(--background));
 }
 
 @supports (color: oklch(from red l c h)) {
   .dark,
-  [data-theme="dark"] {
+  [data-theme="dark"],
+  :is(.dark, [data-theme="dark"]) :is([data-onu-theme], [data-onu-tint]) {
     --primary: var(--onu-primary-dark, oklch(from var(--onu-primary) max(l, 0.7) c h));
   }
+}
+
+/*
+ * Brand tint strengths: how much primary goes into each neutral. Backgrounds take
+ * a little, hover and selected surfaces (accent) more, and text just enough to
+ * read as the same family. Dark surfaces take slightly more so the tint still shows.
+ */
+:root {
+  --tint-secondary: 7%;
+  --tint-secondary-foreground: 20%;
+  --tint-muted: 2%;
+  --tint-muted-foreground: 10%;
+  --tint-accent: 10%;
+  --tint-accent-foreground: 30%;
+  --tint-border: 6%;
+  --tint-input: 10%;
+  --tint-sidebar: 3%;
+  --tint-sidebar-accent: 10%;
+  --tint-sidebar-accent-foreground: 30%;
+  --tint-sidebar-border: 6%;
+}
+.dark,
+[data-theme="dark"] {
+  --tint-secondary: 10%;
+  --tint-secondary-foreground: 10%;
+  --tint-muted: 6%;
+  --tint-muted-foreground: 8%;
+  --tint-accent: 16%;
+  --tint-accent-foreground: 15%;
+  --tint-border: 4%;
+  --tint-input: 6%;
+  --tint-sidebar: 4%;
+  --tint-sidebar-accent: 16%;
+  --tint-sidebar-accent-foreground: 15%;
+  --tint-sidebar-border: 4%;
+}
+
+/* Opt out of the brand tint: plain neutrals, primary only on primary things. */
+[data-onu-tint="none"] {
+  --onu-tint: 0%;
 }
 
 /*

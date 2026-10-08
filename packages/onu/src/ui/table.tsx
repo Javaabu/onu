@@ -53,7 +53,8 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
   return (
     <tr
       data-slot="table-row"
-      className={cn("hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors has-aria-expanded:bg-muted/50", className)}
+      // onu: selected rows are tinted with the brand colour.
+      className={cn("hover:bg-muted/50 data-[state=selected]:bg-primary-subtle border-b transition-colors has-aria-expanded:bg-muted/50", className)}
       {...props}
     />
   )

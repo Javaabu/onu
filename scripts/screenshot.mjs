@@ -2,7 +2,7 @@
 /**
  * Screenshot a page of the examples app (dev helper).
  *
- *   node scripts/screenshot.mjs <url> <out.png> '{"dark":true,"locale":"dv","dir":"rtl","w":390,"h":844,"full":true}'
+ *   node scripts/screenshot.mjs <url> <out.png> '{"dark":true,"locale":"dv","dir":"rtl","w":390,"h":844,"full":true,"primary":"oklch(0.55 0.2 260)"}'
  *
  * Start the app first: pnpm build:examples && pnpm --filter onu-examples preview --port 4173
  */
@@ -30,6 +30,7 @@ const settings = {
   dir: o.dir ?? "auto",
   density: o.density ?? "default",
   labelLayout: o.labelLayout ?? "stacked",
+  ...(o.primary ? { primary: o.primary } : {}),
 }
 await page.addInitScript(
   ([s, theme]) => {

@@ -13,7 +13,7 @@ export const navTabsVariants = cva(
     variants: {
       variant: {
         line: "h-10 px-3 after:inset-x-1 after:h-0.5 rounded-t-md text-muted-foreground after:absolute after:-bottom-px after:rounded-full after:bg-transparent hover:text-foreground data-active:text-foreground data-active:after:bg-primary",
-        pill: "h-8 px-3 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground data-active:bg-muted data-active:text-foreground",
+        pill: "h-8 px-3 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground data-active:bg-primary-subtle data-active:text-primary-subtle-foreground",
       },
     },
     defaultVariants: { variant: "line" },

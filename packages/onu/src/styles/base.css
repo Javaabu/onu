@@ -4,6 +4,11 @@
   outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
 }
 
+/* Text selection in the brand colour. */
+::selection {
+  background-color: color-mix(in oklab, var(--primary) 25%, transparent);
+}
+
 html {
   -webkit-tap-highlight-color: transparent;
   text-size-adjust: 100%;

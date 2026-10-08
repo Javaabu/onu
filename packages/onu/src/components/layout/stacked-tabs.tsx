@@ -112,7 +112,7 @@ export function StackedTabs({
               className={cn(
                 "gap-2 px-3 py-2 text-sm font-medium flex shrink-0 items-start rounded-lg text-start text-muted-foreground transition-colors outline-none",
                 "touch:min-h-11 hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
-                "disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-muted data-[state=active]:text-foreground",
+                "disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-primary-subtle data-[state=active]:text-primary-subtle-foreground",
                 "[&_svg]:mt-0.5 [&_svg]:size-4 [&_svg]:shrink-0",
                 classNames?.trigger,
               )}
