@@ -2,7 +2,13 @@ import { act, fireEvent, screen, waitFor } from "@testing-library/react"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../test/utils"
-import { highlightCode, normalizeLanguage } from "./_highlight"
+import {
+  CODE_CONTRAST_SURFACES,
+  contrastRatio,
+  highlightCode,
+  normalizeLanguage,
+  readableTokenColor,
+} from "./_highlight"
 import { CodeBlock } from "./code-block"
 
 const code = `const island = "Malé"\n\nconsole.log(island)\n`
@@ -110,5 +116,37 @@ describe("highlightCode", () => {
     expect(await highlightCode("x", "not-a-language")).toBeNull()
     const tokens = await highlightCode("echo hi", "sh", { light: "github-light", dark: "github-dark" })
     expect(tokens?.[0]?.map((t) => t.content).join("")).toBe("echo hi")
+  })
+
+  it("keeps every token colour at 4.5:1 or more against the code surface", async () => {
+    const tokens = await highlightCode(
+      'import { a } from "b"\n// a comment\nexport function f() {\n  return 1\n}',
+      "tsx",
+    )
+    const styles = tokens!.flat().flatMap((t) => (t.style ? [t.style] : []))
+    expect(styles.length).toBeGreaterThan(0)
+    for (const style of styles) {
+      expect(contrastRatio(style["--shiki-light"]!, CODE_CONTRAST_SURFACES.light)).toBeGreaterThanOrEqual(4.5)
+      expect(contrastRatio(style["--shiki-dark"]!, CODE_CONTRAST_SURFACES.dark)).toBeGreaterThanOrEqual(4.5)
+    }
+  })
+})
+
+describe("readableTokenColor", () => {
+  it("darkens light-mode and lightens dark-mode colours only as far as needed", () => {
+    // GitHub light keyword red and the shared GitHub comment grey fall short of AA.
+    const red = readableTokenColor("#D73A49", "light")
+    expect(contrastRatio(red, CODE_CONTRAST_SURFACES.light)).toBeGreaterThanOrEqual(4.5)
+    expect(contrastRatio(red, CODE_CONTRAST_SURFACES.light)).toBeLessThan(4.7)
+    const grey = readableTokenColor("#6A737D", "dark")
+    expect(contrastRatio(grey, CODE_CONTRAST_SURFACES.dark)).toBeGreaterThanOrEqual(4.5)
+    expect(contrastRatio(grey, "#6A737D")).toBeGreaterThan(1)
+  })
+
+  it("keeps passing, translucent and non-hex colours", () => {
+    expect(readableTokenColor("#24292E", "light")).toBe("#24292E")
+    expect(readableTokenColor("#E1E4E8", "dark")).toBe("#E1E4E8")
+    expect(readableTokenColor("#6A737D80", "dark")).toBe("#6A737D80")
+    expect(readableTokenColor("currentColor", "light")).toBe("currentColor")
   })
 })
