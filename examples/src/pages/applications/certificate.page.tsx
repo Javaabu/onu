@@ -1,4 +1,5 @@
-import { BackButton, Button, Icon, Logo, PrintButton, StatusBadge, toast } from "@javaabu/onu"
+import { BackButton, Button, Logo, PrintButton, StatusBadge, toast } from "@javaabu/onu"
+import { QrCode } from "@javaabu/onu/media"
 
 import { CitizenShell } from "../_shared/shells"
 import { useTr } from "../_shared/i18n"
@@ -100,16 +101,13 @@ export default function CertificatePage() {
                 </p>
               </div>
               <figure className="gap-1 grid justify-items-center">
-                <div
-                  role="img"
-                  aria-label={tr(
-                    `QR code to verify licence ${LICENCE}`,
-                    `ލައިސަންސް ${LICENCE} ޗެކްކުރާ ކިއުއާރް ކޯޑު`,
-                  )}
-                  className="size-28 flex items-center justify-center rounded-md border-2 border-dashed border-foreground/40 bg-muted"
-                >
-                  <Icon name="qr-code" className="size-16 text-foreground/70" />
-                </div>
+                <QrCode
+                  value={`https://verify.trade.gov.mv/${LICENCE}`}
+                  size={112}
+                  quietZone={2}
+                  logo={logoSrc}
+                  label={tr(`QR code to verify licence ${LICENCE}`, `ލައިސަންސް ${LICENCE} ޗެކްކުރާ ކިއުއާރް ކޯޑު`)}
+                />
                 <figcaption className="text-xs text-muted-foreground">
                   {tr("Scan to verify", "ޗެކްކުރުމަށް ސްކޭންކުރޭ")}
                   <br />

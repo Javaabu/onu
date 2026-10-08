@@ -108,6 +108,16 @@ export const file = {
   downloadFile: "Download {name}",
   downloadIn: "Download {name} in {language}",
 
+  // QR code
+  qrCode: "QR code",
+  qrActions: "QR code actions",
+  qrDownloadPng: "Download PNG",
+  qrDownloadSvg: "Download SVG",
+  qrCopyValue: "Copy text",
+  qrCopied: "Text copied",
+  qrCopyFailed: "Could not copy",
+  qrTooLong: "This is too long to fit in a QR code.",
+
   // Video embed
   playVideo: "Play video: {title}",
 

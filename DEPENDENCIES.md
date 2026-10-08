@@ -31,6 +31,7 @@ Selection order: shadcn/ui component → reputable library (shadcn ecosystem fir
 | `react-dropzone`                                   | File drop zones                                                            | MIT        |                                                                                                  |
 | `react-phone-number-input`                         | Phone input (libphonenumber)                                               | MIT        | Default region MV                                                                                |
 | `@sindresorhus/slugify`                            | Slug generator                                                             | MIT        |                                                                                                  |
+| `uqr`                                              | QR code encoding for `QrCode` (media entry); Onu renders the SVG           | MIT        | unjs; zero-dep, typed. Picked over `qrcode` (Node deps), `qrcode-generator` (stale)              |
 
 ## Optional peers (entry points)
 
