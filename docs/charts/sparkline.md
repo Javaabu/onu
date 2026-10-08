@@ -25,7 +25,7 @@ import { Sparkline } from "@javaabu/onu/charts"
 | `color`       | `string`                         | `var(--chart-1)` | Any token or CSS colour                          |
 | `height`      | `number`                         | `32`             | Height in px; width follows the container        |
 | `valueFormat` | `ValueFormat`                    | `"number"`       | Formats the values in the summary                |
-| `animate`     | `boolean`                        | `false`          | Animate (off under reduced motion)               |
+| `animate`     | `boolean`                        | `false`          | Animate (off under reduced motion, see below)    |
 | `className`   | `string`                         |                  | Classes for the wrapper                          |
 
 Other `<div>` props are passed to the wrapper.
@@ -37,3 +37,5 @@ The line runs right to left in RTL, so the latest value is on the left, matching
 ## Accessibility
 
 A sparkline is too small for a data table toggle. Instead the wrapper is `role="img"` with a full summary as its name, e.g. "Daily sign-ups: 8 values, from 12 to 24. Lowest 12, highest 24." It is not focusable. When a sparkline is the only place a figure appears, show the figure as text next to it too.
+
+Animation follows the same rules as the other charts: never under `prefers-reduced-motion`, and not inside `<ChartAnimationProvider animate={false}>` (see [BarChart](./bar-chart#animation)).

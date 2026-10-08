@@ -138,6 +138,7 @@ export function BarChart({
               </>
             )}
             <ChartTooltip
+              isAnimationActive={isAnimationActive}
               trigger={trigger}
               cursor={false}
               content={

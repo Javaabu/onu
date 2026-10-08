@@ -312,6 +312,7 @@ export function TimeSeriesChart({
               width="auto"
             />
             <ChartTooltip
+              isAnimationActive={isAnimationActive}
               trigger={trigger}
               cursor={variant === "bar" ? false : undefined}
               content={
