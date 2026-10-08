@@ -517,6 +517,151 @@
   -webkit-backdrop-filter: blur(12px);
 }
 
+/* ---------- Records index (listing) --------------------------------------- */
+
+.design-neon-bento .nb-listing [data-slot="listing-page"] > header h1 {
+  font-size: clamp(1.875rem, 1.5rem + 1.2vw, 2.5rem);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
+.design-neon-bento.nb-dv .nb-listing [data-slot="listing-page"] > header h1 {
+  letter-spacing: 0;
+}
+
+/* Status tabs: mono counts, neon underline. */
+.design-neon-bento .nb-listing [data-slot="filter-tabs"] [data-slot="badge"] {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.6875rem;
+  background: color-mix(in oklab, var(--foreground) 7%, var(--card));
+  color: var(--muted-foreground);
+}
+.design-neon-bento .nb-listing [data-slot="filter-tabs"] [data-state="active"] [data-slot="badge"] {
+  background: color-mix(in oklab, var(--nb-neon) 16%, var(--card));
+  color: var(--nb-neon-ink);
+  box-shadow: 0 0 14px -4px color-mix(in oklab, var(--nb-neon) var(--nb-glow-strength), transparent);
+}
+.design-neon-bento .nb-listing [data-slot="filter-tabs"] [data-state="active"]::after {
+  background: var(--nb-neon) !important;
+  box-shadow: 0 0 10px var(--nb-neon);
+}
+
+/* The table is a bento tile. */
+.design-neon-bento .nb-listing [data-slot="data-table"] [data-slot="table-container"] {
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 0.5rem);
+  background: linear-gradient(180deg, var(--nb-tile-hi), transparent 120px), var(--card);
+  box-shadow: var(--nb-tile-shadow);
+}
+.design-neon-bento .nb-listing [data-slot="data-table-table"] thead [data-slot="table-row"] {
+  background: color-mix(in oklab, var(--foreground) 3%, transparent);
+  border-color: var(--border);
+}
+.design-neon-bento .nb-listing [data-slot="data-table-table"] th {
+  height: 2.75rem;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.design-neon-bento.nb-dv .nb-listing [data-slot="data-table-table"] th {
+  font-family: inherit;
+  font-size: 0.8125rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.design-neon-bento .nb-listing [data-slot="data-table-table"] th button {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+.design-neon-bento .nb-listing [data-slot="data-table-table"] td {
+  padding-block: 0.75rem;
+}
+.design-neon-bento .nb-listing [data-slot="data-table-table"] tbody [data-slot="table-row"] {
+  position: relative;
+  border-color: color-mix(in oklab, var(--border) 70%, transparent);
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+.design-neon-bento .nb-listing [data-slot="data-table-table"] tbody [data-slot="table-row"]:last-child {
+  border-bottom: 0;
+}
+/* Neon hover glow: a lit edge on the inline start plus a soft tint. */
+.design-neon-bento .nb-listing [data-slot="data-table-table"] tbody [data-slot="table-row"]:hover,
+.design-neon-bento .nb-listing [data-slot="data-table-table"] tbody [data-slot="table-row"]:focus-within {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--nb-neon) 12%, transparent),
+    color-mix(in oklab, var(--nb-neon) 3%, transparent) 60%
+  );
+  box-shadow: inset 2px 0 0 var(--nb-neon);
+}
+.design-neon-bento .nb-listing [data-slot="data-table-table"] tbody [data-slot="table-row"][data-state="selected"] {
+  background: color-mix(in oklab, var(--nb-neon) 15%, var(--card));
+  box-shadow:
+    inset 3px 0 0 var(--nb-neon),
+    inset 0 1px 0 color-mix(in oklab, var(--nb-neon) 30%, transparent),
+    inset 0 -1px 0 color-mix(in oklab, var(--nb-neon) 30%, transparent);
+}
+.design-neon-bento:dir(rtl) .nb-listing [data-slot="data-table-table"] tbody [data-slot="table-row"]:hover,
+.design-neon-bento:dir(rtl) .nb-listing [data-slot="data-table-table"] tbody [data-slot="table-row"]:focus-within {
+  background: linear-gradient(
+    270deg,
+    color-mix(in oklab, var(--nb-neon) 12%, transparent),
+    color-mix(in oklab, var(--nb-neon) 3%, transparent) 60%
+  );
+  box-shadow: inset -2px 0 0 var(--nb-neon);
+}
+.design-neon-bento:dir(rtl)
+  .nb-listing
+  [data-slot="data-table-table"]
+  tbody
+  [data-slot="table-row"][data-state="selected"] {
+  box-shadow:
+    inset -3px 0 0 var(--nb-neon),
+    inset 0 1px 0 color-mix(in oklab, var(--nb-neon) 30%, transparent),
+    inset 0 -1px 0 color-mix(in oklab, var(--nb-neon) 30%, transparent);
+}
+.design-neon-bento .nb-listing .nb-ref,
+.design-neon-bento .nb-listing .nb-ref a {
+  color: var(--nb-neon-ink);
+  font-weight: 500;
+}
+.design-neon-bento .nb-listing [data-slot="checkbox"][data-state="checked"] {
+  box-shadow: 0 0 10px -1px color-mix(in oklab, var(--nb-neon) 70%, transparent);
+}
+
+/* Bulk action bar: a glowing floating strip. */
+.design-neon-bento .nb-listing [data-slot="bulk-action-bar"] {
+  border: 1px solid color-mix(in oklab, var(--nb-neon) 40%, var(--border));
+  border-radius: calc(var(--radius) + 0.375rem);
+  background: color-mix(in oklab, var(--nb-neon) 8%, var(--card));
+  box-shadow: 0 0 32px -12px color-mix(in oklab, var(--nb-neon) var(--nb-glow-strength), transparent);
+}
+
+/* Pagination summary in mono. */
+.design-neon-bento .nb-listing [data-slot="pagination-summary"] {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+}
+.design-neon-bento.nb-dv .nb-listing [data-slot="pagination-summary"] {
+  font-family: inherit;
+  font-size: 0.875rem;
+}
+.design-neon-bento .nb-listing [data-slot="pagination-pages"] [aria-current="page"] {
+  box-shadow: 0 0 16px -4px color-mix(in oklab, var(--nb-neon) 80%, transparent);
+}
+
+/* List and grid views. */
+.design-neon-bento .nb-listing .nb-grid-media {
+  background:
+    radial-gradient(closest-side at 50% 40%, color-mix(in oklab, var(--nb-neon) 14%, transparent), transparent),
+    color-mix(in oklab, var(--foreground) 3%, var(--card));
+}
+
 /* ---------- Focus & motion -------------------------------------------------- */
 
 .design-neon-bento :focus-visible {
