@@ -59,6 +59,34 @@ export default function LineChartDemo() {
           height={240}
         />
       </DemoSection>
+      <DemoSection
+        title="Solid fills"
+        description="Areas fade to the baseline by default; gradient={false} keeps the flat fill."
+        className="gap-6 lg:grid-cols-2 grid"
+      >
+        <LineChart
+          title="Arrivals (solid area)"
+          area
+          gradient={false}
+          data={arrivalsByMonth}
+          categoryKey="month"
+          series={["arrivals"]}
+          config={{ arrivals: { label: "Arrivals" } }}
+          valueFormat="compact"
+          height={240}
+        />
+        <LineChart
+          title="Fish catch, stacked (solid)"
+          area
+          stacked
+          gradient={false}
+          connectNulls
+          data={fishCatch}
+          categoryKey="month"
+          config={fishConfig}
+          height={240}
+        />
+      </DemoSection>
       <DemoSection title="Dhivehi" className="block">
         <div lang="dv">
           <LineChart

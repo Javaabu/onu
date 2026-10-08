@@ -38,6 +38,14 @@ import {
 } from "../ui/chart"
 import { cartesianSummary, cartesianTable, rtlAxes } from "./_cartesian"
 import {
+  areaSeriesFills,
+  barSeriesFills,
+  ChartGradients,
+  GRADIENT_FALLBACK,
+  useChartGradient,
+  useGradientId,
+} from "./_gradient"
+import {
   ChartFrame,
   resolveSeries,
   seriesConfig,
@@ -80,6 +88,11 @@ export interface TimeSeriesChartProps extends ChartBaseProps {
   connectNulls?: boolean
   showLegend?: boolean
   showGrid?: boolean
+  /**
+   * Fill areas and bars with a soft gradient in the series colour. Default `true`, or the
+   * nearest `ChartStyleProvider`. Solid in forced-colours mode.
+   */
+  gradient?: boolean
 }
 
 /** Converts a date-like value to a timestamp (ms), or `null`. */
@@ -175,6 +188,7 @@ export function TimeSeriesChart({
   connectNulls = false,
   showLegend,
   showGrid = true,
+  gradient: gradientProp,
   animate,
   height = 300,
   classNames,
@@ -244,6 +258,12 @@ export function TimeSeriesChart({
   const stackId = stacked ? "stack" : undefined
   // Bars are centred on their time, so pad the axis by half a step to keep the first and last whole.
   const halfStep = variant === "bar" ? smallestStep(rows) / 2 : 0
+  const gradient = useChartGradient(gradientProp) && variant !== "line"
+  const gradientId = useGradientId()
+  const fills =
+    variant === "bar"
+      ? barSeriesFills({ gradient, gradientId, series, data: displayRows, base: stacked ? 0.8 : undefined })
+      : areaSeriesFills({ gradient, gradientId, series, data: displayRows, stacked })
 
   return (
     <ChartFrame
@@ -281,7 +301,8 @@ export function TimeSeriesChart({
       {({ titleId, summaryId }) => (
         <ChartContainer
           config={chartConfig}
-          className={cn("aspect-auto w-full", SVG_LTR, classNames?.chart)}
+          data-fill={variant === "line" ? undefined : gradient ? "gradient" : "solid"}
+          className={cn("aspect-auto w-full", SVG_LTR, gradient && GRADIENT_FALLBACK, classNames?.chart)}
           style={{ height: brush ? height + 40 : height }}
         >
           <Chart
@@ -291,6 +312,7 @@ export function TimeSeriesChart({
             aria-describedby={summaryId}
             margin={{ top: 8, right: 12, bottom: 0, left: 12 }}
           >
+            <ChartGradients defs={fills.defs} />
             {showGrid ? <CartesianGrid vertical={false} /> : null}
             <XAxis
               dataKey={TIME_KEY}
@@ -334,12 +356,14 @@ export function TimeSeriesChart({
                     key={s.key}
                     dataKey={s.key}
                     name={s.key}
-                    fill={`var(--color-${s.key})`}
+                    fill={fills.fill[i]}
                     stackId={stackId}
                     radius={top ? [4, 4, 0, 0] : 0}
                     maxBarSize={48}
                     isAnimationActive={isAnimationActive}
-                  />
+                  >
+                    {fills.cells[i]}
+                  </Bar>
                 )
               }
               const common = {
@@ -354,13 +378,7 @@ export function TimeSeriesChart({
                 activeDot: { r: 4 },
               }
               return variant === "area" ? (
-                <Area
-                  key={s.key}
-                  {...common}
-                  fill={`var(--color-${s.key})`}
-                  fillOpacity={stacked ? 0.4 : 0.15}
-                  stackId={stackId}
-                />
+                <Area key={s.key} {...common} fill={fills.fill[i]} fillOpacity={fills.fillOpacity} stackId={stackId} />
               ) : (
                 <Line key={s.key} {...common} />
               )

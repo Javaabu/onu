@@ -32,6 +32,10 @@ import { LineChart } from "@javaabu/onu/charts"
 
 A `null` (or missing) value leaves a break in the line and shows as "No data" in the table.
 
+## Gradient fills
+
+Areas fade from the series colour (about 50% opacity under the line) to almost clear at the baseline; areas below zero fade towards the zero line from below. Stacked bands fade less (60% to 20%) so each band stays readable where it meets the next. Lines stay solid. Pass `gradient={false}` for the flat fills, or wrap charts in `<ChartStyleProvider gradient={false}>`; see [BarChart](./bar-chart#gradient-fills). Forced-colours mode always draws flat fills.
+
 ## Props
 
 Shares the common chart props (`title`, `description`, `data`, `categoryKey`, `config`, `series`, `valueFormat`, `categoryFormat`, `categoryLabel`, `showLegend`, `showGrid`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [BarChart](./bar-chart).
@@ -44,6 +48,7 @@ Shares the common chart props (`title`, `description`, `data`, `categoryKey`, `c
 | `dots`         | `boolean`                                       | up to 31 points | Dot on each point                                 |
 | `connectNulls` | `boolean`                                       | `false`         | Bridge missing values                             |
 | `dashedSeries` | `string[]`                                      |                 | Series drawn dashed (differs by more than colour) |
+| `gradient`     | `boolean`                                       | `true`          | Gradient area fills (with `area`)                 |
 
 ## RTL
 

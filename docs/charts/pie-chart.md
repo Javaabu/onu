@@ -26,6 +26,10 @@ import { PieChart } from "@javaabu/onu/charts"
 <PieChart variant="donut" centerLabel={null} … />   // no centre label
 ```
 
+## Gradient fills
+
+Pie and donut slices stay solid, also when other charts use gradient fills: adjacent slices need even, clearly different colours to stay distinguishable and to match the legend.
+
 ## Props
 
 Also takes the common chart props (`title`, `description`, `valueFormat`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [BarChart](./bar-chart).

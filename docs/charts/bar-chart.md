@@ -70,6 +70,7 @@ The helpers `formatMVR(value, numberLocale?)`, `formatValue`, `computeDelta` and
 | `orientation`          | `"vertical" \| "horizontal"`                                 | `"vertical"`         | Columns or bars                                       |
 | `stacked`              | `boolean`                                                    | `false`              | Stack series                                          |
 | `radius`               | `number`                                                     | `4` (`0` stacked)    | Bar corner radius                                     |
+| `gradient`             | `boolean`                                                    | `true`               | Gradient fills; `false` for flat bars                 |
 | `valueFormat`          | `ValueFormat`                                                | `"number"`           | See above                                             |
 | `categoryFormat`       | `(value) => string`                                          |                      | Formats categories                                    |
 | `categoryLabel`        | `ReactNode`                                                  | "Category"           | Table column header for categories                    |
@@ -88,6 +89,28 @@ The helpers `formatMVR(value, numberLocale?)`, `formatValue`, `computeDelta` and
 | `classNames`           | `{ root, header, title, description, toggle, chart, table }` |                      | Classes per part                                      |
 
 `ref` points at the `<figure>`. Every Onu chart (`LineChart`, `PieChart`, `TimeSeriesChart`, `PeriodComparisonChart`, `MapChart`) shares the props from `title` to `classNames` that are not specific to bars.
+
+## Gradient fills
+
+Bars are filled with a subtle gradient in the series colour: the full colour at the value end, fading to about 70% at the base (80% for stacked segments, so stacks do not look striped). Negative bars are mirrored, and horizontal bars run towards the inline end, so the gradient flips with the axis in RTL. Pass `gradient={false}` for flat bars:
+
+```tsx
+<BarChart gradient={false} … />
+```
+
+Every Onu chart with areas or bars takes the same `gradient` prop (`LineChart` and `TimeSeriesChart` areas and bars, `PeriodComparisonChart`, `Sparkline`, and `sparklineGradient` on `StatTile`). To change the default for a whole area, wrap it in `ChartStyleProvider`; a chart's own `gradient` prop still wins:
+
+```tsx
+import { ChartStyleProvider } from "@javaabu/onu/charts"
+
+<ChartStyleProvider gradient={false}>
+  <PrintableReport />
+</ChartStyleProvider>
+```
+
+Gradients are SVG `<linearGradient>`s with ids unique to each chart instance (`React.useId`), so many charts can share a page. Their stops use the series colour (`var(--color-<key>)`, set by `ChartContainer` from `config` or `--chart-1…8`), so they follow the theme, dark mode and `--onu-primary`. In forced-colours (high contrast) mode every fill falls back to solid. Lines, legends, tooltip swatches, the data table and accessible names are unchanged. Pie and donut slices stay solid: adjacent slices need clear, even colours to stay distinguishable and to match the legend.
+
+`useChartGradient(gradient?)` returns the combined setting for custom charts. The chart container carries `data-fill="gradient"` or `data-fill="solid"` for styling.
 
 ## Animation
 

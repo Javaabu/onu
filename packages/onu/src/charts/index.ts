@@ -24,6 +24,7 @@ export {
   type ChartView,
   type DataTableModel,
 } from "./_shared"
+export { ChartStyleProvider, useChartGradient, type ChartStyleProviderProps } from "./_gradient"
 export type { CartesianChartProps } from "./_cartesian"
 export * from "./bar-chart"
 export * from "./line-chart"

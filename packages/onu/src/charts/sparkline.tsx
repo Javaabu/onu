@@ -6,6 +6,7 @@ import { Area, AreaChart, Line, LineChart, XAxis, YAxis } from "recharts"
 import { cn } from "../lib/utils"
 import { useOnu } from "../providers/onu-provider"
 import { ChartContainer } from "../ui/chart"
+import { areaGradient, ChartGradients, fillUrl, GRADIENT_FALLBACK, useChartGradient, useGradientId } from "./_gradient"
 import { chartColor, SVG_LTR, useChartAnimation, type ChartDatum } from "./_shared"
 import { useChartFormat, type ValueFormat } from "./format"
 
@@ -25,6 +26,8 @@ export interface SparklineProps extends Omit<React.ComponentProps<"div">, "child
   valueFormat?: ValueFormat
   /** Animate on mount (off under reduced motion). Default `false`. */
   animate?: boolean
+  /** Fade the area fill from the line to the baseline. Default `true`, or the nearest `ChartStyleProvider`. */
+  gradient?: boolean
 }
 
 /** Pulls the numbers out of sparkline data. */
@@ -48,6 +51,7 @@ export function Sparkline({
   height = 32,
   valueFormat = "number",
   animate = false,
+  gradient: gradientProp,
   className,
   style,
   ...props
@@ -58,6 +62,18 @@ export function Sparkline({
   const values = React.useMemo(() => sparklineValues(data, valueKey), [data, valueKey])
   const rows = values.map((value, index) => ({ index, value }))
   const nums = values.filter((v): v is number => v !== null)
+  const gradient = useChartGradient(gradientProp) && variant === "area"
+  const gradientId = useGradientId()
+  // The y domain is the data's range, so the area's baseline is its lowest value (or zero when it crosses zero).
+  const fill = gradient
+    ? areaGradient(
+        gradientId,
+        "var(--color-value)",
+        nums.length ? { min: Math.min(...nums), max: Math.max(...nums) } : null,
+        { top: 0.45, base: 0.02 },
+        0.2,
+      )
+    : null
 
   const summary = nums.length
     ? t("chart.sparklineSummary", {
@@ -94,14 +110,16 @@ export function Sparkline({
       {nums.length ? (
         <ChartContainer
           config={{ value: { label, color } }}
-          className={cn("aspect-auto size-full", SVG_LTR)}
+          className={cn("aspect-auto size-full", SVG_LTR, gradient && GRADIENT_FALLBACK)}
+          data-fill={variant === "area" ? (gradient ? "gradient" : "solid") : undefined}
           aria-hidden="true"
         >
           <Chart data={rows} accessibilityLayer={false} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
+            {fill ? <ChartGradients defs={[fill]} /> : null}
             <XAxis dataKey="index" hide reversed={dir === "rtl"} />
             <YAxis hide domain={["dataMin", "dataMax"]} />
             {variant === "area" ? (
-              <Area {...common} fill="var(--color-value)" fillOpacity={0.2} />
+              <Area {...common} fill={fill ? fillUrl(fill.id) : "var(--color-value)"} fillOpacity={fill ? 1 : 0.2} />
             ) : (
               <Line {...common} />
             )}

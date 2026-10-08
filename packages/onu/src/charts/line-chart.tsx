@@ -21,6 +21,7 @@ import {
   rtlAxes,
   type CartesianChartProps,
 } from "./_cartesian"
+import { areaSeriesFills, ChartGradients, GRADIENT_FALLBACK, useChartGradient, useGradientId } from "./_gradient"
 import { ChartFrame, resolveSeries, seriesConfig, SVG_LTR, useChartAnimation, useTooltipTrigger } from "./_shared"
 import { useChartFormat } from "./format"
 
@@ -61,6 +62,7 @@ export function LineChart({
   dots,
   connectNulls = false,
   dashedSeries,
+  gradient: gradientProp,
   animate,
   height = 300,
   classNames,
@@ -75,6 +77,9 @@ export function LineChart({
   const axes = rtlAxes(dir === "rtl")
   const legend = showLegend ?? series.length > 1
   const showDots = dots ?? data.length <= 31
+  const gradient = useChartGradient(gradientProp) && area
+  const gradientId = useGradientId()
+  const fills = areaSeriesFills({ gradient, gradientId, series, data, stacked })
 
   const summary = cartesianSummary(t, t(area ? "chart.typeArea" : "chart.typeLine"), series, data, fmt.value)
   const table = cartesianTable(
@@ -102,7 +107,8 @@ export function LineChart({
       {({ titleId, summaryId }) => (
         <ChartContainer
           config={chartConfig}
-          className={cn("aspect-auto w-full", SVG_LTR, classNames?.chart)}
+          data-fill={area ? (gradient ? "gradient" : "solid") : undefined}
+          className={cn("aspect-auto w-full", SVG_LTR, gradient && GRADIENT_FALLBACK, classNames?.chart)}
           style={{ height }}
         >
           <Chart
@@ -112,6 +118,7 @@ export function LineChart({
             aria-describedby={summaryId}
             margin={{ top: 8, right: 12, bottom: 0, left: 12 }}
           >
+            <ChartGradients defs={fills.defs} />
             {showGrid ? <CartesianGrid vertical={false} /> : null}
             <XAxis
               dataKey={categoryKey}
@@ -141,7 +148,7 @@ export function LineChart({
               }
             />
             {legend ? <ChartLegend itemSorter={null} content={<ChartLegendContent />} /> : null}
-            {series.map((s) => {
+            {series.map((s, i) => {
               const common = {
                 dataKey: s.key,
                 name: s.key,
@@ -158,8 +165,8 @@ export function LineChart({
                 <Area
                   key={s.key}
                   {...common}
-                  fill={`var(--color-${s.key})`}
-                  fillOpacity={stacked ? 0.4 : 0.15}
+                  fill={fills.fill[i]}
+                  fillOpacity={fills.fillOpacity}
                   stackId={stacked ? "stack" : undefined}
                 />
               ) : (

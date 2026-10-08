@@ -64,6 +64,21 @@ export default function BarChartDemo() {
           height={280}
         />
       </DemoSection>
+      <DemoSection
+        title="Solid fills"
+        description="Bars fade gently towards their base by default; gradient={false} draws flat bars. Wrap a page in <ChartStyleProvider gradient={false}> to switch every chart."
+        className="block"
+      >
+        <BarChart
+          title="Tourist arrivals by month"
+          data={arrivalsByMonth}
+          categoryKey="month"
+          series={["arrivals"]}
+          config={{ arrivals: { label: "Arrivals" } }}
+          gradient={false}
+          height={240}
+        />
+      </DemoSection>
       <DemoSection title="Dhivehi labels" description="Switch the toolbar to RTL to mirror the axes." className="block">
         <div lang="dv">
           <BarChart

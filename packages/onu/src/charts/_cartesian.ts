@@ -34,6 +34,11 @@ export interface CartesianChartProps extends ChartBaseProps {
   showLegend?: boolean
   /** Show grid lines. Default `true`. */
   showGrid?: boolean
+  /**
+   * Fill areas and bars with a soft gradient in the series colour. Default `true`, or the
+   * nearest `ChartStyleProvider`. Solid in forced-colours mode.
+   */
+  gradient?: boolean
 }
 
 /** Screen-reader summary of a category chart: type, size and each series' range. */

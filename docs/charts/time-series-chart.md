@@ -42,6 +42,10 @@ Rows may come in any order; they are sorted oldest first. Dates can be `Date` ob
 />
 ```
 
+## Gradient fills
+
+Areas fade from the series colour to almost clear at the baseline (stacked bands fade less), and bars run from a lighter base to the full colour at the top. Plain lines have no fill. Pass `gradient={false}` for flat fills, or set it for an area with `ChartStyleProvider`; see [BarChart](./bar-chart#gradient-fills).
+
 ## Zoom
 
 `brush` adds a range slider under the chart. Drag the handles, or focus one and use the arrow keys. While zoomed, a **Reset zoom** button appears and "Showing 2 Sep 2026 to 4 Sep 2026" is announced in a polite live region.
@@ -62,6 +66,7 @@ Also takes the common chart props (`title`, `description`, `config`, `series`, `
 | `stacked`           | `boolean`                              | `false`     | Stack the series (areas or bars)        |
 | `brush`             | `boolean`                              | `false`     | Brush to zoom                           |
 | `connectNulls`      | `boolean`                              | `false`     | Bridge gaps                             |
+| `gradient`          | `boolean`                              | `true`      | Gradient area and bar fills             |
 
 Hourly data uses the locale's `hourCycle`. `normalizeTimeSeries(data, dateKey, interval)` and `toTimestamp(value)` are exported.
 

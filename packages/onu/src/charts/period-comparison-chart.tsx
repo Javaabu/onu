@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
+import { Area, Bar, BarChart, CartesianGrid, ComposedChart, Line, LineChart, XAxis, YAxis } from "recharts"
 
 import { cn } from "../lib/utils"
 import { useOnu } from "../providers/onu-provider"
@@ -14,6 +14,14 @@ import {
   type ChartConfig,
 } from "../ui/chart"
 import { cartesianSummary, defaultCategoryFormat, rtlAxes } from "./_cartesian"
+import {
+  areaSeriesFills,
+  barSeriesFills,
+  ChartGradients,
+  GRADIENT_FALLBACK,
+  useChartGradient,
+  useGradientId,
+} from "./_gradient"
 import {
   chartColor,
   ChartFrame,
@@ -52,6 +60,11 @@ export interface PeriodComparisonChartProps extends ChartBaseProps {
   positiveIsGood?: boolean
   /** Hide the headline totals above the chart. */
   hideTotals?: boolean
+  /**
+   * Gradient fills: a soft wash under the current period's line, or bars that fade towards
+   * their base. Default `true`, or the nearest `ChartStyleProvider`. Solid in forced-colours mode.
+   */
+  gradient?: boolean
 }
 
 /** Per-row change between the current and previous value, as a ratio (`null` when not computable). */
@@ -80,6 +93,7 @@ export function PeriodComparisonChart({
   aggregate: mode = "sum",
   positiveIsGood = true,
   hideTotals = false,
+  gradient: gradientProp,
   animate,
   height = 280,
   classNames,
@@ -174,7 +188,16 @@ export function PeriodComparisonChart({
     </div>
   )
 
-  const Chart = variant === "bar" ? BarChart : LineChart
+  const gradient = useChartGradient(gradientProp)
+  const gradientId = useGradientId()
+  const fills =
+    variant === "bar"
+      ? barSeriesFills({ gradient, gradientId, series, data })
+      : areaSeriesFills({ gradient, gradientId, series: [series[0]!], data, strength: { top: 0.32, base: 0.01 } })
+  const fillOf = (key: string) => fills.fill[series.findIndex((s) => s.key === key)]!
+
+  // With gradients, the line variant washes the area under the current period's line.
+  const Chart = variant === "bar" ? BarChart : gradient ? ComposedChart : LineChart
 
   return (
     <ChartFrame
@@ -191,7 +214,8 @@ export function PeriodComparisonChart({
         <ChartContainer
           config={config}
           data-variant={variant}
-          className={cn("aspect-auto w-full", SVG_LTR, classNames?.chart)}
+          data-fill={gradient ? "gradient" : "solid"}
+          className={cn("aspect-auto w-full", SVG_LTR, gradient && GRADIENT_FALLBACK, classNames?.chart)}
           style={{ height }}
         >
           <Chart
@@ -201,6 +225,7 @@ export function PeriodComparisonChart({
             aria-describedby={summaryId}
             margin={{ top: 8, right: 12, bottom: 0, left: 12 }}
           >
+            <ChartGradients defs={fills.defs} />
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey={categoryKey}
@@ -235,21 +260,39 @@ export function PeriodComparisonChart({
                 <Bar
                   dataKey={previousKey}
                   name={previousKey}
-                  fill={`var(--color-${previousKey})`}
+                  fill={fillOf(previousKey)}
                   fillOpacity={0.35}
                   radius={4}
                   isAnimationActive={isAnimationActive}
-                />
+                >
+                  {fills.cells[1]}
+                </Bar>
                 <Bar
                   dataKey={currentKey}
                   name={currentKey}
-                  fill={`var(--color-${currentKey})`}
+                  fill={fillOf(currentKey)}
                   radius={4}
                   isAnimationActive={isAnimationActive}
-                />
+                >
+                  {fills.cells[0]}
+                </Bar>
               </>
             ) : (
               <>
+                {gradient ? (
+                  <Area
+                    dataKey={currentKey}
+                    name={currentKey}
+                    type="monotone"
+                    stroke="none"
+                    fill={fills.fill[0]}
+                    fillOpacity={fills.fillOpacity}
+                    tooltipType="none"
+                    legendType="none"
+                    activeDot={false}
+                    isAnimationActive={isAnimationActive}
+                  />
+                ) : null}
                 <Line
                   dataKey={previousKey}
                   name={previousKey}
