@@ -58,7 +58,8 @@ function PaginationLink({
       asChild
       variant={isActive ? "outline" : "ghost"}
       size={size}
-      className={cn(className)}
+      // onu: the current page is marked in the brand colour.
+      className={cn(isActive && "border-primary text-primary", className)}
     >
       <a
         aria-current={isActive ? "page" : undefined}

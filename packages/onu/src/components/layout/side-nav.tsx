@@ -23,7 +23,7 @@ import {
 export type { NavGroup, NavItem, NavMatch }
 
 export const sideNavItemVariants = cva(
-  "gap-2 min-w-0 font-medium flex w-full items-center rounded-lg text-start text-muted-foreground transition-colors outline-none hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-active:bg-muted data-active:text-foreground [&_svg]:shrink-0",
+  "gap-2 min-w-0 font-medium flex w-full items-center rounded-lg text-start text-muted-foreground transition-colors outline-none hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-active:bg-primary-subtle data-active:text-primary-subtle-foreground [&_svg]:shrink-0",
   {
     variants: {
       size: {

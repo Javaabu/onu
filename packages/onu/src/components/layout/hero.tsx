@@ -174,7 +174,11 @@ export function Hero({
               data-slot="hero-eyebrow"
               className={cn(
                 "text-sm font-medium",
-                resolvedTone === "primary" ? "text-primary-foreground/85" : "text-primary",
+                resolvedTone === "primary"
+                  ? "text-primary-foreground/85"
+                  : resolvedTone === "muted"
+                    ? "text-primary-subtle-foreground" // AA on the tinted muted surface
+                    : "text-primary",
                 classNames?.eyebrow,
               )}
             >

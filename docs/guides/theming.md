@@ -5,7 +5,7 @@ sidebar_position: 2
 
 # One variable for the brand colour
 
-Set `--onu-primary` to any CSS colour and the whole library follows: buttons, focus rings, selected states, the sidebar accent and the first chart colour.
+Set `--onu-primary` to any CSS colour and the whole library follows: buttons, focus rings, links, checked controls, the active sidebar item, tab underlines, selected table rows, the current page, today and selected dates, and the first chart colour. The neutral greys pick up a little of it too (see [Brand tint](#brand-tint)), so hovers, menus, borders and the sidebar read as the same brand.
 
 ```css
 :root {
@@ -16,6 +16,42 @@ Set `--onu-primary` to any CSS colour and the whole library follows: buttons, fo
 Hover and active shades, a subtle tint, and the text colour on top of primary are worked out from it in CSS. Text on primary switches between black and white automatically for contrast (in browsers with relative colour syntax; elsewhere it stays white). Override it with `--onu-primary-foreground` if your brand needs a specific colour.
 
 In dark mode the primary colour is lifted so it keeps its contrast on dark backgrounds. Set `--onu-primary-dark` to choose the dark-mode shade yourself.
+
+# Brand tint
+
+Onu's neutrals are not plain grey: each one is mixed with a small amount of the primary colour in CSS (`color-mix(in oklab, …)`), the way Radix Themes tints its grey scale. Change `--onu-primary` and these follow:
+
+| Token | Used for | Primary mixed in (light / dark) |
+|---|---|---|
+| `--onu-accent`, `--onu-accent-foreground` | Hovered and highlighted menu, command, select and calendar items; ghost and outline button hovers; pressed toggles | 10% / 16%, text 30% / 15% |
+| `--onu-secondary`, `--onu-secondary-foreground` | Secondary buttons and badges (tab counts) | 7% / 10%, text 20% / 10% |
+| `--onu-muted`, `--onu-muted-foreground` | Muted surfaces and secondary text | 2% / 6%, text 10% / 8% |
+| `--onu-border`, `--onu-input` | Borders and input outlines | 6% / 4%, inputs 10% / 6% |
+| `--onu-sidebar`, `--onu-sidebar-accent`, `--onu-sidebar-accent-foreground`, `--onu-sidebar-border` | The app sidebar background, its hovers and border | 3% / 4%, hover 10% / 16% |
+
+The amounts are kept small so text keeps WCAG AA contrast with any reasonable brand colour; dark surfaces take a little more so the tint still shows.
+
+Turn it down or off with `--onu-tint` (a percentage of the amounts above, default `100%`), or with the `data-onu-tint="none"` attribute, on the root or on any element:
+
+```css
+:root {
+    --onu-tint: 50%; /* half strength; 0% for plain neutral greys */
+}
+```
+
+```html
+<html data-onu-tint="none">
+```
+
+Setting a token yourself replaces the tinted value. The neutral starting points are available as `--onu-neutral-<token>` (for example `--onu-neutral-accent`), which is handy for keeping one token grey:
+
+```css
+:root {
+    --onu-border: var(--onu-neutral-border);
+}
+```
+
+A token you set on `:root` applies in dark mode too; set it again inside `.dark` for a different dark value.
 
 # Granular tokens
 
