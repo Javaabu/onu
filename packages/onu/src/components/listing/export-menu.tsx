@@ -45,8 +45,10 @@ const LABEL_KEYS: Record<string, string> = {
 }
 
 /**
- * Export button with a menu of formats (CSV, Excel, PDF). Onu never builds the
- * file: `onExport` does (typically by calling the server with the current filters).
+ * Export button with a menu of formats (CSV, Excel, PDF). The menu does not build
+ * the file: `onExport` does, either by calling the server with the current filters
+ * or in the browser with `exportRows` from `@javaabu/onu/export`:
+ * `onExport={(format) => exportRows({ format, rows, columns, filename: "users" })}`.
  */
 export function ExportMenu({
   onExport,

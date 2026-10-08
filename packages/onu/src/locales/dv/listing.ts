@@ -134,6 +134,8 @@ export const listing = {
   exportPdf: "PDF",
   exportAs: "{format} ގޮތަށް އެކްސްޕޯޓްކުރޭ",
   exported: "އެކްސްޕޯޓް ތައްޔާރު",
+  exportGenerated: "ތައްޔާރުކުރީ {date}",
+  exportRowCount: { one: "{count} ރޯ", other: "{count} ރޯ" },
 
   searchResults: "ހޯދުނު ނަތީޖާ",
   resultsFor: {
@@ -142,6 +144,13 @@ export const listing = {
     other: "“{query}” އަށް {count} ނަތީޖާ",
   },
   resultsInGroup: { one: "{count} ނަތީޖާ", other: "{count} ނަތީޖާ" },
+  showMoreResults: "އިތުރު {group} ދައްކާ",
+  loadingMoreResults: "އިތުރު {group} ލޯޑުކުރަނީ…",
+  shownMoreResults: {
+    one: "{group} އިން އިތުރު {count} ނަތީޖާ ދައްކައިފި",
+    other: "{group} އިން އިތުރު {count} ނަތީޖާ ދައްކައިފި",
+  },
+  showMoreFailed: "އިތުރު ނަތީޖާ ލޯޑެއް ނުކުރެވުނު. އަލުން މަސައްކަތްކޮށްލާ.",
 
   dragHandle: "{name} ގެ ތަރުތީބު ބަދަލުކުރަން ދަމާ",
   reorder: "ތަރުތީބު ބަދަލުކުރޭ",

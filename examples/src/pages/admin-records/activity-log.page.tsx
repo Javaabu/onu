@@ -10,9 +10,11 @@ import {
   useListingState,
   UserAvatar,
   ViewSwitcher,
+  type ApplyListingOptions,
   type DataTableColumn,
   type FilterDefinition,
 } from "@javaabu/onu"
+import { useExportRows } from "@javaabu/onu/export"
 
 import { useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -133,7 +135,8 @@ export default function ActivityLogPage() {
     },
     { type: "date-range", key: "date", label: tr("Date", "ތާރީޚް") },
   ]
-  const { rows, total } = applyListingState(log, state, {
+  const exportRows = useExportRows()
+  const listingOptions: ApplyListingOptions<LogEntry> = {
     searchFields: (e) => [e.record.reference, e.record.name, e.record.nameDv, e.detail],
     filterFns: {
       event: (e, v) => (Array.isArray(v) ? v.includes(e.event) : e.event === v),
@@ -144,7 +147,8 @@ export default function ActivityLogPage() {
       },
     },
     locale: labels.dv ? "dv" : "en",
-  })
+  }
+  const { rows, total } = applyListingState(log, state, listingOptions)
 
   const columns: DataTableColumn<LogEntry>[] = [
     {
@@ -203,7 +207,21 @@ export default function ActivityLogPage() {
         searchThaana={labels.dv}
         getRowName={(e) => `${e.record.reference} ${eventLabels[e.event]}`}
         getRowHref={(e) => showHref(e.record.id)}
-        onExport={() => new Promise((r) => setTimeout(r, 1000))}
+        onExport={(format) =>
+          exportRows({
+            format,
+            rows: applyListingState(log, { ...state, page: 1, perPage: Infinity }, listingOptions).rows,
+            columns: [
+              { header: tr("When", "ވަގުތު"), accessor: "at", type: "datetime" },
+              { header: tr("User", "ބޭނުންކުރި މީހާ"), accessor: (e) => causerName(e.causer) },
+              { header: tr("Event", "ހާދިސާ"), accessor: (e) => eventLabels[e.event] },
+              { header: tr("Record", "ރެކޯޑު"), accessor: "record.reference" },
+              { header: tr("Details", "ތަފްޞީލު"), accessor: "detail" },
+            ],
+            filename: "activity-log",
+            title: tr("Activity log", "އެކްޓިވިޓީ ލޮގް"),
+          })
+        }
         exportOptions={["csv", "excel"]}
         toolbarEnd={
           <ViewSwitcher

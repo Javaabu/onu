@@ -63,6 +63,7 @@
     "signature_pad": "^5.1.4",
     "terra-draw": "^1.37.0",
     "terra-draw-google-maps-adapter": "^1.7.0",
+    "write-excel-file": "^4.1.1",
     "yet-another-react-lightbox": "^3.32.2"
   },
   "devDependencies": {

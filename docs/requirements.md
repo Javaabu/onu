@@ -19,6 +19,7 @@ Some entry points need extra packages, installed only when you use them:
 | `@javaabu/onu/editor` | `@tiptap/react @tiptap/pm @tiptap/starter-kit @tiptap/static-renderer` and the Tiptap extensions listed in [Rich content](./rich-content) |
 | `@javaabu/onu/calendar` | `@fullcalendar/core @fullcalendar/react @fullcalendar/daygrid @fullcalendar/timegrid @fullcalendar/list @fullcalendar/interaction` |
 | `@javaabu/onu/media` | `react-easy-crop signature_pad barcode-detector yet-another-react-lightbox media-chrome` |
+| `@javaabu/onu/export` | `write-excel-file` (only for Excel export; CSV and PDF need nothing) |
 | `@javaabu/onu/icons/iconify` | `@iconify/react` and any `@iconify-json/*` collections |
 | `@javaabu/onu/icons/fontawesome` | `@fortawesome/fontawesome-svg-core @fortawesome/react-fontawesome` and your FontAwesome icon packages |
 | `@javaabu/onu/fonts.css` | `@fontsource-variable/inter @fontsource-variable/jetbrains-mono @fontsource-variable/noto-sans-thaana` |

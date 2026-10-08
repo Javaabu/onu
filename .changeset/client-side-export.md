@@ -1,0 +1,5 @@
+---
+"@javaabu/onu": minor
+---
+
+New `@javaabu/onu/export` entry: `exportRows({ format, rows, columns, filename, title, scope })` and `useExportRows()` build CSV, Excel or PDF files in the browser, so `ExportMenu` / `ListingPage` can export without a server in one line (`onExport={(format) => exportRows({ format, rows, columns })}`). Columns take a header, an accessor (key, dotted path or function) and an optional type (`text`, `number`, `currency`, `date`, `datetime`, `boolean`) and formatter. CSV is UTF-8 with a BOM, RFC 4180 quoted and guarded against formula injection. Excel uses the optional `write-excel-file` peer (loaded on first use), keeps numbers numeric and dates as dates, and writes right-to-left sheets for Dhivehi. PDF opens the print dialog with a paginated, escaped table document (title, scope, generated date, repeated header row, page numbers, `dir`/`lang`, Onu fonts), so Thaana renders correctly. Per-format helpers (`toCsv`, `buildExcelSheet`, `toExcelBlob`, `buildPrintDocument`, `printHtml`, …) are exported too.

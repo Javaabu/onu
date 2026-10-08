@@ -72,6 +72,10 @@
       "types": "./dist/query-builder/index.d.ts",
       "default": "./dist/query-builder/index.js"
     },
+    "./export": {
+      "types": "./dist/export/index.d.ts",
+      "default": "./dist/export/index.js"
+    },
     "./icons/iconify": {
       "types": "./dist/icons/iconify/index.d.ts",
       "default": "./dist/icons/iconify/index.js"
@@ -143,6 +147,7 @@
     "tailwindcss": "^4.0.0",
     "terra-draw": "^1.37.0",
     "terra-draw-google-maps-adapter": "^1.7.0",
+    "write-excel-file": "^4.1.1",
     "yet-another-react-lightbox": "^3.32.2"
   },
   "devDependencies": {
@@ -215,6 +220,7 @@
     "ts-morph": "^28.0.0",
     "vite": "^8.3.3",
     "vitest": "^5.0.3",
+    "write-excel-file": "^4.1.1",
     "yet-another-react-lightbox": "^3.32.2"
   },
   "dependencies": {
@@ -380,6 +386,9 @@
       "optional": true
     },
     "@fontsource-variable/noto-sans-thaana": {
+      "optional": true
+    },
+    "write-excel-file": {
       "optional": true
     }
   },
