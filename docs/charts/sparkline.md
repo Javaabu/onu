@@ -26,9 +26,14 @@ import { Sparkline } from "@javaabu/onu/charts"
 | `height`      | `number`                         | `32`             | Height in px; width follows the container        |
 | `valueFormat` | `ValueFormat`                    | `"number"`       | Formats the values in the summary                |
 | `animate`     | `boolean`                        | `false`          | Animate (off under reduced motion, see below)    |
+| `gradient`    | `boolean`                        | `true`           | Fade the area fill towards the baseline          |
 | `className`   | `string`                         |                  | Classes for the wrapper                          |
 
 Other `<div>` props are passed to the wrapper.
+
+## Gradient fills
+
+The `"area"` variant fades from the line colour to almost clear at the bottom. `gradient={false}` gives the flat 20% fill. `<ChartStyleProvider gradient={false}>` changes the default for every chart inside; see [BarChart](./bar-chart#gradient-fills).
 
 ## RTL
 

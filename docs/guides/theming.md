@@ -68,6 +68,8 @@ Every token is a CSS variable you can set. The names follow shadcn/ui, prefixed 
 | Type | `--onu-font-sans`, `--onu-font-thaana`, `--onu-font-thaana-bold`, `--onu-font-mono`, `--onu-font-serif` |
 | Layout | `--onu-label-width`, `--onu-touch-target` |
 
+Charts draw areas and bars with a soft gradient in these colours by default, so they rebrand with the theme too. Use `<ChartStyleProvider gradient={false}>` (from `@javaabu/onu/charts`) or a chart's `gradient={false}` for flat fills; see [BarChart](../charts/bar-chart#gradient-fills).
+
 In Tailwind, use them as `bg-primary`, `text-muted-foreground`, `border-border`, `bg-success`, `fill-chart-3`, `rounded-lg`, `font-thaana`, and so on.
 
 # Scoped themes

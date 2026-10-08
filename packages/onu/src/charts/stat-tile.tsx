@@ -62,6 +62,8 @@ export interface StatTileProps
   /** Values for a small trend line under the figure. */
   sparkline?: SparklineProps["data"]
   sparklineVariant?: SparklineProps["variant"]
+  /** Gradient fill under an area sparkline. Default `true`, or the nearest `ChartStyleProvider`. */
+  sparklineGradient?: boolean
   /** Show skeletons while data loads. */
   loading?: boolean
   /** Extra content at the bottom (a link, a note). */
@@ -88,6 +90,7 @@ export function StatTile({
   icon,
   sparkline,
   sparklineVariant = "area",
+  sparklineGradient,
   loading = false,
   footer,
   asChild = false,
@@ -157,6 +160,7 @@ export function StatTile({
               data={sparkline}
               label={labelText}
               variant={sparklineVariant}
+              gradient={sparklineGradient}
               valueFormat={valueFormat}
               className={cn("mt-1", classNames?.sparkline)}
             />

@@ -40,6 +40,7 @@ The child element becomes the tile and the tile content is placed inside it.
 | `icon`             | `SemanticIconName \| ReactNode`                    |                      | Icon at the inline end of the header       |
 | `sparkline`        | `(number \| null)[]`                               |                      | Small trend under the figure               |
 | `sparklineVariant` | `"line" \| "area"`                                 | `"area"`             | Sparkline style                            |
+| `sparklineGradient` | `boolean`                                         | `true`               | Gradient sparkline area (see [Sparkline](./sparkline#gradient-fills)) |
 | `loading`          | `boolean`                                          | `false`              | Skeletons, `aria-busy`                     |
 | `footer`           | `ReactNode`                                        |                      | Bottom content                             |
 | `size`             | `"sm" \| "default" \| "lg"`                        | `"default"`          | Padding and figure size                    |

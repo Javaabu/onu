@@ -13,6 +13,7 @@ import {
   rtlAxes,
   type CartesianChartProps,
 } from "./_cartesian"
+import { barSeriesFills, ChartGradients, GRADIENT_FALLBACK, useChartGradient, useGradientId } from "./_gradient"
 import { ChartFrame, resolveSeries, seriesConfig, SVG_LTR, useChartAnimation, useTooltipTrigger } from "./_shared"
 import { useChartFormat } from "./format"
 
@@ -42,6 +43,7 @@ export function BarChart({
   orientation = "vertical",
   stacked = false,
   radius,
+  gradient: gradientProp,
   animate,
   height = 300,
   classNames,
@@ -58,6 +60,9 @@ export function BarChart({
   const horizontal = orientation === "horizontal"
   const legend = showLegend ?? series.length > 1
   const barRadius = radius ?? (stacked ? 0 : 4)
+  const gradient = useChartGradient(gradientProp)
+  const gradientId = useGradientId()
+  const fills = barSeriesFills({ gradient, gradientId, series, data, horizontal, rtl, base: stacked ? 0.8 : undefined })
 
   const summary = cartesianSummary(t, t("chart.typeBar"), series, data, fmt.value)
   const table = cartesianTable(
@@ -87,7 +92,8 @@ export function BarChart({
         <ChartContainer
           config={chartConfig}
           data-orientation={orientation}
-          className={cn("aspect-auto w-full", SVG_LTR, classNames?.chart)}
+          data-fill={gradient ? "gradient" : "solid"}
+          className={cn("aspect-auto w-full", SVG_LTR, gradient && GRADIENT_FALLBACK, classNames?.chart)}
           style={{ height }}
         >
           <RechartsBarChart
@@ -98,6 +104,7 @@ export function BarChart({
             aria-describedby={summaryId}
             margin={{ top: 8, right: 8, bottom: 0, left: 8 }}
           >
+            <ChartGradients defs={fills.defs} />
             {showGrid ? <CartesianGrid vertical={horizontal} horizontal={!horizontal} /> : null}
             {horizontal ? (
               <>
@@ -149,16 +156,18 @@ export function BarChart({
               }
             />
             {legend ? <ChartLegend itemSorter={null} content={<ChartLegendContent />} /> : null}
-            {series.map((s) => (
+            {series.map((s, i) => (
               <Bar
                 key={s.key}
                 dataKey={s.key}
                 name={s.key}
-                fill={`var(--color-${s.key})`}
+                fill={fills.fill[i]}
                 stackId={stacked ? "stack" : undefined}
                 radius={barRadius}
                 isAnimationActive={isAnimationActive}
-              />
+              >
+                {fills.cells[i]}
+              </Bar>
             ))}
           </RechartsBarChart>
         </ChartContainer>

@@ -204,7 +204,8 @@ function ChartTooltipContent({
           .map((item, index) => {
             const key = `${nameKey ?? item.name ?? item.dataKey ?? "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
-            const indicatorColor = color ?? item.payload?.fill ?? item.color
+            // onu: gradient fills are `url(#…)`, which is no colour: use the series colour instead.
+            const indicatorColor = swatchColor(color ?? item.payload?.fill ?? item.color, key)
 
             return (
               <div
@@ -323,7 +324,8 @@ function ChartLegendContent({
                 <div
                   className="h-2 w-2 shrink-0 rounded-[2px]"
                   style={{
-                    backgroundColor: item.color,
+                    // onu: gradient fills (`url(#…)`) fall back to the series colour.
+                    backgroundColor: swatchColor(item.color, key),
                   }}
                 />
               )}
@@ -333,6 +335,11 @@ function ChartLegendContent({
         })}
     </div>
   )
+}
+
+// onu: a legend or tooltip swatch colour; SVG paint servers (`url(#…)`) become `var(--color-<key>)`.
+function swatchColor(color: string | undefined, key: string) {
+  return typeof color === "string" && color.startsWith("url(") ? `var(--color-${key})` : color
 }
 
 function getPayloadConfigFromPayload(
