@@ -497,6 +497,118 @@
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--primary) 18%, transparent);
 }
 
+/* ---------------------------------------------------------------- */
+/* Records index: sand surfaces, rounded table card, turquoise rows. */
+/* ---------------------------------------------------------------- */
+
+.design-lagoon .lg-records-card {
+  background:
+    radial-gradient(40% 60% at 100% 0%, color-mix(in oklab, var(--primary) 7%, transparent), transparent 70%),
+    var(--card);
+}
+.design-lagoon .lg-water-lines {
+  stroke: color-mix(in oklab, var(--primary) 30%, transparent);
+}
+.design-lagoon .lg-records [data-slot="listing-page"] > header h1 {
+  font-family: "Source Serif 4 Variable", var(--onu-font-thaana), Georgia, serif;
+  font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+  letter-spacing: -0.015em;
+}
+.design-lagoon:lang(dv) .lg-records [data-slot="listing-page"] > header h1 {
+  font-family: "MV Waheed", var(--onu-font-thaana);
+  letter-spacing: 0;
+}
+
+/* Status tabs as soft pills. */
+.design-lagoon .lg-records [data-slot="filter-tabs"] [role="tablist"],
+.design-lagoon .lg-records [data-slot="filter-tabs"] [data-slot="tabs-list"] {
+  border-radius: 9999px;
+}
+.design-lagoon .lg-records [data-slot="filter-tabs"] [data-slot="tabs-trigger"] {
+  border-radius: 9999px;
+}
+
+/* Toolbar: pill search and buttons. */
+.design-lagoon .lg-records [data-slot="listing-toolbar"] [data-slot="button"],
+.design-lagoon .lg-records [data-slot="listing-toolbar"] [data-slot="input-group"],
+.design-lagoon .lg-records [data-slot="listing-toolbar"] [data-slot="toggle-group"],
+.design-lagoon .lg-records [data-slot="listing-toolbar"] [data-slot="toggle"] {
+  border-radius: 9999px;
+}
+
+/* The table surface. */
+.design-lagoon .lg-records [data-slot="data-table"] > div:has(> [data-slot="table-container"]) {
+  border-radius: 1.25rem;
+  background: var(--card);
+  border-color: color-mix(in oklab, var(--border) 85%, transparent);
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--lg-abyss) 5%, transparent);
+}
+.design-lagoon .lg-records [data-slot="table-header"] {
+  background: color-mix(in oklab, var(--lg-sand) 45%, var(--card));
+}
+:root:is(.dark, [data-theme="dark"]) .design-lagoon .lg-records [data-slot="table-header"] {
+  background: color-mix(in oklab, var(--primary) 8%, var(--card));
+}
+.design-lagoon .lg-records [data-slot="table-head"] {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  letter-spacing: 0.02em;
+}
+.design-lagoon .lg-records [data-slot="table-body"] [data-slot="table-row"] {
+  transition: background-color 180ms ease;
+}
+.design-lagoon .lg-records [data-slot="table-body"] [data-slot="table-row"]:hover {
+  background: color-mix(in oklab, var(--primary) 5%, var(--card));
+}
+.design-lagoon .lg-records [data-slot="table-body"] [data-slot="table-row"][data-state="selected"] {
+  background: color-mix(in oklab, var(--primary) 13%, var(--card));
+}
+.design-lagoon .lg-records [data-slot="table-row"][data-state="selected"] > td:first-child {
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+.design-lagoon .lg-records [data-slot="table-row"][data-state="selected"] > td:first-child:dir(rtl) {
+  box-shadow: inset -3px 0 0 var(--primary);
+}
+.design-lagoon .lg-records [data-slot="table-row"]:focus-within {
+  outline: 2px solid color-mix(in oklab, var(--primary) 55%, transparent);
+  outline-offset: -2px;
+}
+.design-lagoon .lg-records .lg-ref {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 9999px;
+  font-family: var(--onu-font-mono);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  color: var(--primary-subtle-foreground);
+  background: color-mix(in oklab, var(--primary) 9%, var(--card));
+}
+
+/* Bulk action bar: a turquoise tide. */
+.design-lagoon .lg-records [data-slot="bulk-action-bar"] {
+  border-radius: 9999px;
+  border-color: color-mix(in oklab, var(--primary) 30%, var(--border));
+  background: color-mix(in oklab, var(--primary) 10%, var(--card));
+  box-shadow: 0 8px 24px -12px var(--lg-glow);
+}
+
+/* List and grid views. */
+.design-lagoon .lg-records [data-slot="list-view"] > li,
+.design-lagoon .lg-records [data-slot="grid-view"] > li {
+  border-radius: 1.25rem;
+}
+.design-lagoon .lg-records .lg-grid-media {
+  color: var(--primary-subtle-foreground);
+  background:
+    radial-gradient(80% 80% at 70% 20%, color-mix(in oklab, var(--lg-coral) 14%, transparent), transparent 70%),
+    linear-gradient(
+      160deg,
+      color-mix(in oklab, var(--primary) 16%, var(--card)),
+      color-mix(in oklab, var(--lg-sand) 40%, var(--card))
+    );
+}
+
 @media (prefers-reduced-motion: reduce) {
   .design-lagoon *,
   .design-lagoon *::before,
