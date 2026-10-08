@@ -5,7 +5,9 @@ import * as React from "react"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
+import { Button } from "../../ui/button"
 import { Skeleton } from "../../ui/skeleton"
+import { Spinner } from "../../ui/spinner"
 import { EmptyState } from "./empty-state"
 
 function escapeRegExp(text: string) {
@@ -62,9 +64,17 @@ export interface SearchResultGroup {
   items: SearchResultItem[]
   /** Total matches in this group when more exist than are shown. */
   total?: number
-  /** "View all" link for the group. */
+  /** "View all" link for the group (used when there is no `onShowMore`). */
   moreHref?: string
+  /** Text of the "View all" link or the "Show more" button. */
   moreLabel?: string
+  /**
+   * With `onShowMore`: whether the group has more results to show.
+   * Default: `total` is greater than the number of items.
+   */
+  hasMore?: boolean
+  /** With `onShowMore`: the group is loading more results (instead of returning a promise). */
+  loadingMore?: boolean
 }
 
 export interface SearchResultsProps extends Omit<React.ComponentProps<"section">, "onSelect"> {
@@ -73,9 +83,23 @@ export interface SearchResultsProps extends Omit<React.ComponentProps<"section">
   loading?: boolean
   /** Called when a result without `href` is chosen. */
   onSelect?: (item: SearchResultItem, group: SearchResultGroup) => void
+  /**
+   * Show more results of a group on this page. Adds a "Show more" button to groups with
+   * more results than shown (instead of the `moreHref` link); append the new items to the
+   * group. Return a promise to show a spinner until they arrive. Focus moves to the first
+   * new result and the count is announced.
+   */
+  onShowMore?: (groupId: string, group: SearchResultGroup) => void | Promise<unknown>
   /** Hide the "3 results for …" heading. */
   hideSummary?: boolean
-  classNames?: { summary?: string; group?: string; heading?: string; item?: string; mark?: string }
+  classNames?: {
+    summary?: string
+    group?: string
+    heading?: string
+    item?: string
+    mark?: string
+    more?: string
+  }
 }
 
 /**
@@ -87,6 +111,7 @@ export function SearchResults({
   groups,
   loading,
   onSelect,
+  onShowMore,
   hideSummary,
   className,
   classNames,
@@ -98,6 +123,46 @@ export function SearchResults({
   const id = React.useId()
   const total = groups.reduce((sum, g) => sum + (g.total ?? g.items.length), 0)
   const visibleGroups = groups.filter((g) => g.items.length)
+
+  // "Show more": which groups are waiting (promise), where new items start, and what to announce.
+  const [pending, setPending] = React.useState<Record<string, boolean>>({})
+  const [reveal, setReveal] = React.useState<{ groupId: string; from: number; query: string } | null>(null)
+  const [focusTarget, setFocusTarget] = React.useState<{ groupId: string; index: number } | null>(null)
+  const [message, setMessage] = React.useState("")
+  const listRefs = React.useRef(new Map<string, HTMLUListElement>())
+
+  if (reveal) {
+    const group = groups.find((g) => g.id === reveal.groupId)
+    if (!group || reveal.query !== query) setReveal(null)
+    else if (group.items.length > reveal.from) {
+      setReveal(null)
+      setFocusTarget({ groupId: group.id, index: reveal.from })
+      setMessage(t("listing.shownMoreResults", { count: group.items.length - reveal.from, group: group.label }))
+    }
+  }
+
+  React.useEffect(() => {
+    if (!focusTarget) return
+    const item = listRefs.current.get(focusTarget.groupId)?.children[focusTarget.index]
+    item?.querySelector<HTMLElement>("a, button")?.focus()
+  }, [focusTarget])
+
+  const showMore = async (group: SearchResultGroup) => {
+    if (!onShowMore || pending[group.id] || group.loadingMore) return
+    setReveal({ groupId: group.id, from: group.items.length, query })
+    setMessage(t("listing.loadingMoreResults", { group: group.label }))
+    const result = onShowMore(group.id, group)
+    if (!result || typeof (result as Promise<unknown>).then !== "function") return
+    setPending((p) => ({ ...p, [group.id]: true }))
+    try {
+      await result
+    } catch {
+      setReveal(null)
+      setMessage(t("listing.showMoreFailed"))
+    } finally {
+      setPending((p) => ({ ...p, [group.id]: false }))
+    }
+  }
 
   return (
     <section
@@ -145,7 +210,13 @@ export function SearchResults({
                   {t("listing.resultsInGroup", { count })}
                 </span>
               </h3>
-              <ul className="gap-1 grid">
+              <ul
+                className="gap-1 grid"
+                ref={(el) => {
+                  if (el) listRefs.current.set(group.id, el)
+                  else listRefs.current.delete(group.id)
+                }}
+              >
                 {group.items.map((item) => {
                   const body = (
                     <>
@@ -186,8 +257,20 @@ export function SearchResults({
                   )
                 })}
               </ul>
-              {group.moreHref ? (
-                <Link href={group.moreHref} className="text-sm w-fit text-primary underline-offset-4 hover:underline">
+              {onShowMore ? (
+                (group.hasMore ?? (group.total !== undefined && group.total > group.items.length)) ? (
+                  <ShowMoreButton
+                    group={group}
+                    loading={group.loadingMore ?? !!pending[group.id]}
+                    onClick={() => void showMore(group)}
+                    className={classNames?.more}
+                  />
+                ) : null
+              ) : group.moreHref ? (
+                <Link
+                  href={group.moreHref}
+                  className={cn("text-sm w-fit text-primary underline-offset-4 hover:underline", classNames?.more)}
+                >
                   {group.moreLabel ?? `${group.label} (${format.format(count)})`}
                 </Link>
               ) : null}
@@ -195,6 +278,43 @@ export function SearchResults({
           )
         })
       )}
+      {onShowMore ? (
+        <span className="sr-only" role="status" aria-live="polite">
+          {message}
+        </span>
+      ) : null}
     </section>
+  )
+}
+
+function ShowMoreButton({
+  group,
+  loading,
+  onClick,
+  className,
+}: {
+  group: SearchResultGroup
+  loading: boolean
+  onClick: () => void
+  className?: string
+}) {
+  const { t } = useTranslation()
+  return (
+    <Button
+      type="button"
+      variant="link"
+      size="sm"
+      data-slot="search-results-more"
+      // aria-disabled rather than disabled, so focus stays on the button while loading.
+      aria-disabled={loading || undefined}
+      aria-busy={loading || undefined}
+      onClick={onClick}
+      className={cn("px-0 touch:min-h-11 w-fit", className)}
+    >
+      {loading ? <Spinner /> : null}
+      {loading
+        ? t("listing.loadingMoreResults", { group: group.label })
+        : (group.moreLabel ?? t("listing.showMoreResults", { group: group.label }))}
+    </Button>
   )
 }

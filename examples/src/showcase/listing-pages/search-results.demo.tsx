@@ -60,6 +60,40 @@ function search(query: string): SearchResultGroup[] {
   }))
 }
 
+const MORE_SERVICES = [
+  { title: "ID card renewal", titleDv: "އައިޑީ ކާޑު އާކުރުން", agency: "Department of National Registration" },
+  { title: "Driving licence renewal", titleDv: "ޑްރައިވިންގ ލައިސަންސް އާކުރުން", agency: "Transport Authority" },
+  { title: "Land lease registration", titleDv: "ބިމުގެ ލީސް ރަޖިސްޓަރީ", agency: "Hulhumalé, K. Atoll" },
+  { title: "Fishing vessel licence", titleDv: "މަސްވެރި ދޯނީގެ ލައިސަންސް", agency: "Ministry of Fisheries" },
+  { title: "Guest house registration", titleDv: "ގެސްޓް ހައުސް ރަޖިސްޓަރީ", agency: "Ministry of Tourism" },
+  { title: "Building permit", titleDv: "ޢިމާރާތް ކުރުމުގެ ހުއްދަ", agency: "Addu City Council" },
+]
+
+function ShowMoreDemo() {
+  const [shown, setShown] = React.useState(2)
+  const services = MORE_SERVICES.slice(0, shown).map((s, i) => ({
+    id: `m${i}`,
+    title: s.title,
+    description: s.titleDv,
+    meta: s.agency,
+    href: "#",
+    icon: "file-text",
+  }))
+  return (
+    <SearchResults
+      query="renewal registration"
+      groups={[
+        { id: "services", label: "Services", total: MORE_SERVICES.length, items: services },
+        all[1] as SearchResultGroup,
+      ]}
+      onShowMore={async () => {
+        await new Promise((r) => setTimeout(r, 700))
+        setShown((n) => Math.min(MORE_SERVICES.length, n + 2))
+      }}
+    />
+  )
+}
+
 export default function SearchResultsDemo() {
   const [query, setQuery] = React.useState("passport registration")
   const [loading, setLoading] = React.useState(false)
@@ -75,6 +109,13 @@ export default function SearchResultsDemo() {
           }}
         />
         <SearchResults query={query} groups={search(query)} loading={loading} />
+      </DemoSection>
+      <DemoSection
+        title="Show more on the same page"
+        description="With onShowMore, groups with more results get a Show more button instead of a link. Focus moves to the first new result and the count is announced."
+        className="gap-4 grid"
+      >
+        <ShowMoreDemo />
       </DemoSection>
     </DemoPage>
   )
