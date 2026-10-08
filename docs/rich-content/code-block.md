@@ -13,7 +13,7 @@ import { CodeBlock } from '@javaabu/onu/editor';
 <CodeBlock code="MVR 1,250.00" />  {/* plain text */}
 ```
 
-Light and dark mode use two Shiki themes at once (GitHub light/dark by default) through CSS variables, so switching theme needs no re-highlighting.
+Light and dark mode use two Shiki themes at once (GitHub light/dark by default) through CSS variables, so switching theme needs no re-highlighting. Token colours from any theme are darkened (light mode) or lightened (dark mode) just enough to reach 4.5:1 contrast on the code background, including highlighted lines, so the block meets WCAG 2.2 AA whichever themes you pick.
 
 ## Props
 
@@ -38,3 +38,4 @@ Other `<figure>` props go to the root. `highlightCode(code, language, themes)` i
 - The code area is a focusable, labelled region, so it can be scrolled with the keyboard.
 - Line numbers are hidden from screen readers.
 - The copy button is labelled "Copy code" and announces "Code copied".
+- Syntax colours meet 4.5:1 contrast on the code background in light and dark mode.
