@@ -19,7 +19,13 @@ export {
   type UploadProgressItemProps,
 } from "./upload-progress"
 export { InstantFileUpload, defaultUploadValue, type InstantFileUploadProps } from "./instant-file-upload"
-export { DropzoneUploader, dropzoneVariants, type DropzoneUploaderProps } from "./dropzone-uploader"
+export {
+  DropzoneUploader,
+  dropzoneVariants,
+  type DropzoneFile,
+  type DropzoneUploaderProps,
+  type UploadedFile,
+} from "./dropzone-uploader"
 export {
   AdditionalFilesUpload,
   type AdditionalFilesUploadProps,

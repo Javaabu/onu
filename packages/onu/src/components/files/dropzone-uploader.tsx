@@ -10,6 +10,8 @@ import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { useFormField, useFormFieldControl } from "../form/form-field"
 import { FileRow } from "./_file-row"
+import { useControllable } from "./_use-controllable"
+import type { ExistingAttachment } from "./additional-files-upload"
 import { fileKey, validateFiles, type FileRejection, type FileValidationOptions } from "./file-utils"
 import { defaultUploadValue } from "./instant-file-upload"
 import { UploadProgress } from "./upload-progress"
@@ -29,6 +31,22 @@ export const dropzoneVariants = cva(
   },
 )
 
+/** A file already stored on the server: shown on an edit page, or a finished upload. */
+export interface UploadedFile<R = unknown> extends ExistingAttachment {
+  /** The local file, when it was uploaded from this page (used for the thumbnail). */
+  file?: File
+  /** What the uploader resolved with. */
+  response?: R
+}
+
+/** One entry of a `DropzoneUploader` value: a picked `File`, or a file already on the server. */
+export type DropzoneFile<R = unknown> = File | UploadedFile<R>
+
+const isLocalFile = (entry: DropzoneFile<unknown>): entry is File =>
+  typeof File !== "undefined" && entry instanceof File
+
+const NO_ENTRIES: DropzoneFile<never>[] = []
+
 export interface DropzoneUploaderProps<R = unknown>
   extends UploadSource<R>, FileValidationOptions, VariantProps<typeof dropzoneVariants> {
   /** Allow several files. Default `true`. */
@@ -40,6 +58,16 @@ export interface DropzoneUploaderProps<R = unknown>
   onReject?: (rejections: FileRejection[]) => void
   /** Without `upload`/`url`: called with the selected files whenever they change. */
   onChange?: (files: File[]) => void
+  /**
+   * The files the field holds (controlled): already-uploaded files (`{ id, name, size?, type?,
+   * url?, thumbnailUrl? }`, e.g. on an edit page) and, without an uploader, picked `File`s.
+   * With an uploader, finished uploads are added as `{ id, name, … , response }`.
+   */
+  value?: DropzoneFile<R>[]
+  /** Initial files (uncontrolled), e.g. a record's saved attachments. */
+  defaultValue?: DropzoneFile<R>[]
+  /** Called with the new list when files are added, finish uploading or are removed. */
+  onValueChange?: (value: DropzoneFile<R>[]) => void
   onUploaded?: (item: UploadItem<R>) => void
   onError?: (item: UploadItem<R>, error: unknown) => void
   onItemsChange?: (items: UploadItem<R>[]) => void
@@ -90,6 +118,9 @@ export function DropzoneUploader<R = unknown>({
   onFilesAdded,
   onReject,
   onChange,
+  value,
+  defaultValue,
+  onValueChange,
   onUploaded,
   onError,
   onItemsChange,
@@ -120,18 +151,76 @@ export function DropzoneUploader<R = unknown>({
     disabled: wired.disabled as boolean | undefined,
   }
   const disabled = !!control.disabled
-  const queue = useUploadQueue<R>({ upload, url, uploadOptions, onUploaded, onError, onItemsChange })
+  const [entries, setEntriesState] = useControllable<DropzoneFile<R>[]>(
+    value,
+    defaultValue ?? (NO_ENTRIES as DropzoneFile<R>[]),
+    onValueChange,
+  )
+  // Latest list for upload callbacks; updated as soon as it changes so two uploads finishing together both land.
+  const entriesRef = React.useRef(entries)
+  React.useLayoutEffect(() => {
+    entriesRef.current = entries
+  }, [entries])
+  // Upload queue id → value id of the entry it became.
+  const [linked, setLinked] = React.useState<Record<string, string>>({})
+  const browseRef = React.useRef<HTMLButtonElement>(null)
+  const [announcement, setAnnouncement] = React.useState("")
+
+  const handleUploaded = (item: UploadItem<R>) => {
+    onUploaded?.(item)
+    const id = getValue ? getValue(item.response as R) : defaultUploadValue(item.response)
+    if (id === null || id === undefined) return
+    const entry: UploadedFile<R> = {
+      id,
+      name: item.file.name,
+      size: item.file.size,
+      type: item.file.type || undefined,
+      file: item.file,
+      response: item.response,
+    }
+    setLinked((map) => ({ ...map, [item.id]: String(id) }))
+    setEntries(multiple ? [...entriesRef.current, entry] : [entry])
+  }
+
+  const queue = useUploadQueue<R>({ upload, url, uploadOptions, onUploaded: handleUploaded, onError, onItemsChange })
   const uploads = queue.canUpload
-  const [files, setFiles] = React.useState<File[]>([])
   const [rejections, setRejections] = React.useState<FileRejection[]>([])
   const options = { accept, maxSize, minSize, maxFiles }
   const message = useRejectionMessage(options)
   const errorsId = React.useId()
   const hiddenName = name ?? field?.name
 
+  const files = entries.filter(isLocalFile)
+  const stored = entries.filter((e): e is UploadedFile<R> => !isLocalFile(e))
+  const storedIds = new Set(stored.map((e) => String(e.id)))
+  // Finished uploads that are in the value are shown by the upload list, not again as stored rows.
+  const shownByQueue = new Set(
+    queue.items.filter((i) => i.status === "success" && linked[i.id] !== undefined).map((i) => linked[i.id] as string),
+  )
+  const storedRows = uploads ? stored.filter((e) => !shownByQueue.has(String(e.id))) : []
+
+  // A finished upload removed from the value (by the parent, or replaced in single mode) leaves the list too.
+  const { items: queueItems, remove: removeQueued } = queue
+  React.useEffect(() => {
+    for (const item of queueItems) {
+      const key = linked[item.id]
+      if (key !== undefined && !storedIds.has(key)) removeQueued(item.id)
+    }
+  })
+
   const count = uploads
-    ? queue.items.filter((i) => i.status !== "cancelled" && i.status !== "error").length
-    : files.length
+    ? stored.length +
+      queueItems.filter(
+        (i) =>
+          i.status === "queued" || i.status === "uploading" || (i.status === "success" && linked[i.id] === undefined),
+      ).length
+    : entries.length
+
+  function setEntries(next: DropzoneFile<R>[]) {
+    entriesRef.current = next
+    setEntriesState(next)
+    if (!uploads) onChange?.(next.filter(isLocalFile))
+  }
 
   const handleFiles = (incoming: readonly File[]) => {
     if (disabled || !incoming.length) return
@@ -144,11 +233,7 @@ export function DropzoneUploader<R = unknown>({
     if (!accepted.length) return
     onFilesAdded?.(accepted)
     if (uploads) queue.add(accepted)
-    else {
-      const next = multiple ? [...files, ...accepted] : accepted
-      setFiles(next)
-      onChange?.(next)
-    }
+    else setEntries(multiple ? [...entries, ...accepted] : accepted)
   }
 
   const { getRootProps, getInputProps, isDragActive, open, rootRef } = useDropzone({
@@ -177,16 +262,67 @@ export function DropzoneUploader<R = unknown>({
     return () => document.removeEventListener("paste", handler)
   }, [pasteFromDocument])
 
-  const removeFile = (index: number) => {
-    const next = files.filter((_, i) => i !== index)
-    setFiles(next)
-    onChange?.(next)
+  const removeEntry = (entry: DropzoneFile<R>) => {
+    setEntries(entries.filter((e) => e !== entry))
+    setAnnouncement(t("file.removedFile", { name: entry.name }))
+    browseRef.current?.focus()
+  }
+
+  const removeUpload = (queueId: string) => {
+    const key = linked[queueId]
+    queue.remove(queueId)
+    if (key !== undefined) setEntries(entriesRef.current.filter((e) => isLocalFile(e) || String(e.id) !== key))
+    const item = queueItems.find((i) => i.id === queueId)
+    if (item) setAnnouncement(t("file.removedFile", { name: item.file.name }))
+    browseRef.current?.focus()
+  }
+
+  const entryRow = (entry: DropzoneFile<R>, index: number) => {
+    const local = isLocalFile(entry)
+    const remote = local ? undefined : entry
+    return (
+      <FileRow
+        key={local ? `file-${fileKey(entry)}` : `stored-${String(entry.id)}-${index}`}
+        data-stored={local ? undefined : true}
+        name={entry.name}
+        size={entry.size}
+        type={entry.type || undefined}
+        file={local ? entry : remote?.file}
+        thumbnailUrl={remote?.thumbnailUrl}
+        actions={
+          <>
+            {remote?.url ? (
+              <Button asChild variant="ghost" size="icon-sm">
+                <a
+                  href={remote.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={t("file.openFile", { name: entry.name })}
+                >
+                  <Icon name="external-link" />
+                </a>
+              </Button>
+            ) : null}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              disabled={disabled}
+              aria-label={t("file.removeFile", { name: entry.name })}
+              onClick={() => removeEntry(entry)}
+            >
+              <Icon name="close" />
+            </Button>
+          </>
+        }
+      />
+    )
   }
 
   const describedBy = [control["aria-describedby"], rejections.length ? errorsId : null].filter(Boolean).join(" ")
 
   return (
-    <div data-slot="dropzone-uploader" ref={ref} className={cn("gap-3 grid w-full", className)}>
+    <div data-slot="dropzone-uploader" ref={ref} className={cn("gap-3 min-w-0 grid w-full grid-cols-1", className)}>
       <div
         {...getRootProps()}
         data-slot="dropzone"
@@ -204,6 +340,7 @@ export function DropzoneUploader<R = unknown>({
         </p>
         <p className={cn("text-xs", classNames?.description)}>{description ?? t("file.dropzoneHint")}</p>
         <Button
+          ref={browseRef}
           type="button"
           variant="outline"
           size="sm"
@@ -233,53 +370,45 @@ export function DropzoneUploader<R = unknown>({
         ) : null}
       </div>
 
-      {showList && uploads ? (
-        <UploadProgress
-          items={queue.items}
-          onCancel={queue.cancel}
-          onRetry={queue.retry}
-          onRemove={queue.remove}
-          announcement={queue.announcement}
-          className={classNames?.list}
-        />
-      ) : null}
-      {showList && !uploads && files.length ? (
-        <ul aria-label={t("file.selectedFiles")} className={cn("gap-2 grid", classNames?.list)}>
-          {files.map((file, index) => (
-            <FileRow
-              key={fileKey(file)}
-              name={file.name}
-              size={file.size}
-              file={file}
-              actions={
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label={t("file.removeFile", { name: file.name })}
-                  onClick={() => removeFile(index)}
-                >
-                  <Icon name="close" />
-                </Button>
-              }
-            />
-          ))}
+      {showList && storedRows.length ? (
+        <ul
+          data-slot="dropzone-stored"
+          aria-label={t("file.attachments")}
+          className={cn("gap-2 grid grid-cols-1", classNames?.list)}
+        >
+          {storedRows.map(entryRow)}
         </ul>
       ) : null}
-      {hiddenName && uploads
-        ? queue.items
-            .filter((i) => i.status === "success")
-            .map((item) => {
-              const value = getValue ? getValue(item.response as R) : defaultUploadValue(item.response)
-              return value === null || value === undefined ? null : (
-                <input
-                  key={item.id}
-                  type="hidden"
-                  name={multiple ? `${hiddenName}[]` : hiddenName}
-                  value={String(value)}
-                />
-              )
-            })
+      {showList && uploads ? (
+        <UploadProgress
+          items={queueItems.filter((i) => {
+            const key = linked[i.id]
+            return key === undefined || storedIds.has(key)
+          })}
+          onCancel={queue.cancel}
+          onRetry={queue.retry}
+          onRemove={removeUpload}
+          announcement={queue.announcement}
+          className={cn("grid-cols-1", classNames?.list)}
+        />
+      ) : null}
+      {showList && !uploads && entries.length ? (
+        <ul aria-label={t("file.selectedFiles")} className={cn("gap-2 grid grid-cols-1", classNames?.list)}>
+          {entries.map(entryRow)}
+        </ul>
+      ) : null}
+      <div role="status" aria-live="polite" className="sr-only">
+        {announcement}
+      </div>
+      {hiddenName
+        ? stored.map((entry, index) => (
+            <input
+              key={`${String(entry.id)}-${index}`}
+              type="hidden"
+              name={multiple ? `${hiddenName}[]` : hiddenName}
+              value={String(entry.id)}
+            />
+          ))
         : null}
     </div>
   )
