@@ -1,0 +1,511 @@
+/*
+ * Lagoon: a light-first, Maldives-inspired look for citizen-facing services.
+ * Lagoon turquoise to deep ocean, sand and coral neutrals, soft sunlight glows,
+ * gentle waves. Every rule is scoped to `.design-lagoon` (directly or through
+ * `:root:has(.design-lagoon)`, so portalled popovers and drawers match too).
+ *
+ * Re-branding: all brand colours derive from `--primary`. Lagoon ships a
+ * turquoise default brand only while no `--onu-primary` is set inline on <html>
+ * (the examples' Customize panel does that), so a chosen primary always wins.
+ */
+@import "@fontsource-variable/source-serif-4";
+
+/* ---------------------------------------------------------------- */
+/* Theme tokens: warm sand by day, moonlit lagoon by night.          */
+/* ---------------------------------------------------------------- */
+
+:root:has(.design-lagoon):not([style*="--onu-primary"]) {
+  --onu-primary: oklch(0.53 0.1 208);
+  --onu-primary-dark: oklch(0.78 0.12 192);
+}
+
+:root:has(.design-lagoon) {
+  --onu-background: oklch(0.982 0.009 82);
+  --onu-foreground: oklch(0.25 0.04 238);
+  --onu-card: oklch(0.996 0.004 85);
+  --onu-card-foreground: oklch(0.25 0.04 238);
+  --onu-popover: oklch(0.996 0.004 85);
+  --onu-popover-foreground: oklch(0.25 0.04 238);
+  --onu-neutral-secondary: oklch(0.95 0.02 80);
+  --onu-neutral-secondary-foreground: oklch(0.3 0.04 238);
+  --onu-neutral-muted: oklch(0.955 0.016 80);
+  --onu-neutral-muted-foreground: oklch(0.46 0.035 235);
+  --onu-neutral-accent: oklch(0.95 0.018 80);
+  --onu-neutral-accent-foreground: oklch(0.27 0.04 238);
+  --onu-neutral-border: oklch(0.9 0.02 78);
+  --onu-neutral-input: oklch(0.88 0.022 78);
+  --onu-neutral-sidebar: oklch(0.975 0.012 82);
+  --onu-sidebar-foreground: oklch(0.27 0.04 238);
+  --onu-neutral-sidebar-accent: oklch(0.94 0.02 80);
+  --onu-neutral-sidebar-accent-foreground: oklch(0.25 0.04 238);
+  --onu-neutral-sidebar-border: oklch(0.9 0.02 78);
+  --onu-chart-2: oklch(0.68 0.14 38);
+  --onu-chart-3: oklch(0.78 0.11 80);
+  --onu-chart-4: oklch(0.42 0.08 245);
+  --onu-chart-5: oklch(0.7 0.1 160);
+  --onu-radius: 0.875rem;
+
+  /* Lagoon palette (decorative). Sand and coral are the only fixed hues. */
+  --lg-sand: oklch(0.93 0.04 80);
+  --lg-coral: oklch(0.72 0.14 38);
+  --lg-coral-text: oklch(0.5 0.15 35);
+  --lg-night: oklch(0.22 0.05 245);
+  --lg-lagoon: color-mix(in oklab, var(--primary) 70%, oklch(0.88 0.08 195));
+  --lg-deep: color-mix(in oklab, var(--primary) 55%, var(--lg-night));
+  --lg-abyss: color-mix(in oklab, var(--primary) 32%, var(--lg-night));
+  --lg-glow: color-mix(in oklab, var(--primary) 30%, transparent);
+  --lg-sun: color-mix(in oklab, var(--lg-coral) 26%, transparent);
+  --lg-glass: color-mix(in oklab, var(--card) 72%, transparent);
+  --lg-glass-border: color-mix(in oklab, var(--card) 60%, var(--border));
+  --lg-shadow:
+    0 1px 2px color-mix(in oklab, var(--lg-abyss) 6%, transparent),
+    0 8px 24px -6px color-mix(in oklab, var(--lg-abyss) 10%, transparent),
+    0 24px 60px -18px color-mix(in oklab, var(--primary) 22%, transparent);
+  --lg-gradient-text: linear-gradient(100deg, var(--lg-deep), color-mix(in oklab, var(--primary), black 8%) 70%);
+}
+
+:root:is(.dark, [data-theme="dark"]):has(.design-lagoon) {
+  --onu-background: oklch(0.17 0.035 236);
+  --onu-foreground: oklch(0.96 0.012 200);
+  --onu-card: oklch(0.21 0.04 234);
+  --onu-card-foreground: oklch(0.96 0.012 200);
+  --onu-popover: oklch(0.22 0.04 234);
+  --onu-popover-foreground: oklch(0.96 0.012 200);
+  --onu-neutral-secondary: oklch(0.27 0.04 232);
+  --onu-neutral-secondary-foreground: oklch(0.95 0.012 200);
+  --onu-neutral-muted: oklch(0.25 0.038 232);
+  --onu-neutral-muted-foreground: oklch(0.77 0.03 210);
+  --onu-neutral-accent: oklch(0.27 0.045 230);
+  --onu-neutral-accent-foreground: oklch(0.96 0.012 200);
+  --onu-neutral-border: oklch(0.95 0.03 200 / 13%);
+  --onu-neutral-input: oklch(0.95 0.03 200 / 18%);
+  --onu-neutral-sidebar: oklch(0.19 0.038 236);
+  --onu-sidebar-foreground: oklch(0.94 0.012 200);
+  --onu-neutral-sidebar-accent: oklch(0.26 0.045 230);
+  --onu-neutral-sidebar-accent-foreground: oklch(0.97 0.012 200);
+  --onu-neutral-sidebar-border: oklch(0.95 0.03 200 / 11%);
+  --onu-chart-2: oklch(0.76 0.13 40);
+  --onu-chart-3: oklch(0.85 0.11 85);
+  --onu-chart-4: oklch(0.7 0.1 250);
+  --onu-chart-5: oklch(0.78 0.12 160);
+  --onu-radius: 0.875rem;
+
+  --lg-sand: oklch(0.3 0.04 230);
+  --lg-coral: oklch(0.76 0.13 40);
+  --lg-coral-text: oklch(0.82 0.11 45);
+  --lg-night: oklch(0.14 0.035 245);
+  --lg-lagoon: color-mix(in oklab, var(--primary) 75%, oklch(0.85 0.1 190));
+  --lg-deep: color-mix(in oklab, var(--onu-primary) 50%, var(--lg-night));
+  --lg-abyss: color-mix(in oklab, var(--onu-primary) 30%, var(--lg-night));
+  --lg-glow: color-mix(in oklab, var(--primary) 34%, transparent);
+  --lg-sun: color-mix(in oklab, var(--primary) 14%, transparent);
+  --lg-glass: color-mix(in oklab, var(--card) 70%, transparent);
+  --lg-glass-border: color-mix(in oklab, var(--primary) 16%, var(--border));
+  --lg-shadow:
+    0 1px 2px oklch(0 0 0 / 30%), 0 12px 32px -8px oklch(0 0 0 / 45%),
+    0 0 0 1px color-mix(in oklab, var(--primary) 6%, transparent),
+    0 24px 60px -20px color-mix(in oklab, var(--primary) 26%, transparent);
+  --lg-gradient-text: linear-gradient(100deg, var(--primary), color-mix(in oklab, var(--primary) 55%, white) 75%);
+}
+
+/* ---------------------------------------------------------------- */
+/* Page                                                              */
+/* ---------------------------------------------------------------- */
+
+.design-lagoon {
+  isolation: isolate;
+  background-color: var(--background);
+  color: var(--foreground);
+  overflow-x: clip;
+}
+
+/* Elegant serif display; Thaana headlines in MV Waheed. */
+.design-lagoon .lg-serif {
+  font-family: "Source Serif 4 Variable", var(--onu-font-thaana), Georgia, serif;
+  font-optical-sizing: auto;
+  letter-spacing: -0.015em;
+}
+.design-lagoon:lang(dv) .lg-serif,
+.design-lagoon .lg-serif:lang(dv) {
+  font-family: "MV Waheed", var(--onu-font-thaana);
+  letter-spacing: 0;
+  line-height: 1.55;
+}
+
+.design-lagoon .lg-gradient-text {
+  background: var(--lg-gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@media (forced-colors: active) {
+  .design-lagoon .lg-gradient-text {
+    color: CanvasText;
+    background: none;
+  }
+}
+
+/* Soft sunlight-on-water mesh behind the hero. */
+.design-lagoon .lg-mesh {
+  background:
+    radial-gradient(60% 50% at 85% 10%, var(--lg-sun), transparent 70%),
+    radial-gradient(55% 60% at 10% 20%, color-mix(in oklab, var(--primary) 16%, transparent), transparent 70%),
+    radial-gradient(70% 60% at 70% 80%, color-mix(in oklab, var(--lg-lagoon) 22%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in oklab, var(--lg-sand) 35%, var(--background)), var(--background) 85%);
+}
+:root:is(.dark, [data-theme="dark"]) .design-lagoon .lg-mesh {
+  background:
+    radial-gradient(50% 45% at 82% 8%, oklch(0.95 0.02 230 / 9%), transparent 70%),
+    radial-gradient(55% 60% at 10% 25%, color-mix(in oklab, var(--primary) 22%, transparent), transparent 70%),
+    radial-gradient(70% 60% at 70% 85%, color-mix(in oklab, var(--primary) 16%, transparent), transparent 70%),
+    linear-gradient(180deg, var(--lg-abyss), var(--background) 90%);
+}
+
+/* A diffused glow (sunlight on water by day, bioluminescence by night). */
+.design-lagoon .lg-glow {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(closest-side, var(--lg-glow), transparent);
+  filter: blur(24px);
+  pointer-events: none;
+}
+.design-lagoon .lg-glow-sun {
+  background: radial-gradient(closest-side, var(--lg-sun), transparent);
+}
+
+/* Grain: a whisper of texture so gradients don't band. */
+.design-lagoon .lg-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Glass: nav, floating chips. Opaque enough that text keeps AA contrast. */
+.design-lagoon .lg-glass {
+  background-color: var(--lg-glass);
+  border: 1px solid var(--lg-glass-border);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .design-lagoon .lg-glass {
+    background-color: var(--card);
+  }
+}
+
+/* Large soft cards. */
+.design-lagoon .lg-card {
+  border-radius: 1.5rem;
+  background-color: var(--card);
+  border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+  box-shadow: var(--lg-shadow);
+}
+.design-lagoon .lg-lift {
+  transition:
+    transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 300ms ease,
+    border-color 300ms ease;
+}
+.design-lagoon .lg-lift:hover,
+.design-lagoon .lg-lift:focus-within {
+  transform: translateY(-3px);
+  border-color: color-mix(in oklab, var(--primary) 35%, var(--border));
+  box-shadow:
+    var(--lg-shadow),
+    0 0 0 4px color-mix(in oklab, var(--primary) 8%, transparent),
+    0 18px 50px -12px var(--lg-glow);
+}
+
+/* Gradient hairline border (lagoon → coral), used on the showcase frame. */
+.design-lagoon .lg-ring {
+  position: relative;
+}
+.design-lagoon .lg-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--primary) 70%, transparent),
+    transparent 40%,
+    transparent 60%,
+    color-mix(in oklab, var(--lg-coral) 60%, transparent)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Pill buttons with a gentle glow on hover. */
+.design-lagoon .lg-pill {
+  border-radius: 9999px;
+  padding-inline: 1.15rem;
+}
+.design-lagoon .lg-pill[data-variant="default"],
+.design-lagoon a.lg-pill-primary {
+  background-image: linear-gradient(135deg, var(--primary), color-mix(in oklab, var(--primary), var(--lg-night) 22%));
+  box-shadow:
+    0 1px 0 color-mix(in oklab, white 25%, transparent) inset,
+    0 6px 18px -6px var(--lg-glow);
+  transition:
+    box-shadow 250ms ease,
+    transform 250ms ease,
+    filter 250ms ease;
+}
+.design-lagoon .lg-pill[data-variant="default"]:hover,
+.design-lagoon a.lg-pill-primary:hover {
+  filter: brightness(1.05);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, white 25%, transparent) inset,
+    0 0 0 4px color-mix(in oklab, var(--primary) 14%, transparent),
+    0 10px 30px -6px color-mix(in oklab, var(--primary) 55%, transparent);
+}
+.design-lagoon .lg-pill[data-variant="outline"]:hover {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 10%, transparent);
+}
+
+/* Icon bubble. */
+.design-lagoon .lg-bubble {
+  display: grid;
+  place-items: center;
+  border-radius: 1rem;
+  color: var(--primary);
+  background:
+    radial-gradient(120% 120% at 30% 20%, color-mix(in oklab, var(--primary) 18%, var(--card)), var(--card)),
+    var(--card);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--primary) 18%, transparent),
+    0 6px 16px -8px var(--lg-glow);
+}
+:root:is(.dark, [data-theme="dark"]) .design-lagoon .lg-bubble {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--primary) 30%, transparent),
+    0 0 22px -6px var(--lg-glow);
+}
+
+/* Deep-ocean surfaces (stats band, CTA, greeting). White text, always AA. */
+.design-lagoon .lg-ocean {
+  color: oklch(0.985 0.005 200);
+  background:
+    radial-gradient(60% 80% at 85% 0%, color-mix(in oklab, var(--primary) 45%, transparent), transparent 70%),
+    radial-gradient(40% 60% at 5% 95%, color-mix(in oklab, var(--lg-coral) 10%, transparent), transparent 70%),
+    linear-gradient(140deg, var(--lg-deep), var(--lg-abyss));
+}
+.design-lagoon .lg-ocean .lg-ocean-muted {
+  color: oklch(0.92 0.02 200);
+}
+.design-lagoon .lg-ocean :focus-visible {
+  outline: 2px solid oklch(0.985 0 0);
+  outline-offset: 2px;
+}
+.design-lagoon .lg-on-ocean-btn {
+  border-radius: 9999px;
+  background: oklch(0.99 0.004 85);
+  color: var(--lg-abyss);
+  box-shadow: 0 8px 24px -10px oklch(0 0 0 / 50%);
+}
+.design-lagoon .lg-on-ocean-btn:hover {
+  background: oklch(0.99 0.004 85);
+  color: var(--lg-abyss);
+  box-shadow:
+    0 0 0 4px oklch(1 0 0 / 18%),
+    0 10px 30px -8px color-mix(in oklab, var(--lg-lagoon) 70%, transparent);
+}
+.design-lagoon .lg-on-ocean-ghost {
+  border-radius: 9999px;
+  color: oklch(0.985 0 0);
+  border-color: oklch(1 0 0 / 35%);
+  background: oklch(1 0 0 / 8%);
+}
+.design-lagoon .lg-on-ocean-ghost:hover {
+  color: oklch(0.985 0 0);
+  background: oklch(1 0 0 / 16%);
+}
+
+/* Waves: section dividers that drift slowly. */
+.design-lagoon .lg-wave {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  pointer-events: none;
+}
+.design-lagoon .lg-wave svg {
+  width: 200%;
+  height: 100%;
+}
+.design-lagoon .lg-wave-a {
+  fill: color-mix(in oklab, var(--primary) 12%, transparent);
+  animation: lg-drift 22s linear infinite;
+}
+.design-lagoon .lg-wave-b {
+  fill: color-mix(in oklab, var(--primary) 8%, transparent);
+  animation: lg-drift 34s linear infinite reverse;
+}
+.design-lagoon .lg-wave-c {
+  fill: var(--lg-fill, var(--background));
+}
+@keyframes lg-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Ripples: rings that widen like a drop on still water. */
+.design-lagoon .lg-ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1.5px solid color-mix(in oklab, var(--primary) 45%, transparent);
+  animation: lg-ripple 3.6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  pointer-events: none;
+}
+.design-lagoon .lg-ripple:nth-child(2) {
+  animation-delay: 1.2s;
+}
+.design-lagoon .lg-ripple:nth-child(3) {
+  animation-delay: 2.4s;
+}
+@keyframes lg-ripple {
+  from {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+.design-lagoon .lg-pulse-dot {
+  position: relative;
+}
+.design-lagoon .lg-pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0.35;
+  animation: lg-pulse 2.4s ease-out infinite;
+}
+@keyframes lg-pulse {
+  from {
+    transform: scale(0.6);
+    opacity: 0.45;
+  }
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* The island illustration. */
+.design-lagoon .lg-art {
+  color: color-mix(in oklab, var(--primary) 70%, var(--foreground));
+}
+.design-lagoon .lg-art .lg-art-sun {
+  fill: var(--lg-coral);
+}
+.design-lagoon .lg-art .lg-art-sand {
+  fill: color-mix(in oklab, var(--lg-sand) 85%, var(--lg-coral));
+}
+:root:is(.dark, [data-theme="dark"]) .design-lagoon .lg-art .lg-art-sun {
+  fill: oklch(0.95 0.03 95);
+}
+:root:is(.dark, [data-theme="dark"]) .design-lagoon .lg-art .lg-art-sand {
+  fill: oklch(0.36 0.04 230);
+}
+.design-lagoon .lg-art .lg-art-water {
+  stroke: color-mix(in oklab, var(--primary) 55%, transparent);
+}
+.design-lagoon .lg-float {
+  animation: lg-float 7s ease-in-out infinite;
+}
+.design-lagoon .lg-float-slow {
+  animation: lg-float 9s ease-in-out infinite reverse;
+}
+@keyframes lg-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* The atoll map. */
+.design-lagoon .lg-atoll {
+  fill: color-mix(in oklab, var(--primary) calc(var(--v) * 60%), transparent);
+  stroke: color-mix(in oklab, var(--primary) 75%, var(--foreground));
+  stroke-width: 1.25;
+}
+:root:is(.dark, [data-theme="dark"]) .design-lagoon .lg-atoll {
+  stroke: var(--primary);
+  filter: drop-shadow(0 0 4px color-mix(in oklab, var(--primary) 60%, transparent));
+}
+.design-lagoon .lg-atoll-ping {
+  fill: none;
+  stroke: var(--primary);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lg-ripple 3.2s ease-out infinite;
+}
+
+/* Chart and stat tile frames inside lagoon cards. */
+.design-lagoon .lg-tile {
+  border-radius: 1.5rem;
+  box-shadow: var(--lg-shadow);
+  border-color: color-mix(in oklab, var(--border) 80%, transparent);
+}
+
+/* Dashboard shell: soft floating sidebar on sand, glass header. */
+.design-lagoon.lg-desk {
+  background:
+    radial-gradient(55% 35% at 85% 0%, var(--lg-sun), transparent 70%),
+    radial-gradient(50% 40% at 20% 0%, color-mix(in oklab, var(--primary) 10%, transparent), transparent 70%),
+    var(--background);
+}
+.design-lagoon [data-slot="sidebar-inner"] {
+  border-radius: 1.5rem;
+  box-shadow: var(--lg-shadow);
+}
+.design-lagoon [data-slot="app-layout-body"] {
+  background: transparent;
+}
+.design-lagoon .lg-header {
+  background-color: var(--lg-glass);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border-bottom: 1px solid var(--lg-glass-border);
+}
+.design-lagoon [data-slot="sidebar-menu-button"][data-active="true"] {
+  background: color-mix(in oklab, var(--primary) 13%, var(--sidebar));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--primary) 18%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .design-lagoon *,
+  .design-lagoon *::before,
+  .design-lagoon *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .design-lagoon .lg-lift:hover,
+  .design-lagoon .lg-lift:focus-within {
+    transform: none;
+  }
+}
