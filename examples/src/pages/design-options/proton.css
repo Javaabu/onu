@@ -359,13 +359,13 @@
 .design-proton .pt-search [data-slot="search-box"] {
   width: 100%;
 }
-.design-proton .pt-search [data-slot="input-group"] {
+.design-proton .pt-search [data-slot="search-box"] {
   height: 2.5rem;
   border-radius: 0.5rem;
   background-color: var(--background);
   border-color: var(--border);
 }
-:root:is(.dark, [data-theme="dark"]) .design-proton .pt-search [data-slot="input-group"] {
+:root:is(.dark, [data-theme="dark"]) .design-proton .pt-search [data-slot="search-box"] {
   background-color: var(--muted);
 }
 .design-proton .pt-icon-btn {
