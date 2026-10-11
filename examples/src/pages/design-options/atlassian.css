@@ -1,0 +1,1096 @@
+/*
+ * Atlassian: a design option inspired by the Atlassian Design System as seen in
+ * Jira and Confluence cloud (recreated with Onu; no Atlassian code, fonts or logos).
+ *
+ * Token values come from @atlaskit/tokens 20.4.1 (atlassian-light / atlassian-dark
+ * themes, shape, spacing and typography artifacts): elevation.surface / sunken /
+ * raised / overlay, color.text / subtle / subtlest, color.border, border.input,
+ * background.neutral, the lozenge accent pairs, shadow.overlay, radius.small (4px),
+ * the 8px space scale, font.body 14/20 and the 653-weight headings.
+ *
+ * Compact and dense, 4px radii, 1px subtle borders, no shadows except on
+ * overlays (menus, popovers, dialogs), a sunken canvas for dashboards with white
+ * raised gadgets on top.
+ *
+ * Every rule is scoped to `.design-atlassian` (the page root) or `.atl-portal`
+ * (set on <body> while an Atlassian page is mounted, for portalled overlays).
+ *
+ * Re-branding: brand.bold #1868DB ships only while no `--onu-primary` is set
+ * inline on <html> (the examples' Customize panel); every brand surface (buttons,
+ * links, selected nav, selected rows, focus) derives from `--primary`.
+ */
+
+/* ------------------------------------------------------------------ tokens */
+
+:root:not([style*="--onu-primary"]) :is(.design-atlassian, .atl-portal) {
+  --onu-primary: #1868db; /* color.background.brand.bold */
+  --onu-primary-dark: #669df1; /* dark color.background.brand.bold */
+}
+
+.design-atlassian,
+.atl-portal {
+  /* Elevation and text (atlassian-light). */
+  --atl-surface: #ffffff;
+  --atl-surface-hovered: #f0f1f2;
+  --atl-surface-pressed: #dddee1;
+  --atl-surface-sunken: #f8f8f8;
+  --atl-surface-raised: #ffffff;
+  --atl-surface-overlay: #ffffff;
+  --atl-text: #292a2e;
+  --atl-text-subtle: #505258;
+  --atl-text-subtlest: #6b6e76;
+  --atl-border: #0b120e24;
+  --atl-border-bold: #7d818a;
+  --atl-border-input: #8c8f97;
+  --atl-neutral: #0515240f;
+  --atl-neutral-hovered: #0b120e24;
+  --atl-neutral-pressed: #080f214a;
+  --atl-shadow-overlay: 0px 8px 12px #1e1f2126, 0px 0px 1px #1e1f214f;
+
+  /* Brand, derived from the primary so Customize re-brands everything. */
+  --atl-brand: var(--primary);
+  --atl-brand-hovered: color-mix(in oklab, var(--primary), black 14%);
+  --atl-brand-pressed: color-mix(in oklab, var(--primary), black 26%);
+  --atl-brand-subtlest: color-mix(in oklab, var(--primary) 9%, var(--atl-surface));
+  --atl-brand-subtlest-hovered: color-mix(in oklab, var(--primary) 20%, var(--atl-surface));
+  --atl-link: color-mix(in oklab, var(--primary), black 6%);
+  --atl-focus: color-mix(in oklab, var(--primary) 75%, white);
+
+  /* Lozenges: background.accent.*.subtler with text.accent.*.bolder. */
+  --atl-loz-default-bg: #dddee1;
+  --atl-loz-default-fg: #292a2e;
+  --atl-loz-inprogress-bg: #cfe1fd;
+  --atl-loz-inprogress-fg: #123263;
+  --atl-loz-success-bg: #baf3db;
+  --atl-loz-success-fg: #164b35;
+  --atl-loz-removed-bg: #ffd5d2;
+  --atl-loz-removed-fg: #5d1f1a;
+  --atl-loz-moved-bg: #f5e989;
+  --atl-loz-moved-fg: #533f04;
+  --atl-loz-new-bg: #eed7fc;
+  --atl-loz-new-fg: #48245d;
+
+  /* Icons and charts (icon.danger / warning / information, chart.categorical). */
+  --atl-icon-danger: #c9372c;
+  --atl-icon-warning: #e06c00;
+  --atl-icon-info: var(--atl-brand);
+  --atl-chart-brand: var(--primary);
+  --atl-chart-red: #e2483d;
+  --atl-chart-green: #6a9a23;
+  --atl-chart-orange: #f68909;
+  --atl-chart-purple: #bf63f3;
+  --atl-chart-neutral: #8c8f97;
+
+  /* Hand the surfaces to Onu. */
+  --onu-radius: 0.25rem; /* radius.small */
+  --onu-tint: 30%;
+  --onu-background: var(--atl-surface);
+  --onu-foreground: var(--atl-text);
+  --onu-card: var(--atl-surface-raised);
+  --onu-card-foreground: var(--atl-text);
+  --onu-popover: var(--atl-surface-overlay);
+  --onu-popover-foreground: var(--atl-text);
+  --onu-neutral-secondary: #f0f1f2;
+  --onu-neutral-secondary-foreground: var(--atl-text);
+  --onu-neutral-muted: var(--atl-surface-sunken);
+  --onu-neutral-muted-foreground: var(--atl-text-subtle);
+  --onu-neutral-accent: var(--atl-surface-hovered);
+  --onu-neutral-accent-foreground: var(--atl-text);
+  --onu-neutral-border: #dddee1;
+  --onu-neutral-input: var(--atl-border-input);
+  --onu-neutral-sidebar: var(--atl-surface);
+  --onu-sidebar-foreground: var(--atl-text-subtle);
+  --onu-neutral-sidebar-accent: var(--atl-surface-hovered);
+  --onu-neutral-sidebar-accent-foreground: var(--atl-text);
+  --onu-neutral-sidebar-border: #dddee1;
+  --onu-ring: var(--atl-focus);
+  --onu-destructive: #c9372c;
+  --onu-success: #4c6b1f;
+  --onu-warning: #e06c00;
+  --onu-info: var(--atl-link);
+  --onu-chart-1: var(--atl-chart-brand);
+  --onu-chart-2: var(--atl-chart-green);
+  --onu-chart-3: var(--atl-chart-purple);
+  --onu-chart-4: var(--atl-chart-orange);
+  --onu-chart-5: #42b2d7;
+  --onu-chart-6: #bd5b00;
+}
+
+@supports (color: oklch(from red l c h)) {
+  .design-atlassian,
+  .atl-portal {
+    /* Links and selected text stay AA on white whatever the brand. */
+    --atl-link: oklch(from var(--primary) min(l, 0.53) c h);
+  }
+}
+
+/* atlassian-dark */
+:is(.dark, [data-theme="dark"]) :is(.design-atlassian, .atl-portal) {
+  --atl-surface: #1f1f21;
+  --atl-surface-hovered: #2b2c2f;
+  --atl-surface-pressed: #303134;
+  --atl-surface-sunken: #18191a;
+  --atl-surface-raised: #242528;
+  --atl-surface-overlay: #2b2c2f;
+  --atl-text: #cecfd2;
+  --atl-text-subtle: #a9abaf;
+  --atl-text-subtlest: #96999e;
+  --atl-border: #e3e4f21f;
+  --atl-border-bold: #7e8188;
+  --atl-border-input: #7e8188;
+  --atl-neutral: #ceced912;
+  --atl-neutral-hovered: #e3e4f21f;
+  --atl-neutral-pressed: #e5e9f640;
+  --atl-shadow-overlay: 0px 0px 0px 1px #bdbdbd1f, 0px 8px 12px #0104045c, 0px 0px 1px 1px #01040480;
+
+  --atl-brand-hovered: color-mix(in oklab, var(--primary), white 16%);
+  --atl-brand-pressed: color-mix(in oklab, var(--primary), white 28%);
+  --atl-brand-subtlest: color-mix(in oklab, var(--primary) 16%, var(--atl-surface));
+  --atl-brand-subtlest-hovered: color-mix(in oklab, var(--primary) 26%, var(--atl-surface));
+  --atl-link: var(--primary);
+  --atl-focus: color-mix(in oklab, var(--primary) 70%, white);
+
+  --atl-loz-default-bg: #4b4d51;
+  --atl-loz-default-fg: #e2e3e4;
+  --atl-loz-inprogress-bg: #123263;
+  --atl-loz-inprogress-fg: #cfe1fd;
+  --atl-loz-success-bg: #164b35;
+  --atl-loz-success-fg: #baf3db;
+  --atl-loz-removed-bg: #5d1f1a;
+  --atl-loz-removed-fg: #ffd5d2;
+  --atl-loz-moved-bg: #533f04;
+  --atl-loz-moved-fg: #f5e989;
+  --atl-loz-new-bg: #48245d;
+  --atl-loz-new-fg: #eed7fc;
+
+  --atl-icon-danger: #f15b50;
+  --atl-icon-warning: #fbc828;
+  --atl-chart-red: #f15b50;
+  --atl-chart-green: #94c748;
+  --atl-chart-orange: #fca700;
+  --atl-chart-purple: #c97cf4;
+  --atl-chart-neutral: #7e8188;
+
+  --onu-neutral-secondary: #2b2c2f;
+  --onu-neutral-border: #3d3f43;
+  --onu-neutral-sidebar-border: #3d3f43;
+  --onu-destructive: #f15b50;
+  --onu-success: #b3df72;
+  --onu-warning: #fbc828;
+  --onu-chart-5: #42b2d7;
+  --onu-chart-6: #e06c00;
+}
+
+/* ------------------------------------------------------------- page, type */
+
+.design-atlassian {
+  min-height: 100svh;
+  overflow-x: clip;
+  background-color: var(--atl-surface);
+  color: var(--atl-text);
+  font-size: 0.875rem; /* font.body */
+  line-height: 1.25rem;
+}
+
+.design-atlassian :is(h1, h2, h3) {
+  color: var(--atl-text);
+}
+/* font.heading.large 24/28, medium 20/24, xsmall 14/20 — weight 653 (Atlassian Sans ≈ Inter). */
+.design-atlassian :is(.atl-heading-lg, [data-slot="listing-page"] h1) {
+  font-size: 1.5rem;
+  line-height: 1.75rem;
+  font-weight: 653;
+  letter-spacing: -0.01em;
+}
+.design-atlassian .atl-heading-xs {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 653;
+}
+.design-atlassian :is(.atl-heading-lg, .atl-heading-xs, [data-slot="listing-page"] h1):lang(dv) {
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+
+.design-atlassian .text-muted-foreground {
+  color: var(--atl-text-subtle);
+}
+
+/* Links in brand colour (color.link). */
+.design-atlassian :is(.atl-link, .atl-key, .atl-key-cell [data-row-link]) {
+  color: var(--atl-link);
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 2px;
+}
+.design-atlassian :is(.atl-link, .atl-key, .atl-key-cell [data-row-link]):hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.design-atlassian .atl-key,
+.design-atlassian .atl-key-cell {
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+/* Focus: Atlassian's 2px border.focused ring, offset 2px. */
+:is(.design-atlassian, .atl-portal)
+  :is(a, button, [role="tab"], [role="checkbox"], [role="menuitem"], [role="option"], [tabindex]):focus-visible {
+  outline: 2px solid var(--atl-focus);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+:is(.design-atlassian, .atl-portal) :is([data-slot="input"], textarea):focus-visible,
+:is(.design-atlassian, .atl-portal) [data-slot="input-group"]:focus-within {
+  border-color: var(--atl-focus);
+  box-shadow: inset 0 0 0 1px var(--atl-focus);
+  outline: none;
+}
+.design-atlassian [data-slot="input-group"] :is(input, [data-slot="input"]):focus-visible {
+  box-shadow: none;
+}
+
+/* ------------------------------------------------------------- the shell */
+
+/* Issue keys on the phone cards are links too. */
+.design-atlassian .atl-listing [data-slot="data-table-cards"] [data-row-link] {
+  color: var(--atl-link);
+}
+
+/* Metric tiles two-up on phones. */
+@media (max-width: 639.98px) {
+  .design-atlassian .atl-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Top navigation: full width over the side navigation (md and up). */
+.design-atlassian .atl-topnav {
+  --onu-header-height: 3.5rem;
+  background-color: var(--atl-surface);
+  border-block-end: 1px solid var(--border);
+  backdrop-filter: none;
+  padding-inline: 0.75rem;
+}
+@media (min-width: 768px) {
+  .design-atlassian .atl-topnav {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 20;
+  }
+  .design-atlassian [data-slot="app-layout-body"] {
+    padding-block-start: calc(3.5rem + env(safe-area-inset-top));
+  }
+  .design-atlassian [data-slot="sidebar-container"] {
+    inset-block-start: calc(3.5rem + env(safe-area-inset-top));
+    height: calc(100svh - 3.5rem - env(safe-area-inset-top));
+  }
+}
+
+.design-atlassian .atl-product {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.375rem;
+  border-radius: var(--radius);
+  color: var(--atl-text);
+  text-decoration: none;
+}
+.design-atlassian .atl-product:hover {
+  background-color: var(--atl-neutral);
+}
+.design-atlassian .atl-product__name {
+  font-weight: 653;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+.design-atlassian .atl-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  border-radius: 0.25rem;
+  background-color: var(--atl-brand);
+  color: var(--primary-foreground);
+}
+.design-atlassian .atl-mark svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+/* Top-level links: subtle text, a 3px brand line under the current one. */
+.design-atlassian .atl-toplink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  block-size: 2rem;
+  padding-inline: 0.5rem;
+  border-radius: var(--radius);
+  color: var(--atl-text-subtle);
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.design-atlassian .atl-toplink:hover {
+  background-color: var(--atl-neutral);
+  color: var(--atl-text);
+}
+.design-atlassian .atl-toplink[aria-current="page"] {
+  color: var(--atl-link);
+}
+.design-atlassian .atl-toplink[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0.25rem;
+  inset-block-end: -0.75rem;
+  block-size: 3px;
+  border-start-start-radius: 1px;
+  border-start-end-radius: 1px;
+  background-color: var(--atl-brand);
+}
+
+.design-atlassian .atl-create {
+  margin-inline-start: 0.5rem;
+  font-weight: 500;
+}
+@media (max-width: 639.98px) {
+  .design-atlassian .atl-create {
+    inline-size: 2rem;
+    padding: 0;
+  }
+}
+
+.design-atlassian .atl-nav-search {
+  block-size: 2rem;
+  background-color: var(--atl-surface);
+  border-color: var(--atl-border-input);
+}
+.design-atlassian .atl-avatar-link {
+  display: inline-flex;
+  border-radius: 9999px;
+  padding: 0.25rem;
+}
+.design-atlassian .atl-avatar-link:hover {
+  background-color: var(--atl-neutral);
+}
+
+/* Header icon buttons: subtle appearance. */
+.design-atlassian .atl-topnav [data-slot="button"]:is([data-variant="ghost"], [data-variant="outline"]) {
+  color: var(--atl-text-subtle);
+  border-color: transparent;
+  background-color: transparent;
+}
+.design-atlassian .atl-topnav [data-slot="button"]:is([data-variant="ghost"], [data-variant="outline"]):hover {
+  background-color: var(--atl-neutral);
+  color: var(--atl-text);
+}
+
+/* Side navigation. */
+.design-atlassian [data-slot="sidebar-inner"] {
+  background-color: var(--atl-surface);
+}
+.design-atlassian [data-slot="sidebar-container"] {
+  border-inline-end-color: var(--border);
+}
+.design-atlassian .atl-project-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: 0.375rem;
+  background-color: #964ac0; /* background.accent.purple.bolder */
+  color: #ffffff;
+}
+.design-atlassian .atl-project-avatar svg {
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+}
+.design-atlassian .atl-group-label {
+  font-size: 0.75rem;
+  font-weight: 653;
+  color: var(--atl-text-subtlest);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.design-atlassian .atl-group-label:lang(dv) {
+  text-transform: none;
+  letter-spacing: 0;
+}
+.design-atlassian [data-sidebar="menu-button"] {
+  position: relative;
+  block-size: 2rem;
+  border-radius: var(--radius);
+  color: var(--atl-text-subtle);
+  font-weight: 500;
+}
+.design-atlassian [data-sidebar="menu-button"]:hover {
+  background-color: var(--atl-neutral);
+  color: var(--atl-text);
+}
+.design-atlassian [data-sidebar="menu-button"][data-active="true"] {
+  background-color: var(--atl-brand-subtlest);
+  color: var(--atl-link);
+  font-weight: 500;
+}
+.design-atlassian [data-sidebar="menu-button"][data-active="true"]:hover {
+  background-color: var(--atl-brand-subtlest-hovered);
+}
+.design-atlassian [data-sidebar="menu-button"][data-active="true"]::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block: 0.375rem;
+  inline-size: 3px;
+  border-start-end-radius: 2px;
+  border-end-end-radius: 2px;
+  background-color: var(--atl-brand);
+}
+.design-atlassian .atl-sidebar-note {
+  padding: 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--atl-text-subtlest);
+  border-block-start: 1px solid var(--border);
+}
+
+/* Main canvas: space.300 / space.400 padding; sunken for dashboards. */
+.design-atlassian .atl-main {
+  padding: 1rem;
+}
+@media (min-width: 768px) {
+  .design-atlassian .atl-main {
+    padding: 1.5rem 2rem 2.5rem;
+  }
+}
+.design-atlassian .atl-main--sunken {
+  background-color: var(--atl-surface-sunken);
+}
+
+.design-atlassian .atl-crumbs {
+  font-size: 0.875rem;
+  color: var(--atl-text-subtle);
+}
+
+/* --------------------------------------------------------------- controls */
+
+/* Buttons: 32px, 4px radius, medium weight. */
+:is(.design-atlassian, .atl-portal) [data-slot="button"] {
+  font-weight: 500;
+  border-radius: var(--radius);
+}
+:is(.design-atlassian, .atl-portal) [data-slot="button"][data-variant="default"] {
+  background-color: var(--atl-brand);
+}
+:is(.design-atlassian, .atl-portal) [data-slot="button"][data-variant="default"]:hover {
+  background-color: var(--atl-brand-hovered);
+}
+:is(.design-atlassian, .atl-portal) [data-slot="button"][data-variant="default"]:active {
+  background-color: var(--atl-brand-pressed);
+}
+/* "Default" appearance: 1px border on the surface, subtle text. */
+:is(.design-atlassian, .atl-portal)
+  :is([data-slot="button"], [data-slot="filter-panel-trigger"]):is(
+    [data-variant="outline"],
+    [data-variant="secondary"]
+  ) {
+  background-color: transparent;
+  border-color: var(--atl-border);
+  color: var(--atl-text-subtle);
+  box-shadow: none;
+}
+:is(.design-atlassian, .atl-portal)
+  :is([data-slot="button"], [data-slot="filter-panel-trigger"]):is(
+    [data-variant="outline"],
+    [data-variant="secondary"]
+  ):hover {
+  background-color: var(--atl-surface-hovered);
+  color: var(--atl-text);
+}
+/* "Subtle" appearance. */
+:is(.design-atlassian, .atl-portal) [data-slot="button"][data-variant="ghost"] {
+  color: var(--atl-text-subtle);
+}
+:is(.design-atlassian, .atl-portal) [data-slot="button"][data-variant="ghost"]:hover {
+  background-color: var(--atl-neutral);
+  color: var(--atl-text);
+}
+:is(.design-atlassian, .atl-portal) [data-slot="button"][data-variant="link"] {
+  color: var(--atl-link);
+}
+
+/* Inputs: white, 1px border.input, 4px radius. */
+:is(.design-atlassian, .atl-portal) :is([data-slot="input"], [data-slot="input-group"], [data-slot="select-trigger"]) {
+  border-radius: var(--radius);
+  background-color: var(--atl-surface);
+  box-shadow: none;
+}
+:is(.dark, [data-theme="dark"])
+  :is(.design-atlassian, .atl-portal)
+  :is([data-slot="input"], [data-slot="input-group"], [data-slot="select-trigger"]) {
+  background-color: #242528; /* background.input */
+}
+:is(.design-atlassian, .atl-portal) [data-slot="input-group"] [data-slot="input"] {
+  background-color: transparent;
+}
+
+/* Checkboxes: 2px corners, brand when checked. */
+:is(.design-atlassian, .atl-portal) [data-slot="checkbox"] {
+  border-radius: 2px;
+  border-color: var(--atl-border-input);
+}
+:is(.design-atlassian, .atl-portal) [data-slot="checkbox"][data-state="checked"] {
+  background-color: var(--atl-brand);
+  border-color: var(--atl-brand);
+}
+
+/* Overlays: the only place with a shadow (shadow.overlay). */
+.atl-portal
+  :is(
+    [data-slot="dropdown-menu-content"],
+    [data-slot="dropdown-menu-sub-content"],
+    [data-slot="popover-content"],
+    [data-slot="select-content"],
+    [data-slot="dialog-content"],
+    [data-slot="alert-dialog-content"],
+    [data-slot="tooltip-content"]
+  ) {
+  border-radius: var(--radius);
+  border: 0;
+  --tw-ring-shadow: 0 0 #0000;
+  box-shadow: var(--atl-shadow-overlay);
+  background-color: var(--atl-surface-overlay);
+}
+.atl-portal [data-slot="tooltip-content"] {
+  background-color: #292a2e;
+  color: #ffffff;
+  box-shadow: none;
+}
+:is(.dark, [data-theme="dark"]) .atl-portal [data-slot="tooltip-content"] {
+  background-color: #cecfd2;
+  color: #1f1f21;
+}
+.atl-portal :is([data-slot="dropdown-menu-item"], [data-slot="select-item"]) {
+  border-radius: 0;
+  min-block-size: 2rem;
+}
+.atl-portal :is([data-slot="dropdown-menu-item"], [data-slot="select-item"]):is(:focus, [data-highlighted]) {
+  background-color: var(--atl-surface-hovered);
+  box-shadow: inset 2px 0 0 var(--atl-brand);
+}
+.atl-portal :is([data-slot="dropdown-menu-item"], [data-slot="select-item"]):is(:focus, [data-highlighted]):dir(rtl) {
+  box-shadow: inset -2px 0 0 var(--atl-brand);
+}
+
+/* ---------------------------------------------------------------- lozenge */
+
+.design-atlassian .atl-lozenge,
+.atl-portal .atl-lozenge {
+  block-size: 1rem;
+  padding-inline: 0.25rem;
+  border: 0;
+  border-radius: 3px;
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  background-color: var(--atl-loz-default-bg);
+  color: var(--atl-loz-default-fg);
+  max-inline-size: 12.5rem;
+}
+:is(.design-atlassian, .atl-portal) .atl-lozenge:lang(dv) {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.75rem;
+  block-size: auto;
+  line-height: 1.25rem;
+}
+:is(.design-atlassian, .atl-portal) .atl-lozenge[data-appearance="inprogress"] {
+  background-color: var(--atl-loz-inprogress-bg);
+  color: var(--atl-loz-inprogress-fg);
+}
+:is(.design-atlassian, .atl-portal) .atl-lozenge[data-appearance="success"] {
+  background-color: var(--atl-loz-success-bg);
+  color: var(--atl-loz-success-fg);
+}
+:is(.design-atlassian, .atl-portal) .atl-lozenge[data-appearance="removed"] {
+  background-color: var(--atl-loz-removed-bg);
+  color: var(--atl-loz-removed-fg);
+}
+:is(.design-atlassian, .atl-portal) .atl-lozenge[data-appearance="moved"] {
+  background-color: var(--atl-loz-moved-bg);
+  color: var(--atl-loz-moved-fg);
+}
+:is(.design-atlassian, .atl-portal) .atl-lozenge[data-appearance="new"] {
+  background-color: var(--atl-loz-new-bg);
+  color: var(--atl-loz-new-fg);
+}
+
+/* Tab counts and other Onu badges read as small neutral "badges". */
+.design-atlassian [data-slot="badge"] {
+  border-radius: 2rem;
+  background-color: var(--atl-neutral);
+  color: var(--atl-text);
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------- icons, avatars */
+
+.design-atlassian .atl-priority--highest,
+.design-atlassian .atl-priority--high {
+  color: var(--atl-icon-danger);
+}
+.design-atlassian .atl-priority--medium {
+  color: var(--atl-icon-warning);
+}
+.design-atlassian .atl-priority--low,
+.design-atlassian .atl-priority--lowest {
+  color: var(--atl-icon-info);
+}
+
+.design-atlassian .atl-type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  inline-size: 1rem;
+  block-size: 1rem;
+  border-radius: 3px;
+  color: #ffffff;
+  vertical-align: middle;
+}
+.design-atlassian .atl-type svg {
+  inline-size: 0.6875rem;
+  block-size: 0.6875rem;
+  stroke-width: 2.5;
+}
+.design-atlassian .atl-type--lg {
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: 0.25rem;
+}
+.design-atlassian .atl-type--lg svg {
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+  stroke-width: 2;
+}
+/* background.accent.*.bolder / brand. */
+.design-atlassian .atl-type--building {
+  background-color: #1f845a;
+}
+.design-atlassian .atl-type--business {
+  background-color: var(--atl-brand);
+}
+.design-atlassian .atl-type--land {
+  background-color: #964ac0;
+}
+.design-atlassian .atl-type--vessel {
+  background-color: #227d9b;
+}
+.design-atlassian .atl-type--event {
+  background-color: #c9372c;
+}
+.design-atlassian .atl-type--trade {
+  background-color: #bd5b00;
+}
+
+/* Coloured default avatars (accent bolder backgrounds, white initials). */
+:is(.design-atlassian, .atl-portal) :is(.atl-av-0, .atl-av-1, .atl-av-2, .atl-av-3, .atl-av-4, .atl-av-5) {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: inherit;
+}
+:is(.design-atlassian, .atl-portal) .atl-av-0 {
+  background-color: #1558bc;
+}
+:is(.design-atlassian, .atl-portal) .atl-av-1 {
+  background-color: #1f845a;
+}
+:is(.design-atlassian, .atl-portal) .atl-av-2 {
+  background-color: #964ac0;
+}
+:is(.design-atlassian, .atl-portal) .atl-av-3 {
+  background-color: #227d9b;
+}
+:is(.design-atlassian, .atl-portal) .atl-av-4 {
+  background-color: #ae4787;
+}
+:is(.design-atlassian, .atl-portal) .atl-av-5 {
+  background-color: #bd5b00;
+}
+.design-atlassian .atl-avatar-empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  border-radius: 9999px;
+  background-color: var(--atl-neutral);
+  color: var(--atl-text-subtle);
+}
+.design-atlassian .atl-avatar-empty svg {
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+}
+.design-atlassian [data-slot="avatar"] {
+  box-shadow: 0 0 0 2px var(--atl-surface);
+}
+
+/* ----------------------------------------------------------- listing page */
+
+.design-atlassian .atl-listing {
+  gap: 1rem;
+}
+.design-atlassian .atl-listing > header p {
+  color: var(--atl-text-subtle);
+}
+
+/* Tabs: subtle text with a 2px brand underline on a 2px grey baseline. */
+.design-atlassian [data-slot="filter-tabs"] [data-slot="tabs-list"] {
+  background: transparent;
+  padding: 0;
+  block-size: auto;
+  gap: 0.25rem;
+  border-radius: 0;
+  box-shadow: inset 0 -2px 0 var(--border);
+}
+.design-atlassian [data-slot="filter-tabs"] [data-slot="tabs-trigger"] {
+  flex: none;
+  block-size: 2.25rem;
+  padding-inline: 0.5rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--atl-text-subtle);
+  font-weight: 500;
+}
+.design-atlassian [data-slot="filter-tabs"] [data-slot="tabs-trigger"]:hover {
+  color: var(--atl-text);
+  box-shadow: inset 0 -2px 0 var(--atl-border-bold);
+}
+.design-atlassian [data-slot="filter-tabs"] [data-slot="tabs-trigger"]:is([data-state="active"], [data-active]) {
+  color: var(--atl-link);
+  background: transparent;
+  box-shadow: inset 0 -2px 0 var(--atl-brand);
+}
+.design-atlassian [data-slot="filter-tabs"] [data-slot="tabs-trigger"]::after {
+  display: none;
+}
+
+/*
+ * Toolbar in Jira's "basic search" order: search, assignee faces and the
+ * Status / Assignee / Type buttons, More filters; then columns, export, view.
+ */
+.design-atlassian .atl-listing [data-slot="listing-toolbar"] {
+  gap: 0.5rem;
+}
+.design-atlassian .atl-listing [data-slot="listing-toolbar"] > div:last-child {
+  display: contents;
+}
+@media (min-width: 640px) {
+  .design-atlassian .atl-listing [data-slot="listing-toolbar"] > :first-child {
+    inline-size: 15rem;
+  }
+}
+.design-atlassian .atl-listing [data-slot="listing-toolbar"] > div:last-child > * {
+  order: 3;
+}
+.design-atlassian .atl-listing [data-slot="listing-toolbar"] > div:last-child > .atl-quickbar {
+  order: 1;
+}
+.design-atlassian .atl-listing [data-slot="listing-toolbar"] > :nth-child(2):not(:last-child) {
+  order: 2;
+  margin-inline-end: auto;
+}
+.design-atlassian .atl-quickbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+.design-atlassian .atl-quick {
+  font-weight: 500;
+  color: var(--atl-text-subtle);
+  border-color: var(--atl-border);
+  background: transparent;
+}
+.design-atlassian .atl-quick--on {
+  background-color: var(--atl-brand-subtlest);
+  border-color: color-mix(in oklab, var(--atl-brand) 40%, transparent);
+  color: var(--atl-link);
+}
+.design-atlassian .atl-quick__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 1.125rem;
+  block-size: 1.125rem;
+  padding-inline: 0.25rem;
+  border-radius: 2rem;
+  background-color: var(--atl-brand);
+  color: var(--primary-foreground);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+/* Avatar quick filter: overlapping faces; pressed ones get a brand ring. */
+.design-atlassian .atl-faces {
+  display: flex;
+  align-items: center;
+  padding-inline-end: 0.5rem;
+}
+.design-atlassian .atl-face {
+  display: inline-flex;
+  border-radius: 9999px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  margin-inline-start: -0.25rem;
+  transition: transform 120ms ease-out;
+}
+.design-atlassian .atl-face:first-child {
+  margin-inline-start: 0;
+}
+.design-atlassian .atl-face:hover {
+  transform: translateY(-2px);
+  position: relative;
+  z-index: 1;
+}
+.design-atlassian .atl-face[aria-pressed="true"] [data-slot="avatar"] {
+  box-shadow:
+    0 0 0 2px var(--atl-surface),
+    0 0 0 4px var(--atl-brand);
+}
+.design-atlassian .atl-face[aria-pressed="true"] {
+  position: relative;
+  z-index: 2;
+}
+
+/* Dynamic table: 2px header rule, 1px row rules, compact rows, no outer card. */
+.design-atlassian [data-slot="data-table"] > div:has([data-slot="data-table-table"]) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.design-atlassian [data-slot="data-table-table"] thead tr {
+  border-block-end: 2px solid var(--border);
+  background: transparent;
+}
+.design-atlassian [data-slot="data-table-table"] thead :is(th, th button) {
+  font-size: 0.75rem;
+  font-weight: 653;
+  color: var(--atl-text-subtle);
+}
+.design-atlassian [data-slot="data-table-table"] thead th {
+  block-size: 2.25rem;
+}
+.design-atlassian [data-slot="data-table-table"] tbody tr {
+  border-block-end: 1px solid var(--border);
+}
+.design-atlassian [data-slot="data-table-table"] tbody tr:hover {
+  background-color: var(--atl-surface-hovered);
+}
+.design-atlassian [data-slot="data-table-table"] tbody tr[data-state="selected"] {
+  background-color: var(--atl-brand-subtlest);
+}
+.design-atlassian [data-slot="data-table-table"] tbody td {
+  padding-block: 0.375rem;
+}
+.design-atlassian [data-slot="data-table-table"] :is(td, th):first-child {
+  padding-inline-start: 0.5rem;
+}
+.design-atlassian .atl-summary {
+  color: var(--atl-text);
+}
+
+/* Phone cards, list and grid views: raised white tiles with a 1px border. */
+.design-atlassian :is([data-slot="data-table-cards"], [data-slot="grid-view"], [data-slot="list-view"]) > li {
+  border-radius: var(--radius);
+  border-color: var(--border);
+  box-shadow: none;
+  background-color: var(--atl-surface-raised);
+}
+
+/* Bulk bar: Jira's dark "x selected" bar is too heavy; keep the selected tone. */
+.design-atlassian [data-slot="bulk-action-bar"] {
+  border-radius: var(--radius);
+  background-color: var(--atl-brand-subtlest);
+  border-color: color-mix(in oklab, var(--atl-brand) 30%, transparent);
+  box-shadow: none;
+}
+
+/* Pagination: subtle page buttons, the current one selected. */
+.design-atlassian [data-slot="pagination"] [aria-current="page"] {
+  background-color: var(--atl-brand-subtlest);
+  color: var(--atl-link);
+  border-color: transparent;
+}
+
+/* -------------------------------------------------------------- dashboard */
+
+.design-atlassian .atl-dash-grid {
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 1024px) {
+  .design-atlassian .atl-dash-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.design-atlassian .atl-gadget {
+  min-inline-size: 0;
+  background-color: var(--atl-surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.design-atlassian .atl-gadget__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-block-size: 2.75rem;
+  padding: 0.25rem 0.5rem 0.25rem 1rem;
+  border-block-end: 1px solid var(--border);
+}
+.design-atlassian .atl-gadget__head:dir(rtl) {
+  padding: 0.25rem 1rem 0.25rem 0.5rem;
+}
+.design-atlassian .atl-gadget__body {
+  padding: 1rem;
+}
+.design-atlassian .atl-gadget__foot {
+  padding: 0.625rem 1rem;
+  border-block-start: 1px solid var(--border);
+}
+
+/* Metric tiles as gadgets: font.metric (653 weight), no shadow. */
+.design-atlassian .atl-metrics [data-slot="stat-tile"] {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: none;
+  --tw-ring-shadow: 0 0 #0000;
+  background-color: var(--atl-surface-raised);
+  padding: 1rem;
+}
+.design-atlassian .atl-metrics [data-slot="stat-tile"] [data-slot="stat-tile-value"] {
+  font-size: 1.75rem;
+  line-height: 2rem;
+  font-weight: 653;
+}
+.design-atlassian .atl-metrics [data-slot="stat-tile"] [data-slot="stat-tile-label"] {
+  color: var(--atl-text-subtle);
+  font-weight: 500;
+}
+
+/* Assigned-to-me list: compact issue rows. */
+.design-atlassian .atl-issue-list > li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: 2.5rem;
+  padding: 0.375rem 1rem;
+  border-block-end: 1px solid var(--border);
+}
+.design-atlassian .atl-issue-list > li:last-child {
+  border-block-end: 0;
+}
+.design-atlassian .atl-issue-list > li:hover {
+  background-color: var(--atl-surface-hovered);
+}
+
+/* Cycle health: a segmented bar (done / in progress / to do). */
+.design-atlassian .atl-health {
+  display: flex;
+  block-size: 0.5rem;
+  overflow: hidden;
+  border-radius: 2px;
+  gap: 2px;
+  background-color: var(--atl-neutral);
+}
+.design-atlassian .atl-health__done {
+  background-color: var(--atl-chart-green);
+}
+.design-atlassian .atl-health__doing {
+  background-color: var(--atl-brand);
+}
+.design-atlassian .atl-health__todo {
+  background-color: var(--atl-chart-neutral);
+}
+.design-atlassian .atl-swatch {
+  display: inline-block;
+  inline-size: 0.625rem;
+  block-size: 0.625rem;
+  border-radius: 2px;
+}
+.design-atlassian .atl-health-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.design-atlassian .atl-health-stats > div {
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  background-color: var(--atl-surface-sunken);
+}
+.design-atlassian .atl-health-stats dt {
+  font-size: 0.75rem;
+  color: var(--atl-text-subtle);
+}
+.design-atlassian .atl-health-stats dd {
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-weight: 653;
+}
+
+.design-atlassian [data-slot="progress-bar-track"] {
+  border-radius: 2px;
+  background-color: var(--atl-neutral);
+}
+
+.design-atlassian .atl-flush-table [data-slot="data-table-table"] :is(td, th):first-child {
+  padding-inline-start: 1rem;
+}
+.design-atlassian .atl-flush-table [data-slot="data-table-table"] tbody tr:last-child {
+  border-block-end: 0;
+}
+.design-atlassian .atl-flush-table [data-slot="data-table-cards"] {
+  padding: 0.75rem;
+}
+
+/* Activity stream rows: tighter, the lozenge inline with text. */
+.design-atlassian [data-slot="activity-feed"] .atl-lozenge {
+  margin-inline-start: 0.125rem;
+}
+
+/* ----------------------------------------------------------------- motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .design-atlassian *,
+  .atl-portal * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+  .design-atlassian .atl-face:hover {
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .design-atlassian .atl-lozenge {
+    border: 1px solid CanvasText;
+  }
+  .design-atlassian [data-sidebar="menu-button"][data-active="true"]::before,
+  .design-atlassian .atl-toplink[aria-current="page"]::after {
+    background-color: Highlight;
+  }
+}
