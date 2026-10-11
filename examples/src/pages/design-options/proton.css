@@ -1,0 +1,800 @@
+/*
+ * Proton: an admin look inspired by the Proton design system (Proton Mail, Drive,
+ * Pass, VPN web apps), recreated with Onu; no Proton code, logos or assets.
+ *
+ * Token values come from Proton's open-source theme files (`@proton/colors`
+ * Snow and Carbon themes, `@proton/styles` config): the #6d4aff brand with its
+ * minor/major steps, warm-grey "weak / norm / strong" text and background
+ * layers, 8px controls and 12px panels, 36px fields, a 60px header, a 250px
+ * sidebar, very light borders and almost no shadow.
+ *
+ * Everything is scoped to `.design-proton` (the page root) and to
+ * `body.design-proton-body` (added while the page is mounted) so menus, dialogs
+ * and toasts portalled into <body> match. Both carry `data-onu-theme`, so Onu's
+ * derived variables are recomputed from the tokens set here.
+ *
+ * Re-branding: the purple default applies only while no `--onu-primary` is set
+ * inline on <html> (the examples' Customize panel does that). Every brand shade
+ * below derives from `--onu-primary` with color-mix in oklab.
+ */
+
+/* ---------------------------------------------------------------- */
+/* Tokens: Snow (light)                                              */
+/* ---------------------------------------------------------------- */
+
+:root:not([style*="--onu-primary"]) :is(.design-proton, body.design-proton-body) {
+  --onu-primary: #6d4aff;
+}
+
+:is(.design-proton, body.design-proton-body) {
+  /* Surfaces: background-norm white for content, background-weak for the shell. */
+  --onu-background: #ffffff;
+  --onu-foreground: #0c0c14;
+  --onu-card: #ffffff;
+  --onu-card-foreground: #0c0c14;
+  --onu-popover: #ffffff;
+  --onu-popover-foreground: #0c0c14;
+  --onu-neutral-secondary: #eae7e4; /* interaction-weak */
+  --onu-neutral-secondary-foreground: #0c0c14;
+  --onu-neutral-muted: #f5f4f2; /* background-weak */
+  --onu-neutral-muted-foreground: #5c5958; /* text-weak */
+  --onu-neutral-accent: #f2f1f0; /* interaction-default-hover on white */
+  --onu-neutral-accent-foreground: #0c0c14;
+  --onu-neutral-border: #eae7e4; /* border-weak */
+  --onu-neutral-input: #adaba8; /* field-norm */
+  --onu-neutral-sidebar: #f5f4f2;
+  --onu-sidebar-foreground: #0c0c14;
+  --onu-neutral-sidebar-accent: #eae9e7;
+  --onu-neutral-sidebar-accent-foreground: #0c0c14;
+  --onu-neutral-sidebar-border: #eae7e4;
+  /* Proton's neutrals are warm greys, with only a hint of the brand. */
+  --onu-tint: 30%;
+  --onu-radius: 0.5rem; /* --border-radius-md: 8px */
+
+  /* Signals: the "major" steps where they are used as text, for AA contrast. */
+  --onu-destructive: #c62d49;
+  --onu-destructive-foreground: #ffffff;
+  --onu-success: #15765d;
+  --onu-success-foreground: #ffffff;
+  --onu-warning: #ff9900;
+  --onu-warning-foreground: #000000;
+  --onu-info: #196f90;
+  --onu-info-foreground: #ffffff;
+
+  /* Proton layers and brand steps. */
+  --pt-shell: #f5f4f2; /* background-weak: sidebar and header */
+  --pt-strong: #e5e4e1; /* background-strong */
+  --pt-lowered: #f8f8f6; /* read rows */
+  --pt-read-text: #3d3c3c;
+  --pt-border-norm: #d1cfcd;
+  --pt-hover: rgb(194 193 192 / 0.2); /* interaction-default-hover */
+  --pt-active: rgb(194 192 190 / 0.35); /* interaction-default-active */
+  --pt-weak: #eae7e4; /* interaction-weak */
+  --pt-weak-hover: #dedbd9;
+  --pt-logo-text: #1b1340;
+  --pt-brand: var(--onu-primary);
+  --pt-minor-2: color-mix(in oklab, var(--pt-brand) 10%, white); /* #f0edff */
+  --pt-minor-1: color-mix(in oklab, var(--pt-brand) 20%, white); /* #e2dbff */
+  --pt-major-1: color-mix(in oklab, var(--pt-brand), black 10%); /* #6243e6 */
+  --pt-major-2: color-mix(in oklab, var(--pt-brand), black 20%); /* #573bcc */
+  --pt-major-3: color-mix(in oklab, var(--pt-brand), black 30%); /* #4c34b3 */
+  /* Solid buttons: interaction-norm with automatic black / white text. */
+  --pt-solid: var(--pt-brand);
+  --pt-solid-hover: var(--pt-major-1);
+  --pt-solid-active: var(--pt-major-2);
+  --pt-solid-fg: #ffffff;
+  --pt-brand-text: var(--pt-major-1);
+  --pt-focus-ring: color-mix(in oklab, var(--pt-brand) 22%, transparent);
+  --pt-success-solid: #18866a;
+  --pt-warning-minor: #fff5e6;
+  --pt-lifted: 0 8px 24px -6px rgb(0 0 0 / 0.12);
+
+  --onu-chart-1: var(--pt-brand);
+  --onu-chart-2: color-mix(in oklab, var(--pt-brand) 45%, white);
+  --onu-chart-3: #1ea885;
+  --onu-chart-4: #dc3251;
+  --onu-chart-5: #ff9900;
+  --onu-chart-6: #239ece;
+}
+
+@supports (color: oklch(from red l c h)) {
+  :is(.design-proton, body.design-proton-body) {
+    --pt-solid-fg: oklch(from var(--pt-solid) clamp(0, (0.68 - l) * 1000, 1) 0 0);
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Tokens: Carbon (dark)                                             */
+/* ---------------------------------------------------------------- */
+
+:root:is(.dark, [data-theme="dark"]) :is(.design-proton, body.design-proton-body) {
+  --onu-background: #1e1c26; /* background-elevated */
+  --onu-foreground: #ffffff;
+  --onu-card: #1e1c26;
+  --onu-card-foreground: #ffffff;
+  --onu-popover: #22202b;
+  --onu-popover-foreground: #ffffff;
+  --onu-neutral-secondary: #3f3b4c; /* background-strong */
+  --onu-neutral-secondary-foreground: #ffffff;
+  --onu-neutral-muted: #292733; /* background-weak */
+  --onu-neutral-muted-foreground: #a7a4b5; /* text-weak */
+  --onu-neutral-accent: #2b2935;
+  --onu-neutral-accent-foreground: #ffffff;
+  --onu-neutral-border: #343140; /* border-weak */
+  --onu-neutral-input: #5b576b; /* field-norm */
+  --onu-neutral-sidebar: #16141c; /* background-norm */
+  --onu-sidebar-foreground: #ffffff;
+  --onu-neutral-sidebar-accent: #25232c;
+  --onu-neutral-sidebar-accent-foreground: #ffffff;
+  --onu-neutral-sidebar-border: #292733;
+
+  --onu-destructive: #f7607b;
+  --onu-destructive-foreground: #000000;
+  --onu-success: #4bb99d;
+  --onu-success-foreground: #000000;
+  --onu-warning: #ffad33;
+  --onu-warning-foreground: #000000;
+  --onu-info: #4fb1d8;
+  --onu-info-foreground: #000000;
+
+  --pt-shell: #16141c;
+  --pt-strong: #3f3b4c;
+  --pt-lowered: #1e1c26;
+  --pt-read-text: #c9c6d4;
+  --pt-border-norm: #4a4658;
+  --pt-hover: rgb(91 87 107 / 0.2);
+  --pt-active: rgb(91 87 107 / 0.4);
+  --pt-weak: #4a4658;
+  --pt-weak-hover: #5c5969;
+  --pt-logo-text: #ffffff;
+  --pt-minor-2: color-mix(in oklab, var(--pt-brand) 14%, #16141c); /* #1c1633 */
+  --pt-minor-1: color-mix(in oklab, var(--pt-brand) 24%, #16141c); /* #29214d */
+  --pt-solid-hover: color-mix(in oklab, var(--pt-brand), white 10%); /* #7c5cff */
+  --pt-solid-active: color-mix(in oklab, var(--pt-brand), white 18%); /* #8a6eff */
+  --pt-brand-text: var(--primary);
+  --pt-focus-ring: color-mix(in oklab, var(--pt-brand) 34%, transparent);
+  --pt-success-solid: #1b9778;
+  --pt-warning-minor: #331200;
+  --pt-lifted: 0 8px 24px -6px rgb(0 0 0 / 0.5);
+
+  --onu-chart-1: var(--primary);
+  --onu-chart-2: color-mix(in oklab, var(--pt-brand) 40%, #16141c);
+  --onu-chart-3: #35b191;
+  --onu-chart-4: #f64c6b;
+  --onu-chart-5: #ffa31a;
+  --onu-chart-6: #39a8d3;
+}
+
+/* ---------------------------------------------------------------- */
+/* Page, typography                                                  */
+/* ---------------------------------------------------------------- */
+
+.design-proton {
+  background-color: var(--pt-shell);
+  color: var(--foreground);
+  overflow-x: clip;
+  font-feature-settings: "cv11", "ss01";
+}
+
+.design-proton .pt-h1,
+.design-proton [data-slot="listing-page"] > header h1 {
+  font-size: 1.375rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.design-proton .pt-h1:lang(dv),
+.design-proton [data-slot="listing-page"] > header h1:lang(dv) {
+  letter-spacing: 0;
+  line-height: 2.25rem;
+}
+.design-proton .pt-panel-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.design-proton .pt-link,
+.design-proton .pt-link-btn {
+  color: var(--pt-brand-text);
+}
+.design-proton .pt-link:hover {
+  text-decoration: underline;
+}
+
+/* Proton focus: the focus-outline colour with a 3px soft ring. */
+:is(.design-proton, body.design-proton-body)
+  :is(a, button, input, select, textarea, [tabindex], [role="tab"], [role="checkbox"]):focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow:
+    0 0 0 1px var(--pt-brand),
+    0 0 0 4px var(--pt-focus-ring);
+}
+
+/* ---------------------------------------------------------------- */
+/* Shell: sidebar, header and the content panel                      */
+/* ---------------------------------------------------------------- */
+
+.design-proton .pt-body {
+  background-color: var(--pt-shell);
+}
+
+.design-proton [data-slot="sidebar-container"] {
+  border-inline-end-width: 0;
+}
+
+/* Product logo and mark. */
+.design-proton .pt-mark {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--pt-brand) 70%, #ff7ad9) 0%,
+    var(--pt-brand) 45%,
+    var(--pt-major-3) 100%
+  );
+}
+.design-proton .pt-mark svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.design-proton .pt-wordmark {
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  letter-spacing: -0.01em;
+  color: var(--pt-logo-text);
+}
+.design-proton .pt-wordmark:lang(dv) {
+  letter-spacing: 0;
+}
+.design-proton .pt-wordmark__brand {
+  font-weight: 700;
+}
+.design-proton .pt-wordmark__product {
+  font-weight: 500;
+  color: var(--pt-brand-text);
+}
+
+/* The big "New application" button at the top of the sidebar. */
+.design-proton .pt-cta {
+  height: 2.75rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+/* Navigation items: 36px, 8px corners, grey hover, grey active with a brand icon. */
+.design-proton [data-sidebar="menu-button"] {
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  padding-inline: 0.625rem;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+.design-proton [data-sidebar="menu-button"] > svg,
+.design-proton [data-sidebar="menu-button"] > .pt-folder svg {
+  color: var(--muted-foreground);
+}
+.design-proton [data-sidebar="menu-button"]:hover {
+  background-color: var(--pt-hover);
+}
+.design-proton [data-sidebar="menu-button"][data-active="true"] {
+  background-color: var(--pt-active);
+  font-weight: 600;
+  color: var(--foreground);
+}
+.design-proton [data-sidebar="menu-button"][data-active="true"] > svg {
+  color: var(--pt-brand-text);
+}
+.design-proton [data-sidebar="menu-item"]:has([data-sidebar="menu-badge"]) [data-sidebar="menu-button"] {
+  padding-inline-end: 3rem;
+}
+/* Unread counters: small brand pills. */
+.design-proton .pt-count {
+  min-width: 1.5rem;
+  height: 1.25rem;
+  padding-inline: 0.375rem;
+  border-radius: 9999px;
+  background-color: var(--pt-solid);
+  color: var(--pt-solid-fg);
+  font-size: 0.75rem;
+  font-weight: 600;
+  justify-content: center;
+  top: 50%;
+  translate: 0 -50%;
+}
+.design-proton .pt-group-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  padding-inline: 0.75rem;
+}
+
+.design-proton .pt-dot {
+  display: inline-block;
+  background-color: var(--pt-dot);
+}
+.design-proton .pt-folder {
+  display: inline-flex;
+}
+.design-proton .pt-folder svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--pt-dot) !important;
+  fill: color-mix(in oklab, var(--pt-dot) 25%, transparent);
+}
+
+/* App switcher tiles. */
+:is(.design-proton, body.design-proton-body) .pt-app-tile {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.375rem;
+  background-color: var(--pt-minor-2);
+  color: var(--pt-brand-text);
+}
+:is(.design-proton, body.design-proton-body) .pt-app-tile svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Storage-style quota meter at the bottom of the sidebar. */
+.design-proton .pt-quota {
+  border-top: 1px solid var(--sidebar-border);
+  padding-top: 0.75rem;
+}
+
+/* Header: on the shell colour, 60px, no border. */
+.design-proton .pt-header {
+  height: calc(3.75rem + env(safe-area-inset-top));
+  background-color: var(--pt-shell);
+  padding-inline: 1rem;
+}
+.design-proton .pt-search [data-slot="search-box"] {
+  width: 100%;
+}
+.design-proton .pt-search [data-slot="input-group"] {
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--background);
+  border-color: var(--border);
+}
+:root:is(.dark, [data-theme="dark"]) .design-proton .pt-search [data-slot="input-group"] {
+  background-color: var(--muted);
+}
+.design-proton .pt-icon-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--muted-foreground);
+}
+.design-proton .pt-icon-btn:hover {
+  background-color: var(--pt-hover);
+  color: var(--foreground);
+}
+.design-proton .pt-upgrade {
+  border-color: var(--pt-brand-text);
+  color: var(--pt-brand-text);
+  background-color: transparent;
+}
+.design-proton .pt-upgrade:hover {
+  background-color: var(--pt-minor-2);
+  color: var(--pt-brand-text);
+}
+.design-proton .pt-user__trigger [data-slot="user-avatar"],
+.design-proton .pt-sq,
+.design-proton .pt-sq > :not([data-slot="user-avatar-status"]) {
+  border-radius: 0.5rem;
+}
+.design-proton .pt-sq > :not([data-slot="user-avatar-status"]),
+.design-proton .pt-user__trigger [data-slot="user-avatar"] > * {
+  background-color: var(--pt-weak);
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+/* The content panel: white, with a rounded top corner against the shell. */
+.design-proton .pt-main {
+  background-color: var(--background);
+  padding: 1rem;
+}
+@media (min-width: 48rem) {
+  .design-proton .pt-main {
+    padding: 1.25rem 1.5rem 2.5rem;
+    border-start-start-radius: 0.75rem;
+    border-top: 1px solid var(--border);
+    border-inline-start: 1px solid var(--border);
+  }
+}
+.design-proton .pt-crumbs {
+  font-size: 0.8125rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Controls                                                          */
+/* ---------------------------------------------------------------- */
+
+/* 36px buttons (Proton's medium), 8px corners. */
+:is(.design-proton, body.design-proton-body)
+  [data-slot="button"]:is(:not([data-size]), [data-size="default"], [data-size="lg"]):not(.pt-cta) {
+  height: 2.25rem;
+  padding-inline: 0.875rem;
+}
+:is(.design-proton, body.design-proton-body) [data-slot="button"][data-size="icon"] {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+:is(.design-proton, body.design-proton-body) [data-slot="button"][data-size="sm"] {
+  height: 2rem;
+  padding-inline: 0.75rem;
+  font-size: 0.8125rem;
+}
+:is(.design-proton, body.design-proton-body) [data-slot="button"]:is([data-variant="default"], :not([data-variant])) {
+  background-color: var(--pt-solid);
+  color: var(--pt-solid-fg);
+}
+:is(.design-proton, body.design-proton-body)
+  [data-slot="button"]:is([data-variant="default"], :not([data-variant])):hover {
+  background-color: var(--pt-solid-hover);
+}
+:is(.design-proton, body.design-proton-body)
+  [data-slot="button"]:is([data-variant="default"], :not([data-variant])):active {
+  background-color: var(--pt-solid-active);
+}
+:is(.design-proton, body.design-proton-body) [data-slot="button"][data-variant="outline"]:not(.pt-upgrade) {
+  border-color: var(--pt-border-norm);
+  background-color: transparent;
+}
+:is(.design-proton, body.design-proton-body)
+  [data-slot="button"]:is([data-variant="outline"], [data-variant="ghost"]):not(.pt-upgrade):hover {
+  background-color: var(--pt-hover);
+  color: var(--foreground);
+}
+:is(.design-proton, body.design-proton-body) [data-slot="button"][data-variant="secondary"] {
+  background-color: var(--pt-weak);
+  color: var(--foreground);
+}
+:is(.design-proton, body.design-proton-body) [data-slot="button"][data-variant="secondary"]:hover {
+  background-color: var(--pt-weak-hover);
+}
+.design-proton [data-slot="button"].pt-link-btn:hover {
+  color: var(--pt-brand-text);
+}
+
+/* Fields: field-norm border, 8px corners, brand border on focus. */
+:is(.design-proton, body.design-proton-body) :is([data-slot="input"], [data-slot="select-trigger"], textarea) {
+  border-color: var(--input);
+  border-radius: 0.5rem;
+}
+:is(.design-proton, body.design-proton-body) :is([data-slot="input"], [data-slot="select-trigger"]):hover {
+  border-color: color-mix(in oklab, var(--input), var(--foreground) 20%);
+}
+:is(.design-proton, body.design-proton-body) [data-slot="checkbox"] {
+  border-radius: 0.25rem;
+  border-color: var(--input);
+}
+
+/* Menus, popovers and dialogs: the one place a (soft) shadow is used. */
+body.design-proton-body
+  :is(
+    [data-slot="dropdown-menu-content"],
+    [data-slot="popover-content"],
+    [data-slot="select-content"],
+    [data-slot="command"]
+  ) {
+  border-radius: 0.75rem;
+  box-shadow:
+    0 0 0 1px var(--border),
+    var(--pt-lifted);
+}
+body.design-proton-body [data-slot="dropdown-menu-item"] {
+  border-radius: 0.375rem;
+}
+body.design-proton-body [data-slot="dialog-content"] {
+  border-radius: 0.75rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Surfaces: cards and stat tiles (border-weak, 12px, no shadow)     */
+/* ---------------------------------------------------------------- */
+
+.design-proton :is([data-slot="card"], [data-slot="stat-tile"]) {
+  background-color: var(--card);
+  border-radius: 0.75rem;
+  box-shadow: none;
+  --tw-ring-color: var(--border);
+}
+.design-proton :is([data-slot="card"], [data-slot="stat-tile"]) {
+  border: 1px solid var(--border);
+}
+.design-proton [data-slot="stat-tile-value"] {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.design-proton [data-slot="stat-tile-label"] {
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.design-proton .pt-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 1.5rem;
+  padding-inline: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: var(--pt-minor-2);
+  color: var(--pt-brand-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.design-proton .pt-plan-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.75rem;
+}
+.design-proton .pt-tick {
+  color: var(--success);
+}
+.design-proton .pt-note {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background-color: var(--pt-warning-minor);
+  color: var(--foreground);
+}
+.design-proton .pt-note svg {
+  color: var(--warning);
+}
+.design-proton .pt-meter--warn [data-slot="progress-bar-indicator"] {
+  background-color: var(--warning);
+}
+.design-proton [data-slot="progress-bar-track"] {
+  background-color: var(--pt-weak);
+}
+
+/* Security checklist. */
+.design-proton .pt-checklist > li + li {
+  border-top: 1px solid var(--border);
+}
+.design-proton .pt-check__mark {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  border: 2px dashed var(--input);
+}
+.design-proton .pt-check__mark--done {
+  border: 0;
+  background-color: var(--pt-success-solid);
+  color: #ffffff;
+}
+.design-proton .pt-check__mark svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  stroke-width: 3;
+}
+
+/* ---------------------------------------------------------------- */
+/* Listing: tabs, toolbar, mail-style rows                           */
+/* ---------------------------------------------------------------- */
+
+.design-proton [data-slot="filter-tabs"] [data-slot="tabs-list"] {
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+  justify-content: flex-start;
+}
+.design-proton [data-slot="filter-tabs"] [data-slot="tabs-trigger"] {
+  flex: none;
+  padding-inline: 0.75rem;
+  color: var(--muted-foreground);
+}
+.design-proton [data-slot="filter-tabs"] [data-slot="tabs-trigger"][data-state="active"] {
+  color: var(--foreground);
+  font-weight: 600;
+}
+.design-proton [data-slot="tabs-trigger"] [data-slot="badge"] {
+  border-radius: 9999px;
+  background-color: var(--pt-weak);
+  color: var(--foreground);
+  font-weight: 600;
+}
+.design-proton [data-slot="tabs-trigger"][data-state="active"] [data-slot="badge"] {
+  background-color: var(--pt-minor-1);
+  color: var(--pt-brand-text);
+}
+
+/* The table: borderless rows separated by border-weak, in a 12px frame. */
+.design-proton [data-slot="data-table"] > div:has(> [data-slot="data-table-table"]) {
+  border-radius: 0.75rem;
+  border-color: var(--border);
+}
+.design-proton :is([data-slot="data-table-table"], .pt-table) thead :is(th, th button) {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+.design-proton [data-slot="data-table-table"] :is(td, th):first-child {
+  padding-inline-start: 0.875rem;
+}
+.design-proton [data-slot="data-table-table"] :is(td, th):last-child {
+  padding-inline-end: 0.75rem;
+}
+.design-proton [data-slot="data-table-table"] tbody tr {
+  border-color: var(--border);
+}
+.design-proton [data-slot="data-table-table"] tbody td {
+  padding-block: 0.4375rem;
+}
+/* Read rows sit on the lowered surface; new ("unread") rows are bright and bold. */
+.design-proton [data-slot="data-table-table"] tbody tr:has(.pt-row:not(.pt-row--unread)) {
+  background-color: var(--pt-lowered);
+}
+:root:is(.dark, [data-theme="dark"]) .design-proton [data-slot="data-table-table"] tbody tr:has(.pt-row--unread) {
+  background-color: #25232e;
+}
+.design-proton [data-slot="data-table-table"] tbody tr:hover {
+  background-color: color-mix(in oklab, var(--pt-strong) 45%, var(--background));
+}
+.design-proton [data-slot="data-table-table"] tbody tr[data-state="selected"],
+.design-proton [data-slot="data-table-cards"] > li[data-state="selected"] {
+  background-color: var(--pt-minor-2);
+}
+
+.design-proton .pt-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 13rem;
+}
+.design-proton .pt-row__name {
+  font-weight: 400;
+  color: var(--pt-read-text);
+}
+.design-proton .pt-row__sub {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--muted-foreground);
+}
+.design-proton .pt-row--unread .pt-row__name {
+  font-weight: 700;
+  color: var(--foreground);
+}
+.design-proton .pt-unread-dot {
+  color: var(--pt-brand-text);
+  margin-inline-end: 0.375rem;
+  font-weight: 700;
+}
+.design-proton [data-slot="data-table-table"] tbody tr:has(.pt-row--unread) td {
+  color: var(--foreground);
+}
+
+.design-proton .pt-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 1.375rem;
+  padding-inline: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+/* Status badges: Proton's small, square-ish tinted labels. */
+:is(.design-proton, body.design-proton-body) [data-slot="status-badge"] {
+  border-radius: 0.25rem;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+/* Hover actions replace the date on a hovered row, or when a button inside is focused. */
+.design-proton .pt-when {
+  position: relative;
+  display: inline-flex;
+  justify-content: flex-end;
+  min-width: 6.5rem;
+}
+.design-proton .pt-hover-actions {
+  position: absolute;
+  inset-inline-end: -0.25rem;
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  gap: 0.125rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+.design-proton .pt-hover-actions [data-slot="button"] {
+  color: var(--muted-foreground);
+}
+.design-proton .pt-hover-actions [data-slot="button"]:hover {
+  color: var(--foreground);
+  background-color: var(--pt-active);
+}
+.design-proton tr:hover .pt-hover-actions,
+.design-proton .pt-when:focus-within .pt-hover-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+.design-proton tr:hover .pt-when__date,
+.design-proton .pt-when:focus-within .pt-when__date {
+  visibility: hidden;
+}
+@media (hover: none) {
+  .design-proton .pt-when:not(:focus-within) .pt-hover-actions {
+    display: none;
+  }
+  .design-proton tr:hover .pt-when:not(:focus-within) .pt-when__date {
+    visibility: visible;
+  }
+}
+
+/* Phone cards, list and grid views: border-weak, 12px. */
+.design-proton :is([data-slot="data-table-cards"], [data-slot="grid-view"], [data-slot="list-view"]) > li {
+  border-radius: 0.75rem;
+  border-color: var(--border);
+  box-shadow: none;
+}
+.design-proton .pt-grid-media {
+  background-color: var(--pt-minor-2);
+  color: var(--pt-brand-text);
+}
+.design-proton [data-slot="view-switcher"] [data-state="on"] {
+  background-color: var(--pt-minor-1);
+  color: var(--pt-brand-text);
+}
+
+/* Pagination: the current page in the brand colour. */
+.design-proton [data-slot="pagination"] [aria-current="page"] {
+  background-color: var(--pt-solid);
+  color: var(--pt-solid-fg);
+  border-color: transparent;
+}
+
+/* Small tables on the dashboard. */
+.design-proton .pt-table :is(td, th):first-child {
+  padding-inline-start: 1rem;
+}
+.design-proton .pt-table :is(td, th):last-child {
+  padding-inline-end: 1rem;
+}
+.design-proton .pt-table tbody tr {
+  border-color: var(--border);
+}
+.design-proton .pt-table tbody tr:hover {
+  background-color: var(--pt-hover);
+}
+
+/* Timeline markers on the brand tint. */
+.design-proton [data-slot="timeline-marker"] {
+  box-shadow: none;
+}
+
+/* ---------------------------------------------------------------- */
+/* Motion and forced colours                                         */
+/* ---------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .design-proton *,
+  body.design-proton-body * {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .design-proton :is(.pt-mark, .pt-count, .pt-chip, .pt-check__mark, .pt-label) {
+    border: 1px solid CanvasText;
+  }
+  .design-proton .pt-hover-actions {
+    background: Canvas;
+  }
+}
