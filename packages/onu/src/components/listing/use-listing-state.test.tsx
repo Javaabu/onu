@@ -275,6 +275,12 @@ describe("applyListingState", () => {
   ]
   const base: ListingState = { search: "", sort: null, page: 1, perPage: 2, filters: {} }
 
+  it("returns every row when perPage is Infinity", () => {
+    const all = applyListingState(rows, { ...base, page: 1, perPage: Infinity })
+    expect(all.rows).toHaveLength(rows.length)
+    expect(all.total).toBe(rows.length)
+  })
+
   it("searches every text field, case-insensitively", () => {
     expect(applyListingState(rows, { ...base, search: "HULHU" }).rows.map((r) => r.id)).toEqual(["2"])
     expect(applyListingState(rows, { ...base, search: "ޢާއި" }).total).toBe(1)

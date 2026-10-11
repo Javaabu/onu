@@ -426,6 +426,9 @@ export function applyListingState<T>(rows: readonly T[], state: ListingState, op
   }
 
   const total = out.length
+  // `perPage: Infinity` (e.g. "export every matching row") returns all rows: page 1 would
+  // otherwise slice from 0 * Infinity = NaN and return nothing.
+  if (!Number.isFinite(state.perPage) || state.perPage <= 0) return { rows: out, total }
   const start = (state.page - 1) * state.perPage
   return { rows: out.slice(start, start + state.perPage), total }
 }
