@@ -1,0 +1,1125 @@
+/*
+ * Kumo: a design option inspired by Kumo UI, Cloudflare's React component
+ * library (cloudflare/kumo, as used by the Cloudflare dashboard). Recreated
+ * with Onu; no Kumo code, fonts or logos.
+ *
+ * Token values come from @cloudflare/kumo 2.14.0 (dist/styles/theme-kumo.css,
+ * kumo-binding.css and the compiled component classes):
+ *   surfaces   canvas 98.75% / base #fff / elevated 98% / recessed 96% / tint 97%
+ *              (dark: 10% / 17% / 12% / 15% / 26.9%), all neutral oklch
+ *   lines      kumo-line oklch(14.5% 0 0 / .1), kumo-hairline 93.5% (dark 32% / 26.9%)
+ *   text       default oklch(21% .006 285.9), subtle 55.6% (darkened to 53% here
+ *              so it stays AA on the elevated surfaces), link blue-800 (dark blue-400)
+ *   brand      oklch(57.72% .2324 260) (dark: mixed with 10% black); logo orange #f6821f
+ *   status     info/success/warning/danger tints + text (badge variants)
+ *   type       14px base, 13px sm, 12px xs; headings semibold
+ *   shape      rounded-lg (8px) for controls and cards, rounded-md (6px) small,
+ *              rounded-full badges; controls 36px (base) / 26px (sm)
+ *   focus      2px kumo-brand ring; inputs a 1.5px kumo-focus ring
+ *   sidebar    16.25rem, 58px header row, 34px items, rounded-lg tint for active
+ *   charts     categorical #4290F0 #F5B647 #E8649D #8D58EE #50C3B6 #D37536,
+ *              soft gradient area fills
+ *   shadows    Kumo uses rings (box-shadow 0 0 0 1px) instead of drop shadows;
+ *              only overlays (menus, popovers, dialogs) get a soft shadow.
+ *
+ * Every rule is scoped to `.design-kumo` (the page root) or `.kumo-portal` (set
+ * on <body> while a Kumo page is mounted, for portalled overlays).
+ *
+ * Re-branding: Kumo's blue ships only while no `--onu-primary` is set inline on
+ * <html> (the examples' Customize panel); buttons, links, focus, active tabs,
+ * charts and the logo all derive from `--primary`.
+ */
+
+/* ------------------------------------------------------------------ tokens */
+
+:root:not([style*="--onu-primary"]) :is(.design-kumo, .kumo-portal) {
+  --onu-primary: oklch(57.72% 0.2324 260); /* --color-kumo-brand */
+  --kumo-logo: #f6821f; /* --text-color-kumo-brand */
+  --kumo-chart-brand: #4290f0; /* ChartPalette.categorical(0) */
+}
+
+.design-kumo,
+.kumo-portal {
+  --kumo-logo: var(--primary);
+  --kumo-chart-brand: var(--primary);
+
+  /* Surfaces (theme-kumo, light). */
+  --kumo-canvas: oklch(98.75% 0 0);
+  --kumo-base: oklch(100% 0 0);
+  --kumo-elevated: oklch(98% 0 0);
+  --kumo-recessed: oklch(96% 0 0);
+  --kumo-tint: oklch(97% 0 0);
+  --kumo-fill: oklch(92.2% 0 0);
+  --kumo-fill-hover: oklch(96.5% 0 0);
+  --kumo-control: oklch(100% 0 0);
+  --kumo-contrast: oklch(12% 0 0);
+  --kumo-line: oklch(14.5% 0 0 / 0.1);
+  --kumo-line-solid: oklch(90.5% 0 0);
+  --kumo-hairline: oklch(93.5% 0 0);
+  --kumo-shadow-edge: oklch(0% 0 0 / 0.12);
+  --kumo-shadow-drop: oklch(0% 0 0 / 0.08);
+
+  /* Text. */
+  --kumo-text: oklch(21% 0.006 285.885);
+  --kumo-strong: oklch(14.5% 0 0);
+  --kumo-subtle: oklch(53% 0 0);
+  --kumo-inverse: oklch(97% 0 0);
+  --kumo-link: color-mix(in oklab, var(--primary), black 26%);
+
+  /* Status: badge tints and text. */
+  --kumo-info-tint: oklch(93.2% 0.032 255.6 / 0.45);
+  --kumo-info-text: oklch(42.4% 0.199 265.638);
+  --kumo-success-tint: oklch(96.2% 0.043 156.7 / 0.57);
+  --kumo-success-text: oklch(43.2% 0.095 166.913);
+  --kumo-warning-tint: oklch(93.1% 0.107 94.6 / 0.2);
+  --kumo-warning-text: oklch(47% 0.157 37.304);
+  --kumo-danger-tint: oklch(93.6% 0.032 17.7 / 0.42);
+  --kumo-danger-text: oklch(50.5% 0.213 27.518);
+  --kumo-neutral-text: oklch(26.9% 0 0);
+  --kumo-success: oklch(59.6% 0.145 163.225);
+  --kumo-warning: oklch(73.9% 0.177 58.2);
+  --kumo-danger: oklch(63.7% 0.237 25.331);
+  --kumo-info: oklch(68.5% 0.169 237.323);
+  --kumo-dot-neutral: oklch(55.6% 0 0);
+
+  /* Brand states, derived from the primary so Customize re-brands everything. */
+  --kumo-brand-hover: color-mix(in oklab, var(--primary), black 12%);
+  --kumo-brand-ring: color-mix(in oklab, var(--primary), black 10%);
+  --kumo-brand-top: color-mix(in oklab, var(--primary), white 8%);
+  --kumo-brand-subtle: color-mix(in oklab, var(--primary) 8%, var(--kumo-base));
+  --kumo-focus: var(--primary);
+
+  /* Overlays: the only shadow (DropdownMenu shadow-lg + kumo-line ring), softened. */
+  --kumo-shadow-overlay: 0 0 0 1px var(--kumo-line), 0 8px 24px -6px oklch(0% 0 0 / 0.12);
+
+  /* Hand the surfaces to Onu. */
+  --onu-radius: 0.5rem; /* rounded-lg */
+  --onu-tint: 0%; /* Kumo's neutrals are pure greys */
+  --onu-font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --onu-background: var(--kumo-canvas);
+  --onu-foreground: var(--kumo-text);
+  --onu-card: var(--kumo-base);
+  --onu-card-foreground: var(--kumo-text);
+  --onu-popover: var(--kumo-control);
+  --onu-popover-foreground: var(--kumo-text);
+  --onu-neutral-secondary: var(--kumo-recessed);
+  --onu-neutral-secondary-foreground: var(--kumo-text);
+  --onu-neutral-muted: var(--kumo-tint);
+  --onu-neutral-muted-foreground: var(--kumo-subtle);
+  --onu-neutral-accent: var(--kumo-tint);
+  --onu-neutral-accent-foreground: var(--kumo-text);
+  --onu-neutral-border: var(--kumo-line-solid);
+  --onu-neutral-input: var(--kumo-line-solid);
+  --onu-neutral-sidebar: var(--kumo-base);
+  --onu-sidebar-foreground: var(--kumo-text);
+  --onu-neutral-sidebar-accent: var(--kumo-tint);
+  --onu-neutral-sidebar-accent-foreground: var(--kumo-strong);
+  --onu-neutral-sidebar-border: var(--kumo-line-solid);
+  --onu-primary-foreground: oklch(100% 0 0);
+  --onu-ring: var(--kumo-focus);
+  --onu-destructive: oklch(50.5% 0.213 27.518);
+  --onu-success: oklch(50.8% 0.118 165.612);
+  --onu-warning: oklch(73.9% 0.177 58.2);
+  --onu-info: var(--kumo-info-text);
+  --onu-chart-1: var(--kumo-chart-brand);
+  --onu-chart-2: #f5b647;
+  --onu-chart-3: #e8649d;
+  --onu-chart-4: #8d58ee;
+  --onu-chart-5: #50c3b6;
+  --onu-chart-6: #d37536;
+}
+
+@supports (color: oklch(from red l c h)) {
+  .design-kumo,
+  .kumo-portal {
+    /* text-kumo-link is blue-800: keep links dark enough for AA whatever the brand. */
+    --kumo-link: oklch(from var(--primary) min(l, 0.45) c h);
+  }
+}
+
+/* Kumo dark (theme-kumo light-dark() second values). */
+:is(.dark, [data-theme="dark"]) :is(.design-kumo, .kumo-portal) {
+  /* Kumo darkens the brand by 10% in dark mode; white text stays on it. */
+  --onu-primary-dark: color-mix(in oklab, var(--onu-primary), black 6%);
+
+  --kumo-canvas: oklch(10% 0 0);
+  --kumo-base: oklch(17% 0 0);
+  --kumo-elevated: oklch(12% 0 0);
+  --kumo-recessed: oklch(15% 0 0);
+  --kumo-tint: oklch(26.9% 0 0);
+  --kumo-fill: oklch(26.9% 0 0);
+  --kumo-fill-hover: oklch(37.1% 0 0);
+  --kumo-control: oklch(21% 0.006 285.885);
+  --kumo-contrast: oklch(98.5% 0 0);
+  --kumo-line: oklch(32% 0 0);
+  --kumo-line-solid: oklch(32% 0 0);
+  --kumo-hairline: oklch(26.9% 0 0);
+  --kumo-shadow-edge: oklch(100% 0 0 / 0.1);
+  --kumo-shadow-drop: oklch(0% 0 0 / 0.3);
+
+  --kumo-text: oklch(97% 0 0);
+  --kumo-strong: oklch(98.5% 0 0);
+  --kumo-subtle: oklch(70.8% 0 0);
+  --kumo-inverse: oklch(20.5% 0 0);
+  --kumo-link: color-mix(in oklab, var(--onu-primary), white 40%);
+
+  --kumo-info-tint: oklch(38% 0.145 265.5 / 0.22);
+  --kumo-info-text: oklch(70.7% 0.165 254.624);
+  --kumo-success-tint: oklch(39.3% 0.096 152.3 / 0.2);
+  --kumo-success-text: oklch(90.5% 0.093 164.15);
+  --kumo-warning-tint: oklch(35.3% 0.079 65 / 0.37);
+  --kumo-warning-text: oklch(75% 0.183 55.934);
+  --kumo-danger-tint: oklch(42.9% 0.176 28.7 / 0.17);
+  --kumo-danger-text: oklch(70.4% 0.191 22.216);
+  --kumo-neutral-text: oklch(92.2% 0 0);
+  --kumo-success: oklch(76.5% 0.177 163.223);
+  --kumo-warning: oklch(64.5% 0.168 50);
+  --kumo-danger: oklch(57.7% 0.245 27.325);
+  --kumo-dot-neutral: oklch(70.8% 0 0);
+
+  --kumo-brand-hover: color-mix(in oklab, var(--primary), white 10%);
+  --kumo-brand-ring: color-mix(in oklab, var(--primary), black 10%);
+  --kumo-brand-top: color-mix(in oklab, var(--primary), white 6%);
+  --kumo-brand-subtle: color-mix(in oklab, var(--primary) 16%, var(--kumo-base));
+  --kumo-focus: var(--kumo-link);
+  --kumo-shadow-overlay: 0 0 0 1px var(--kumo-line), 0 8px 24px -6px oklch(0% 0 0 / 0.5);
+
+  --onu-destructive: oklch(70.4% 0.191 22.216);
+  --onu-destructive-foreground: oklch(14.5% 0 0);
+  --onu-success: oklch(76.5% 0.177 163.223);
+  --onu-success-foreground: oklch(14.5% 0 0);
+  --onu-warning: oklch(75% 0.183 55.934);
+  --onu-chart-2: #eeb720;
+}
+
+@supports (color: oklch(from red l c h)) {
+  :is(.dark, [data-theme="dark"]) :is(.design-kumo, .kumo-portal) {
+    --onu-primary-dark: oklch(from var(--onu-primary) clamp(0.46, l, 0.56) c h);
+    /* text-kumo-link in dark is blue-400. */
+    --kumo-link: oklch(from var(--onu-primary) max(l, 0.74) calc(c * 0.75) h);
+  }
+}
+
+/* ------------------------------------------------------------- page, type */
+
+.design-kumo {
+  min-height: 100svh;
+  overflow-x: clip;
+  background-color: var(--kumo-canvas);
+  color: var(--kumo-text);
+  font-size: 0.875rem; /* text-base: 14px */
+  line-height: 1.5;
+}
+
+.design-kumo .kumo-subtle,
+.design-kumo .text-muted-foreground {
+  color: var(--kumo-subtle);
+}
+
+.design-kumo :is(h1, h2, h3) {
+  color: var(--kumo-strong);
+}
+.design-kumo :is(.kumo-h1, [data-slot="listing-page"] h1) {
+  font-size: 1.5rem; /* text-2xl, semibold */
+  line-height: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.design-kumo :is(.kumo-h1, [data-slot="listing-page"] h1):lang(dv) {
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+
+/* Monospace IDs (Text variant="mono"). */
+:is(.design-kumo, .kumo-portal) .kumo-mono {
+  font-family: var(--onu-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0;
+  color: var(--kumo-text);
+  white-space: nowrap;
+  unicode-bidi: isolate;
+  direction: ltr;
+}
+.design-kumo .kumo-id {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+.design-kumo .kumo-id__copy {
+  color: var(--kumo-subtle);
+}
+
+.design-kumo .kumo-kbd {
+  display: inline-flex;
+  align-items: center;
+  block-size: 1.25rem;
+  padding-inline: 0.375rem;
+  border-radius: 0.25rem;
+  font-family: var(--onu-font-mono);
+  font-size: 0.6875rem;
+  color: var(--kumo-subtle);
+  background-color: var(--kumo-base);
+  box-shadow: inset 0 0 0 1px var(--kumo-line);
+}
+
+/* Links: text-kumo-link, underline on hover. */
+.design-kumo :is(.kumo-link, .kumo-name-cell [data-row-link]) {
+  color: var(--kumo-link);
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 0.25rem;
+}
+.design-kumo :is(.kumo-link, .kumo-name-cell [data-row-link]):hover {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
+  text-underline-offset: 3px;
+}
+
+/* Link variant="inline": always underlined, the line at 35% (link-current). */
+.design-kumo .kumo-link.kumo-link--inline {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, currentColor 35%, transparent);
+  text-underline-offset: 3px;
+}
+.design-kumo .kumo-link.kumo-link--inline:hover {
+  text-decoration-color: currentColor;
+}
+
+/* Focus: Kumo's 2px kumo-brand ring. */
+:is(.design-kumo, .kumo-portal)
+  :is(a, button, [role="tab"], [role="checkbox"], [role="menuitem"], [role="option"], [tabindex]):focus-visible {
+  outline: 2px solid var(--kumo-focus);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+/* Inputs: a 1.5px ring in the focus colour instead of the border. */
+:is(.design-kumo, .kumo-portal) :is([data-slot="input"], textarea):focus-visible,
+:is(.design-kumo, .kumo-portal) [data-slot="input-group"]:focus-within {
+  border-color: transparent;
+  box-shadow: 0 0 0 1.5px var(--kumo-focus);
+  outline: none;
+}
+.design-kumo [data-slot="input-group"] :is(input, [data-slot="input"]):focus-visible {
+  box-shadow: none;
+}
+
+/* ------------------------------------------------------------- the shell */
+
+.design-kumo .kumo-body {
+  background-color: var(--kumo-canvas);
+}
+
+/* Top bar: 58px, base surface, 1px line (Kumo's sidebar header height). */
+.design-kumo .kumo-topbar {
+  --onu-header-height: 3.625rem;
+  background-color: var(--kumo-base);
+  border-block-end: 1px solid var(--kumo-line-solid);
+  backdrop-filter: none;
+  padding-inline: 0.75rem 1rem;
+}
+.design-kumo .kumo-topbar [data-slot="app-header-start"] [data-slot="separator"] {
+  display: none;
+}
+.design-kumo .kumo-topbar [data-slot="button"]:is([data-variant="ghost"]) {
+  color: var(--kumo-subtle);
+}
+.design-kumo .kumo-topbar [data-slot="button"]:is([data-variant="ghost"]):hover {
+  color: var(--kumo-text);
+  background-color: var(--kumo-tint);
+}
+
+/* "Go to…" quick search with a ⌘K hint. */
+.design-kumo .kumo-goto {
+  position: relative;
+  inline-size: 100%;
+  max-inline-size: 22rem;
+}
+.design-kumo .kumo-goto > form {
+  max-inline-size: none;
+}
+.design-kumo .kumo-goto [data-slot="input-group"] {
+  min-block-size: 2.25rem;
+  background-color: var(--kumo-elevated);
+}
+.design-kumo .kumo-goto__input {
+  padding-inline-end: 3rem;
+}
+.design-kumo .kumo-goto__kbd {
+  position: absolute;
+  inset-inline-end: 0.5rem;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.design-kumo .kumo-goto:focus-within .kumo-goto__kbd {
+  display: none;
+}
+@media (max-width: 639.98px) {
+  .design-kumo .kumo-goto__kbd {
+    display: none;
+  }
+  .design-kumo .kumo-goto__input {
+    padding-inline-end: 0.75rem;
+  }
+}
+
+.design-kumo .kumo-add {
+  font-weight: 500;
+}
+.design-kumo .kumo-avatar-link {
+  display: inline-flex;
+  margin-inline-start: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 9999px;
+}
+.design-kumo .kumo-avatar-link:hover {
+  background-color: var(--kumo-tint);
+}
+
+/* Sidebar: base surface, 1px line, 58px logo row, account switcher. */
+.design-kumo [data-slot="sidebar-inner"] {
+  background-color: var(--kumo-base);
+}
+.design-kumo [data-slot="sidebar-container"] {
+  border-inline-end-color: var(--kumo-line-solid);
+}
+.design-kumo .kumo-side-head {
+  padding: 0;
+  gap: 0;
+}
+.design-kumo .kumo-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  block-size: 3.625rem;
+  padding-inline: 1rem;
+  border-block-end: 1px solid var(--kumo-line-solid);
+  color: var(--kumo-strong);
+  text-decoration: none;
+}
+.design-kumo .kumo-mark {
+  inline-size: 2rem;
+  block-size: 1.25rem;
+  color: var(--kumo-logo);
+  flex-shrink: 0;
+}
+.design-kumo .kumo-brand__name {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.design-kumo .kumo-account {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin: 0.75rem 0.5rem 0;
+  inline-size: calc(100% - 1rem);
+  min-block-size: 2.75rem;
+  padding: 0.375rem 0.5rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background-color: var(--kumo-base);
+  box-shadow: inset 0 0 0 1px var(--kumo-line);
+  color: var(--kumo-text);
+  cursor: pointer;
+}
+.design-kumo .kumo-account:hover {
+  background-color: var(--kumo-tint);
+}
+.design-kumo .kumo-account__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  flex-shrink: 0;
+  border-radius: 0.375rem;
+  background-color: var(--kumo-contrast);
+  color: var(--kumo-inverse);
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+.design-kumo .kumo-account__name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.design-kumo .kumo-account__plan {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  color: var(--kumo-subtle);
+  line-height: 1.3;
+}
+.design-kumo .kumo-account__chev {
+  inline-size: 1rem;
+  block-size: 1rem;
+  color: var(--kumo-subtle);
+  flex-shrink: 0;
+}
+
+.design-kumo .kumo-side-content {
+  padding-inline: 0.5rem;
+  padding-block-start: 0.25rem;
+}
+/* Group labels: text-sm, medium, subtle, sentence case (mt-4 mb-2 px-3). */
+.design-kumo .kumo-group-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--kumo-subtle);
+  padding-inline: 0.75rem;
+}
+/* Items: min-h 34px, px-3, rounded-lg, text-sm medium; active = tint fill. */
+.design-kumo [data-sidebar="menu-button"] {
+  min-block-size: 2.125rem;
+  padding-inline: 0.75rem;
+  gap: 0.625rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--kumo-text);
+}
+.design-kumo [data-sidebar="menu-button"] svg {
+  color: var(--kumo-subtle);
+}
+.design-kumo [data-sidebar="menu-button"]:hover {
+  background-color: var(--kumo-tint);
+  color: var(--kumo-strong);
+}
+.design-kumo [data-sidebar="menu-button"][data-active="true"] {
+  background-color: var(--kumo-tint);
+  color: var(--kumo-strong);
+  font-weight: 600;
+}
+.design-kumo [data-sidebar="menu-button"][data-active="true"] svg {
+  color: var(--kumo-link);
+}
+/* Counts: Kumo's dashed "new" pill (border-dashed, 11px). */
+.design-kumo .kumo-nav-count {
+  inset-inline-end: 0.5rem;
+  min-inline-size: 1.25rem;
+  block-size: 1.125rem;
+  padding-inline: 0.375rem;
+  border: 1px dashed var(--kumo-line-solid);
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--kumo-strong);
+  font-size: 0.6875rem;
+  font-weight: 500;
+}
+
+.design-kumo .kumo-side-foot {
+  border-block-start: 1px solid var(--kumo-line-solid);
+  padding: 0.5rem;
+}
+.design-kumo .kumo-foot-link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-block-size: 2rem;
+  padding-inline: 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--kumo-subtle);
+  text-decoration: none;
+}
+.design-kumo .kumo-foot-link:hover {
+  background-color: var(--kumo-tint);
+  color: var(--kumo-text);
+}
+.design-kumo .kumo-foot-link svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+.design-kumo .kumo-foot-link svg:last-child:not(:first-child) {
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+}
+
+/* Main canvas. */
+.design-kumo .kumo-main {
+  padding: 1rem;
+}
+@media (min-width: 768px) {
+  .design-kumo .kumo-main {
+    padding: 1.5rem 2rem 3rem;
+  }
+}
+.design-kumo [data-slot="app-layout-content"] {
+  max-inline-size: 90rem;
+}
+
+.design-kumo .kumo-crumbs {
+  font-size: 0.8125rem;
+  color: var(--kumo-subtle);
+}
+
+/* --------------------------------------------------------------- controls */
+
+/* Buttons: 36px, rounded-lg, medium weight; small ones 28px rounded-md. */
+:is(.design-kumo, .kumo-portal) [data-slot="button"] {
+  font-weight: 500;
+}
+.design-kumo [data-slot="button"]:not([class*="size-"]):is([data-size="default"], :not([data-size])) {
+  block-size: 2.25rem;
+  padding-inline: 0.75rem;
+}
+:is(.design-kumo, .kumo-portal) [data-slot="button"][data-size="sm"] {
+  border-radius: 0.375rem;
+}
+/* Primary: Kumo's emphasis fill (a very soft top-light gradient) with a 1px darker ring. */
+:is(.design-kumo, .kumo-portal) [data-slot="button"][data-variant="default"] {
+  background-color: var(--primary);
+  background-image: linear-gradient(to bottom, var(--kumo-brand-top), var(--primary));
+  box-shadow: inset 0 0 0 1px var(--kumo-brand-ring);
+  color: var(--primary-foreground);
+  border-color: transparent;
+}
+:is(.design-kumo, .kumo-portal) [data-slot="button"][data-variant="default"]:hover {
+  background-image: none;
+  background-color: var(--kumo-brand-hover);
+}
+/* Secondary: base fill, kumo-line ring, tint on hover. */
+:is(.design-kumo, .kumo-portal)
+  :is([data-slot="button"], [data-slot="filter-panel-trigger"]):is(
+    [data-variant="outline"],
+    [data-variant="secondary"]
+  ) {
+  background-color: var(--kumo-base);
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--kumo-line);
+  color: var(--kumo-text);
+}
+:is(.design-kumo, .kumo-portal)
+  :is([data-slot="button"], [data-slot="filter-panel-trigger"]):is(
+    [data-variant="outline"],
+    [data-variant="secondary"]
+  ):hover {
+  background-color: var(--kumo-tint);
+}
+:is(.design-kumo, .kumo-portal) [data-slot="button"][data-variant="ghost"]:hover {
+  background-color: var(--kumo-tint);
+}
+:is(.design-kumo, .kumo-portal) [data-slot="button"][data-variant="link"] {
+  color: var(--kumo-link);
+}
+:is(.design-kumo, .kumo-portal) [data-slot="button"][data-variant="destructive"] {
+  background-color: var(--kumo-base);
+  box-shadow: inset 0 0 0 1px var(--kumo-line);
+  color: var(--kumo-danger-text);
+}
+
+/* Inputs: control fill, 1px kumo-line ring, rounded-lg, 36px. */
+:is(.design-kumo, .kumo-portal) :is([data-slot="input"], [data-slot="input-group"], [data-slot="select-trigger"]) {
+  border-radius: 0.5rem;
+  background-color: var(--kumo-control);
+  border-color: var(--kumo-line);
+  box-shadow: none;
+}
+.design-kumo [data-slot="listing-toolbar"] :is([data-slot="input"], [data-slot="input-group"]) {
+  min-block-size: 2.25rem;
+}
+:is(.design-kumo, .kumo-portal) [data-slot="input-group"] [data-slot="input"] {
+  background-color: transparent;
+}
+:is(.design-kumo, .kumo-portal) :is(input, textarea)::placeholder {
+  color: var(--kumo-subtle);
+}
+
+/* Checkboxes: rounded-sm, checked = kumo-contrast (ink), not brand. */
+:is(.design-kumo, .kumo-portal) [data-slot="checkbox"] {
+  border-radius: 0.25rem;
+  border-color: var(--kumo-line-solid);
+  background-color: var(--kumo-base);
+}
+:is(.design-kumo, .kumo-portal) [data-slot="checkbox"]:is([data-checked], [data-state="indeterminate"]) {
+  background-color: var(--kumo-contrast);
+  border-color: var(--kumo-contrast);
+  color: var(--kumo-inverse);
+}
+
+/* Overlays: the only place with a (soft) shadow. */
+.kumo-portal
+  :is(
+    [data-slot="dropdown-menu-content"],
+    [data-slot="dropdown-menu-sub-content"],
+    [data-slot="popover-content"],
+    [data-slot="select-content"],
+    [data-slot="dialog-content"],
+    [data-slot="alert-dialog-content"],
+    [data-slot="sheet-content"]
+  ) {
+  border: 0;
+  border-radius: 0.5rem;
+  --tw-ring-shadow: 0 0 #0000;
+  box-shadow: var(--kumo-shadow-overlay);
+  background-color: var(--kumo-control);
+}
+.kumo-portal [data-slot="sheet-content"] {
+  border-radius: 0;
+}
+.kumo-portal [data-slot="tooltip-content"] {
+  border-radius: 0.375rem;
+  background-color: var(--kumo-contrast);
+  color: var(--kumo-inverse);
+}
+.kumo-portal :is([data-slot="dropdown-menu-item"], [data-slot="select-item"]) {
+  border-radius: 0.375rem;
+  min-block-size: 2rem;
+}
+.kumo-portal :is([data-slot="dropdown-menu-item"], [data-slot="select-item"]):is(:focus, [data-highlighted]) {
+  background-color: var(--kumo-tint);
+  color: var(--kumo-text);
+}
+
+/* ------------------------------------------------------------------ badge */
+
+/* Kumo Badge: rounded-full, px-2 py-0.5, text-xs medium, tinted fill, 7px dot. */
+:is(.design-kumo, .kumo-portal) .kumo-badge {
+  gap: 0.375rem;
+  block-size: 1.375rem;
+  padding-inline: 0.5rem;
+  border: 0;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: var(--kumo-fill);
+  color: var(--kumo-neutral-text);
+  --kumo-dot: var(--kumo-dot-neutral);
+}
+:is(.design-kumo, .kumo-portal) .kumo-badge__dot {
+  inline-size: 0.4375rem;
+  block-size: 0.4375rem;
+  border-radius: 9999px;
+  background-color: var(--kumo-dot);
+}
+:is(.design-kumo, .kumo-portal) .kumo-badge[data-tone="info"] {
+  background-color: var(--kumo-info-tint);
+  color: var(--kumo-info-text);
+  --kumo-dot: var(--kumo-info);
+}
+:is(.design-kumo, .kumo-portal) .kumo-badge[data-tone="success"] {
+  background-color: var(--kumo-success-tint);
+  color: var(--kumo-success-text);
+  --kumo-dot: var(--kumo-success);
+}
+:is(.design-kumo, .kumo-portal) .kumo-badge[data-tone="warning"] {
+  background-color: var(--kumo-warning-tint);
+  color: var(--kumo-warning-text);
+  --kumo-dot: var(--kumo-warning);
+}
+:is(.design-kumo, .kumo-portal) .kumo-badge[data-tone="danger"] {
+  background-color: var(--kumo-danger-tint);
+  color: var(--kumo-danger-text);
+  --kumo-dot: var(--kumo-danger);
+}
+:is(.design-kumo, .kumo-portal) .kumo-badge[data-tone="brand"] {
+  background-color: var(--kumo-brand-subtle);
+  color: var(--kumo-link);
+  --kumo-dot: var(--primary);
+}
+
+/* Other Onu badges (tab counts, menu counts): neutral fill pills. */
+.design-kumo [data-slot="badge"] {
+  border-radius: 9999px;
+  border: 0;
+  background-color: var(--kumo-fill);
+  color: var(--kumo-neutral-text);
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------- tiles, avatars */
+
+.design-kumo .kumo-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  border-radius: 0.375rem;
+  background-color: var(--kumo-elevated);
+  box-shadow: inset 0 0 0 1px var(--kumo-line);
+  color: var(--kumo-subtle);
+}
+.design-kumo .kumo-tile svg {
+  inline-size: 0.9375rem;
+  block-size: 0.9375rem;
+}
+.design-kumo .kumo-tile--lg {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border-radius: 0.5rem;
+}
+.design-kumo .kumo-tile--lg svg {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+}
+
+:is(.design-kumo, .kumo-portal) .kumo-av {
+  background-color: var(--kumo-fill);
+  color: var(--kumo-strong);
+  font-weight: 600;
+  font-size: inherit;
+}
+
+/* ----------------------------------------------------------- listing page */
+
+.design-kumo .kumo-listing {
+  gap: 1rem;
+}
+.design-kumo .kumo-listing > header p {
+  color: var(--kumo-subtle);
+}
+
+/*
+ * Status tabs as Cloudflare's analytics metric strip: one hairline-ringed
+ * card, a cell per status with a small label and a large count; the selected
+ * cell is lifted to the base surface with a 2px brand line.
+ */
+.design-kumo .kumo-listing [data-slot="filter-tabs"] > div {
+  margin-inline: 0;
+  padding: 1px;
+}
+.design-kumo .kumo-listing [data-slot="filter-tabs"] [data-slot="tabs-list"] {
+  display: flex;
+  inline-size: 100%;
+  min-inline-size: max-content;
+  block-size: auto;
+  padding: 0;
+  gap: 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: var(--kumo-elevated);
+  box-shadow: 0 0 0 1px var(--kumo-line);
+}
+.design-kumo .kumo-listing [data-slot="filter-tabs"] [data-slot="tabs-trigger"] {
+  flex: 1 1 0;
+  min-inline-size: 8.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.125rem;
+  block-size: auto;
+  padding: 0.75rem 1rem 0.875rem;
+  border: 0;
+  border-radius: 0;
+  border-inline-end: 1px solid var(--kumo-hairline);
+  background: transparent;
+  color: var(--kumo-subtle);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-align: start;
+  white-space: nowrap;
+}
+.design-kumo .kumo-listing [data-slot="filter-tabs"] [data-slot="tabs-trigger"]:last-child {
+  border-inline-end: 0;
+}
+.design-kumo .kumo-listing [data-slot="filter-tabs"] [data-slot="tabs-trigger"]:hover {
+  background-color: var(--kumo-tint);
+  color: var(--kumo-text);
+}
+.design-kumo .kumo-listing [data-slot="filter-tabs"] [data-slot="tabs-trigger"]:focus-visible {
+  outline-offset: -2px;
+}
+.design-kumo .kumo-listing [data-slot="filter-tabs"] [data-slot="tabs-trigger"][data-active] {
+  background-color: var(--kumo-base);
+  color: var(--kumo-text);
+}
+.design-kumo .kumo-listing [data-slot="filter-tabs"] [data-slot="tabs-trigger"]::after {
+  inset-inline: 0;
+  inset-block: auto 0;
+  block-size: 2px;
+  background-color: var(--primary);
+}
+.design-kumo .kumo-listing [data-slot="filter-tabs"] [data-slot="badge"] {
+  block-size: auto;
+  padding: 0;
+  background: transparent;
+  color: var(--kumo-strong);
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.design-kumo .kumo-listing [data-slot="listing-toolbar"] {
+  gap: 0.5rem;
+}
+
+/* Table: a base card with a kumo-line ring; compact header on elevated, xs text. */
+.design-kumo [data-slot="data-table"] > div:has(> [data-slot="data-table-table"]),
+.design-kumo [data-slot="data-table"] > div:has([data-slot="data-table-table"]) {
+  border: 0;
+  border-radius: 0.5rem;
+  background-color: var(--kumo-base);
+  box-shadow: 0 0 0 1px var(--kumo-line);
+}
+.design-kumo [data-slot="data-table-table"] thead tr {
+  border-block-end: 1px solid var(--kumo-fill);
+  background-color: var(--kumo-elevated);
+}
+.design-kumo [data-slot="data-table-table"] thead th {
+  block-size: 2.25rem;
+  background-color: var(--kumo-elevated);
+}
+.design-kumo [data-slot="data-table-table"] thead :is(th, th button) {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--kumo-strong);
+}
+.design-kumo [data-slot="data-table-table"] tbody tr {
+  border-block-end: 1px solid var(--kumo-hairline);
+}
+.design-kumo [data-slot="data-table-table"] tbody tr:last-child {
+  border-block-end: 0;
+}
+.design-kumo [data-slot="data-table-table"] tbody tr:hover {
+  background-color: var(--kumo-elevated);
+}
+.design-kumo [data-slot="data-table-table"] tbody tr[data-state="selected"] {
+  background-color: var(--kumo-tint);
+}
+.design-kumo [data-slot="data-table-table"] tbody td {
+  padding-block: 0.4375rem;
+  font-size: 0.8125rem;
+}
+.design-kumo [data-slot="data-table-table"] :is(td, th):first-child {
+  padding-inline-start: 0.75rem;
+}
+.design-kumo .kumo-name-cell {
+  font-weight: 500;
+}
+
+/* Phone cards, list and grid views: base tiles with a 1px line, no shadow. */
+.design-kumo :is([data-slot="data-table-cards"], [data-slot="grid-view"], [data-slot="list-view"]) > li {
+  border-radius: 0.5rem;
+  border-color: var(--kumo-line-solid);
+  box-shadow: none;
+  background-color: var(--kumo-base);
+}
+.design-kumo [data-slot="data-table-cards"] [data-row-link] {
+  color: var(--kumo-link);
+}
+
+/* Bulk bar: a base surface with a kumo-line ring, no shadow. */
+.design-kumo [data-slot="bulk-action-bar"] {
+  border-radius: 0.5rem;
+  background-color: var(--kumo-base);
+  border-color: transparent;
+  box-shadow: 0 0 0 1px var(--kumo-line);
+}
+
+/* Pagination: the current page on a tint fill; text-sm subtle summary. */
+.design-kumo [data-slot="pagination"] {
+  color: var(--kumo-subtle);
+  font-size: 0.8125rem;
+}
+.design-kumo [data-slot="pagination"] [aria-current="page"] {
+  background-color: var(--kumo-tint);
+  color: var(--kumo-strong);
+  box-shadow: inset 0 0 0 1px var(--kumo-line);
+}
+
+/* Empty state: Kumo's Empty (rounded-xl, fill border, control background). */
+.design-kumo [data-slot="empty-state"] {
+  border-radius: 0.75rem;
+  border-color: var(--kumo-fill);
+  background-color: var(--kumo-control);
+}
+
+/* -------------------------------------------------------------- dashboard */
+
+/* LayerCard: elevated frame + hairline ring; base inner panel with a line ring. */
+.design-kumo .kumo-layer {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  border-radius: 0.5rem;
+  background-color: var(--kumo-elevated);
+  box-shadow: 0 0 0 1px var(--kumo-hairline);
+}
+.design-kumo .kumo-layer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-block-size: 2.75rem;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+}
+.design-kumo .kumo-layer__head:dir(rtl) {
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
+}
+.design-kumo .kumo-layer__title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--kumo-subtle);
+}
+.design-kumo .kumo-layer__desc {
+  font-size: 0.75rem;
+  color: var(--kumo-subtle);
+}
+.design-kumo .kumo-layer__body {
+  flex: 1;
+  min-inline-size: 0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--kumo-base);
+  box-shadow: 0 0 0 1px var(--kumo-line);
+}
+.design-kumo .kumo-layer__body--flush {
+  padding: 0;
+  overflow: hidden;
+}
+.design-kumo .kumo-layer__body--flush [data-slot="data-table"] > div:has([data-slot="data-table-table"]) {
+  border-radius: 0;
+  box-shadow: none;
+}
+.design-kumo .kumo-layer__body--flush [data-slot="data-table-cards"] {
+  padding: 0.75rem;
+}
+
+.design-kumo .kumo-dash-grid {
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 1100px) {
+  .design-kumo .kumo-dash-grid {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+}
+.design-kumo .kumo-dash-col {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  min-inline-size: 0;
+}
+
+/* Analytics strip: one card, metric cells split by hairlines. */
+.design-kumo .kumo-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-radius: 0.5rem;
+  background-color: var(--kumo-base);
+  box-shadow: 0 0 0 1px var(--kumo-line);
+  overflow: hidden;
+  gap: 0;
+}
+@media (min-width: 1024px) {
+  .design-kumo .kumo-metrics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.design-kumo .kumo-metrics [data-slot="stat-tile"] {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  --tw-ring-shadow: 0 0 #0000;
+  background: transparent;
+  padding: 1rem 1.25rem;
+  border-inline-end: 1px solid var(--kumo-hairline);
+  border-block-end: 1px solid var(--kumo-hairline);
+}
+@media (min-width: 1024px) {
+  .design-kumo .kumo-metrics [data-slot="stat-tile"] {
+    border-block-end: 0;
+  }
+  .design-kumo .kumo-metrics [data-slot="stat-tile"]:last-child {
+    border-inline-end: 0;
+  }
+}
+.design-kumo .kumo-metrics [data-slot="stat-tile-label"] {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--kumo-subtle);
+}
+.design-kumo .kumo-metrics [data-slot="stat-tile-value"] {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--kumo-strong);
+}
+.design-kumo .kumo-metrics [data-slot="stat-tile-icon"] {
+  background: transparent;
+  color: var(--kumo-subtle);
+}
+
+/* Meter (Kumo Meter): h-2 rounded-full fill track, brand bar. */
+.design-kumo [data-slot="progress-bar-track"] {
+  block-size: 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--kumo-fill);
+}
+.design-kumo [data-slot="progress-bar-indicator"] {
+  border-radius: 9999px;
+  background-color: var(--primary);
+}
+.design-kumo .kumo-meter--warn [data-slot="progress-bar-indicator"] {
+  background-color: var(--kumo-warning);
+}
+
+/* Compact list rows inside a LayerCard. */
+.design-kumo .kumo-rows > li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-block-size: 3rem;
+  padding: 0.5rem 1rem;
+  border-block-end: 1px solid var(--kumo-hairline);
+}
+.design-kumo .kumo-rows > li:last-child {
+  border-block-end: 0;
+}
+
+/* Status dot (system health). */
+.design-kumo .kumo-dot {
+  display: inline-block;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--kumo-success);
+  flex-shrink: 0;
+}
+.design-kumo .kumo-dot--warn {
+  background-color: var(--kumo-warning);
+}
+
+/* Segmented control (Kumo Tabs variant="segmented"): recessed track, base thumb with a line ring. */
+.design-kumo .kumo-segmented[data-slot="segmented-control"] {
+  border-radius: 0.5rem;
+  background-color: var(--kumo-recessed);
+  box-shadow: inset 0 0 0 1px var(--kumo-hairline);
+}
+.design-kumo .kumo-segmented [data-state="on"] {
+  background-color: var(--kumo-base);
+  box-shadow: 0 0 0 1px var(--kumo-line);
+  color: var(--kumo-strong);
+}
+
+/* ----------------------------------------------------------------- motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .design-kumo *,
+  .kumo-portal * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .design-kumo .kumo-badge {
+    border: 1px solid CanvasText;
+  }
+  .design-kumo .kumo-listing [data-slot="filter-tabs"] [data-slot="tabs-trigger"][data-active]::after {
+    background-color: Highlight;
+  }
+}
