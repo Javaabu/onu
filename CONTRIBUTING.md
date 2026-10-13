@@ -43,3 +43,22 @@ A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `
 ```bash
 pnpm lint && pnpm format:check && pnpm typecheck && pnpm test:coverage && pnpm build
 ```
+
+## Building on a small server
+
+Measured on 1 vCPU with no swap:
+
+| Command               | Peak memory | Time |
+| --------------------- | ----------- | ---- |
+| `pnpm build`          | ~450 MB     | ~15s |
+| `pnpm build:examples` | ~800 MB     | ~12s |
+
+The package build fits a 1 GB server. Its type declarations are emitted one entry point at a time without type checking (`pnpm typecheck` does that).
+
+The examples site needs most of 1 GB on its own, so on a 1 GB server add swap first, or serve the prebuilt `demo-dist` branch:
+
+```bash
+sudo fallocate -l 1G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
+```
+
+Running `node scripts/build.mjs` in `examples/` instead of `pnpm build:examples` saves the ~75 MB that pnpm itself holds during the build.
