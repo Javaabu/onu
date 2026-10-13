@@ -41,6 +41,28 @@ Without a server export, `onExport={(format) => exportRows({ format, rows, colum
 
 With a server, call your API with `state.toSearchParams()` (Laravel / spatie-query-builder names: `search`, `sort=-created_at`, `page`, `per_page`, `filter[status][]=active`) and pass the page of rows and the total. The table, pills and empty states follow the same state.
 
+## Card layout (Ant ProTable)
+
+`variant="card"` (the default inside a panel [`AppLayout`](../layout-and-navigation/app-layout)) lays the page out like Ant Design Pro's ProTable:
+
+- the header is [`PageTitle`](../layout-and-navigation/page-title)'s **PageHeader band**: breadcrumbs (`breadcrumbs`, or the layout's), the title with `tags`, the links as outlined buttons and the main action at the end, the description with key `figures`, and the status `tabs` as line tabs with an ink bar;
+- an optional **query form** card: `queryFilters` shows those filters inline ([`FilterPanel variant="form"`](filter-panel#query-form)), labelled fields in a grid with **Reset**, **Filter** and **Expand**, while the Filters button keeps the rest of `filters`; or pass your own `queryForm`;
+- the list in a **table card**: a toolbar row with the `tableTitle` and the search at the start and Filters, Columns, Sort by, Export and `toolbarEnd` at the end, the filter pills, then the table (flush in the card) or your view, and the pagination.
+
+```tsx
+<ListingPage
+  title="Applications"
+  tableTitle="Application list"
+  filters={filters}
+  queryFilters={filters.filter((f) => ["service", "island", "assignee", "email"].includes(f.key))}
+  figures={[{ label: "In review", value: 34 }]}
+  tabs={tabs}
+  {...tableProps}
+/>
+```
+
+`variant="default"` (the default elsewhere) keeps the header, toolbar and table stacked on the page. Every other prop works the same in both.
+
 ## Other views
 
 Pass `children` to replace the table, e.g. with a [`ListView`](list-view) or [`GridView`](grid-view) chosen by a [`ViewSwitcher`](view-switcher) in `toolbarEnd`. The page keeps the pagination footer (from `total`, `pagination`, `perPageOptions` and `noun`) below your view, and adds a **Sort by** menu to the toolbar for the `columns` marked `sortable`, since a list or grid has no sortable headers:
@@ -71,6 +93,12 @@ All [`DataTable`](data-table) props, plus:
 | `columnToggle`                | `boolean`                                        | `false`             | Show the Columns menu                                      |
 | `tabs` / `tabsFilterKey`      | `FilterTab[]` / `string`                         | – / `"status"`      | Status tabs that set one filter                            |
 | `toolbarEnd`                  | `ReactNode`                                      |                     | Extra toolbar content                                      |
+| `variant`                     | `"card" \| "default"`                            | `"card"` in a panel `AppLayout` | ProTable card layout or stacked                 |
+| `tableTitle`                  | `ReactNode`                                      |                     | Card layout: title at the start of the table card          |
+| `queryFilters`                | `FilterDefinition[]`                             |                     | Card layout: filters in an inline query form               |
+| `queryForm`                   | `ReactNode`                                      |                     | Card layout: a custom form above the table card            |
+| `breadcrumbs`                 | `BreadcrumbsItem[]`                              | the layout's        | Card layout: breadcrumbs in the header band                |
+| `tags` / `figures`            | `ReactNode` / `{ label, value }[]`               |                     | Card layout: tags after the title, key figures             |
 | `children`                    | `ReactNode`                                      |                     | Replaces the table; pagination and Sort by stay            |
 
 ## Accessibility

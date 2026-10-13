@@ -16,26 +16,14 @@ function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
       role="navigation"
       aria-label={t("common.pagination")}
       data-slot="pagination"
-      className={cn(
-        "mx-auto flex w-full justify-center",
-        className
-      )}
+      className={cn("mx-auto flex w-full justify-center", className)}
       {...props}
     />
   )
 }
 
-function PaginationContent({
-  className,
-  ...props
-}: React.ComponentProps<"ul">) {
-  return (
-    <ul
-      data-slot="pagination-content"
-      className={cn("gap-0.5 flex items-center", className)}
-      {...props}
-    />
-  )
+function PaginationContent({ className, ...props }: React.ComponentProps<"ul">) {
+  return <ul data-slot="pagination-content" className={cn("gap-0.5 flex items-center", className)} {...props} />
 }
 
 function PaginationItem({ ...props }: React.ComponentProps<"li">) {
@@ -47,12 +35,7 @@ type PaginationLinkProps = {
 } & Pick<React.ComponentProps<typeof Button>, "size"> &
   React.ComponentProps<"a">
 
-function PaginationLink({
-  className,
-  isActive,
-  size = "icon",
-  ...props
-}: PaginationLinkProps) {
+function PaginationLink({ className, isActive, size = "icon", ...props }: PaginationLinkProps) {
   return (
     <Button
       asChild
@@ -61,12 +44,7 @@ function PaginationLink({
       // onu: the current page is marked in the brand colour.
       className={cn(isActive && "border-primary text-primary", className)}
     >
-      <a
-        aria-current={isActive ? "page" : undefined}
-        data-slot="pagination-link"
-        data-active={isActive}
-        {...props}
-      />
+      <a aria-current={isActive ? "page" : undefined} data-slot="pagination-link" data-active={isActive} {...props} />
     </Button>
   )
 }
@@ -86,9 +64,7 @@ function PaginationPrevious({
     >
       {/* onu: Icon already mirrors in RTL */}
       <Icon name="chevron-left" fallback={ChevronLeftIcon} data-icon="inline-start" />
-      <span className="hidden sm:block">
-        {text ?? t("common.previous")}
-      </span>
+      <span className="sm:block hidden">{text ?? t("common.previous")}</span>
     </PaginationLink>
   )
 }
@@ -106,26 +82,20 @@ function PaginationNext({
       className={cn("pe-1.5!", className)}
       {...props}
     >
-      <span className="hidden sm:block">{text ?? t("common.next")}</span>
+      <span className="sm:block hidden">{text ?? t("common.next")}</span>
       {/* onu: Icon already mirrors in RTL */}
       <Icon name="chevron-right" fallback={ChevronRightIcon} data-icon="inline-end" />
     </PaginationLink>
   )
 }
 
-function PaginationEllipsis({
-  className,
-  ...props
-}: React.ComponentProps<"span">) {
+function PaginationEllipsis({ className, ...props }: React.ComponentProps<"span">) {
   const { t } = useTranslation() // onu: translated labels
   return (
     <span
       aria-hidden
       data-slot="pagination-ellipsis"
-      className={cn(
-        "size-8 [&_svg:not([class*='size-'])]:size-4 flex items-center justify-center",
-        className
-      )}
+      className={cn("size-8 [&_svg:not([class*='size-'])]:size-4 flex items-center justify-center", className)}
       {...props}
     >
       <Icon name="more" fallback={MoreHorizontalIcon} />

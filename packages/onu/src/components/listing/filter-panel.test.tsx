@@ -348,6 +348,67 @@ describe("ActiveFilterChips", () => {
   })
 })
 
+describe("FilterPanel variant=form (query form)", () => {
+  function QueryHarness({ onApply, initial = {} }: { onApply: (v: FilterValues) => void; initial?: FilterValues }) {
+    const [value, setValue] = React.useState<FilterValues>(initial)
+    return (
+      <FilterPanel
+        variant="form"
+        filters={userFilters.slice(0, 4)}
+        value={value}
+        collapsedCount={2}
+        onApply={(next) => {
+          onApply(next)
+          setValue(next)
+        }}
+      />
+    )
+  }
+
+  it("shows labelled fields inline, applies on Filter and keeps other filters on Reset", async () => {
+    const onApply = vi.fn()
+    renderWithOnu(<QueryHarness onApply={onApply} initial={{ trashed: "only", email: "gmail" }} />)
+    const form = screen.getByRole("form", { name: "Filters" })
+    // Collapsed: the first two fields, then Expand.
+    expect(within(form).getByText("Status")).toBeInTheDocument()
+    expect(within(form).queryByText("Email contains")).toBeNull()
+    const expand = within(form).getByRole("button", { name: "Expand" })
+    expect(expand).toHaveAttribute("aria-expanded", "false")
+    await userEvent.click(expand)
+    expect(within(form).getByRole("button", { name: "Collapse" })).toHaveAttribute("aria-expanded", "true")
+    const email = within(form).getByRole("textbox", { name: "Email contains" })
+    expect(email).toHaveValue("gmail")
+
+    // Short multi-selects are a dropdown in the form, not a row of checkboxes.
+    expect(within(form).queryByRole("checkbox")).toBeNull()
+
+    await userEvent.clear(email)
+    await userEvent.type(email, "javaabu")
+    expect(onApply).not.toHaveBeenCalled()
+    await userEvent.click(within(form).getByRole("button", { name: "Filter" }))
+    expect(onApply).toHaveBeenLastCalledWith({ trashed: "only", email: "javaabu" })
+
+    await userEvent.click(within(form).getByRole("button", { name: "Reset" }))
+    expect(onApply).toHaveBeenLastCalledWith({ trashed: "only" })
+    expect(within(form).getByRole("textbox", { name: "Email contains" })).toHaveValue("")
+    await expectNoA11yViolations()
+  })
+
+  it("submits with Enter and follows filters changed elsewhere", async () => {
+    const onApply = vi.fn()
+    const { rerender } = renderWithOnu(
+      <FilterPanel variant="form" filters={userFilters.slice(3, 4)} value={{}} onApply={onApply} />,
+    )
+    expect(screen.queryByRole("button", { name: "Expand" })).toBeNull()
+    await userEvent.type(screen.getByRole("textbox", { name: "Email contains" }), "mv{Enter}")
+    expect(onApply).toHaveBeenLastCalledWith({ email: "mv" })
+    rerender(
+      <FilterPanel variant="form" filters={userFilters.slice(3, 4)} value={{ email: "gov" }} onApply={onApply} />,
+    )
+    expect(screen.getByRole("textbox", { name: "Email contains" })).toHaveValue("gov")
+  })
+})
+
 describe("filter label helpers", () => {
   it("formats one filter, or every applied filter, for custom empty states", () => {
     const { result } = renderHook(() => ({

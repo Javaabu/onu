@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { Button } from "../../ui/button"
+import { AppLayout } from "./app-layout"
 import { PageTitle } from "./page-title"
 
 // Overlays and axe are slow under parallel coverage runs.
@@ -82,5 +83,64 @@ describe("PageTitle", () => {
     })
     expect(screen.getByRole("link", { name: "ކުނިފޮށި (ހުސްނޫން)" })).toBeInTheDocument()
     await expectNoA11yViolations()
+  })
+
+  it("is Ant's PageHeader band inside a panel AppLayout, with the layout's breadcrumbs", async () => {
+    renderWithOnu(
+      <AppLayout breadcrumbs={[{ label: "Home", href: "/" }, { label: "Applications" }]}>
+        <PageTitle
+          title="Applications"
+          subtitle="Every island"
+          tags={<span>67 open</span>}
+          description="Permit and licence applications."
+          figures={[
+            { label: "In review", value: 34 },
+            { label: "Approved", value: 50 },
+          ]}
+          actions={<Button variant="outline">Trash</Button>}
+          action={<Button>New application</Button>}
+          tabs={<nav aria-label="Status">tabs</nav>}
+        />
+      </AppLayout>,
+    )
+    const header = document.querySelector("[data-slot=page-title]")!
+    expect(header).toHaveAttribute("data-variant", "band")
+    expect(header).toHaveClass("bg-card", "pb-0")
+    const crumbs = header.querySelector("[data-slot=page-title-breadcrumbs]") as HTMLElement
+    expect(within(crumbs).getByRole("link", { name: "Home" })).toHaveAttribute("href", "/")
+    expect(within(crumbs).getByText("Applications").closest("[aria-current=page]")).not.toBeNull()
+    // The band shows the trail, so the layout drops its own copy.
+    expect(document.querySelector("[data-slot=app-layout-breadcrumbs]")).toBeNull()
+    expect(screen.getByRole("heading", { level: 1, name: "Applications" })).toHaveClass("text-xl")
+    expect(screen.getByText("Every island")).toHaveAttribute("data-slot", "page-title-subtitle")
+    expect(screen.getByText("67 open").parentElement).toHaveAttribute("data-slot", "page-title-tags")
+    const figures = header.querySelector("[data-slot=page-title-figures]")!
+    expect(figures.tagName).toBe("DL")
+    expect(within(figures as HTMLElement).getByText("In review").tagName).toBe("DT")
+    expect(within(figures as HTMLElement).getByText("34").tagName).toBe("DD")
+    expect(screen.getByRole("navigation", { name: "Status" }).parentElement).toHaveAttribute(
+      "data-slot",
+      "page-title-tabs",
+    )
+    await expectNoA11yViolations()
+  })
+
+  it("stays plain outside a panel layout, for sub-headings and with variant=plain", () => {
+    const { rerender } = renderWithOnu(
+      <AppLayout>
+        <PageTitle title="Details" headingLevel={2} />
+      </AppLayout>,
+    )
+    expect(document.querySelector("[data-slot=page-title]")).toHaveAttribute("data-variant", "plain")
+    rerender(<PageTitle title="Users" />)
+    expect(document.querySelector("[data-slot=page-title]")).toHaveAttribute("data-variant", "plain")
+    rerender(
+      <PageTitle title="Users" variant="band" breadcrumbs={[{ label: "Home", href: "/" }, { label: "Users" }]} />,
+    )
+    const band = document.querySelector("[data-slot=page-title]")!
+    expect(band).toHaveAttribute("data-variant", "band")
+    // Outside a panel the band does not bleed: it has its own padding and bottom border.
+    expect(band).toHaveClass("border-b")
+    expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument()
   })
 })

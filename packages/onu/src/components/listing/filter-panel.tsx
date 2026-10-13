@@ -32,6 +32,18 @@ export interface FilterPanelProps {
   trigger?: React.ReactNode
   /** Dropdown alignment. Default `start`. */
   align?: "start" | "center" | "end"
+  /**
+   * `popover` (default): the Filters button with a dropdown (bottom sheet on
+   * phones). `form`: an inline query form (Ant ProTable's QueryFilter), with
+   * labelled fields in a grid and Reset, Filter and Expand buttons.
+   */
+  variant?: "popover" | "form"
+  /** Form variant: how many fields show before Expand. Default `3`. */
+  collapsedCount?: number
+  /** Form variant: start expanded. */
+  defaultExpanded?: boolean
+  /** Form variant: the form's accessible name. Default "Filters". */
+  formLabel?: string
   className?: string
   classNames?: {
     trigger?: string
@@ -49,8 +61,126 @@ export interface FilterPanelProps {
  * on phones. Changes are a draft until Apply; Cancel, Escape or clicking outside
  * throw them away, and reopening shows the applied filters. Clear all removes
  * every filter at once. The button shows how many filters are applied.
+ *
+ * With `variant="form"` it is an inline query form instead: the fields stay on
+ * the page, changes are a draft until Filter (or Enter), Reset clears the
+ * form's filters, and Expand shows the fields past `collapsedCount`.
  */
-export function FilterPanel({
+export function FilterPanel(props: FilterPanelProps) {
+  return props.variant === "form" ? <FilterQueryForm {...props} /> : <FilterPopoverPanel {...props} />
+}
+
+function FilterQueryForm({
+  filters,
+  value,
+  onApply,
+  collapsedCount = 3,
+  defaultExpanded = false,
+  formLabel,
+  className,
+  classNames,
+}: FilterPanelProps) {
+  const { t } = useTranslation()
+  const baseId = React.useId()
+  const [draft, setDraft] = React.useState<FilterValues>(value)
+  const [expanded, setExpanded] = React.useState(defaultExpanded)
+
+  // Follow the applied filters when chips, tabs or Clear change them (adjusting state while rendering).
+  const signature = JSON.stringify(value)
+  const [seen, setSeen] = React.useState(signature)
+  if (seen !== signature) {
+    setSeen(signature)
+    setDraft(value)
+  }
+
+  const collapsible = filters.length > collapsedCount
+  const visible = expanded || !collapsible ? filters : filters.slice(0, collapsedCount)
+  const setDraftValue = (key: string, next: FilterValue | undefined) => setDraft((prev) => ({ ...prev, [key]: next }))
+
+  return (
+    <form
+      data-slot="filter-form"
+      aria-label={formLabel ?? t("listing.filtersTitle")}
+      className={cn(
+        "gap-x-6 gap-y-4 grid grid-cols-[repeat(auto-fill,minmax(min(100%,17.5rem),1fr))]",
+        classNames?.body,
+        className,
+      )}
+      onSubmit={(e) => {
+        e.preventDefault()
+        onApply(cleanFilters(draft))
+      }}
+    >
+      {visible.map((definition) => {
+        const id = `${baseId}-${definition.key}`
+        const labelId = `${id}-label`
+        return (
+          <div
+            key={definition.key}
+            data-slot="filter-form-item"
+            className={cn("gap-2 sm:grid-cols-[5rem_minmax(0,1fr)] sm:gap-0 grid items-center", classNames?.filter)}
+          >
+            <span
+              id={labelId}
+              className={cn(
+                // Ant's horizontal form label: end-aligned, with a colon.
+                "text-sm sm:pe-2 sm:text-end sm:after:ms-0.5 sm:after:content-[':'] truncate text-foreground",
+                classNames?.label,
+              )}
+            >
+              {definition.label}
+            </span>
+            <div className="min-w-0 [&>*]:w-full">
+              <FilterControl
+                definition={definition}
+                value={draft[definition.key]}
+                onChange={(next) => setDraftValue(definition.key, next)}
+                id={id}
+                labelId={labelId}
+                compact
+              />
+            </div>
+          </div>
+        )
+      })}
+      <div
+        data-slot="filter-form-actions"
+        className={cn("gap-2 col-end-[-1] flex flex-wrap items-center justify-end", classNames?.footer)}
+      >
+        <Button
+          type="button"
+          variant="outline"
+          className="touch:min-h-11"
+          onClick={() => {
+            // Reset clears this form's fields and keeps any other filters.
+            const next = { ...draft }
+            for (const definition of filters) delete next[definition.key]
+            setDraft(next)
+            onApply(cleanFilters(next))
+          }}
+        >
+          {t("listing.filterReset")}
+        </Button>
+        <Button type="submit" className="touch:min-h-11">
+          {t("listing.filterSubmit")}
+        </Button>
+        {collapsible ? (
+          <Button
+            type="button"
+            variant="link"
+            className="px-1 touch:min-h-11"
+            aria-expanded={expanded}
+            onClick={() => setExpanded((v) => !v)}
+          >
+            {expanded ? t("listing.collapse") : t("listing.expand")}
+            <Icon name={expanded ? "chevron-up" : "chevron-down"} />
+          </Button>
+        ) : null}
+      </div>
+    </form>
+  )
+}
+function FilterPopoverPanel({
   filters,
   value,
   onApply,

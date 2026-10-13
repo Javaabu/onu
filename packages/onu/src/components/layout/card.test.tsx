@@ -47,6 +47,9 @@ describe("Card", () => {
     const flush = screen.getByTestId("flush")
     expect(flush).not.toHaveAttribute("data-padded")
     expect(flush).not.toHaveClass("[&>:not(img)]:px-(--card-spacing)")
+    // Edge to edge: no vertical padding either.
+    expect(flush).toHaveClass("py-0", "gap-0")
+    expect(bare).not.toHaveClass("py-0")
     expect(container.querySelectorAll("[data-slot=card-content]")).toHaveLength(1)
   })
 
@@ -74,7 +77,9 @@ describe("Card", () => {
         Content
       </Card>,
     )
-    expect(screen.getByRole("heading", { level: 2, name: "Payments" })).toHaveClass("ttl")
+    expect(screen.getByRole("heading", { level: 2, name: "Payments" })).toHaveClass("ttl", "font-semibold")
+    // Ant: the header is its own row with a bottom line.
+    expect(document.querySelector("[data-slot=card-header]")).toHaveClass("border-b", "min-h-14")
     expect(screen.getByText("Last 30 days")).toHaveClass("dsc")
     expect(screen.getByText("Content")).toHaveClass("cnt")
     expect(screen.getByText("MVR 12,400.00").parentElement).toHaveClass("ftr")

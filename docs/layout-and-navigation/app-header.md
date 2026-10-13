@@ -25,6 +25,27 @@ import { AppHeader, Logo, NotificationCenter, ThemeToggle, UserProfile } from "@
 
 `sidebarTrigger` needs `AppLayout` (or a `SidebarProvider`) above it. On phones the toggle opens the sidebar drawer.
 
+## On the shell
+
+Inside a panel `AppLayout` (the default) the header uses `variant="shell"`, Proton's header: the app shell colour with no bottom line, 60px tall, a wide 40px rounded **search** on the shell's field colour (put a `SearchBox` in `children`; it grows to 36rem), and quiet 36px icon buttons with a grey hover. A `UserProfile` in the actions shows its avatar as a rounded square and, below 768px, only the avatar.
+
+```tsx
+<AppHeader
+  sidebarTrigger
+  actions={
+    <>
+      <ThemeToggle />
+      <NotificationCenter notifications={items} />
+      <UserProfile name="Aishath Shifa" subtitle="shifa@atoll.mv" onSignOut={signOut} align="end" />
+    </>
+  }
+>
+  <SearchBox placeholder="Search applications" onSearch={search} />
+</AppHeader>
+```
+
+Outside a panel layout the default is still `variant="default"` (the page background with a bottom border).
+
 ## Props
 
 | Prop             | Type                                | Default     | Description                               |
@@ -33,11 +54,11 @@ import { AppHeader, Logo, NotificationCenter, ThemeToggle, UserProfile } from "@
 | `children`       | `ReactNode`                         |             | Middle area (fills the remaining space)   |
 | `actions`        | `ReactNode`                         |             | End of the header                         |
 | `sidebarTrigger` | `boolean`                           | `false`     | Show the sidebar toggle                   |
-| `variant`        | `'default' \| 'plain' \| 'primary'` | `'default'` | Bordered, borderless, or primary-coloured |
+| `variant`        | `'shell' \| 'default' \| 'plain' \| 'primary'` | `'shell'` in a panel `AppLayout`, else `'default'` | Shell colour, bordered, borderless, or primary-coloured |
 | `sticky`         | `boolean`                           | `true`      | Stick to the top while scrolling          |
 | `classNames`     | `{ start, center, end, trigger }`   |             | Classes for each area                     |
 
-`appHeaderVariants` is exported. The height is `--onu-header-height` (3.5rem). Other `<header>` props are passed through, including `ref`.
+`appHeaderVariants` is exported. The height is `--onu-header-height` (3.5rem; 3.75rem on the shell). Other `<header>` props are passed through, including `ref`.
 
 ## Accessibility
 

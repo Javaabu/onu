@@ -35,10 +35,12 @@ interface ControlProps<D extends FilterDefinition, V extends FilterValue = Filte
   onChange: (value: V | undefined) => void
   id: string
   labelId: string
+  /** One-line controls (the inline query form): short multi-selects use the dropdown, not a row of checkboxes. */
+  compact?: boolean
 }
 
 /** Multi or single select. Short lists show checkboxes; long or searchable lists use a searchable popover. */
-function SelectControl({ definition, value, onChange, id, labelId }: ControlProps<SelectFilterDefinition>) {
+function SelectControl({ definition, value, onChange, id, labelId, compact }: ControlProps<SelectFilterDefinition>) {
   const { t } = useTranslation()
   const multiple = definition.multiple !== false
   const searchable = definition.searchable ?? definition.options.length > 7
@@ -55,7 +57,7 @@ function SelectControl({ definition, value, onChange, id, labelId }: ControlProp
     onChange(next.length ? next : undefined)
   }
 
-  if (!searchable && multiple && definition.options.length <= 6) {
+  if (!compact && !searchable && multiple && definition.options.length <= 6) {
     return (
       <div role="group" aria-labelledby={labelId} id={id} className="gap-x-4 gap-y-2 flex flex-wrap">
         {definition.options.map((option) => {

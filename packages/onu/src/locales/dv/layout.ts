@@ -62,4 +62,6 @@ export const layout = {
   statusPending: "މަޑުކުރަނީ",
   statusCurrent: "ކުރިއަށް ދަނީ",
   learnMore: "އިތުރަށް ބައްލަވާ",
+  apps: "އެޕްތައް",
+  switchApp: "އެޕް ބަދަލުކުރޭ",
 } satisfies Record<keyof typeof en, MessageDict[string]> & MessageDict

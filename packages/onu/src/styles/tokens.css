@@ -37,7 +37,8 @@
   --onu-chart-7: oklch(0.627 0.265 303.9);
   --onu-chart-8: oklch(0.645 0.246 16.439);
   --onu-radius: 0.625rem;
-  --onu-font-sans: "Inter Variable", "MV Waheed", Faruma, "Noto Sans Thaana Variable", ui-sans-serif, system-ui, sans-serif;
+  --onu-font-sans:
+    "Inter Variable", "MV Waheed", Faruma, "Noto Sans Thaana Variable", ui-sans-serif, system-ui, sans-serif;
   --onu-font-thaana: "MV Waheed", Faruma, "Noto Sans Thaana Variable", "Inter Variable", sans-serif;
   --onu-font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
   --onu-font-serif: "Source Serif 4 Variable", "MV Waheed", Georgia, serif;

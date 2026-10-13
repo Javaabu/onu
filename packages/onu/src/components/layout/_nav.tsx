@@ -15,6 +15,18 @@ export interface NavItem {
   icon?: string | React.ReactNode
   /** Count or node shown at the end, e.g. `12` or `<Badge>New</Badge>`. */
   badge?: React.ReactNode
+  /**
+   * How a numeric badge looks in `AppSidebar` on the shell: `brand` (default)
+   * is a brand-coloured pill for unread-like counts; `neutral` is a plain
+   * muted number for totals.
+   */
+  badgeTone?: "brand" | "neutral"
+  /**
+   * A colour for folders and labels (`AppSidebar`): tints a semantic icon
+   * (e.g. `icon: "folder"`), or shows a coloured dot when there is no icon.
+   * Decorative only; the label carries the meaning.
+   */
+  color?: string
   /** Force the active state. Otherwise derived from `currentHref`. */
   isActive?: boolean
   disabled?: boolean

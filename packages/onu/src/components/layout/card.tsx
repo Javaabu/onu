@@ -8,7 +8,8 @@ import { NavLink } from "./_nav"
 
 /** The shadcn card surface, as variants (R15.3). */
 export const cardVariants = cva(
-  "text-sm [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-card-foreground ring-1 ring-foreground/10 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+  // Ant's card: 24px padding, a 1px split line (no shadow), and a 56px header with its own bottom line.
+  "text-sm [--card-spacing:--spacing(6)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 has-[>[data-slot=card-header][data-bordered]]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-card-foreground ring-1 ring-border *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
   {
     variants: {
       variant: {
@@ -48,7 +49,8 @@ export interface CardProps
    * `description`, `actions` or `footer`). Default `true`: each direct child
    * (except images, which stay edge to edge) gets the card's content padding,
    * the same as `CardContent`, so composing with `CardHeader`/`CardContent`
-   * is unchanged. Set `false` for edge-to-edge content such as a table.
+   * is unchanged. Set `false` for edge-to-edge content such as a table: no
+   * padding at all (the content brings its own).
    */
   padded?: boolean
   classNames?: {
@@ -109,18 +111,25 @@ export function Card({
     )
 
   const header = hasHeader ? (
-    <CardHeader className={classNames?.header}>
+    <CardHeader
+      data-bordered=""
+      className={cn(
+        // Ant: a 56px header row with its own bottom line.
+        "min-h-14 py-2 group-data-[size=sm]/card:min-h-11 content-center items-center border-b",
+        classNames?.header,
+      )}
+    >
       {title ? (
         <Heading
           data-slot="card-title"
-          className={cn("text-base leading-snug font-medium group-data-[size=sm]/card:text-sm", classNames?.title)}
+          className={cn("text-base leading-normal font-semibold group-data-[size=sm]/card:text-sm", classNames?.title)}
         >
           {titleContent}
         </Heading>
       ) : null}
       {description ? <CardDescription className={classNames?.description}>{description}</CardDescription> : null}
       {actions ? (
-        <CardAction className={cn("gap-1 flex items-center", href && "relative z-10", classNames?.actions)}>
+        <CardAction className={cn("gap-1 flex items-center self-center", href && "relative z-10", classNames?.actions)}>
           {actions}
         </CardAction>
       ) : null}
@@ -140,7 +149,12 @@ export function Card({
     "data-size": size,
     "data-variant": variant ?? "default",
     "data-padded": padBare || undefined,
-    className: cn(cardVariants({ variant, interactive }), padBare && !wrapText && PADDED_CHILDREN, className),
+    className: cn(
+      cardVariants({ variant, interactive }),
+      padBare && !wrapText && PADDED_CHILDREN,
+      !composed && !padded && "gap-0 py-0",
+      className,
+    ),
     ...props,
   }
 

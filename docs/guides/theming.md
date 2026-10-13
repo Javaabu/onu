@@ -72,6 +72,23 @@ Charts draw areas and bars with a soft gradient in these colours by default, so 
 
 In Tailwind, use them as `bg-primary`, `text-muted-foreground`, `border-border`, `bg-success`, `fill-chart-3`, `rounded-lg`, `font-thaana`, and so on.
 
+# App shell and page layout
+
+The default app layout is Proton Mail's shell around Ant Design's content: [`AppLayout`](../layout-and-navigation/app-layout) paints the sidebar, the header and the frame on the **shell colour** and the page on a white panel with a rounded top-start corner; [`PageTitle`](../layout-and-navigation/page-title) is Ant's PageHeader band, [`ListingPage`](../listing-pages/listing-page) the ProTable card layout and [`StatTile`](../charts/stat-tile) the ChartCard.
+
+The shell reads these semantic tokens, with Proton's values as fallbacks when a theme does not set them:
+
+| Token | Used for | Fallback (light / dark) |
+|---|---|---|
+| `--shell`, `--shell-foreground` | Sidebar, header and frame; text on them | `#f5f4f2` / `#16141c`; `--foreground` |
+| `--shell-border` | The panel's top and start line, the quota meter line | `#e5e3e0` / `#343140` |
+| `--shell-field` | The header search field | `#ffffff` / `#292733` |
+| `--shell-hover`, `--shell-active` | Sidebar items and header buttons | warm greys at 20% / 35% (light), Carbon greys at 20% / 40% (dark) |
+| `--shell-weak` | The quota track, the account avatar tile | `#eae7e4` / `#3f3b4c` |
+| `--layout` | The panel with `background="layout"` (dashboards of cards) | `#f5f5f5` / `#141414` |
+
+For the previous look, use `<AppLayout variant="flat">`: the content fills the body, the header is bordered and the sidebar keeps the `--onu-sidebar` colours.
+
 # Scoped themes
 
 To theme part of a page, set tokens on an element together with the `data-onu-theme` attribute, so the derived colours are worked out again there:
