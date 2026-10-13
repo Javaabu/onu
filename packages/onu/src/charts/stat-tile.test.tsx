@@ -89,7 +89,11 @@ describe("StatTile", () => {
       />,
     )
     expect(container.querySelector('[data-slot="stat-tile-label"]')).toHaveClass("l-x")
-    expect(container.querySelector('[data-slot="stat-tile-value"]')).toHaveClass("v-x", "text-4xl")
+    expect(container.querySelector('[data-slot="stat-tile-value"]')).toHaveClass(
+      "v-x",
+      "text-3xl",
+      "@[20rem]/stat-tile:text-4xl",
+    )
     expect(container.querySelector('[data-slot="delta-indicator"]')).toHaveClass("d-x")
     expect(statTileVariants({ size: "sm" })).toContain("p-3")
   })

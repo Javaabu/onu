@@ -144,7 +144,7 @@ export function CustomizePanel({ full = false }: { full?: boolean }) {
           max={1.25}
           step={0.125}
           value={[settings.radius]}
-          onValueChange={([v]) => update({ radius: v ?? 0.625 })}
+          onValueChange={([v]) => update({ radius: v ?? 0.375 })}
         />
       </div>
       <Row label="Density">
@@ -181,7 +181,7 @@ export function CustomizePanel({ full = false }: { full?: boolean }) {
         variant="ghost"
         size="sm"
         className="w-full"
-        onClick={() => update({ dir: "auto", primary: "", radius: 0.625, density: "default", labelLayout: "stacked" })}
+        onClick={() => update({ dir: "auto", primary: "", radius: 0.375, density: "default", labelLayout: "stacked" })}
       >
         <Icon name="rotate-ccw" /> Reset
       </Button>

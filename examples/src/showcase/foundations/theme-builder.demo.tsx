@@ -41,7 +41,7 @@ function hexToOklch(hex: string): string {
 
 export default function ThemeBuilder() {
   const [hex, setHex] = React.useState("#1f7a4d")
-  const [radius, setRadius] = React.useState(0.625)
+  const [radius, setRadius] = React.useState(0.375)
   const primary = hexToOklch(hex)
   const css = `:root {\n  --onu-primary: ${primary};\n  --onu-radius: ${radius}rem;\n}`
 
@@ -68,7 +68,7 @@ export default function ThemeBuilder() {
             max={1.25}
             step={0.125}
             value={[radius]}
-            onValueChange={([v]) => setRadius(v ?? 0.625)}
+            onValueChange={([v]) => setRadius(v ?? 0.375)}
             aria-label="Radius"
           />
         </div>

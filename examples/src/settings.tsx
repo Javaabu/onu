@@ -16,14 +16,17 @@ const DEFAULTS: ShowcaseSettings = {
   density: "default",
   labelLayout: "stacked",
   primary: "",
-  radius: 0.625,
+  radius: 0.375,
 }
 
 const KEY = "onu-showcase-settings"
 
 function read(): ShowcaseSettings {
   try {
-    return { ...DEFAULTS, ...JSON.parse(localStorage.getItem(KEY) ?? "{}") }
+    const saved = JSON.parse(localStorage.getItem(KEY) ?? "{}") as Partial<ShowcaseSettings>
+    // 0.625 was the old default radius; treat it as "use the current default".
+    if (saved.radius === 0.625) delete saved.radius
+    return { ...DEFAULTS, ...saved }
   } catch {
     return DEFAULTS
   }

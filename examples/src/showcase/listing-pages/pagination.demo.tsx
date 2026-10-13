@@ -14,6 +14,7 @@ export default function PaginationDemo() {
     <DemoPage>
       <DemoSection title="Previous / Next with rows per page" className="block">
         <Pagination
+          numbered={false}
           page={page}
           perPage={perPage}
           total={312}

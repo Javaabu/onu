@@ -17,7 +17,7 @@ import { Sparkline, type SparklineProps } from "./sparkline"
 // Ant Design Pro's ChartCard: 20px 24px padding, a muted label row, a big regular-weight
 // figure, a 46px chart slot and a footer row under a split line.
 export const statTileVariants = cva(
-  "min-w-0 px-6 pt-5 pb-5 has-[>[data-slot=stat-tile-footer]]:pb-0 relative flex flex-col rounded-xl border border-border bg-card text-card-foreground outline-none",
+  "min-w-0 px-6 pt-5 pb-5 has-[>[data-slot=stat-tile-footer]]:pb-0 @container/stat-tile relative flex flex-col rounded-xl border border-border bg-card text-card-foreground outline-none",
   {
     variants: {
       size: {
@@ -36,8 +36,10 @@ export const statTileVariants = cva(
 
 const valueSizes = {
   sm: "text-xl",
-  default: "mt-1 text-[1.875rem] leading-[2.375rem]",
-  lg: "mt-1 text-4xl",
+  // Ant's 30px figure where it fits; narrower tiles (four across) step down so values like
+  // "MVR 86,500.00" stay on one line.
+  default: "mt-1 text-2xl leading-8 @[17rem]/stat-tile:text-[1.875rem] @[17rem]/stat-tile:leading-[2.375rem]",
+  lg: "mt-1 text-3xl @[20rem]/stat-tile:text-4xl",
 } as const
 
 export interface StatTileClassNames {
