@@ -17,10 +17,25 @@ export function TableOfContents({ className }: { className?: string }) {
 
   React.useEffect(() => {
     let frame = 0
-    const collectFrame = requestAnimationFrame(() => {
-      const nodes = document.querySelectorAll<HTMLElement>("#main-content [data-demo-section] > h2[id]")
-      setHeadings([...nodes].map((n) => ({ id: n.id, text: n.textContent ?? "" })))
-    })
+    let collectFrame = 0
+    const collect = () => {
+      cancelAnimationFrame(collectFrame)
+      collectFrame = requestAnimationFrame(() => {
+        const nodes = document.querySelectorAll<HTMLElement>("#main-content [data-demo-section] > h2[id]")
+        const next = [...nodes].map((n) => ({ id: n.id, text: n.textContent ?? "" }))
+        setHeadings((prev) =>
+          prev.length === next.length && prev.every((h, i) => h.id === next[i]!.id && h.text === next[i]!.text)
+            ? prev
+            : next,
+        )
+        onScroll()
+      })
+    }
+    collect()
+    // Demos load lazily (and can switch locale), so re-scan whenever the content changes.
+    const main = document.getElementById("main-content")
+    const observer = new MutationObserver(collect)
+    if (main) observer.observe(main, { childList: true, subtree: true, characterData: true })
     const onScroll = () => {
       cancelAnimationFrame(frame)
       frame = requestAnimationFrame(() => {
@@ -35,6 +50,7 @@ export function TableOfContents({ className }: { className?: string }) {
     const initial = window.setTimeout(onScroll, 50)
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => {
+      observer.disconnect()
       cancelAnimationFrame(collectFrame)
       window.clearTimeout(initial)
       cancelAnimationFrame(frame)

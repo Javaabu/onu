@@ -16,6 +16,18 @@ export async function applyVariant(page: Page, variant: Variant) {
   )
 }
 
+/**
+ * Waits until the route's lazily loaded content has mounted: the examples app sets
+ * `html[data-page-ready]` to the router path (`/#/components/x` → `/components/x`)
+ * once the demo, sample page or index has rendered, then for network idle so its
+ * own lazy parts (charts, maps, highlighters) have loaded too.
+ */
+export async function waitForPage(page: Page, route: string) {
+  const path = route.replace(/^\/?#/, "").replace(/#.*$/, "") || "/"
+  await page.waitForFunction((p) => document.documentElement.dataset.pageReady === p, path, { timeout: 30_000 })
+  await page.waitForLoadState("networkidle")
+}
+
 /** Positions and sizes of the chart parts that depend on fonts and container width. */
 function chartLayout(page: Page) {
   return page.evaluate(() =>
@@ -39,13 +51,13 @@ function chartLayout(page: Page) {
 export async function openWithFonts(page: Page, route: string) {
   await page.goto("about:blank")
   await page.goto("/#/")
-  await page.waitForLoadState("networkidle")
+  await waitForPage(page, "/#/")
   await page.evaluate(async () => {
     await Promise.all([...document.fonts].map((face) => face.load().catch(() => undefined)))
     await document.fonts.ready
   })
   await page.goto(route)
-  await page.waitForLoadState("networkidle")
+  await waitForPage(page, route)
 }
 
 /** Waits until chart layout (container sizes, axis text, legends) stops changing. */
