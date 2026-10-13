@@ -138,6 +138,10 @@
       "value": "oklch(0.809 0.004 67.8 / 35%)",
       "type": "color"
     },
+    "shell-weak": {
+      "value": "oklch(0.929 0.005 67.8)",
+      "type": "color"
+    },
     "layout": {
       "value": "oklch(0.97 0 0)",
       "type": "color"
@@ -362,6 +366,10 @@
     },
     "shell-active": {
       "value": "oklch(0.468 0.032 294.3 / 40%)",
+      "type": "color"
+    },
+    "shell-weak": {
+      "value": "oklch(0.363 0.029 295.7)",
       "type": "color"
     },
     "layout": {

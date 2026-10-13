@@ -90,7 +90,7 @@ Every token is a CSS variable you can set. The names follow shadcn/ui, prefixed 
 | Status | `--onu-destructive`, `--onu-success`, `--onu-warning`, `--onu-info` (each with `-foreground`) |
 | Charts | `--onu-chart-1` … `--onu-chart-8` (`--onu-chart-1` defaults to primary) |
 | Sidebar | `--onu-sidebar`, `--onu-sidebar-foreground`, `--onu-sidebar-primary`, `--onu-sidebar-accent`, `--onu-sidebar-border` |
-| App shell | `--onu-shell`, `--onu-shell-foreground`, `--onu-shell-border`, `--onu-shell-field`, `--onu-shell-hover`, `--onu-shell-active` (see [App shell](#app-shell)) |
+| App shell | `--onu-shell`, `--onu-shell-foreground`, `--onu-shell-border`, `--onu-shell-field`, `--onu-shell-hover`, `--onu-shell-active`, `--onu-shell-weak` (see [App shell tokens](#app-shell-tokens)) |
 | Layout grey | `--onu-layout` (Ant's `colorBgLayout`: the grey page behind dashboard cards) |
 | Preset colours | `--onu-preset-{blue,cyan,green,red,gold}` with `-border` and `-foreground` (see [Preset colours](#preset-colours)) |
 | Elevation | `--onu-shadow-popup` (the one shadow: menus, selects, popovers, dialogs) |
@@ -110,9 +110,9 @@ In Tailwind, use them as `bg-primary`, `text-muted-foreground`, `border-border`,
 
 Body text is 14px on a 22px line (`--onu-font-size`, `--onu-line-height`), Ant Design's base size; `text-sm` uses the same 22px line. Dhivehi text keeps its taller 1.75 line height. The `touch` density raises the body size to 16px.
 
-## App shell
+## App shell tokens
 
-The `--onu-shell*` tokens describe the area around the content panel (Proton's sidebar and header). Layout components use them; use them yourself as `bg-shell`, `text-shell-foreground`, `border-shell-border`, `bg-shell-field`, `hover:bg-shell-hover` and `bg-shell-active`.
+The `--onu-shell*` tokens describe the area around the content panel (Proton's sidebar and header). Layout components use them; use them yourself as `bg-shell`, `text-shell-foreground`, `border-shell-border`, `bg-shell-field`, `hover:bg-shell-hover`, `bg-shell-active` and `bg-shell-weak`.
 
 | Token | Light | Dark | Used for |
 |---|---|---|---|
@@ -122,6 +122,7 @@ The `--onu-shell*` tokens describe the area around the content panel (Proton's s
 | `--onu-shell-field` | `#ffffff` | `#292733` | Fields on the shell (the header search) |
 | `--onu-shell-hover` | `rgb(194 193 192 / 20%)` | `rgb(91 87 107 / 20%)` | Hovered nav items and header buttons |
 | `--onu-shell-active` | `rgb(194 192 190 / 35%)` | `rgb(91 87 107 / 40%)` | The current nav item |
+| `--onu-shell-weak` | `#eae7e4` | `#3f3b4c` | Weak fills on the shell: usage-meter tracks, avatar tiles |
 
 ## Preset colours
 
@@ -141,7 +142,7 @@ Each has `-border` and `-foreground` variants, e.g. `--onu-preset-green-border`.
 
 The default app layout is Proton Mail's shell around Ant Design's content: [`AppLayout`](../layout-and-navigation/app-layout) paints the sidebar, the header and the frame on the **shell colour** and the page on a white panel with a rounded top-start corner; [`PageTitle`](../layout-and-navigation/page-title) is Ant's PageHeader band, [`ListingPage`](../listing-pages/listing-page) the ProTable card layout and [`StatTile`](../charts/stat-tile) the ChartCard.
 
-The shell reads these semantic tokens, with Proton's values as fallbacks when a theme does not set them:
+The shell reads these semantic tokens. Onu's theme defines them from the `--onu-shell*` and `--onu-layout` tokens (see [App shell tokens](#app-shell-tokens)); the components also carry Proton's values as fallbacks:
 
 | Token | Used for | Fallback (light / dark) |
 |---|---|---|

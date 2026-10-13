@@ -50,6 +50,7 @@ describe("ProtonAnt tokens", () => {
     "shell-field",
     "shell-hover",
     "shell-active",
+    "shell-weak",
     "layout",
     ...["blue", "cyan", "green", "red", "gold"].flatMap((c) => [
       `preset-${c}`,
