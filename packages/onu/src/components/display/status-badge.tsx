@@ -10,22 +10,27 @@ import { useTranslation } from "../../providers/onu-provider"
 
 export type StatusTone = "success" | "warning" | "danger" | "info" | "neutral" | "pending"
 
+/**
+ * Ant Design's bordered preset-colour tags: info blue (submitted), pending cyan
+ * (in review), success green (approved), danger red (rejected), warning gold
+ * (suspended), and the default grey tag for neutral.
+ */
 export const statusBadgeVariants = cva(
-  "gap-1 font-medium inline-flex w-fit shrink-0 items-center rounded-full border whitespace-nowrap [&>svg]:shrink-0",
+  "gap-1 font-normal inline-flex w-fit shrink-0 items-center rounded-sm border whitespace-nowrap [&>svg]:shrink-0",
   {
     variants: {
       tone: {
-        success: "border-success/30 bg-success/10 text-success",
-        warning: "border-warning/40 bg-warning/15 text-foreground [&>svg]:text-warning",
-        danger: "border-destructive/30 bg-destructive/10 text-destructive",
-        info: "border-info/30 bg-info/10 text-info",
-        neutral: "border-border bg-muted text-muted-foreground",
-        pending: "border-primary/30 bg-primary-subtle text-primary-subtle-foreground",
+        success: "border-preset-green-border bg-preset-green text-preset-green-foreground",
+        warning: "border-preset-gold-border bg-preset-gold text-preset-gold-foreground",
+        danger: "border-preset-red-border bg-preset-red text-preset-red-foreground",
+        info: "border-preset-blue-border bg-preset-blue text-preset-blue-foreground",
+        neutral: "border-input bg-muted text-foreground",
+        pending: "border-preset-cyan-border bg-preset-cyan text-preset-cyan-foreground",
       },
       size: {
         sm: "h-5 px-1.5 text-xs [&>svg]:size-3",
-        md: "h-6 px-2 text-xs [&>svg]:size-3.5",
-        lg: "h-7 px-2.5 text-sm [&>svg]:size-4",
+        md: "h-5.5 px-1.75 text-xs [&>svg]:size-3",
+        lg: "h-7 px-2.5 text-sm [&>svg]:size-3.5",
       },
     },
     defaultVariants: { tone: "neutral", size: "md" },
@@ -107,7 +112,10 @@ export function StatusBadge({
       {...props}
     >
       {iconValue === false || iconValue === null ? null : typeof iconValue === "string" ? (
-        <Icon name={iconValue} className={tone === "neutral" ? "size-2! fill-current" : undefined} />
+        <Icon
+          name={iconValue}
+          className={tone === "neutral" ? "size-2! fill-current text-muted-foreground" : undefined}
+        />
       ) : (
         iconValue
       )}

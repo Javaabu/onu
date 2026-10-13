@@ -18,8 +18,8 @@ import { groupOptions, type ChoiceOption } from "./options"
 /** The bordered box around a select-like trigger (exported for custom pickers). */
 export const choiceFieldVariants = cva(
   [
-    "group/choice-field min-w-0 gap-1 text-sm relative flex w-full flex-wrap items-center rounded-lg border border-input bg-transparent transition-colors dark:bg-input/30",
-    "has-[[data-slot=choice-trigger]:focus-visible]:border-ring has-[[data-slot=choice-trigger]:focus-visible]:ring-3 has-[[data-slot=choice-trigger]:focus-visible]:ring-ring/50",
+    "group/choice-field min-w-0 gap-1 text-sm relative flex w-full flex-wrap items-center rounded-lg border border-input bg-card transition-colors hover:border-primary-5",
+    "has-[[data-slot=choice-trigger]:focus-visible]:border-primary has-[[data-slot=choice-trigger]:focus-visible]:ring-2 has-[[data-slot=choice-trigger]:focus-visible]:ring-primary/20",
     "has-[[data-slot=choice-trigger][aria-invalid=true]]:border-destructive has-[[data-slot=choice-trigger][aria-invalid=true]]:ring-3 has-[[data-slot=choice-trigger][aria-invalid=true]]:ring-destructive/20 dark:has-[[data-slot=choice-trigger][aria-invalid=true]]:ring-destructive/40",
     "touch:min-h-11 data-disabled:cursor-not-allowed data-disabled:opacity-50",
   ],

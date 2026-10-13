@@ -27,7 +27,7 @@ export function PerPage({
   options = DEFAULT_PER_PAGE_OPTIONS,
   label,
   disabled,
-  size = "sm",
+  size = "default",
   className,
   classNames,
   ...props

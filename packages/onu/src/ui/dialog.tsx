@@ -2,6 +2,7 @@
 
 // Vendored from shadcn/ui (radix base, nova style, RTL) by scripts/sync-shadcn.mjs.
 // Onu changes are marked with "onu:" comments; keep them when re-syncing.
+// onu: Ant popups: 8px corners (rounded-xl), a colorBorderSecondary hairline (ring-border) and the subtle popup shadow (shadow-popup).
 
 import * as React from "react"
 import { cn } from "../lib/utils"
@@ -64,7 +65,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "bg-popover text-popover-foreground data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/10 grid max-w-[calc(100%-2rem)] gap-4 rounded-xl p-4 text-sm ring-1 duration-100 sm:max-w-sm fixed top-1/2 start-1/2 z-50 w-full -translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 outline-none",
+          "bg-popover text-popover-foreground data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-border grid max-w-[calc(100%-2rem)] gap-4 rounded-xl p-4 text-sm shadow-popup ring-1 duration-100 sm:max-w-sm fixed top-1/2 start-1/2 z-50 w-full -translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 outline-none",
           className
         )}
         {...props}

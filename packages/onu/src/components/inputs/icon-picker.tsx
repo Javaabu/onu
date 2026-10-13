@@ -253,8 +253,8 @@ export function IconPicker({
             {...control}
             aria-haspopup="dialog"
             className={cn(
-              "h-8 gap-2 ps-2 pe-2.5 text-sm min-w-36 inline-flex items-center rounded-lg border border-input bg-transparent transition-colors outline-none dark:bg-input/30",
-              "hover:bg-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
+              "h-8 gap-2 ps-2 pe-2.5 text-sm min-w-36 inline-flex items-center rounded-lg border border-input bg-card transition-colors outline-none",
+              "hover:border-primary-5 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20",
               "disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20",
               "touch:h-11",
               classNames?.trigger,
@@ -300,7 +300,7 @@ export function IconPicker({
               }}
               onKeyDown={onKeyDown}
               className={cn(
-                "h-8 ps-8 pe-2 text-sm touch:h-11 w-full rounded-lg border border-input bg-transparent outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30",
+                "h-8 ps-8 pe-2 text-sm touch:h-11 w-full rounded-lg border border-input bg-card outline-none placeholder:text-muted-foreground hover:border-primary-5 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20",
                 classNames?.search,
               )}
             />

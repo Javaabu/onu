@@ -114,7 +114,7 @@ function Calendar({
             : "[&:first-child[data-selected=true]_button]:rounded-s-(--cell-radius)",
           defaultClassNames.day
         ),
-        // onu: ranges and today are tinted with the brand colour.
+        // onu: ranges are tinted with the brand colour; today is outlined in it (Ant).
         range_start: cn(
           "relative isolate z-0 rounded-s-(--cell-radius) bg-primary-subtle after:absolute after:inset-y-0 after:end-0 after:w-4 after:bg-primary-subtle",
           defaultClassNames.range_start
@@ -125,7 +125,7 @@ function Calendar({
           defaultClassNames.range_end
         ),
         today: cn(
-          "rounded-(--cell-radius) bg-accent text-accent-foreground data-[selected=true]:rounded-none",
+          "rounded-(--cell-radius) text-foreground ring-1 ring-primary ring-inset data-[selected=true]:rounded-none data-[selected=true]:ring-0",
           defaultClassNames.today
         ),
         outside: cn(

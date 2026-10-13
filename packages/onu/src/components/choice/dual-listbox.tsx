@@ -65,7 +65,7 @@ function FilterInput({
         placeholder={label}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          "h-8 ps-8 pe-2.5 text-sm touch:h-11 w-full rounded-lg border border-input bg-transparent outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50 dark:bg-input/30",
+          "h-8 ps-8 pe-2.5 text-sm touch:h-11 w-full rounded-lg border border-input bg-card outline-none placeholder:text-muted-foreground hover:border-primary-5 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 disabled:opacity-50 dark:bg-input/30",
           className,
         )}
         {...fieldProps}
@@ -183,7 +183,7 @@ function Pane({
         tabIndex={disabled ? -1 : 0}
         onKeyDown={onKeyDown}
         className={cn(
-          "h-56 p-1 overflow-y-auto rounded-lg border border-input bg-transparent outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30",
+          "h-56 p-1 overflow-y-auto rounded-lg border border-input bg-card outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20",
           disabled && "opacity-50",
           classNames?.list,
         )}

@@ -58,19 +58,31 @@ export function FilterTabs({
       {...props}
     >
       <div className="-mx-1 px-1 no-scrollbar overflow-x-auto">
-        <TabsList variant={variant} aria-label={t("listing.filterTabs")} className={cn("w-max", classNames?.list)}>
+        <TabsList
+          variant={variant}
+          aria-label={t("listing.filterTabs")}
+          className={cn("w-max min-w-full", classNames?.list)}
+        >
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
               disabled={tab.disabled}
               aria-controls={controls}
-              className={cn("gap-1.5 touch:min-h-11", classNames?.tab)}
+              className={cn("group/filter-tab gap-2 touch:min-h-11", classNames?.tab)}
             >
               {tab.count !== undefined ? `${tab.label} ` : tab.label}
               {tab.count !== undefined ? (
                 <>
-                  <Badge variant="secondary" className={cn("tabular-nums", classNames?.count)} aria-hidden="true">
+                  <Badge
+                    variant="secondary"
+                    // Ant-style count pill: grey, and in the brand colour on the active tab.
+                    className={cn(
+                      "min-w-5 px-1.5 font-normal group-data-[state=active]/filter-tab:font-semibold tabular-nums group-data-[state=active]/filter-tab:bg-primary group-data-[state=active]/filter-tab:text-primary-foreground",
+                      classNames?.count,
+                    )}
+                    aria-hidden="true"
+                  >
                     {format.format(tab.count)}
                   </Badge>
                   <span className="sr-only">{`(${format.format(tab.count)})`}</span>

@@ -26,7 +26,7 @@ const CENTRED_FROM_SM =
   "sm:inset-auto sm:top-1/2 sm:start-1/2 sm:-translate-x-1/2 sm:rtl:translate-x-1/2 sm:-translate-y-1/2 sm:w-[calc(100%-2rem)] sm:h-auto sm:max-h-[calc(100dvh-2rem)] sm:rounded-xl sm:data-open:zoom-in-95 sm:data-closed:zoom-out-95 sm:data-open:slide-in-from-bottom-0 sm:data-closed:slide-out-to-bottom-0"
 
 export const modalContentVariants = cva(
-  "group/modal text-sm shadow-lg fixed z-50 flex flex-col overflow-hidden bg-popover text-popover-foreground ring-1 ring-foreground/10 duration-150 outline-none data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+  "group/modal text-sm fixed z-50 flex flex-col overflow-hidden bg-popover text-popover-foreground shadow-popup ring-1 ring-border duration-150 outline-none data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
   {
     variants: {
       size: {

@@ -12,7 +12,7 @@ export const fieldsetVariants = cva("min-w-0 gap-4 grid", {
   variants: {
     variant: {
       plain: "",
-      card: "p-4 sm:p-5 rounded-xl border border-border bg-card text-card-foreground",
+      card: "p-4 sm:p-6 rounded-xl border border-border bg-card text-card-foreground",
       separated: "pt-6 first:pt-0 border-t border-border first:border-t-0",
     },
   },

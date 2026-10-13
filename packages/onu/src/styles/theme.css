@@ -9,7 +9,8 @@
  * re-brands hovers, selected items, borders and the sidebar too, not just buttons.
  * The neutral starting points are --onu-neutral-* (from tokens.json); the mix
  * strengths are the --tint-* variables below (a percentage of primary).
- *   - --onu-tint scales every mix: 100% (default), 50% for half, 0% for plain neutrals.
+ *   - --onu-tint scales every mix: 0% (the default, from tokens.json: plain Ant greys),
+ *     50% for half, 100% for the full brand tint.
  *     `data-onu-tint="none"` on any element does the same as --onu-tint: 0%.
  *   - Setting a token itself (e.g. --onu-accent) replaces the tinted value.
  * Mixing is in oklab: oklch mixing swings the hue of near-greys.
@@ -25,10 +26,24 @@
 [data-theme="dark"] {
   --primary: var(--onu-primary);
   --primary-foreground: var(--onu-primary-foreground, oklch(0.985 0 0));
-  --primary-hover: color-mix(in oklab, var(--primary), black 12%);
-  --primary-active: color-mix(in oklab, var(--primary), black 20%);
-  --primary-subtle: color-mix(in oklab, var(--primary) 12%, var(--background));
-  --primary-subtle-foreground: color-mix(in oklab, var(--primary), var(--foreground) 35%);
+  --primary-hover: color-mix(in oklab, var(--primary), black 10%);
+  --primary-active: var(--primary-7);
+  --primary-subtle: var(--primary-1);
+  --primary-subtle-foreground: var(--primary-8);
+
+  /*
+   * Ant-style colour steps from the brand (1–5 towards the background, 6 = primary,
+   * 7–8 deeper): 1 selected rows and tinted surfaces, 3 tinted borders, 5 hovered
+   * field and default-button borders, 7 link text, 8 text on tinted surfaces.
+   */
+  --primary-1: color-mix(in oklab, var(--primary) 10%, var(--background));
+  --primary-2: color-mix(in oklab, var(--primary) 22%, var(--background));
+  --primary-3: color-mix(in oklab, var(--primary) 40%, var(--background));
+  --primary-4: color-mix(in oklab, var(--primary) 60%, var(--background));
+  --primary-5: color-mix(in oklab, var(--primary) 80%, var(--background));
+  --primary-6: var(--primary);
+  --primary-7: color-mix(in oklab, var(--primary) 86%, black);
+  --primary-8: color-mix(in oklab, var(--primary) 70%, black);
 
   --background: var(--onu-background);
   --foreground: var(--onu-foreground);
@@ -166,6 +181,41 @@
   );
   --sidebar-ring: var(--ring);
 
+  /* App shell (Proton): the sidebar and header around the content panel. */
+  --shell: var(--onu-shell);
+  --shell-foreground: var(--onu-shell-foreground);
+  --shell-border: var(--onu-shell-border);
+  --shell-field: var(--onu-shell-field);
+  --shell-hover: var(--onu-shell-hover);
+  --shell-active: var(--onu-shell-active);
+  /* The grey page behind dashboard cards (Ant colorBgLayout). */
+  --layout: var(--onu-layout);
+
+  /* Ant preset colours for tags and status badges (tinted background, border, AA text). */
+  --preset-blue: var(--onu-preset-blue);
+  --preset-blue-border: var(--onu-preset-blue-border);
+  --preset-blue-foreground: var(--onu-preset-blue-foreground);
+  --preset-cyan: var(--onu-preset-cyan);
+  --preset-cyan-border: var(--onu-preset-cyan-border);
+  --preset-cyan-foreground: var(--onu-preset-cyan-foreground);
+  --preset-green: var(--onu-preset-green);
+  --preset-green-border: var(--onu-preset-green-border);
+  --preset-green-foreground: var(--onu-preset-green-foreground);
+  --preset-red: var(--onu-preset-red);
+  --preset-red-border: var(--onu-preset-red-border);
+  --preset-red-foreground: var(--onu-preset-red-foreground);
+  --preset-gold: var(--onu-preset-gold);
+  --preset-gold-border: var(--onu-preset-gold-border);
+  --preset-gold-foreground: var(--onu-preset-gold-foreground);
+
+  /* Elevation: flat surfaces with borders; only popups (menus, popovers, dialogs) cast a subtle shadow. */
+  --popup-shadow: var(
+    --onu-shadow-popup,
+    0 6px 16px 0 rgb(0 0 0 / 8%),
+    0 3px 6px -4px rgb(0 0 0 / 12%),
+    0 9px 28px 8px rgb(0 0 0 / 5%)
+  );
+
   --radius: var(--onu-radius);
 
   /* FontAwesome duotone follows the theme (R6.4). */
@@ -194,8 +244,19 @@
   --primary: var(--onu-primary-dark, color-mix(in oklab, var(--onu-primary), white 18%));
   --primary-hover: color-mix(in oklab, var(--primary), white 10%);
   --primary-active: color-mix(in oklab, var(--primary), white 18%);
-  /* Dark cards and the sidebar are lighter than the page, so the subtle tint needs more primary to show on them. */
-  --primary-subtle: color-mix(in oklab, var(--primary) 20%, var(--background));
+  --primary-subtle-foreground: var(--primary-7);
+  /* Dark surfaces need more primary for a tint to show; text steps go lighter, not darker. */
+  --primary-1: color-mix(in oklab, var(--primary) 16%, var(--background));
+  --primary-2: color-mix(in oklab, var(--primary) 26%, var(--background));
+  --primary-3: color-mix(in oklab, var(--primary) 42%, var(--background));
+  --primary-7: color-mix(in oklab, var(--primary) 80%, white);
+  --primary-8: color-mix(in oklab, var(--primary) 62%, white);
+  --popup-shadow: var(
+    --onu-shadow-popup,
+    0 6px 16px 0 rgb(0 0 0 / 32%),
+    0 3px 6px -4px rgb(0 0 0 / 48%),
+    0 9px 28px 8px rgb(0 0 0 / 20%)
+  );
 }
 
 @supports (color: oklch(from red l c h)) {
@@ -288,5 +349,6 @@
 :root[data-density="touch"],
 [data-density="touch"] {
   --spacing: var(--onu-density-touch);
+  --onu-font-size: 1rem;
   font-size: 1.0625rem;
 }
