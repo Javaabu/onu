@@ -65,9 +65,9 @@ export const dataTableVariants = cva("", {
     striped: { true: "[&_tbody_tr:nth-child(even)]:bg-muted/30", false: "" },
     stickyHeader: { true: "[&_thead]:top-0 [&_thead]:sticky [&_thead]:z-10 [&_thead]:bg-background", false: "" },
     density: {
-      compact: "[&_td]:py-1 [&_th]:h-8",
+      compact: "[&_td]:py-2 [&_th]:py-2 [&_td]:px-2 [&_th]:px-2",
       default: "",
-      comfortable: "[&_td]:py-3 [&_th]:h-12",
+      comfortable: "[&_td]:py-4 [&_th]:py-4",
     },
   },
   defaultVariants: { striped: false, stickyHeader: false, density: "default" },
@@ -370,14 +370,14 @@ export function DataTable<T extends RowData>({
                     type="button"
                     onClick={() => state.toggleSort(column.id)}
                     className={cn(
-                      "-mx-1.5 px-1.5 gap-1 h-7 touch:min-h-11 font-medium inline-flex items-center rounded-md outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50",
+                      "-mx-1.5 px-1.5 gap-1.5 h-7 touch:min-h-11 font-semibold inline-flex items-center rounded-md transition-colors outline-none hover:bg-secondary focus-visible:ring-3 focus-visible:ring-ring/50",
                       (column.numeric || column.align === "end") && "flex-row-reverse",
                     )}
                   >
                     {column.headerContent ?? column.header}
                     <Icon
                       name={sorted === "asc" ? "sort-asc" : sorted === "desc" ? "sort-desc" : "sort"}
-                      className={cn("size-3.5", !sorted && "opacity-40")}
+                      className={cn("size-3.5", sorted ? "text-primary" : "text-muted-foreground opacity-60")}
                       data-sorted={sorted || undefined}
                     />
                   </button>
@@ -491,7 +491,7 @@ export function DataTable<T extends RowData>({
                 key={r.id}
                 data-state={selected ? "selected" : undefined}
                 className={cn(
-                  "p-4 gap-3 grid rounded-xl border bg-card text-card-foreground data-[state=selected]:border-primary/50 data-[state=selected]:bg-primary/5",
+                  "p-4 gap-3 grid rounded-xl border bg-card text-card-foreground data-[state=selected]:border-primary-3 data-[state=selected]:bg-primary-1",
                   clickable && "cursor-pointer",
                   classNames?.card,
                 )}
@@ -534,11 +534,12 @@ export function DataTable<T extends RowData>({
       ) : null}
       {cards ? cardsToolbar : null}
       {emptyEl ? (
-        <div className={cn(!cards && "rounded-lg border")}>{emptyEl}</div>
+        <div className={cn(!cards && "rounded-xl border")}>{emptyEl}</div>
       ) : cards ? (
         cardsEl
       ) : (
-        <div className="overflow-hidden rounded-lg border">{tableEl}</div>
+        // Ant table: no outer frame, the grey header's top corners rounded, a line under the last row.
+        <div className="overflow-hidden rounded-t-xl border-b">{tableEl}</div>
       )}
       {showPagination && !(empty_ && !state.isFiltered && state.page === 1) ? (
         <Pagination

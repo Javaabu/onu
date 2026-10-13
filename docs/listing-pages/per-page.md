@@ -20,7 +20,7 @@ import { PerPage } from "@javaabu/onu"
 | `onValueChange` | `(perPage) => void`                 |                     |                                                |
 | `options`       | `number[]`                          | `[10, 25, 50, 100]` |                                                |
 | `label`         | `ReactNode \| null`                 | "Rows per page"     | `null` hides it visually (it stays the name)   |
-| `size`          | `"sm" \| "default"`                 | `"sm"`              |                                                |
+| `size`          | `"sm" \| "default"`                 | `"default"`         | 32px (`default`, Ant's page-size changer) or 28px |
 | `disabled`      | `boolean`                           |                     |                                                |
 | `classNames`    | `{ root, label, trigger, content }` |                     |                                                |
 

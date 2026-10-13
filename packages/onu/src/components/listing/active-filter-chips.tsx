@@ -115,7 +115,7 @@ export function ActiveFilterChips({
               key={chip.key}
               data-slot="filter-chip"
               className={cn(
-                "gap-1 ps-2.5 pe-1 h-7 touch:h-11 text-sm inline-flex max-w-full items-center rounded-full border bg-muted/50",
+                "gap-1 ps-2 pe-0.5 h-6 touch:h-11 text-sm inline-flex max-w-full items-center rounded-sm border border-primary-3 bg-primary-1",
                 classNames?.chip,
               )}
             >
@@ -128,7 +128,7 @@ export function ActiveFilterChips({
                 aria-label={t("listing.removeFilter", { filter: full })}
                 onClick={() => remove(chip.key, index)}
                 className={cn(
-                  "size-5 touch:size-9 inline-flex shrink-0 items-center justify-center rounded-full text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
+                  "size-5 touch:size-9 inline-flex shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-none hover:bg-primary-2 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
                   classNames?.remove,
                 )}
               >

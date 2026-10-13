@@ -6,7 +6,7 @@ import { cn } from "../../lib/utils"
 export const formContainerVariants = cva("min-w-0 @container/form-container mx-auto w-full", {
   variants: {
     variant: {
-      card: "shadow-xs rounded-xl bg-card text-card-foreground ring-1 ring-foreground/10",
+      card: "rounded-xl bg-card text-card-foreground ring-1 ring-border",
       plain: "",
     },
     width: {

@@ -13,8 +13,8 @@ import { RadioGroupStyleContext, type RadioSize, type RadioVariant } from "./_ra
 export const radioCardVariants = cva(
   [
     "group/radio-card min-w-0 gap-3 relative flex w-full items-start rounded-lg border border-border bg-card text-start text-card-foreground transition-colors outline-none",
-    "hover:bg-muted/50 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
-    "data-[state=checked]:border-primary data-[state=checked]:bg-primary/5 data-[state=checked]:ring-1 data-[state=checked]:ring-primary",
+    "hover:border-primary-5 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
+    "data-[state=checked]:border-primary data-[state=checked]:bg-primary-1 data-[state=checked]:ring-1 data-[state=checked]:ring-primary",
     "disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive",
   ],
   {
@@ -49,7 +49,7 @@ function Indicator({ className }: { className?: string }) {
       aria-hidden="true"
       data-slot="radio-indicator"
       className={cn(
-        "size-4 flex shrink-0 items-center justify-center rounded-full border border-input dark:bg-input/30",
+        "size-4 flex shrink-0 items-center justify-center rounded-full border border-input bg-card",
         "group-data-[state=checked]/radio-card:border-primary group-data-[state=checked]/radio-card:bg-primary",
         className,
       )}

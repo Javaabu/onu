@@ -3,7 +3,7 @@ title: StatusBadge
 sidebar_position: 2
 ---
 
-A status pill that always pairs colour with an icon and text, so colour is never the only signal (R14.6). Styled like shadcn's `Badge` with semantic tones.
+A status label that always pairs colour with an icon and text, so colour is never the only signal (R14.6). It looks like Ant Design's bordered preset-colour tags: a tinted fill, a matching border, AA text and 4px corners.
 
 ```tsx
 import { StatusBadge } from "@javaabu/onu"
@@ -14,14 +14,16 @@ import { StatusBadge } from "@javaabu/onu"
 
 ## Tones
 
-| Tone      | Icon      | Default label |
-| --------- | --------- | ------------- |
-| `success` | `success` | Success       |
-| `warning` | `warning` | Warning       |
-| `danger`  | `error`   | Error         |
-| `info`    | `info`    | Info          |
-| `neutral` | `dot`     | Neutral       |
-| `pending` | `clock`   | Pending       |
+| Tone      | Icon      | Default label | Colour                      | Typical status        |
+| --------- | --------- | ------------- | --------------------------- | --------------------- |
+| `success` | `success` | Success       | Green (`--onu-preset-green`) | Approved, active      |
+| `warning` | `warning` | Warning       | Gold (`--onu-preset-gold`)   | Suspended, expiring   |
+| `danger`  | `error`   | Error         | Red (`--onu-preset-red`)     | Rejected, failed      |
+| `info`    | `info`    | Info          | Blue (`--onu-preset-blue`)   | Submitted, new        |
+| `neutral` | `dot`     | Neutral       | Grey (default tag)          | Draft, unassigned     |
+| `pending` | `clock`   | Pending       | Cyan (`--onu-preset-cyan`)   | In review, processing |
+
+The colours are tokens, so a project can retune them; see [Theming](../guides/theming#preset-colours).
 
 ## Custom statuses
 

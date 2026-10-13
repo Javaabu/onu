@@ -18,6 +18,9 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--onu-font-sans);
+  /* Ant's 14px / 22px body text (tokens.json typography). */
+  font-size: var(--onu-font-size);
+  line-height: var(--onu-line-height);
   font-feature-settings: "cv11", "ss01";
   -webkit-font-smoothing: antialiased;
 }

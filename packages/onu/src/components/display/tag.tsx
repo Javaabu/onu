@@ -7,22 +7,34 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 
+/**
+ * Ant Design tags: 22px, 4px corners, a hairline border and 12px text. `default` is
+ * Ant's grey tag, `primary` the brand-tinted one, `outline` a plain bordered tag.
+ * `color` picks one of Ant's preset colours instead.
+ */
 export const tagVariants = cva(
-  "group/tag gap-1 font-medium inline-flex max-w-full shrink-0 items-center rounded-md border transition-colors has-[[data-slot=tag-label]:focus-visible]:ring-3 has-[[data-slot=tag-label]:focus-visible]:ring-ring/50 data-disabled:opacity-50",
+  "group/tag gap-1 font-normal inline-flex max-w-full shrink-0 items-center rounded-sm border transition-colors has-[[data-slot=tag-label]:focus-visible]:ring-3 has-[[data-slot=tag-label]:focus-visible]:ring-ring/50 data-disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "border-transparent bg-secondary text-secondary-foreground",
-        primary: "border-transparent bg-primary-subtle text-primary-subtle-foreground",
-        outline: "border-border bg-background text-foreground",
+        default: "border-input bg-muted text-foreground",
+        primary: "border-primary-3 bg-primary-1 text-primary-subtle-foreground",
+        outline: "border-input bg-card text-foreground",
+      },
+      color: {
+        blue: "border-preset-blue-border bg-preset-blue text-preset-blue-foreground",
+        cyan: "border-preset-cyan-border bg-preset-cyan text-preset-cyan-foreground",
+        green: "border-preset-green-border bg-preset-green text-preset-green-foreground",
+        red: "border-preset-red-border bg-preset-red text-preset-red-foreground",
+        gold: "border-preset-gold-border bg-preset-gold text-preset-gold-foreground",
       },
       size: {
         sm: "h-5 px-1.5 text-xs [&_svg]:size-3",
-        md: "h-6 px-2 text-xs [&_svg]:size-3.5",
-        lg: "h-8 px-2.5 text-sm [&_svg]:size-4",
+        md: "h-5.5 px-1.75 text-xs [&_svg]:size-3",
+        lg: "h-7 px-2.5 text-sm [&_svg]:size-3.5",
       },
       interactive: {
-        true: "hover:bg-accent hover:text-accent-foreground",
+        true: "hover:border-primary-5 hover:text-primary-7",
         false: "",
       },
     },
@@ -30,8 +42,15 @@ export const tagVariants = cva(
   },
 )
 
+/** Ant Design preset colours for `Tag`. */
+export type TagColor = "blue" | "cyan" | "green" | "red" | "gold"
+
 export interface TagProps
-  extends Omit<React.ComponentProps<"span">, "onClick">, Omit<VariantProps<typeof tagVariants>, "interactive"> {
+  extends
+    Omit<React.ComponentProps<"span">, "onClick" | "color">,
+    Omit<VariantProps<typeof tagVariants>, "interactive" | "color"> {
+  /** One of Ant Design's preset colours (blue, cyan, green, red, gold). Overrides `variant`'s colours. */
+  color?: TagColor
   /** Makes the tag a button. */
   onClick?: React.MouseEventHandler<HTMLButtonElement>
   /** Makes the tag a link (rendered with a plain `<a>`; use `asChild`-style composition for router links). */
@@ -59,6 +78,7 @@ function textOf(node: React.ReactNode): string {
 export function Tag({
   children,
   variant,
+  color,
   size,
   onClick,
   href,
@@ -126,11 +146,12 @@ export function Tag({
     <span
       data-slot="tag"
       data-variant={variant ?? "default"}
+      data-color={color}
       data-size={size ?? "md"}
       data-selected={selected || undefined}
       data-disabled={disabled || undefined}
       className={cn(
-        tagVariants({ variant, size, interactive: interactive && !disabled }),
+        tagVariants({ variant, color, size, interactive: interactive && !disabled }),
         selected && "border-primary bg-primary text-primary-foreground hover:bg-primary/90",
         onRemove && "pe-0.5",
         className,

@@ -154,8 +154,8 @@ export function TagsInput({
             }
           }}
           className={cn(
-            "min-h-8 gap-1 px-1.5 py-1 text-sm flex w-full flex-wrap items-center rounded-lg border border-input bg-transparent transition-colors dark:bg-input/30",
-            "focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50",
+            "min-h-8 gap-1 px-1.5 py-1 text-sm flex w-full flex-wrap items-center rounded-lg border border-input bg-card transition-colors hover:border-primary-5",
+            "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20",
             "data-invalid:border-destructive data-invalid:ring-3 data-invalid:ring-destructive/20 dark:data-invalid:ring-destructive/40",
             "data-disabled:cursor-not-allowed data-disabled:bg-input/50 data-disabled:opacity-50",
             "touch:min-h-11",

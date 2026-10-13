@@ -32,7 +32,46 @@ describe("brand tint", () => {
     expect(block('[data-theme="dark"]')).toMatch(new RegExp(`--tint-${name}: \\d+%;`))
   })
 
+  it("is off by default (plain Ant greys)", () => {
+    expect(tokens).toMatch(/:root \{[^}]*--onu-tint: 0%;/)
+  })
+
   it("has an attribute to opt out", () => {
     expect(theme).toMatch(/\[data-onu-tint="none"\] \{\s*--onu-tint: 0%;/)
+  })
+})
+
+describe("ProtonAnt tokens", () => {
+  const darkTokens = tokens.slice(tokens.indexOf(":root.dark"))
+  const names = [
+    "shell",
+    "shell-foreground",
+    "shell-border",
+    "shell-field",
+    "shell-hover",
+    "shell-active",
+    "layout",
+    ...["blue", "cyan", "green", "red", "gold"].flatMap((c) => [
+      `preset-${c}`,
+      `preset-${c}-border`,
+      `preset-${c}-foreground`,
+    ]),
+  ]
+
+  it.each(names)("defines --onu-%s for light and dark and maps it to a theme variable", (name) => {
+    expect(tokens).toContain(`--onu-${name}: oklch(`)
+    expect(darkTokens).toContain(`--onu-${name}: oklch(`)
+    expect(theme).toContain(`--${name}: var(--onu-${name});`)
+  })
+
+  it("derives Ant's colour steps 1–8 from primary", () => {
+    for (let step = 1; step <= 8; step++) expect(theme).toMatch(new RegExp(`--primary-${step}: `))
+    expect(theme).toContain("--primary-subtle: var(--primary-1);")
+  })
+
+  it("uses 14px text, a 6px radius and the brand purple by default", () => {
+    expect(tokens).toContain("--onu-font-size: 0.875rem;")
+    expect(tokens).toContain("--onu-radius: 0.375rem;")
+    expect(tokens).toContain("--onu-primary: oklch(0.562 0.251 283.7);")
   })
 })

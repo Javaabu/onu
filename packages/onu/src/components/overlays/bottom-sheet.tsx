@@ -21,7 +21,7 @@ import { useControllableState } from "./_use-controllable-state"
 import { useRestoreFocus } from "./_use-restore-focus"
 
 export const bottomSheetVariants = cva(
-  "group/bottom-sheet inset-x-0 bottom-0 text-sm shadow-lg fixed z-50 mx-auto flex flex-col rounded-t-2xl bg-popover text-popover-foreground ring-1 ring-foreground/10 outline-none",
+  "group/bottom-sheet inset-x-0 bottom-0 text-sm fixed z-50 mx-auto flex flex-col rounded-t-2xl bg-popover text-popover-foreground shadow-popup ring-1 ring-border outline-none",
   {
     variants: {
       /** Maximum width on wider screens; on phones the sheet is always full width. */

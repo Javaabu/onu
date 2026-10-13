@@ -50,7 +50,7 @@ export function FloatingSubmit({ target, forceVisible = false, className, classN
         >
           <SubmitButton
             size="lg"
-            className={cn("shadow-lg sm:w-auto px-5 w-full rounded-full", classNames?.button, className)}
+            className={cn("sm:w-auto px-5 w-full rounded-full shadow-popup", classNames?.button, className)}
             {...props}
           />
         </div>

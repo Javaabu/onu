@@ -12,7 +12,7 @@ import { ChoiceLabelLayout, joinIds, type ChoiceLabelClassNames } from "./_choic
 /** The checkbox box (extends shadcn's checkbox styles). */
 export const checkboxVariants = cva(
   [
-    "group/checkbox peer relative flex shrink-0 items-center justify-center border border-input transition-colors outline-none dark:bg-input/30",
+    "group/checkbox peer relative flex shrink-0 items-center justify-center border border-input bg-card transition-colors outline-none hover:border-primary",
     "data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:data-[state=checked]:bg-primary",
     "data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:text-primary-foreground dark:data-[state=indeterminate]:bg-primary",
     "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",

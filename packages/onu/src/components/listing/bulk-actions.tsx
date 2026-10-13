@@ -198,7 +198,7 @@ export function BulkActionBar({
           aria-busy={running || undefined}
           data-slot="bulk-action-bar"
           className={cn(
-            "gap-x-3 gap-y-2 px-3 py-2 flex flex-wrap items-center rounded-lg border border-primary/30 bg-primary/5",
+            "gap-x-3 gap-y-2 px-4 py-2 flex flex-wrap items-center rounded-xl border border-primary-3 bg-primary-1",
             classNames?.bar,
           )}
         >

@@ -139,7 +139,7 @@ export interface PaginationProps
   perPageOptions?: number[]
   /** Render pages as links. Uses `OnuProvider linkComponent` (e.g. Inertia's `Link`). */
   getPageHref?: (page: number) => string
-  /** Show numbered page buttons. They collapse to "Page 2 of 13" on phones. Default `false`. */
+  /** Show numbered page buttons (Ant-style; the current page is outlined in the brand colour). They collapse to "Page 2 of 13" on phones. Default `true`; `false` shows only Previous / Next with their labels. */
   numbered?: boolean
   /** The "Showing 26–50 of 312 users" text. Default `true`. */
   showSummary?: boolean
@@ -164,7 +164,7 @@ export function Pagination({
   onPerPageChange,
   perPageOptions,
   getPageHref: getPageHrefProp,
-  numbered = false,
+  numbered = true,
   showSummary = true,
   noun,
   disabled,
@@ -223,7 +223,6 @@ export function Pagination({
     children,
     label,
     current,
-    variant = "outline",
     extra,
   }: {
     target: number
@@ -231,13 +230,14 @@ export function Pagination({
     children: React.ReactNode
     label?: string
     current?: boolean
-    variant?: "outline" | "ghost"
     extra?: string
   }) => {
+    // Ant pagination items: 32px, 6px corners, no border; the current page is outlined in the brand colour.
     const classes = cn(
-      buttonVariants({ variant: current ? "outline" : variant, size: "sm" }),
-      "touch:min-h-11 touch:min-w-11 tabular-nums",
-      current && "border-primary text-primary",
+      buttonVariants({ variant: "ghost", size: "default" }),
+      "min-w-8 px-1.5 touch:min-h-11 touch:min-w-11 tabular-nums",
+      current &&
+        "font-semibold border-primary bg-card text-primary-7 hover:bg-card hover:text-primary-7 dark:text-primary-7",
       classNames?.button,
       extra,
     )
@@ -280,16 +280,7 @@ export function Pagination({
         </p>
       ) : null}
       <div className={cn("gap-x-4 gap-y-2 ms-auto flex flex-wrap items-center", classNames?.controls)}>
-        {onPerPageChange ? (
-          <PerPage
-            value={perPage}
-            onValueChange={onPerPageChange}
-            options={perPageOptions}
-            disabled={disabled}
-            className={classNames?.perPage}
-          />
-        ) : null}
-        <ul className={cn("gap-1 flex items-center", classNames?.pages)} data-slot="pagination-pages">
+        <ul className={cn("gap-2 flex items-center", classNames?.pages)} data-slot="pagination-pages">
           <li>
             {pageButton({
               target: page - 1,
@@ -298,7 +289,9 @@ export function Pagination({
               children: (
                 <>
                   <Icon name="chevron-left" />
-                  <span className="@sm:inline hidden">{t("listing.previous")}</span>
+                  {numbered && lastPage !== undefined ? null : (
+                    <span className="@sm:inline hidden">{t("listing.previous")}</span>
+                  )}
                 </>
               ),
             })}
@@ -315,7 +308,6 @@ export function Pagination({
                     {pageButton({
                       target: item,
                       current: item === page,
-                      variant: "ghost",
                       label:
                         item === page
                           ? t("listing.currentPage", { page: format.format(item) })
@@ -337,13 +329,24 @@ export function Pagination({
               label: t("common.goToNextPage"),
               children: (
                 <>
-                  <span className="@sm:inline hidden">{t("listing.next")}</span>
+                  {numbered && lastPage !== undefined ? null : (
+                    <span className="@sm:inline hidden">{t("listing.next")}</span>
+                  )}
                   <Icon name="chevron-right" />
                 </>
               ),
             })}
           </li>
         </ul>
+        {onPerPageChange ? (
+          <PerPage
+            value={perPage}
+            onValueChange={onPerPageChange}
+            options={perPageOptions}
+            disabled={disabled}
+            className={classNames?.perPage}
+          />
+        ) : null}
       </div>
     </nav>
   )

@@ -24,12 +24,12 @@ export function DetachFromFormField({ children }: { children: React.ReactNode })
 /** Styles of the field that opens a picker. It looks like a text input. */
 export const pickerTriggerVariants = cva(
   [
-    "gap-2 text-base md:text-sm rounded-lg border border-input bg-transparent text-start transition-colors dark:bg-input/30",
+    "gap-2 text-base md:text-sm rounded-lg border border-input bg-card text-start transition-colors hover:border-primary-5",
     "min-w-0 touch:min-h-11 flex w-full items-center outline-none",
-    "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
+    "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20",
     "aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
     "disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 dark:disabled:bg-input/80",
-    "data-[state=open]:border-ring",
+    "data-[state=open]:border-primary",
   ],
   {
     variants: {

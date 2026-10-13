@@ -3,7 +3,7 @@ title: Button
 sidebar_position: 17
 ---
 
-Onu's button: shadcn's `Button` with a `loading` state, `startIcon` / `endIcon`, and extra `success` and `warning` variants.
+Onu's button: shadcn's `Button` with a `loading` state, `startIcon` / `endIcon`, and extra `success` and `warning` variants. It is styled like Ant Design's button: 32px tall at the default density, 14px regular text, 15px padding and 6px corners (from `--onu-radius`), with colour transitions and no shadow.
 
 ```tsx
 import { Button } from "@javaabu/onu"
@@ -28,18 +28,19 @@ Buttons default to `type="button"`; use [`SubmitButton`](./submit-button) (or `t
 
 ## Variants
 
-| `variant`     | Use                           |
-| ------------- | ----------------------------- |
-| `default`     | Primary action                |
-| `secondary`   | Secondary action              |
-| `outline`     | Tertiary action, toolbars     |
-| `ghost`       | Icon buttons, low emphasis    |
-| `link`        | Looks like a link             |
-| `destructive` | Delete, revoke                |
-| `success`     | Approve, publish              |
-| `warning`     | Suspend, risky but reversible |
+| `variant`     | Ant Design equivalent | Use                           |
+| ------------- | --------------------- | ----------------------------- |
+| `default`     | `type="primary"`      | Primary action (solid brand)  |
+| `outline`     | default button        | Secondary actions, toolbars: card fill, grey border; the border and text turn to the brand colour on hover |
+| `dashed`      | `type="dashed"`       | Add a row or item             |
+| `secondary`   | `variant="filled"`    | Filled grey                   |
+| `ghost`       | `type="text"`         | Icon buttons, low emphasis    |
+| `link`        | `type="link"`         | Looks like a link             |
+| `destructive` | `type="primary" danger` | Delete, revoke (solid red)  |
+| `success`     |                       | Approve, publish              |
+| `warning`     |                       | Suspend, risky but reversible |
 
-Sizes: `xs`, `sm`, `default`, `lg`, `icon`, `icon-xs`, `icon-sm`, `icon-lg`. On touch screens every button is at least 44px tall.
+Sizes: `xs` (24px), `sm` (28px), `default` (32px), `lg` (36px), `icon`, `icon-xs`, `icon-sm`, `icon-lg`, at the default density. On touch screens every button is at least 44px tall.
 
 `buttonVariants({ variant, size, className })` returns the classes, for styling other elements as buttons.
 

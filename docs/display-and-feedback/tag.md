@@ -3,7 +3,7 @@ title: Tag
 sidebar_position: 3
 ---
 
-A compact label (chip) for categories, keywords and filters. It can be static, clickable, a link, removable, or all of these.
+A compact label (chip) for categories, keywords and filters. It can be static, clickable, a link, removable, or all of these. It looks like an Ant Design tag: 22px tall, 4px corners, a hairline border and 12px text.
 
 ```tsx
 import { Tag } from "@javaabu/onu"
@@ -13,13 +13,19 @@ import { Tag } from "@javaabu/onu"
 <Tag onRemove={() => remove("laamu")}>Laamu</Tag>
 <Tag onClick={toggle} selected={active}>Fuvahmulah</Tag>
 <Tag href="/tags/news">News</Tag>
+<Tag color="green">Paid</Tag>
 ```
+
+## Colours
+
+`variant="default"` is the grey tag, `primary` is tinted with the brand colour (`--primary-1` fill, `--primary-3` border), and `outline` is a plain bordered tag. `color` picks one of Ant Design's preset colours instead: `blue`, `cyan`, `green`, `red` or `gold`. They come from the `--onu-preset-<colour>`, `-border` and `-foreground` tokens (see [Theming](../guides/theming#preset-colours)), with AA text in light and dark mode.
 
 ## Props
 
 | Prop          | Type                                  | Default     | Description                                       |
 | ------------- | ------------------------------------- | ----------- | ------------------------------------------------- |
 | `variant`     | `'default' \| 'primary' \| 'outline'` | `'default'` | Look                                              |
+| `color`       | `'blue' \| 'cyan' \| 'green' \| 'red' \| 'gold'` |  | Ant preset colour (overrides the variant's colours) |
 | `size`        | `'sm' \| 'md' \| 'lg'`                | `'md'`      | Size                                              |
 | `icon`        | `string \| ReactNode`                 |             | Icon before the label                             |
 | `onClick`     | `(e) => void`                         |             | Makes the label a button                          |
@@ -30,7 +36,7 @@ import { Tag } from "@javaabu/onu"
 | `disabled`    | `boolean`                             |             | Disables the tag and its × button                 |
 | `classNames`  | `{ label, remove, icon }`             |             | Classes for each part                             |
 
-Variants are exported as `tagVariants`. Parts have `data-slot="tag"`, `tag-label` and `tag-remove`.
+Variants are exported as `tagVariants` (`variant`, `color`, `size`). Parts have `data-slot="tag"` (with `data-variant` and `data-color`), `tag-label` and `tag-remove`.
 
 ## Accessibility
 

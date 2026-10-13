@@ -12,7 +12,7 @@ import { normalizeOptions, type ChoiceOptionInput } from "./options"
 export const segmentedControlVariants = cva(
   // Scrolls sideways instead of truncating labels when space runs out; the
   // scrollbar is hidden because a focused or swiped segment scrolls into view.
-  "gap-0.5 p-0.5 min-w-0 inline-flex max-w-full [scrollbar-width:none] items-stretch overflow-x-auto rounded-lg bg-muted text-muted-foreground [&::-webkit-scrollbar]:hidden",
+  "gap-0.5 p-0.5 min-w-0 inline-flex max-w-full [scrollbar-width:none] items-stretch overflow-x-auto rounded-lg bg-layout text-muted-foreground [&::-webkit-scrollbar]:hidden",
   {
     variants: {
       size: {
@@ -28,7 +28,7 @@ export const segmentedControlVariants = cva(
 
 const itemClasses = [
   // Segments size to their label (never truncated) and share any spare room evenly.
-  "relative inline-flex flex-1 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 font-medium outline-none transition-[color,background-color,box-shadow]",
+  "relative inline-flex flex-1 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 font-normal outline-none transition-[color,background-color,box-shadow]",
   "hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50",
   "data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm dark:data-[state=on]:bg-input/50",
   "[&_svg]:size-4 [&_svg]:shrink-0 touch:min-h-11",

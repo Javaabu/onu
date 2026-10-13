@@ -72,7 +72,7 @@ export interface ColorPickerProps extends Omit<
 }
 
 const thumb =
-  "size-5 rounded-full border-2 border-background shadow-md ring-1 ring-foreground/40 data-focus-visible:size-6 data-focus-visible:ring-2 data-focus-visible:ring-ring"
+  "size-5 rounded-full border-2 border-background shadow-popup ring-1 ring-foreground/40 data-focus-visible:size-6 data-focus-visible:ring-2 data-focus-visible:ring-ring"
 
 /**
  * Colour picker: a trigger showing the swatch and hex value, opening a panel
@@ -126,8 +126,8 @@ export function ColorPicker({
               aria-label={control["aria-label"]}
               aria-haspopup="dialog"
               className={cn(
-                "h-8 gap-2 ps-1 pe-2.5 text-sm min-w-36 inline-flex items-center rounded-lg border border-input bg-transparent transition-colors outline-none dark:bg-input/30",
-                "hover:bg-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
+                "h-8 gap-2 ps-1 pe-2.5 text-sm min-w-36 inline-flex items-center rounded-lg border border-input bg-card transition-colors outline-none",
+                "hover:border-primary-5 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20",
                 "disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20",
                 "touch:h-11",
                 classNames?.trigger,
@@ -166,7 +166,7 @@ export function ColorPicker({
           <ColorField aria-label={t("input.hex")} className={cn("grid", classNames?.field)}>
             <AriaInput
               dir="ltr"
-              className="h-8 px-2.5 text-sm touch:h-11 w-full rounded-lg border border-input bg-transparent font-mono uppercase outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+              className="h-8 px-2.5 text-sm touch:h-11 w-full rounded-lg border border-input bg-card font-mono uppercase outline-none hover:border-primary-5 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
             />
           </ColorField>
           {presets.length ? (

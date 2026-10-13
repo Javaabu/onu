@@ -3,9 +3,21 @@ title: Theming
 sidebar_position: 2
 ---
 
+# The default look
+
+Onu's default theme pairs a Proton Mail-style app shell with Ant Design 5 content elements:
+
+- **Brand**: Proton purple `#6d4aff` (`oklch(0.562 0.251 283.7)`).
+- **Content** (Ant Design): 14px text on a 22px line, 32px controls, 6px control corners and 8px cards and popups, `#f0f0f0` splits and `#d9d9d9` field borders, a `#fafafa` table header, plain (untinted) greys, and text at Ant's `rgba(0,0,0,.88)` / `.65`.
+- **Shell** (Proton): a warm-grey `#f5f4f2` sidebar and header (`#16141c` Carbon in dark mode) around the white content panel, exposed as the `--onu-shell*` tokens.
+- **Elevation**: borders and tonal surfaces; only popups (menus, selects, popovers, dialogs) cast a subtle shadow.
+- **Dark mode**: Ant's dark algorithm for content (`#1f1f1f` surfaces, `#303030` / `#424242` borders, `#141414` layout grey).
+
+Everything below is a token, so a project can move away from any of it.
+
 # One variable for the brand colour
 
-Set `--onu-primary` to any CSS colour and the whole library follows: buttons, focus rings, links, checked controls, the active sidebar item, tab underlines, selected table rows, the current page, today and selected dates, and the first chart colour. The neutral greys pick up a little of it too (see [Brand tint](#brand-tint)), so hovers, menus, borders and the sidebar read as the same brand.
+Set `--onu-primary` to any CSS colour and the whole library follows: buttons, focus rings, links, checked controls, the active sidebar item, tab ink bars, selected table rows, the current page, today and selected dates, and the first chart colour.
 
 ```css
 :root {
@@ -13,13 +25,27 @@ Set `--onu-primary` to any CSS colour and the whole library follows: buttons, fo
 }
 ```
 
-Hover and active shades, a subtle tint, and the text colour on top of primary are worked out from it in CSS. Text on primary switches between black and white automatically for contrast (in browsers with relative colour syntax; elsewhere it stays white). Override it with `--onu-primary-foreground` if your brand needs a specific colour.
+Hover and active shades and the text colour on top of primary are worked out from it in CSS. Text on primary switches between black and white automatically for contrast (in browsers with relative colour syntax; elsewhere it stays white). Override it with `--onu-primary-foreground` if your brand needs a specific colour.
 
 In dark mode the primary colour is lifted so it keeps its contrast on dark backgrounds. Set `--onu-primary-dark` to choose the dark-mode shade yourself.
 
+## Colour steps
+
+Like Ant Design's palette, eight steps are derived from the primary colour with `color-mix(in oklab, …)`. Use them as `bg-primary-1`, `border-primary-3`, `text-primary-7` and so on.
+
+| Step | Light | Dark | Used for |
+|---|---|---|---|
+| `--primary-1` (= `--primary-subtle`) | 10% primary on the background | 16% | Selected rows, selected options, tinted tags, filter chips, the bulk bar, pressed toggles |
+| `--primary-2` | 22% | 26% | Hovered selected rows |
+| `--primary-3` | 40% | 42% | Borders of tinted surfaces |
+| `--primary-4`, `--primary-5` | 60%, 80% | 60%, 80% | Hovered field and default-button borders (5) |
+| `--primary-6` | primary | primary | Fills, ink bars, focus |
+| `--primary-7` | 14% darker | 20% lighter | Link and hovered-button text; active (pressed) fills in light mode |
+| `--primary-8` (= `--primary-subtle-foreground` in light mode) | 30% darker | 38% lighter | Text on tinted surfaces |
+
 # Brand tint
 
-Onu's neutrals are not plain grey: each one is mixed with a small amount of the primary colour in CSS (`color-mix(in oklab, …)`), the way Radix Themes tints its grey scale. Change `--onu-primary` and these follow:
+Onu's neutrals can be mixed with a small amount of the primary colour in CSS (`color-mix(in oklab, …)`), the way Radix Themes tints its grey scale. It is **off by default** (`--onu-tint: 0%`), which gives Ant Design's plain greys. Turn it on and these follow `--onu-primary`:
 
 | Token | Used for | Primary mixed in (light / dark) |
 |---|---|---|
@@ -31,11 +57,11 @@ Onu's neutrals are not plain grey: each one is mixed with a small amount of the 
 
 The amounts are kept small so text keeps WCAG AA contrast with any reasonable brand colour; dark surfaces take a little more so the tint still shows.
 
-Turn it down or off with `--onu-tint` (a percentage of the amounts above, default `100%`), or with the `data-onu-tint="none"` attribute, on the root or on any element:
+Set the strength with `--onu-tint` (a percentage of the amounts above; the default is `0%`, from `tokens.json`), on the root or on any element. The `data-onu-tint="none"` attribute turns it off again for part of a page:
 
 ```css
 :root {
-    --onu-tint: 50%; /* half strength; 0% for plain neutral greys */
+    --onu-tint: 100%; /* the full brand tint; 50% for half */
 }
 ```
 
@@ -64,13 +90,52 @@ Every token is a CSS variable you can set. The names follow shadcn/ui, prefixed 
 | Status | `--onu-destructive`, `--onu-success`, `--onu-warning`, `--onu-info` (each with `-foreground`) |
 | Charts | `--onu-chart-1` … `--onu-chart-8` (`--onu-chart-1` defaults to primary) |
 | Sidebar | `--onu-sidebar`, `--onu-sidebar-foreground`, `--onu-sidebar-primary`, `--onu-sidebar-accent`, `--onu-sidebar-border` |
+| App shell | `--onu-shell`, `--onu-shell-foreground`, `--onu-shell-border`, `--onu-shell-field`, `--onu-shell-hover`, `--onu-shell-active` (see [App shell](#app-shell)) |
+| Layout grey | `--onu-layout` (Ant's `colorBgLayout`: the grey page behind dashboard cards) |
+| Preset colours | `--onu-preset-{blue,cyan,green,red,gold}` with `-border` and `-foreground` (see [Preset colours](#preset-colours)) |
+| Elevation | `--onu-shadow-popup` (the one shadow: menus, selects, popovers, dialogs) |
 | Shape | `--onu-radius` (every radius derives from it; `0` gives square corners) |
-| Type | `--onu-font-sans`, `--onu-font-thaana`, `--onu-font-thaana-bold`, `--onu-font-mono`, `--onu-font-serif` |
+| Type | `--onu-font-sans`, `--onu-font-thaana`, `--onu-font-thaana-bold`, `--onu-font-mono`, `--onu-font-serif`, `--onu-font-size` (body, 14px), `--onu-line-height` (1.5714, 22px) |
 | Layout | `--onu-label-width`, `--onu-touch-target` |
 
 Charts draw areas and bars with a soft gradient in these colours by default, so they rebrand with the theme too. Use `<ChartStyleProvider gradient={false}>` (from `@javaabu/onu/charts`) or a chart's `gradient={false}` for flat fills; see [BarChart](../charts/bar-chart#gradient-fills).
 
-In Tailwind, use them as `bg-primary`, `text-muted-foreground`, `border-border`, `bg-success`, `fill-chart-3`, `rounded-lg`, `font-thaana`, and so on.
+In Tailwind, use them as `bg-primary`, `text-muted-foreground`, `border-border`, `bg-success`, `fill-chart-3`, `bg-shell`, `bg-layout`, `bg-preset-green`, `shadow-popup`, `rounded-lg`, `font-thaana`, and so on.
+
+## Shape
+
+`--onu-radius` defaults to `0.375rem` (6px). The radius utilities derive from it: `rounded-sm` ≈ 4px (tags, menu items), `rounded-md` ≈ 5px, `rounded-lg` 6px (buttons, fields), `rounded-xl` 8px (cards, popups, dialogs).
+
+## Type
+
+Body text is 14px on a 22px line (`--onu-font-size`, `--onu-line-height`), Ant Design's base size; `text-sm` uses the same 22px line. Dhivehi text keeps its taller 1.75 line height. The `touch` density raises the body size to 16px.
+
+## App shell
+
+The `--onu-shell*` tokens describe the area around the content panel (Proton's sidebar and header). Layout components use them; use them yourself as `bg-shell`, `text-shell-foreground`, `border-shell-border`, `bg-shell-field`, `hover:bg-shell-hover` and `bg-shell-active`.
+
+| Token | Light | Dark | Used for |
+|---|---|---|---|
+| `--onu-shell` | `#f5f4f2` | `#16141c` | Sidebar and header background |
+| `--onu-shell-foreground` | `#1f1f1f` | `#ffffff` | Text on the shell |
+| `--onu-shell-border` | `#e5e3e0` | `#343140` | Lines on the shell, the content panel's edge |
+| `--onu-shell-field` | `#ffffff` | `#292733` | Fields on the shell (the header search) |
+| `--onu-shell-hover` | `rgb(194 193 192 / 20%)` | `rgb(91 87 107 / 20%)` | Hovered nav items and header buttons |
+| `--onu-shell-active` | `rgb(194 192 190 / 35%)` | `rgb(91 87 107 / 40%)` | The current nav item |
+
+## Preset colours
+
+Ant Design's preset colours, for tags and status badges: a tinted fill, a matching border and a text shade with AA contrast on that fill, in light and dark mode. [StatusBadge](../display-and-feedback/status-badge) maps its tones to them (info blue, pending cyan, success green, danger red, warning gold), and [Tag](../display-and-feedback/tag) takes them as `color`.
+
+| Token | Light (fill / border / text) | Dark (fill / border / text) |
+|---|---|---|
+| `--onu-preset-blue` | `#e6f4ff` / `#91caff` / `#0958d9` | `#111a2c` / `#15325b` / `#65a9f3` |
+| `--onu-preset-cyan` | `#e6fffb` / `#87e8de` / `#006d75` | `#112123` / `#144848` / `#33bcb7` |
+| `--onu-preset-green` | `#f6ffed` / `#b7eb8f` / `#237804` | `#162312` / `#274916` / `#6abe39` |
+| `--onu-preset-red` | `#fff1f0` / `#ffa39e` / `#a8071a` | `#2a1215` / `#58181c` / `#f37370` |
+| `--onu-preset-gold` | `#fffbe6` / `#ffe58f` / `#874d00` | `#2b2111` / `#594214` / `#e8b339` |
+
+Each has `-border` and `-foreground` variants, e.g. `--onu-preset-green-border`.
 
 # App shell and page layout
 
