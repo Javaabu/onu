@@ -1,3 +1,5 @@
+<p align="center"><img src=".github/assets/onu-logo.svg" width="96" height="96" alt="Onu logo: two bamboo stalks with leaves"></p>
+
 # Onu
 
 [![Tests](https://github.com/Javaabu/onu/actions/workflows/ci.yml/badge.svg)](https://github.com/Javaabu/onu/actions/workflows/ci.yml)
