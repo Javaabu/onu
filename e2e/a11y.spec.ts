@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright"
 
-import { applyVariant, expect, test } from "./fixtures"
+import { applyVariant, expect, test, waitForPage } from "./fixtures"
 import { demoRoutes, pageRoutes, variants } from "./routes"
 
 // Accessibility scan of the docs home and indexes, every demo and every sample page (REQUIREMENTS R14.11), in light LTR and dark RTL.
@@ -13,7 +13,7 @@ for (const variant of variants) {
       )
       await applyVariant(page, variant)
       await page.goto(route)
-      await page.waitForLoadState("networkidle")
+      await waitForPage(page, route)
       const results = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
         // The showcase's code tab and third-party map tiles are out of scope.
