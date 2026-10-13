@@ -106,7 +106,7 @@ export function UserProfile({
           {avatar}
           {!compact ? (
             <>
-              <span className="min-w-0 leading-tight grid flex-1">
+              <span data-slot="user-profile-text" className="min-w-0 leading-tight grid flex-1">
                 <span className={cn("text-sm font-medium truncate", classNames?.name)}>{name}</span>
                 {subtitle ? (
                   <span className={cn("text-xs font-normal truncate text-muted-foreground", classNames?.subtitle)}>
@@ -114,7 +114,11 @@ export function UserProfile({
                   </span>
                 ) : null}
               </span>
-              <Icon name="chevrons-up-down" className="size-4 ms-auto text-muted-foreground" />
+              <Icon
+                name="chevrons-up-down"
+                data-slot="user-profile-chevron"
+                className="size-4 ms-auto text-muted-foreground"
+              />
             </>
           ) : null}
         </Button>

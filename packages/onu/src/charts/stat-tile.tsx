@@ -9,18 +9,21 @@ import type { SemanticIconName } from "../icons/types"
 import { cn } from "../lib/utils"
 import { useOnu } from "../providers/onu-provider"
 import { Skeleton } from "../ui/skeleton"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
 import { DeltaIndicator } from "./delta-indicator"
 import { useChartFormat, type ValueFormat } from "./format"
 import { Sparkline, type SparklineProps } from "./sparkline"
 
+// Ant Design Pro's ChartCard: 20px 24px padding, a muted label row, a big regular-weight
+// figure, a 46px chart slot and a footer row under a split line.
 export const statTileVariants = cva(
-  "min-w-0 gap-2 p-4 relative flex flex-col rounded-xl border border-border bg-card text-card-foreground outline-none",
+  "min-w-0 px-6 pt-5 pb-5 has-[>[data-slot=stat-tile-footer]]:pb-0 relative flex flex-col rounded-xl border border-border bg-card text-card-foreground outline-none",
   {
     variants: {
       size: {
-        sm: "gap-1.5 p-3",
+        sm: "gap-1.5 p-3 has-[>[data-slot=stat-tile-footer]]:pb-0",
         default: "",
-        lg: "gap-3 p-6",
+        lg: "px-8 pt-6 pb-6",
       },
       interactive: {
         true: "transition-colors hover:bg-muted/50 focus-visible:ring-3 focus-visible:ring-ring/50",
@@ -31,7 +34,11 @@ export const statTileVariants = cva(
   },
 )
 
-const valueSizes = { sm: "text-xl", default: "text-2xl", lg: "text-3xl" } as const
+const valueSizes = {
+  sm: "text-xl",
+  default: "mt-1 text-[1.875rem] leading-[2.375rem]",
+  lg: "mt-1 text-4xl",
+} as const
 
 export interface StatTileClassNames {
   label?: string
@@ -66,7 +73,14 @@ export interface StatTileProps
   sparklineGradient?: boolean
   /** Show skeletons while data loads. */
   loading?: boolean
-  /** Extra content at the bottom (a link, a note). */
+  /**
+   * A mini chart in the 46px slot under the figure (e.g. a `ProgressBar`, bars
+   * or trend text), instead of `sparkline`.
+   */
+  chart?: React.ReactNode
+  /** An info button after the label with this tooltip (e.g. how the figure is counted). */
+  tip?: React.ReactNode
+  /** The footer row under a line (Ant ChartCard), e.g. "Daily average 12". */
   footer?: React.ReactNode
   /** Render as the child element, e.g. a link to the detail page. The tile content is placed inside it. */
   asChild?: boolean
@@ -92,6 +106,8 @@ export function StatTile({
   sparklineVariant = "area",
   sparklineGradient,
   loading = false,
+  chart,
+  tip,
   footer,
   asChild = false,
   size = "default",
@@ -109,25 +125,46 @@ export function StatTile({
 
   const content = (
     <>
-      <div className="gap-2 flex items-start justify-between">
+      <div className="gap-2 flex items-center justify-between">
         <span
           id={labelId}
           data-slot="stat-tile-label"
-          className={cn("text-sm text-muted-foreground", classNames?.label)}
+          className={cn("text-sm leading-[1.375rem] text-muted-foreground", classNames?.label)}
         >
           {label}
         </span>
-        {icon ? (
-          <span
-            data-slot="stat-tile-icon"
-            className={cn("[&_svg]:size-4 shrink-0 text-muted-foreground", classNames?.icon)}
-          >
-            {typeof icon === "string" ? <Icon name={icon} /> : icon}
+        {icon || (tip && !asChild) ? (
+          <span className="gap-1 flex shrink-0 items-center">
+            {icon ? (
+              <span
+                data-slot="stat-tile-icon"
+                className={cn("[&_svg]:size-4 shrink-0 text-muted-foreground", classNames?.icon)}
+              >
+                {typeof icon === "string" ? <Icon name={icon} /> : icon}
+              </span>
+            ) : null}
+            {tip && !asChild ? (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      data-slot="stat-tile-tip"
+                      aria-label={typeof tip === "string" ? tip : t("overlay.moreInfo")}
+                      className="size-6 touch:size-11 [&_svg]:size-3.5 inline-flex items-center justify-center rounded-sm text-muted-foreground outline-none hover:bg-foreground/4 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+                    >
+                      <Icon name="info" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>{tip}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : null}
           </span>
         ) : null}
       </div>
       {loading ? (
-        <div className="gap-2 grid" data-slot="stat-tile-loading">
+        <div className="mt-2 gap-2 grid" data-slot="stat-tile-loading">
           <Skeleton className="h-8 w-28" />
           <Skeleton className="h-4 w-20" />
           <span className="sr-only">{t("common.loading")}</span>
@@ -137,17 +174,13 @@ export function StatTile({
           <span
             data-slot="stat-tile-value"
             dir="auto"
-            className={cn(
-              "font-semibold tracking-tight leading-none tabular-nums",
-              valueSizes[size ?? "default"],
-              classNames?.value,
-            )}
+            className={cn("font-normal leading-none tabular-nums", valueSizes[size ?? "default"], classNames?.value)}
           >
             {formatted}
           </span>
           {hasDelta ? (
             <DeltaIndicator
-              className={classNames?.delta}
+              className={cn("mt-1", classNames?.delta)}
               value={delta}
               current={typeof value === "number" ? value : undefined}
               previous={previousValue}
@@ -155,20 +188,37 @@ export function StatTile({
               context={deltaContext ?? t("chart.vsPrevious")}
             />
           ) : null}
-          {sparkline?.length ? (
+          {chart ? (
+            <div
+              data-slot="stat-tile-chart"
+              className={cn("mt-2 flex min-h-[2.875rem] items-end [&>*]:w-full", classNames?.sparkline)}
+            >
+              {chart}
+            </div>
+          ) : sparkline?.length ? (
             <Sparkline
               data={sparkline}
               label={labelText}
               variant={sparklineVariant}
               gradient={sparklineGradient}
               valueFormat={valueFormat}
-              className={cn("mt-1", classNames?.sparkline)}
+              height={size === "sm" ? undefined : 46}
+              className={cn("mt-2", classNames?.sparkline)}
             />
           ) : null}
         </>
       )}
+      {footer ? <span aria-hidden="true" className="min-h-3 flex-1" /> : null}
       {footer ? (
-        <div data-slot="stat-tile-footer" className={cn("text-xs mt-auto text-muted-foreground", classNames?.footer)}>
+        <div
+          data-slot="stat-tile-footer"
+          className={cn(
+            // Ant ChartCard's footer: a row under a split line.
+            "pt-2.5 pb-2.5 text-sm border-t border-border text-muted-foreground",
+            size === "sm" && "pt-2 pb-2 text-xs",
+            classNames?.footer,
+          )}
+        >
           {footer}
         </div>
       ) : null}

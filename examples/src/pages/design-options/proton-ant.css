@@ -240,19 +240,11 @@
 }
 
 /* ---------------------------------------------------------------- */
-/* Shell: Proton sidebar                                             */
+/* Brand: the product mark and two-tone wordmark                     */
+/* (the shell, sidebar, header, content panel, page header band and  */
+/* cards are Onu defaults now: AppLayout, AppSidebar, AppHeader,     */
+/* PageTitle, Card)                                                  */
 /* ---------------------------------------------------------------- */
-
-.design-proton-ant .pa-body {
-  background-color: var(--pa-shell);
-}
-.design-proton-ant [data-slot="sidebar-container"] {
-  border-inline-end-width: 0;
-}
-:is(.design-proton-ant, body.design-proton-ant-body) [data-slot="sidebar-inner"],
-body.design-proton-ant-body [data-slot="sidebar"][data-mobile="true"] {
-  background-color: var(--pa-shell);
-}
 
 .design-proton-ant .pa-mark {
   display: inline-grid;
@@ -290,131 +282,13 @@ body.design-proton-ant-body [data-slot="sidebar"][data-mobile="true"] {
   color: var(--pa-link);
 }
 
-/* The big "New application" button: Proton's 44px CTA in the shared brand. */
-:is(.design-proton-ant, body.design-proton-ant-body) [data-slot="button"].pa-cta {
-  height: 2.75rem;
-  border-radius: 0.5rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
-}
-
-/* Navigation items: 36px, 8px corners, grey hover, grey active with a brand icon. */
-:is(.design-proton-ant, body.design-proton-ant-body) [data-sidebar="menu-button"] {
-  height: 2.25rem;
-  border-radius: 0.5rem;
-  padding-inline: 0.625rem;
-  gap: 0.75rem;
-  font-size: 0.875rem;
-  color: var(--sidebar-foreground);
-}
-:is(.design-proton-ant, body.design-proton-ant-body) [data-sidebar="menu-button"] > svg {
-  color: var(--muted-foreground);
-}
-:is(.design-proton-ant, body.design-proton-ant-body) [data-sidebar="menu-button"]:hover {
-  background-color: var(--pa-hover);
-}
-:is(.design-proton-ant, body.design-proton-ant-body) [data-sidebar="menu-button"][data-active="true"] {
-  background-color: var(--pa-active);
-  font-weight: 600;
-  color: var(--sidebar-foreground);
-}
-:is(.design-proton-ant, body.design-proton-ant-body) [data-sidebar="menu-button"][data-active="true"] > svg {
-  color: var(--pa-link);
-}
-:is(.design-proton-ant, body.design-proton-ant-body)
-  [data-sidebar="menu-item"]:has([data-sidebar="menu-badge"])
-  [data-sidebar="menu-button"] {
-  padding-inline-end: 3rem;
-}
-/* Unread counters: small brand pills. */
-:is(.design-proton-ant, body.design-proton-ant-body) .pa-count {
-  min-width: 1.5rem;
-  height: 1.25rem;
-  padding-inline: 0.375rem;
-  border-radius: 9999px;
-  background-color: var(--primary);
-  color: var(--primary-foreground);
-  font-size: 0.75rem;
-  font-weight: 600;
-  justify-content: center;
-  top: 50%;
-  translate: 0 -50%;
-}
-:is(.design-proton-ant, body.design-proton-ant-body) .pa-group-label {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--muted-foreground);
-  padding-inline: 0.75rem;
-}
+/* Label dots in the table (the sidebar draws its own from NavItem.color). */
 :is(.design-proton-ant, body.design-proton-ant-body) .pa-dot {
   display: inline-block;
   background-color: var(--pa-dot);
 }
-:is(.design-proton-ant, body.design-proton-ant-body) .pa-folder {
-  display: inline-flex;
-}
-:is(.design-proton-ant, body.design-proton-ant-body) .pa-folder svg {
-  width: 1rem;
-  height: 1rem;
-  color: var(--pa-dot);
-  fill: color-mix(in oklab, var(--pa-dot) 25%, transparent);
-}
-:is(.design-proton-ant, body.design-proton-ant-body) .pa-app-tile {
-  display: inline-grid;
-  place-items: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 0.375rem;
-  background-color: var(--pa-1);
-  color: var(--pa-link);
-}
-:is(.design-proton-ant, body.design-proton-ant-body) .pa-app-tile svg {
-  width: 1rem;
-  height: 1rem;
-}
-:is(.design-proton-ant, body.design-proton-ant-body) .pa-quota {
-  border-top: 1px solid var(--pa-shell-border);
-  padding-top: 0.75rem;
-}
-:is(.design-proton-ant, body.design-proton-ant-body) .pa-quota [data-slot="progress-bar-track"] {
-  background-color: var(--pa-weak);
-}
 
-/* ---------------------------------------------------------------- */
-/* Shell: Proton header                                              */
-/* ---------------------------------------------------------------- */
-
-.design-proton-ant .pa-header {
-  height: calc(3.75rem + env(safe-area-inset-top));
-  background-color: var(--pa-shell);
-  border-bottom: 0;
-  padding-inline: 1rem;
-}
-.design-proton-ant .pa-search [data-slot="search-box"] {
-  width: 100%;
-}
-.design-proton-ant .pa-search [data-slot="search-box"] {
-  min-block-size: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.5rem;
-  background-color: var(--pa-shell-field);
-  border-color: var(--pa-shell-border);
-}
-.design-proton-ant .pa-search [data-slot="search-box"]:hover {
-  border-color: var(--pa-5);
-}
-.design-proton-ant .pa-header [data-slot="button"]:is([data-size="icon"], [data-variant="ghost"]),
-.design-proton-ant .pa-icon-btn {
-  min-width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0.5rem;
-  color: var(--muted-foreground);
-}
-.design-proton-ant .pa-header [data-slot="button"][data-variant="ghost"]:hover,
-.design-proton-ant .pa-icon-btn:hover {
-  background-color: var(--pa-hover);
-  color: var(--foreground);
-}
+/* Upgrade: an outlined brand button in the header. */
 .design-proton-ant [data-slot="button"].pa-upgrade {
   height: 2rem;
   border-radius: 0.5rem;
@@ -427,15 +301,6 @@ body.design-proton-ant-body [data-slot="sidebar"][data-mobile="true"] {
   color: var(--pa-link);
   border-color: var(--pa-link);
 }
-.design-proton-ant .pa-user__trigger [data-slot="user-avatar"] {
-  border-radius: 0.5rem;
-}
-.design-proton-ant .pa-user__trigger [data-slot="user-avatar"] > * {
-  border-radius: 0.5rem;
-  background-color: var(--pa-weak);
-  color: var(--foreground);
-  font-weight: 600;
-}
 :is(.design-proton-ant, body.design-proton-ant-body) .pa-avatar {
   background-color: var(--pa-2);
   color: var(--pa-link);
@@ -443,163 +308,16 @@ body.design-proton-ant-body [data-slot="sidebar"][data-mobile="true"] {
 }
 
 /* ---------------------------------------------------------------- */
-/* The content panel: white, rounded top-start corner                */
+/* The dashboard's tabbed card: Ant line tabs with the brand ink bar  */
 /* ---------------------------------------------------------------- */
 
-.design-proton-ant .pa-main {
-  padding: 0;
-  background-color: var(--background);
-}
-.design-proton-ant[data-pa-layout="grey"] .pa-main {
-  background-color: var(--pa-layout);
-}
-@media (min-width: 48rem) {
-  .design-proton-ant .pa-main {
-    border-start-start-radius: 0.75rem;
-    border-top: 1px solid var(--pa-shell-border);
-    border-inline-start: 1px solid var(--pa-shell-border);
-  }
-  .design-proton-ant .pa-page-header {
-    border-start-start-radius: 0.75rem;
-  }
-}
-
-/* PageHeader band. */
-.design-proton-ant .pa-page-header {
-  background-color: var(--card);
-  border-block-end: 1px solid var(--pa-split);
-  padding: 16px 24px;
-}
-.design-proton-ant .pa-page-header[data-has-footer] {
-  padding-block-end: 0;
-}
-.design-proton-ant .pa-breadcrumb [data-slot="breadcrumb-list"] {
-  gap: 8px;
-  font-size: 14px;
-  color: var(--muted-foreground);
-}
-.design-proton-ant .pa-breadcrumb [data-slot="breadcrumb-link"] {
-  color: var(--muted-foreground);
-  border-radius: 4px;
-  padding-inline: 4px;
-  margin-inline: -4px;
-}
-.design-proton-ant .pa-breadcrumb [data-slot="breadcrumb-link"]:hover {
-  color: var(--foreground);
-  background-color: var(--pa-fill-2);
-}
-.design-proton-ant .pa-breadcrumb [data-slot="breadcrumb-page"] {
-  color: var(--foreground);
-}
-.design-proton-ant .pa-page-header__heading {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 16px;
-  margin-block-start: 8px;
-}
-.design-proton-ant .pa-page-header__left {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 12px;
-  min-inline-size: 0;
-}
-.design-proton-ant .pa-page-header__title {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 32px;
-  letter-spacing: -0.01em;
-  color: var(--foreground);
-}
-.design-proton-ant .pa-page-header__title:lang(dv) {
-  line-height: 40px;
-  letter-spacing: 0;
-}
-.design-proton-ant .pa-page-header__sub {
-  color: var(--muted-foreground);
-}
-.design-proton-ant .pa-page-header__extra {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.design-proton-ant .pa-page-header__content {
-  margin-block-start: 12px;
-}
-.design-proton-ant .pa-page-header__desc {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 12px 32px;
-  color: var(--muted-foreground);
-}
-.design-proton-ant .pa-page-header__desc > p {
-  max-inline-size: 42rem;
-  margin: 0;
-}
-.design-proton-ant .pa-header-stats {
-  display: flex;
-  margin: 0;
-}
-.design-proton-ant .pa-header-stats > div {
-  padding-inline: 24px;
-  text-align: end;
-}
-.design-proton-ant .pa-header-stats > div + div {
-  border-inline-start: 1px solid var(--pa-split);
-}
-.design-proton-ant .pa-header-stats > div:last-child {
-  padding-inline-end: 0;
-}
-.design-proton-ant .pa-header-stats dt {
-  color: var(--muted-foreground);
-}
-.design-proton-ant .pa-header-stats dd {
-  margin: 0;
-  font-size: 20px;
-  line-height: 32px;
-  color: var(--foreground);
-}
-.design-proton-ant .pa-page-header__footer {
-  margin-block-start: 8px;
-}
-.design-proton-ant .pa-page-body {
-  padding: 24px;
-}
-.design-proton-ant[data-pa-layout="panel"] .pa-page-body {
-  padding-block-start: 16px;
-}
-@media (max-width: 639.98px) {
-  .design-proton-ant .pa-page-header {
-    padding-inline: 16px;
-  }
-  .design-proton-ant .pa-page-body {
-    padding: 16px;
-  }
-  .design-proton-ant .pa-header-stats > div:first-child {
-    padding-inline-start: 0;
-  }
-  .design-proton-ant .pa-header-stats > div {
-    padding-inline: 16px;
-    text-align: start;
-  }
-}
-
-/* ---------------------------------------------------------------- */
-/* Tabs: Ant line tabs with the brand ink bar                        */
-/* ---------------------------------------------------------------- */
-
-.design-proton-ant :is(.pa-tabs, .pa-card-tabs) [data-slot="tabs-list"] {
+.design-proton-ant .pa-card-tabs [data-slot="tabs-list"] {
   gap: 32px;
   block-size: auto;
   padding: 0;
   border-radius: 0;
 }
-.design-proton-ant :is(.pa-tabs, .pa-card-tabs) [data-slot="tabs-trigger"] {
+.design-proton-ant .pa-card-tabs [data-slot="tabs-trigger"] {
   flex: none;
   padding: 12px 0;
   block-size: auto;
@@ -609,72 +327,17 @@ body.design-proton-ant-body [data-slot="sidebar"][data-mobile="true"] {
   font-weight: 400;
   color: var(--foreground);
 }
-.design-proton-ant :is(.pa-tabs, .pa-card-tabs) [data-slot="tabs-trigger"]:hover {
+.design-proton-ant .pa-card-tabs [data-slot="tabs-trigger"]:hover {
   color: var(--pa-link);
 }
-.design-proton-ant :is(.pa-tabs, .pa-card-tabs) [data-slot="tabs-trigger"]:is([data-state="active"], [data-active]) {
+.design-proton-ant .pa-card-tabs [data-slot="tabs-trigger"]:is([data-state="active"], [data-active]) {
   color: var(--pa-link);
   text-shadow: 0 0 0.25px currentColor;
 }
-.design-proton-ant :is(.pa-tabs, .pa-card-tabs) [data-slot="tabs-trigger"]::after {
+.design-proton-ant .pa-card-tabs [data-slot="tabs-trigger"]::after {
   inset-block-end: 0;
   block-size: 2px;
   background-color: var(--pa-6);
-}
-.design-proton-ant .pa-tabs [data-slot="tabs-trigger"] [data-slot="badge"] {
-  min-inline-size: 20px;
-  block-size: 20px;
-  padding-inline: 6px;
-  border-radius: 10px;
-  background-color: var(--pa-fill-2);
-  color: var(--foreground);
-  font-weight: 400;
-}
-.design-proton-ant .pa-tabs [data-slot="tabs-trigger"][data-state="active"] [data-slot="badge"] {
-  background-color: var(--primary);
-  color: var(--primary-foreground);
-  font-weight: 600;
-}
-
-/* ---------------------------------------------------------------- */
-/* Card                                                              */
-/* ---------------------------------------------------------------- */
-
-:is(.design-proton-ant, body.design-proton-ant-body) [data-slot="card"] {
-  --card-spacing: 24px;
-  background-color: var(--card);
-  border: 1px solid var(--pa-split);
-  border-radius: 8px;
-  box-shadow: none;
-  --tw-ring-shadow: 0 0 #0000;
-  padding-block: 0 24px;
-  gap: 24px;
-}
-:is(.design-proton-ant, body.design-proton-ant-body) [data-slot="card"]:has(> [data-slot="card-footer"]) {
-  padding-block-end: 0;
-}
-.design-proton-ant .pa-card[data-slot="card"]:not(:has(> [data-slot="card-header"])) {
-  padding-block: 0;
-  gap: 0;
-}
-:is(.design-proton-ant, body.design-proton-ant-body) [data-slot="card-header"] {
-  min-block-size: 56px;
-  padding-block: 8px;
-  align-items: center;
-  align-content: center;
-  border-block-end: 1px solid var(--pa-split);
-}
-:is(.design-proton-ant, body.design-proton-ant-body) [data-slot="card-title"] {
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.5;
-}
-:is(.design-proton-ant, body.design-proton-ant-body) [data-slot="card-action"] {
-  align-self: center;
-}
-/* On the white panel (index), cards drop to the panel colour and keep only the split border. */
-.design-proton-ant[data-pa-layout="panel"] [data-slot="card"] {
-  border-color: var(--pa-split);
 }
 
 /* ---------------------------------------------------------------- */
@@ -1209,70 +872,16 @@ body.design-proton-ant-body [data-slot="dialog-content"] {
 /* Analysis page                                                     */
 /* ---------------------------------------------------------------- */
 
-.design-proton-ant .pa-chart-card {
-  gap: 0;
-}
-.design-proton-ant .pa-chart-card__body {
-  padding: 20px 24px 8px;
-}
-.design-proton-ant .pa-chart-card__meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  color: var(--muted-foreground);
-  line-height: 22px;
-}
-.design-proton-ant .pa-info-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 24px;
-  block-size: 24px;
-  border-radius: 4px;
-  color: var(--muted-foreground);
-}
-.design-proton-ant .pa-info-btn:hover {
-  color: var(--foreground);
-  background-color: var(--pa-fill);
-}
-.design-proton-ant .pa-info-btn svg {
-  inline-size: 14px;
-  block-size: 14px;
-}
-.design-proton-ant .pa-chart-card__total {
-  margin-block-start: 4px;
-  font-size: 30px;
-  line-height: 38px;
-  color: var(--foreground);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: start;
-}
-.design-proton-ant .pa-chart-card__total:dir(rtl) {
-  text-align: end;
-}
-.design-proton-ant .pa-chart-card__content {
-  display: flex;
-  align-items: flex-end;
-  block-size: 46px;
-  margin-block: 0 12px;
-}
-.design-proton-ant .pa-chart-card__content > * {
-  inline-size: 100%;
-}
-.design-proton-ant .pa-chart-card__footer {
-  margin-inline: 24px;
-  padding-block: 9px;
-  border-block-start: 1px solid var(--pa-split);
-}
+/* The chart cards are Onu's StatTile (label, tip, figure, 46px chart slot, footer row). */
 .design-proton-ant .pa-field {
   display: inline-flex;
   gap: 8px;
 }
 .design-proton-ant .pa-field__label {
   color: var(--muted-foreground);
+}
+.design-proton-ant .pa-field__value {
+  color: var(--foreground);
 }
 .design-proton-ant .pa-trends {
   display: flex;
@@ -1281,7 +890,7 @@ body.design-proton-ant-body [data-slot="dialog-content"] {
   gap: 4px 16px;
   inline-size: auto;
 }
-.design-proton-ant .pa-chart-card__content > .pa-trends {
+.design-proton-ant [data-slot="stat-tile-chart"] > .pa-trends {
   align-self: flex-end;
   padding-block-end: 2px;
 }
@@ -1486,7 +1095,7 @@ body.design-proton-ant-body [data-slot="dialog-content"] {
 /* ---------------------------------------------------------------- */
 
 @media (forced-colors: active) {
-  .design-proton-ant :is(.pa-mark, .pa-count, .pa-tag, .pa-rank__num) {
+  .design-proton-ant :is(.pa-mark, .pa-tag, .pa-rank__num) {
     border: 1px solid CanvasText;
   }
 }

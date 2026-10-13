@@ -36,6 +36,23 @@ const filters: FilterDefinition[] = [
 ;<FilterPanel filters={filters} value={state.filters} onApply={state.setFilters} />
 ```
 
+## Query form
+
+`variant="form"` renders the filters inline instead of behind a button: Ant ProTable's **QueryFilter**, a card-friendly form with labelled fields in a responsive grid (labels end-aligned with a colon from 576px up), and **Reset**, **Filter** and **Expand** / **Collapse** at the end. Only the first `collapsedCount` fields (default 3) show until Expand.
+
+```tsx
+<Card padded={false}>
+  <FilterPanel variant="form" filters={queryFilters} value={state.filters} onApply={state.setFilters} className="p-6" />
+</Card>
+```
+
+- Changes are a draft until **Filter** (or <kbd>Enter</kbd>); **Reset** clears this form's fields and keeps any other filters.
+- The form follows the applied filters when chips, tabs or Clear all change them.
+- Short multi-selects are a dropdown (not a row of checkboxes) so every field stays one line.
+- It is a `<form>` named "Filters" (`formLabel` to change it).
+
+[`ListingPage`](listing-page) shows one above its table card when you pass `queryFilters`.
+
 ## Behaviour
 
 - Changes in the panel are a draft: the list doesn't change until **Apply**.
@@ -68,6 +85,10 @@ Every definition also accepts `render` (replace the built-in control) and `forma
 | `sheet`                 | `boolean`                                                  | below 768px     | Force the bottom sheet or the dropdown |
 | `trigger`               | `ReactNode`                                                | Filters + count | Button content                         |
 | `align`                 | `"start" \| "center" \| "end"`                             | `"start"`       | Dropdown alignment                     |
+| `variant`               | `"popover" \| "form"`                                      | `"popover"`     | Button and panel, or an inline query form |
+| `collapsedCount`        | `number`                                                   | `3`             | Form: fields shown before Expand       |
+| `defaultExpanded`       | `boolean`                                                  | `false`         | Form: start expanded                   |
+| `formLabel`             | `string`                                                   | "Filters"       | Form: accessible name                  |
 | `classNames`            | `{ trigger, badge, content, body, filter, label, footer }` |                 | Classes for each part                  |
 
 ## Accessibility

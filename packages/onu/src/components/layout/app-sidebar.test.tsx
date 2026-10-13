@@ -187,6 +187,54 @@ describe("AppSidebar", () => {
     expect(screen.queryByRole("dialog")).toBeNull()
   })
 
+  it("Proton style: a full-width call to action, brand count pills, coloured folders and labels", async () => {
+    renderSidebar(
+      <AppSidebar
+        surface="shell"
+        header={<span>Logo</span>}
+        action={<a href="/new">New application</a>}
+        currentHref="/inbox"
+        groups={[
+          {
+            items: [
+              { label: "Inbox", href: "/inbox", icon: "home", badge: 12 },
+              { label: "In review", href: "/review", icon: "clock", badge: 4, badgeTone: "neutral" },
+            ],
+          },
+          { label: "Folders", items: [{ label: "Permits", href: "/f/permits", icon: "folder", color: "#8080ff" }] },
+          { label: "Labels", items: [{ label: "Malé", href: "/l/male", color: "#1da583" }] },
+        ]}
+      />,
+    )
+    expect(document.querySelector("[data-slot=sidebar]")).toHaveAttribute("data-surface", "shell")
+    const action = document.querySelector("[data-slot=app-sidebar-action]")!
+    expect(action).toContainElement(screen.getByRole("link", { name: "New application" }))
+    expect(action.parentElement).toHaveAttribute("data-slot", "sidebar-header")
+
+    const inbox = screen.getByRole("link", { name: /Inbox/ })
+    expect(inbox).toHaveAttribute("aria-current", "page")
+    expect(inbox).toHaveClass("h-9", "rounded-lg", "data-active:font-semibold")
+    const pill = inbox.parentElement!.querySelector("[data-slot=sidebar-menu-badge]")!
+    expect(pill).toHaveAttribute("data-tone", "brand")
+    expect(pill).toHaveClass("rounded-full", "bg-primary")
+    const neutral = screen.getByRole("link", { name: /In review/ }).parentElement!
+    expect(neutral.querySelector("[data-slot=sidebar-menu-badge]")).toHaveAttribute("data-tone", "neutral")
+
+    const folder = screen.getByRole("link", { name: "Permits" }).querySelector("[data-slot=nav-color-icon]")!
+    expect(folder).toHaveAttribute("data-icon-name", "folder")
+    expect(folder).toHaveStyle({ color: "#8080ff" })
+    const dot = screen.getByRole("link", { name: "Malé" }).querySelector("[data-slot=nav-dot]")!
+    expect(dot).toHaveAttribute("aria-hidden", "true")
+    expect(dot).toHaveClass("rounded-full")
+    await expectNoA11yViolations()
+  })
+
+  it("keeps the sidebar colour and edge line with surface=sidebar", () => {
+    renderSidebar(<AppSidebar surface="sidebar" groups={groups} currentHref="/" />)
+    expect(document.querySelector("[data-slot=sidebar]")).toHaveAttribute("data-surface", "sidebar")
+    expect(screen.getByRole("link", { name: /Dashboard/ })).not.toHaveClass("h-9")
+  })
+
   it.each(directions)("sits on the inline start in %s and translates", async (dir) => {
     renderSidebar(<AppSidebar items={[{ label: "ފުރަތަމަ ސަފްޙާ", href: "/" }]} currentHref="/" />, {
       locale: "dv",

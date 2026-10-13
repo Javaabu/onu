@@ -5,7 +5,14 @@ import { expectNoA11yViolations, renderWithOnu } from "../../test/utils"
 import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbList } from "./breadcrumb"
 import { Checkbox } from "./checkbox"
 import { Dialog, DialogContent, DialogTitle } from "./dialog"
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationNext, PaginationPrevious } from "./pagination"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "./pagination"
 import { Progress } from "./progress"
 import { Slider } from "./slider"
 import { Spinner } from "./spinner"

@@ -10,7 +10,15 @@ import { Icon } from "../icons/icon"
 // buttons that carry their own text; for a standalone, announced spinner use
 // Onu's `Spinner` from "@javaabu/onu".
 function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
-  return <Icon name="loading" fallback={Loader2Icon} data-slot="spinner" className={cn("size-4 animate-spin", className)} {...props} />
+  return (
+    <Icon
+      name="loading"
+      fallback={Loader2Icon}
+      data-slot="spinner"
+      className={cn("size-4 animate-spin", className)}
+      {...props}
+    />
+  )
 }
 
 export { Spinner }

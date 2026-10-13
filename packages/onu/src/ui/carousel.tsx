@@ -5,9 +5,7 @@
 
 import * as React from "react"
 import { cn } from "../lib/utils"
-import useEmblaCarousel, {
-  type UseEmblaCarouselType,
-} from "embla-carousel-react"
+import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react"
 
 import { Button } from "./button"
 // onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
@@ -66,7 +64,7 @@ function Carousel({
       ...opts,
       axis: orientation === "horizontal" ? "x" : "y",
     },
-    plugins
+    plugins,
   )
   const [canScrollPrev, setCanScrollPrev] = React.useState(false)
   const [canScrollNext, setCanScrollNext] = React.useState(false)
@@ -97,7 +95,7 @@ function Carousel({
         scrollNext()
       }
     },
-    [scrollPrev, scrollNext, opts?.direction, dir]
+    [scrollPrev, scrollNext, opts?.direction, dir],
   )
 
   React.useEffect(() => {
@@ -122,8 +120,7 @@ function Carousel({
         carouselRef,
         api: api,
         opts,
-        orientation:
-          orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+        orientation: orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
         scrollPrev,
         scrollNext,
         canScrollPrev,
@@ -148,19 +145,8 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
   const { carouselRef, orientation } = useCarousel()
 
   return (
-    <div
-      ref={carouselRef}
-      className="overflow-hidden"
-      data-slot="carousel-content"
-    >
-      <div
-        className={cn(
-          "flex",
-          orientation === "horizontal" ? "-ms-4" : "-mt-4 flex-col",
-          className
-        )}
-        {...props}
-      />
+    <div ref={carouselRef} className="overflow-hidden" data-slot="carousel-content">
+      <div className={cn("flex", orientation === "horizontal" ? "-ms-4" : "-mt-4 flex-col", className)} {...props} />
     </div>
   )
 }
@@ -173,11 +159,7 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
       role="group"
       aria-roledescription="slide"
       data-slot="carousel-item"
-      className={cn(
-        "min-w-0 shrink-0 grow-0 basis-full",
-        orientation === "horizontal" ? "ps-4" : "pt-4",
-        className
-      )}
+      className={cn("min-w-0 shrink-0 grow-0 basis-full", orientation === "horizontal" ? "ps-4" : "pt-4", className)}
       {...props}
     />
   )
@@ -198,11 +180,11 @@ function CarouselPrevious({
       variant={variant}
       size={size}
       className={cn(
-        "rounded-full absolute touch-manipulation",
+        "absolute touch-manipulation rounded-full",
         orientation === "horizontal"
           ? "inset-y-0 -start-12 my-auto"
-          : "-top-12 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 rotate-90",
-        className
+          : "-top-12 start-1/2 -translate-x-1/2 rotate-90 rtl:translate-x-1/2",
+        className,
       )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
@@ -230,11 +212,11 @@ function CarouselNext({
       variant={variant}
       size={size}
       className={cn(
-        "rounded-full absolute touch-manipulation",
+        "absolute touch-manipulation rounded-full",
         orientation === "horizontal"
           ? "inset-y-0 -end-12 my-auto"
-          : "-bottom-12 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 rotate-90",
-        className
+          : "-bottom-12 start-1/2 -translate-x-1/2 rotate-90 rtl:translate-x-1/2",
+        className,
       )}
       disabled={!canScrollNext}
       onClick={scrollNext}
@@ -247,12 +229,4 @@ function CarouselNext({
   )
 }
 
-export {
-  type CarouselApi,
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-  useCarousel,
-}
+export { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, useCarousel }

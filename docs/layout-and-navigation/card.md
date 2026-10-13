@@ -26,6 +26,10 @@ import { Button, Card } from "@javaabu/onu"
 </Card>
 ```
 
+## Look
+
+Cards follow Ant Design: 24px padding, an 8px corner (it follows `--radius`), a 1px line in the border colour and no shadow. A card with a `title` has a 56px **header row with its own bottom line**, a 16px semibold title and the `actions` centred at the end. `size="sm"` tightens the spacing.
+
 ## Content padding
 
 Content placed straight in a card, without `title`, `description`, `actions` or `footer`, gets the same inline padding as `CardContent`, so a quick card needs no wrapper:
@@ -36,7 +40,7 @@ Content placed straight in a card, without `title`, `description`, `actions` or 
 </Card>
 ```
 
-Each direct child is padded (images stay edge to edge); loose text is wrapped in a `CardContent`. Cards composed from `CardHeader`/`CardContent`/`CardFooter` look exactly as before. Set `padded={false}` for edge-to-edge content such as a table or a map.
+Each direct child is padded (images stay edge to edge); loose text is wrapped in a `CardContent`. Cards composed from `CardHeader`/`CardContent`/`CardFooter` look exactly as before. Set `padded={false}` for edge-to-edge content such as a table or a map: the card then adds no padding at all (the content brings its own).
 
 ## Link cards
 
@@ -74,7 +78,7 @@ Render the card as another element. Header and footer props still work; the chil
 | `size`         | `'default' \| 'sm'`                                        | `'default'` | Spacing                       |
 | `variant`      | `'default' \| 'outline' \| 'muted'`                        | `'default'` | Surface                       |
 | `asChild`      | `boolean`                                                  | `false`     | Render as the child element   |
-| `padded`       | `boolean`                                                  | `true`      | Pad content placed straight in the card |
+| `padded`       | `boolean`                                                  | `true`      | Pad content placed straight in the card (`false`: no padding) |
 | `classNames`   | `{ header, title, description, actions, content, footer }` |             | Classes for each part         |
 
 `cardVariants` is exported. Other `<div>` props (including `ref`) go to the root.

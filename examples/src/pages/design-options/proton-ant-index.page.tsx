@@ -258,7 +258,7 @@ function QueryFilter({
   const visible = expanded ? fields : fields.slice(0, 3)
 
   return (
-    <Card className="pa-card pa-query" padded={false}>
+    <Card className="pa-query" padded={false}>
       <form
         className="pa-query__form"
         aria-label={tr("Query applications", "އެޕްލިކޭޝަން ހޯދާ")}
@@ -472,38 +472,20 @@ export default function ProtonAntIndexPage() {
           {newButton}
         </>
       }
-      content={
-        <div className="pa-page-header__desc">
-          <p>
-            {tr(
-              "Permit and licence applications from every island. Use the query form to narrow the list.",
-              "ހުރިހާ ރަށްރަށުން ހުށަހަޅާފައިވާ ހުއްދައާއި ލައިސަންސްގެ އެޕްލިކޭޝަންތައް.",
-            )}
-          </p>
-          <dl className="pa-header-stats">
-            <div>
-              <dt>{tr("In review", "ރިވިއުކުރަނީ")}</dt>
-              <dd className="tabular-nums">{count("in_review")}</dd>
-            </div>
-            <div>
-              <dt>{tr("Approved", "ފާސްކުރެވިފަ")}</dt>
-              <dd className="tabular-nums">{count("approved")}</dd>
-            </div>
-            <div>
-              <dt>{tr("Fees approved", "ފާސްވި ފީ")}</dt>
-              <dd className="tabular-nums" dir="ltr">
-                {labels.mvr(fees)}
-              </dd>
-            </div>
-          </dl>
-        </div>
-      }
+      description={tr(
+        "Permit and licence applications from every island. Use the query form to narrow the list.",
+        "ހުރިހާ ރަށްރަށުން ހުށަހަޅާފައިވާ ހުއްދައާއި ލައިސަންސްގެ އެޕްލިކޭޝަންތައް.",
+      )}
+      figures={[
+        { label: tr("In review", "ރިވިއުކުރަނީ"), value: count("in_review") },
+        { label: tr("Approved", "ފާސްކުރެވިފަ"), value: count("approved") },
+        { label: tr("Fees approved", "ފާސްވި ފީ"), value: <span dir="ltr">{labels.mvr(fees)}</span> },
+      ]}
       footer={
         <FilterTabs
           tabs={tabs}
           value={tabValue}
           controls={listId}
-          className="pa-tabs"
           onValueChange={(value) => state.setFilter("status", value === "all" ? undefined : value)}
         />
       }
@@ -520,7 +502,7 @@ export default function ProtonAntIndexPage() {
           }}
         />
 
-        <Card className="pa-card pa-table-card" padded={false}>
+        <Card className="pa-table-card" padded={false}>
           <div className="pa-table-card__toolbar">
             <h2 className="pa-table-card__title">{tr("Application list", "އެޕްލިކޭޝަން ލިސްޓު")}</h2>
             <div className="pa-table-card__tools">

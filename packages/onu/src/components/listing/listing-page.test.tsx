@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { makeUsers, noun, userColumns, userFilters, type User } from "../../../test/listing-fixtures"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
+import { AppLayout } from "../layout/app-layout"
 import { ListingPage, type ListingPageProps } from "./listing-page"
 import { applyListingState, useListingState } from "./use-listing-state"
 
@@ -80,6 +81,59 @@ describe("ListingPage", () => {
     await userEvent.click(within(pills).getByRole("button", { name: "Remove filter Status: Banned" }))
     await waitFor(() => expect(screen.queryByRole("region", { name: "Active filters" })).not.toBeInTheDocument())
     expect(new URLSearchParams(window.location.search).has("filter[status][]")).toBe(false)
+  })
+
+  it("card variant (ProTable): header band with tabs, a query form and the list in a titled card", async () => {
+    renderWithOnu(
+      <UsersPage
+        variant="card"
+        tableTitle="User list"
+        queryFilters={userFilters.filter((f) => f.key === "email")}
+        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Users" }]}
+        tags={<span>3 new</span>}
+        figures={[{ label: "Banned", value: 12 }]}
+        tabs={[
+          { value: "all", label: "All", count: 60 },
+          { value: "banned", label: "Banned", count: 12 },
+        ]}
+      />,
+    )
+    const page = screen.getByRole("region", { name: "Users" })
+    expect(page).toHaveAttribute("data-variant", "card")
+    const header = page.querySelector("[data-slot=page-title]")!
+    expect(header).toHaveAttribute("data-variant", "band")
+    expect(within(header as HTMLElement).getByRole("heading", { level: 1, name: "Users" })).toBeInTheDocument()
+    expect(within(header as HTMLElement).getByRole("link", { name: "Home" })).toBeInTheDocument()
+    expect(within(header as HTMLElement).getByRole("link", { name: /Trash/ })).toBeInTheDocument()
+    expect(within(header as HTMLElement).getByRole("tab", { name: "Banned (12)" })).toBeInTheDocument()
+    expect(within(header as HTMLElement).getByText("3 new")).toBeInTheDocument()
+
+    const card = page.querySelector("[data-slot=listing-card]") as HTMLElement
+    expect(within(card).getByRole("heading", { level: 2, name: "User list" })).toBeInTheDocument()
+    expect(within(card).getByRole("searchbox", { name: "Search" })).toBeInTheDocument()
+    expect(within(card).getByRole("table", { name: "Users" })).toBeInTheDocument()
+
+    // The query form owns "Email contains"; the Filters panel keeps the rest.
+    const form = screen.getByRole("form", { name: "Filters" })
+    await userEvent.type(within(form).getByRole("textbox", { name: "Email contains" }), "user1{Enter}")
+    expect(new URLSearchParams(window.location.search).get("filter[email]")).toBe("user1")
+    const pills = screen.getByRole("region", { name: "Active filters" })
+    expect(within(pills).getByText(/user1/)).toBeInTheDocument()
+    await userEvent.click(within(card).getByRole("button", { name: /Filters/ }))
+    const panel = await screen.findByRole("dialog", { name: "Filters" })
+    expect(within(panel).queryByText("Email contains")).toBeNull()
+    expect(within(panel).getByText("Status")).toBeInTheDocument()
+    await userEvent.keyboard("{Escape}")
+    await expectNoA11yViolations()
+  })
+
+  it("is the card variant by default inside a panel AppLayout", () => {
+    renderWithOnu(
+      <AppLayout>
+        <UsersPage />
+      </AppLayout>,
+    )
+    expect(screen.getByRole("region", { name: "Users" })).toHaveAttribute("data-variant", "card")
   })
 
   it("shows the main action in the empty state and supports status tabs", async () => {

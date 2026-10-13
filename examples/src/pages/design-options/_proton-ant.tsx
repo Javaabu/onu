@@ -4,33 +4,32 @@ import {
   AppHeader,
   AppLayout,
   AppSidebar,
-  Breadcrumbs,
-  Button,
+  AppSwitcher,
   ConditionalLink,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
   Icon,
   LanguageSwitcher,
   LinkButton,
   NotificationCenter,
-  ProgressBar,
+  PageTitle,
   SearchBox,
   ThemeToggle,
+  UsageMeter,
   UserProfile,
   cn,
   type BreadcrumbsItem,
   type NavGroup,
+  type PageTitleFigure,
 } from "@javaabu/onu"
 
 import { useSettings } from "../../settings"
 import { useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
+import { LABEL_COLORS } from "../_shared/shells"
 import { ISLANDS, SERVICES, useApplications } from "../admin-records/_data"
 
 import "./proton-ant.css"
+
+export { LABEL_COLORS }
 
 export const PA_ROUTES = {
   index: "/pages/design-options/proton-ant-index",
@@ -46,9 +45,6 @@ export function filteredIndex(key: string, value: string) {
   return `${PA_ROUTES.index}?${params.toString()}`
 }
 
-/** Proton's label palette (folder and label colours). Decorative only: every dot sits next to a text label. */
-export const LABEL_COLORS = ["#8080ff", "#db60d6", "#415df0", "#179fd9", "#1da583", "#f78400", "#e93671", "#b4a40e"]
-
 /** The label colour of an island (the sidebar labels and the table's island cells match). */
 export function islandColor(value: string) {
   const i = ISLANDS.findIndex((x) => x.value === value)
@@ -63,15 +59,6 @@ export function LabelDot({ color, className }: { color: string; className?: stri
       className={cn("pa-dot size-2.5 shrink-0 rounded-full", className)}
       style={{ "--pa-dot": color } as React.CSSProperties}
     />
-  )
-}
-
-/** A coloured folder glyph, as in Proton Mail's folder list. */
-function FolderIcon({ color }: { color: string }) {
-  return (
-    <span aria-hidden className="pa-folder" style={{ "--pa-dot": color } as React.CSSProperties}>
-      <Icon name="folder" />
-    </span>
   )
 }
 
@@ -128,45 +115,6 @@ function Wordmark() {
   )
 }
 
-/** The app switcher (a grid button opening the list of products). */
-function AppSwitcher() {
-  const tr = useTr()
-  const apps = [
-    { icon: "file-text", label: tr("Records", "ރެކޯޑްސް"), href: PA_ROUTES.index, current: true },
-    { icon: "credit-card", label: tr("Payments", "ފައިސާ"), href: routes.adminRecords.export },
-    { icon: "calendar", label: tr("Calendar", "ކަލެންޑަރު"), href: routes.adminRecords.activityLog },
-    { icon: "folder", label: tr("Drive", "ޑްރައިވް"), href: routes.adminRecords.import },
-    { icon: "users", label: tr("Directory", "ޑިރެކްޓަރީ"), href: routes.adminSettings.users },
-  ]
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="pa-icon-btn shrink-0"
-          aria-label={tr("Switch app", "އެޕް ބަދަލުކުރޭ")}
-        >
-          <Icon name="grid" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-56">
-        <DropdownMenuLabel>{tr("Atoll apps", "އެޓޮލް އެޕްތައް")}</DropdownMenuLabel>
-        {apps.map((a) => (
-          <DropdownMenuItem key={a.label} asChild>
-            <ConditionalLink href={a.href} aria-current={a.current ? "page" : undefined}>
-              <span className="pa-app-tile" aria-hidden>
-                <Icon name={a.icon} />
-              </span>
-              {a.label}
-            </ConditionalLink>
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
-
 function Language() {
   const { settings, update } = useSettings()
   return (
@@ -215,7 +163,8 @@ function useNav(): NavGroup[] {
         id: `folder-${s.value}`,
         label: tr(s.en, s.dv),
         href: filteredIndex("service", s.value),
-        icon: <FolderIcon color={LABEL_COLORS[i]!} />,
+        icon: "folder",
+        color: LABEL_COLORS[i],
       })),
     },
     {
@@ -224,7 +173,7 @@ function useNav(): NavGroup[] {
         id: `label-${isl.value}`,
         label: tr(isl.en, isl.dv),
         href: filteredIndex("island", isl.value),
-        icon: <LabelDot color={islandColor(isl.value)} className="mx-[3px]" />,
+        color: islandColor(isl.value),
       })),
     },
   ]
@@ -244,8 +193,10 @@ export interface ProtonAntShellProps {
   tags?: React.ReactNode
   /** Buttons at the end of the title row. */
   extra?: React.ReactNode
-  /** Content under the title (description, key figures). */
-  content?: React.ReactNode
+  /** Description under the title. */
+  description?: React.ReactNode
+  /** Key figures at the end of the description row. */
+  figures?: PageTitleFigure[]
   /** A tab bar at the bottom of the page header. */
   footer?: React.ReactNode
   /** The header search field (the index binds it to the listing). */
@@ -256,13 +207,12 @@ export interface ProtonAntShellProps {
 }
 
 /**
- * ProtonAnt's shell: Proton Mail's warm-grey sidebar (two-tone wordmark, app
- * switcher, big "New application" button, nav with count pills, coloured
- * folders and labels, quota meter) and header (wide rounded search, upgrade,
- * settings, help, language, theme, notifications, user menu), around a white
- * content panel with a rounded top-start corner. Inside the panel, Ant Design
- * Pro's PageHeader band (breadcrumb, title, tags, extra, content, tabs) sits
- * above the page body.
+ * ProtonAnt's shell, now Onu's default look: `AppLayout` (shell colour, white
+ * content panel), `AppSidebar` (wordmark and `AppSwitcher`, the "New
+ * application" action, nav with count pills, coloured folders and labels, a
+ * `UsageMeter`), `AppHeader` (wide rounded search, upgrade, settings, help,
+ * language, theme, notifications, account) and `PageTitle`'s Ant PageHeader
+ * band (breadcrumb, title, tags, extra, description with key figures, tabs).
  */
 export function ProtonAntShell({
   breadcrumbs,
@@ -270,7 +220,8 @@ export function ProtonAntShell({
   subTitle,
   tags,
   extra,
-  content,
+  description,
+  figures,
   footer,
   search,
   layout = "panel",
@@ -292,65 +243,53 @@ export function ProtonAntShell({
     }
   }, [])
 
-  const used = 1284
-  const quota = 2000
-
   return (
     <div className="design-proton-ant" data-onu-theme="" data-pa-layout={layout}>
       <AppLayout
         contentWidth="full"
-        classNames={{ body: "pa-body", main: "pa-main", content: "pa-content max-w-none" }}
+        background={layout === "grey" ? "layout" : "default"}
+        breadcrumbs={breadcrumbs}
         sidebar={
           <AppSidebar
             groups={groups}
             currentHref={current}
             navLabel={tr("Main", "މައި")}
-            classNames={{ content: "px-1.5", groupLabel: "pa-group-label", badge: "pa-count" }}
             header={
-              <div className="gap-4 px-1 pt-2 grid">
-                <div className="gap-2 flex items-center justify-between">
-                  <Wordmark />
-                  <AppSwitcher />
-                </div>
-                <LinkButton href={routes.adminRecords.create} className="pa-cta w-full" size="lg" startIcon="add">
-                  {tr("New application", "އައު އެޕްލިކޭޝަން")}
-                </LinkButton>
+              <div className="gap-2 flex items-center justify-between">
+                <Wordmark />
+                <AppSwitcher
+                  label={tr("Atoll apps", "އެޓޮލް އެޕްތައް")}
+                  apps={[
+                    { icon: "file-text", label: tr("Records", "ރެކޯޑްސް"), href: PA_ROUTES.index, current: true },
+                    { icon: "credit-card", label: tr("Payments", "ފައިސާ"), href: routes.adminRecords.export },
+                    { icon: "calendar", label: tr("Calendar", "ކަލެންޑަރު"), href: routes.adminRecords.activityLog },
+                    { icon: "folder", label: tr("Drive", "ޑްރައިވް"), href: routes.adminRecords.import },
+                    { icon: "users", label: tr("Directory", "ޑިރެކްޓަރީ"), href: routes.adminSettings.users },
+                  ]}
+                />
               </div>
             }
+            action={
+              <LinkButton href={routes.adminRecords.create} startIcon="add">
+                {tr("New application", "އައު އެޕްލިކޭޝަން")}
+              </LinkButton>
+            }
             footer={
-              <div className="pa-quota gap-2 px-2 pb-1 grid">
-                <ProgressBar
-                  value={used}
-                  max={quota}
-                  size="sm"
-                  label={
-                    <span className="gap-1.5 inline-flex items-center">
-                      <Icon name="file-archive" className="size-4" />
-                      {tr("Records quota", "ރެކޯޑު ކޯޓާ")}
-                    </span>
-                  }
-                  showValue
-                  formatValue={(v, m) => `${v.toLocaleString("en")} / ${m.toLocaleString("en")}`}
-                  classNames={{ label: "text-xs", value: "text-xs tabular-nums" }}
-                />
-                <div className="gap-2 flex items-center justify-between">
-                  <ConditionalLink href={routes.adminSettings.settings} className="pa-link text-xs rounded-sm">
-                    {tr("Get more space", "އިތުރު ޖާގަ")}
-                  </ConditionalLink>
-                  <span className="text-xs text-muted-foreground" dir="ltr">
-                    v5.0.42
-                  </span>
-                </div>
-              </div>
+              <UsageMeter
+                label={tr("Records quota", "ރެކޯޑު ކޯޓާ")}
+                icon="file-archive"
+                value={1284}
+                max={2000}
+                formatValue={(v, m) => `${v.toLocaleString("en")} / ${m.toLocaleString("en")}`}
+                link={{ label: tr("Get more space", "އިތުރު ޖާގަ"), href: routes.adminSettings.settings }}
+                meta={<span dir="ltr">v5.0.42</span>}
+              />
             }
           />
         }
         header={
           <AppHeader
             sidebarTrigger
-            variant="plain"
-            className="pa-header"
-            classNames={{ center: "gap-3", end: "gap-1" }}
             actions={
               <>
                 <LinkButton
@@ -367,18 +306,11 @@ export function ProtonAntShell({
                     href={routes.adminSettings.settings}
                     variant="ghost"
                     size="icon"
-                    className="pa-icon-btn"
                     aria-label={tr("Settings", "ސެޓިންގްސް")}
                   >
                     <Icon name="settings" />
                   </LinkButton>
-                  <LinkButton
-                    href="/"
-                    variant="ghost"
-                    size="icon"
-                    className="pa-icon-btn"
-                    aria-label={tr("Help", "އެހީ")}
-                  >
+                  <LinkButton href="/" variant="ghost" size="icon" aria-label={tr("Help", "އެހީ")}>
                     <Icon name="help" />
                   </LinkButton>
                   <Language />
@@ -412,38 +344,27 @@ export function ProtonAntShell({
                   settingsHref={routes.adminSettings.settings}
                   onSignOut={() => {}}
                   align="end"
-                  className="pa-user ms-1"
-                  classNames={{ trigger: "pa-user__trigger", subtitle: "pa-user__email" }}
+                  className="ms-1"
                 />
               </>
             }
           >
-            <div className="pa-search min-w-0 max-w-xl flex-1">
-              {search ?? (
-                <SearchBox
-                  landmark
-                  placeholder={tr("Search applications", "އެޕްލިކޭޝަން ހޯދާ")}
-                  className="sm:max-w-none"
-                />
-              )}
-            </div>
+            {search ?? <SearchBox placeholder={tr("Search applications", "އެޕްލިކޭޝަން ހޯދާ")} />}
           </AppHeader>
         }
       >
-        <div className="pa-page-header" data-has-footer={footer ? "" : undefined}>
-          <Breadcrumbs items={breadcrumbs} className="pa-breadcrumb" />
-          <div className="pa-page-header__heading">
-            <div className="pa-page-header__left">
-              <h1 className="pa-page-header__title">{title}</h1>
-              {subTitle ? <span className="pa-page-header__sub">{subTitle}</span> : null}
-              {tags}
-            </div>
-            {extra ? <div className="pa-page-header__extra">{extra}</div> : null}
-          </div>
-          {content ? <div className="pa-page-header__content">{content}</div> : null}
-          {footer ? <div className="pa-page-header__footer">{footer}</div> : null}
+        <div className={cn("grid", layout === "grey" ? "gap-4 sm:gap-6" : "gap-4")}>
+          <PageTitle
+            title={title}
+            subtitle={subTitle}
+            tags={tags}
+            actions={extra}
+            description={description}
+            figures={figures}
+            tabs={footer}
+          />
+          <div>{children}</div>
         </div>
-        <div className="pa-page-body">{children}</div>
       </AppLayout>
     </div>
   )
