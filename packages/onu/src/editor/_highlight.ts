@@ -16,16 +16,91 @@ export interface CodeThemes {
 
 export const DEFAULT_CODE_THEMES: CodeThemes = { light: "github-light", dark: "github-dark" }
 
-type Shiki = typeof import("shiki")
-let shikiPromise: Promise<Shiki> | null = null
+type Loader = () => Promise<unknown>
 
-/** Loads Shiki on first use, so it never weighs on pages without code (R2.5). */
-export function loadShiki(): Promise<Shiki> {
-  shikiPromise ??= import("shiki")
-  return shikiPromise
+/**
+ * Grammars loaded on demand. Only these are bundled (each in its own chunk), instead of
+ * Shiki's ~300-language full bundle; add more with `registerCodeLanguage`.
+ */
+const LANGUAGE_LOADERS: Record<string, Loader> = {
+  bash: () => import("shiki/langs/bash.mjs"),
+  blade: () => import("shiki/langs/blade.mjs"),
+  css: () => import("shiki/langs/css.mjs"),
+  dart: () => import("shiki/langs/dart.mjs"),
+  diff: () => import("shiki/langs/diff.mjs"),
+  html: () => import("shiki/langs/html.mjs"),
+  javascript: () => import("shiki/langs/javascript.mjs"),
+  json: () => import("shiki/langs/json.mjs"),
+  jsx: () => import("shiki/langs/jsx.mjs"),
+  markdown: () => import("shiki/langs/markdown.mjs"),
+  php: () => import("shiki/langs/php.mjs"),
+  python: () => import("shiki/langs/python.mjs"),
+  sql: () => import("shiki/langs/sql.mjs"),
+  tsx: () => import("shiki/langs/tsx.mjs"),
+  typescript: () => import("shiki/langs/typescript.mjs"),
+  vue: () => import("shiki/langs/vue.mjs"),
+  xml: () => import("shiki/langs/xml.mjs"),
+  yaml: () => import("shiki/langs/yaml.mjs"),
 }
 
-const ALIASES: Record<string, string> = { sh: "bash", shell: "bash", zsh: "bash", yml: "yaml", md: "markdown" }
+const THEME_LOADERS: Record<string, Loader> = {
+  "github-light": () => import("shiki/themes/github-light.mjs"),
+  "github-dark": () => import("shiki/themes/github-dark.mjs"),
+}
+
+/**
+ * Makes another Shiki grammar available to `CodeBlock` and the editors, e.g.
+ * `registerCodeLanguage("rust", () => import("shiki/langs/rust.mjs"))`.
+ */
+export function registerCodeLanguage(id: string, loader: Loader) {
+  LANGUAGE_LOADERS[id.toLowerCase()] = loader
+}
+
+/** Makes another Shiki theme available by name, e.g. `registerCodeTheme("nord", () => import("shiki/themes/nord.mjs"))`. */
+export function registerCodeTheme(name: string, loader: Loader) {
+  THEME_LOADERS[name] = loader
+}
+
+type Highlighter = Awaited<ReturnType<typeof import("shiki/core").createHighlighterCore>>
+let highlighterPromise: Promise<Highlighter> | null = null
+
+/** Loads Shiki's core and JavaScript regex engine on first use, so pages without code never pay for it (R2.5). */
+export function loadShiki(): Promise<Highlighter> {
+  highlighterPromise ??= Promise.all([import("shiki/core"), import("shiki/engine/javascript")]).then(([core, engine]) =>
+    core.createHighlighterCore({ engine: engine.createJavaScriptRegexEngine({ forgiving: true }) }),
+  )
+  return highlighterPromise
+}
+
+async function ensureLoaded(highlighter: Highlighter, lang: string, themes: CodeThemes) {
+  const langs = highlighter.getLoadedLanguages()
+  if (!langs.includes(lang)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await highlighter.loadLanguage((await LANGUAGE_LOADERS[lang]!()) as any)
+  }
+  const loaded = highlighter.getLoadedThemes()
+  for (const name of [themes.light, themes.dark]) {
+    if (!loaded.includes(name) && THEME_LOADERS[name]) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await highlighter.loadTheme((await THEME_LOADERS[name]!()) as any)
+    }
+  }
+}
+
+const ALIASES: Record<string, string> = {
+  sh: "bash",
+  shell: "bash",
+  zsh: "bash",
+  yml: "yaml",
+  md: "markdown",
+  ts: "typescript",
+  js: "javascript",
+  mjs: "javascript",
+  cjs: "javascript",
+  py: "python",
+  htm: "html",
+  svg: "xml",
+}
 
 /** Display names for common languages; anything else shows its id. */
 export const LANGUAGE_NAMES: Record<string, string> = {
@@ -63,11 +138,17 @@ export async function highlightCode(
 ): Promise<HighlightToken[][] | null> {
   const lang = normalizeLanguage(language)
   if (!lang || lang === "text" || lang === "plaintext") return null
-  const shiki = await loadShiki()
-  if (!(lang in shiki.bundledLanguages)) return null
-  const { tokens } = await shiki.codeToTokens(code, {
-    lang: lang as keyof typeof shiki.bundledLanguages,
-    themes: { light: themes.light, dark: themes.dark },
+  if (!LANGUAGE_LOADERS[lang]) return null
+  const highlighter = await loadShiki()
+  // Unknown theme names fall back to the defaults rather than failing.
+  const use: CodeThemes = {
+    light: THEME_LOADERS[themes.light] ? themes.light : DEFAULT_CODE_THEMES.light,
+    dark: THEME_LOADERS[themes.dark] ? themes.dark : DEFAULT_CODE_THEMES.dark,
+  }
+  await ensureLoaded(highlighter, lang, use)
+  const { tokens } = highlighter.codeToTokens(code, {
+    lang,
+    themes: { light: use.light, dark: use.dark },
     defaultColor: false,
   })
   return tokens.map((line) =>

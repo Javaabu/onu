@@ -30,6 +30,8 @@ const entries = {
 export default defineConfig({
   plugins: [react()],
   build: {
+    // size-limit measures bundle sizes; skipping Vite's per-file gzip pass saves time and memory.
+    reportCompressedSize: false,
     outDir: "dist",
     emptyOutDir: true,
     sourcemap: true,

@@ -8,6 +8,8 @@ const onuSrc = resolve(__dirname, "../packages/onu/src")
 export default defineConfig({
   base: process.env.EXAMPLES_BASE ?? "/",
   plugins: [react(), tailwindcss()],
+  // Skip the gzip size report and source maps: faster builds that fit on small servers.
+  build: { reportCompressedSize: false, sourcemap: false },
   resolve: {
     // Use the package source directly so edits show up without a rebuild.
     alias: [
