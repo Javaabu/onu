@@ -3,14 +3,14 @@ title: Design & density
 sidebar_position: 1
 ---
 
-Onu's look follows shadcn/ui's current style: neutral surfaces, subtle borders, sparing shadows and colour used for emphasis. The same components work for admin panels, public portals, learning platforms and kiosks; density modes adapt them.
+Onu's default look pairs a Proton Mail-style app shell with Ant Design 5 content elements: 14px text, 32px controls, 6px control corners and 8px cards, hairline borders, plain greys, and colour used for emphasis. Only popups cast a (subtle) shadow. See [Theming](./theming#the-default-look) for the tokens behind it. The same components work for admin panels, public portals, learning platforms and kiosks; density modes adapt them.
 
 # Density modes
 
 | Mode | Use for | Effect |
 |---|---|---|
 | `compact` | Data-heavy tables and grids | Tighter spacing (about 10% smaller) |
-| `default` | Admin forms and pages | Standard shadcn sizing |
+| `default` | Admin forms and pages | Ant Design's default size: 32px controls, 12px 16px table cells |
 | `comfortable` | Public and citizen portals, LMS | More generous spacing |
 | `touch` | Kiosks | Large targets (buttons ≥ 44px) and larger text |
 

@@ -35,6 +35,7 @@ The table always shows the rows it is given (it never sorts or pages by itself):
 - **Opening a record**: `getRowHref` makes the primary column a link (through `OnuProvider linkComponent`) and clicking the row follows it; or use `onRowClick`.
 - **Empty states**: "No users yet" with `emptyAction`, or "No users match your search" naming the search and filters with Clear search / Clear filters.
 - **Trash**: `trash` removes checkboxes and the bulk bar; use `trashActions(t, { onRestore, onForceDelete })` for the ⋯ menu.
+- **Look**: Ant Design's table: a grey (`--muted`, #fafafa) header with semibold labels and short split lines between header cells, 12px 16px cells (`density="compact"` gives 8px, `comfortable` 16px), hairline row dividers, a #fafafa hover and selected rows in the brand's lightest step (`--primary-1`). The table has no outer frame; put it in a [Card](../layout-and-navigation/card) for one. Sort arrows are grey, and brand-coloured on the sorted column.
 - **Phones**: below 768px (or `layout="cards"`) each row becomes a card with every value labelled by its column; a Sort by menu replaces the headers and a Select all checkbox sits above the cards.
 
 ## Props
