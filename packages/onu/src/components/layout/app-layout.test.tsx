@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react"
+import { screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
@@ -68,6 +68,35 @@ describe("AppLayout", () => {
     )
     expect(screen.getByRole("main")).toHaveClass("pb-[calc(5rem+env(safe-area-inset-bottom))]")
     expect(screen.getByRole("navigation", { name: "Quick navigation" })).toBeInTheDocument()
+  })
+
+  it("is a white panel on the app shell by default, with a shell header and sidebar", () => {
+    renderWithOnu(<Shell background="layout" />)
+    expect(document.querySelector("[data-slot=app-layout]")).toHaveAttribute("data-variant", "panel")
+    const panel = document.querySelector("[data-slot=app-layout-panel]")!
+    expect(panel).toHaveAttribute("data-background", "layout")
+    expect(panel).toHaveClass("md:rounded-ss-[12px]", "md:border-t", "md:border-s", "overflow-clip")
+    expect(panel).toContainElement(screen.getByRole("main"))
+    expect(panel).toContainElement(screen.getByRole("contentinfo"))
+    expect(screen.getByRole("banner")).toHaveAttribute("data-variant", "shell")
+    expect(document.querySelector("[data-slot=sidebar]")).toHaveAttribute("data-surface", "shell")
+  })
+
+  it("flat: no panel, a bordered header and the sidebar colour", () => {
+    renderWithOnu(<Shell variant="flat" />)
+    expect(document.querySelector("[data-slot=app-layout-panel]")).toBeNull()
+    expect(screen.getByRole("banner")).toHaveAttribute("data-variant", "default")
+    expect(screen.getByRole("banner")).toHaveClass("border-b")
+    expect(document.querySelector("[data-slot=sidebar]")).toHaveAttribute("data-surface", "sidebar")
+  })
+
+  it("shows its breadcrumbs above the content (a page header band shows them instead)", () => {
+    renderWithOnu(<Shell breadcrumbs={[{ label: "Home", href: "/" }, { label: "Users" }]} />)
+    const trail = document.querySelector("[data-slot=app-layout-breadcrumbs]")!
+    expect(within(trail as HTMLElement).getByRole("link", { name: "Home" })).toHaveAttribute("href", "/")
+    expect(screen.getByRole("main")).toHaveClass(
+      "[&:has([data-slot=page-title][data-variant=band])_[data-slot=app-layout-breadcrumbs]]:hidden",
+    )
   })
 
   it.each(directions)("works in %s with Dhivehi", async (dir) => {

@@ -33,6 +33,19 @@ Light and dark mode use two Shiki themes at once (GitHub light/dark by default) 
 
 Other `<figure>` props go to the root. `highlightCode(code, language, themes)` is exported for custom renderers.
 
+### Languages and themes
+
+Onu bundles a curated set of grammars, each loaded on demand: `bash`, `blade`, `css`, `dart`, `diff`, `html`, `javascript`, `json`, `jsx`, `markdown`, `php`, `python`, `sql`, `tsx`, `typescript`, `vue`, `xml` and `yaml` (aliases such as `ts`, `js`, `sh`, `yml` and `md` work too). Highlighting uses Shiki's JavaScript regex engine, so no WebAssembly is shipped. Any other language renders as plain text until you register it, and other themes likewise:
+
+```ts
+import { registerCodeLanguage, registerCodeTheme } from "@javaabu/onu/editor"
+
+registerCodeLanguage("rust", () => import("shiki/langs/rust.mjs"))
+registerCodeTheme("nord", () => import("shiki/themes/nord.mjs"))
+```
+
+Unregistered theme names fall back to GitHub light/dark.
+
 ## Accessibility
 
 - The code area is a focusable, labelled region, so it can be scrolled with the keyboard.

@@ -7,8 +7,13 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
+  Alert,
+  AlertDescription,
+  AlertTitle,
   Button,
   Icon,
+  Skeleton,
+  Spinner,
 } from "@javaabu/onu"
 
 import { locate, navSections, neighbours, type Entry, type NavSection } from "../registry"
@@ -83,7 +88,21 @@ function PrevNext({ pathname }: { pathname: string }) {
   )
 }
 
-function FullSource({ source }: { source: string }) {
+function FullSourceCode({ load }: { load: () => Promise<string> }) {
+  const source = React.use(load())
+  return (
+    <LazyCodeBlock
+      code={source}
+      language="tsx"
+      lineNumbers
+      className="my-0 rounded-xl"
+      classNames={{ pre: "max-h-[70vh]" }}
+    />
+  )
+}
+
+/** The whole file; its text is fetched the first time it is opened. */
+function FullSource({ load }: { load: () => Promise<string> }) {
   const [open, setOpen] = React.useState(false)
   return (
     <section className="mt-12 space-y-3" aria-labelledby="full-source">
@@ -100,13 +119,7 @@ function FullSource({ source }: { source: string }) {
       {open ? (
         <div data-axe-skip>
           <React.Suspense fallback={<CodeFallback />}>
-            <LazyCodeBlock
-              code={source}
-              language="tsx"
-              lineNumbers
-              className="my-0 rounded-xl"
-              classNames={{ pre: "max-h-[70vh]" }}
-            />
+            <FullSourceCode load={load} />
           </React.Suspense>
         </div>
       ) : null}
@@ -128,20 +141,104 @@ function useScrollToHash() {
   }, [pathname])
 }
 
+/** Placeholder while an entry's chunk loads: section-shaped skeletons, or a centred spinner for bare pages. */
+function EntryFallback({ bare }: { bare?: boolean }) {
+  if (bare) {
+    return (
+      <div className="flex min-h-svh items-center justify-center bg-background">
+        <Spinner size="lg" label="Loading page…" className="text-muted-foreground" />
+      </div>
+    )
+  }
+  return (
+    <div className="gap-12 grid" role="status" aria-label="Loading demo…">
+      {[0, 1].map((i) => (
+        <div key={i} className="gap-3 grid">
+          <Skeleton className="h-6 w-48" />
+          <Skeleton className="h-4 max-w-md w-full" />
+          <Skeleton className="h-9 w-40" />
+          <Skeleton className="h-48 w-full rounded-xl" />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/** Shows a retry message when an entry's chunk fails to load (e.g. after a redeploy) or the demo throws. */
+class EntryErrorBoundary extends React.Component<{ children: React.ReactNode }, { error: Error | null }> {
+  state = { error: null as Error | null }
+
+  static getDerivedStateFromError(error: Error) {
+    return { error }
+  }
+
+  render() {
+    const { error } = this.state
+    if (!error) return this.props.children
+    return (
+      <div className="p-4 flex justify-center">
+        <Alert variant="destructive" className="max-w-lg">
+          <Icon name="warning" />
+          <AlertTitle>This page could not be loaded</AlertTitle>
+          <AlertDescription className="gap-3 grid">
+            <p>{error.message || "Something went wrong."}</p>
+            <div>
+              <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
+                <Icon name="refresh" /> Reload
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+}
+
+/**
+ * Marks the document once a route's real content has mounted, so tests can wait
+ * for it: `html[data-page-ready="/components/…"]` (the router path). Place it in
+ * the same Suspense boundary as lazy content; it commits together with it.
+ */
+export function PageReady() {
+  const { pathname } = useLocation()
+  React.useEffect(() => {
+    const root = document.documentElement
+    root.dataset.pageReady = pathname
+    return () => {
+      if (root.dataset.pageReady === pathname) delete root.dataset.pageReady
+    }
+  }, [pathname])
+  return null
+}
+
+/** Lazily loads an entry's component, with a skeleton while it loads and an error boundary around it. */
+function LazyEntry({ entry }: { entry: Entry }) {
+  const { Component, meta, slug } = entry
+  return (
+    <EntryErrorBoundary key={slug}>
+      <React.Suspense fallback={<EntryFallback bare={meta.layout === "bare"} />}>
+        <Component />
+        <PageReady />
+      </React.Suspense>
+    </EntryErrorBoundary>
+  )
+}
+
 /** A component demo or sample page. Bare sample pages render full screen without the docs chrome. */
 export function EntryView({ entries }: { entries: Entry[] }) {
   const { "*": slug } = useParams()
   const { pathname } = useLocation()
   useScrollToHash()
   const entry = entries.find((e) => e.slug === slug)
+  const demoSource = React.useMemo(() => (entry ? { sections: entry.sections, load: entry.source } : null), [entry])
   if (!entry) return <Navigate to="/" replace />
-  const { Component, meta, source } = entry
+  const { meta } = entry
 
   if (meta.layout === "bare") {
     return (
       <>
         <BareChrome />
-        <Component />
+        <LazyEntry entry={entry} />
       </>
     )
   }
@@ -157,10 +254,10 @@ export function EntryView({ entries }: { entries: Entry[] }) {
   return (
     <SiteLayout toc>
       <PageHeader crumbs={crumbs} title={meta.title} description={meta.description} />
-      <DemoSourceContext.Provider value={source}>
-        <Component />
+      <DemoSourceContext.Provider value={demoSource}>
+        <LazyEntry entry={entry} />
       </DemoSourceContext.Provider>
-      <FullSource source={source} />
+      <FullSource key={entry.slug} load={entry.source} />
       <PrevNext pathname={pathname} />
     </SiteLayout>
   )
@@ -181,6 +278,7 @@ export function SectionIndex({ section }: { section: NavSection }) {
         title={section.label}
         description={description}
       />
+      <PageReady />
       <div className="gap-12 grid">
         {section.categories.map((category) => (
           <section key={category.id} aria-labelledby={`cat-${category.id}`} className="space-y-4">

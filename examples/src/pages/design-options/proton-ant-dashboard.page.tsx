@@ -16,9 +16,6 @@ import {
   TableRow,
   Tabs,
   Timeline,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
   UserAvatar,
   cn,
 } from "@javaabu/onu"
@@ -49,7 +46,10 @@ const DAY = 86_400_000
 const MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 const MONTHS_DV = ["ޖެނ", "ފެބ", "މާޗ", "އޭޕް", "މެއި", "ޖޫން", "ޖުލަ", "އޮގަ", "ސެޕް", "އޮކް", "ނޮވެ", "ޑިސެ"]
 
-/** Ant Pro's ChartCard: a muted title with an info tip, a big number, a 46px chart slot and a footer under a divider. */
+/**
+ * Ant Pro's ChartCard is Onu's `StatTile`: a muted label with an info tip, a
+ * big figure, a 46px chart slot and a footer row under a line.
+ */
 function ChartCard({
   title,
   tip,
@@ -59,32 +59,11 @@ function ChartCard({
 }: {
   title: string
   tip: string
-  total: React.ReactNode
+  total: string
   footer: React.ReactNode
   children: React.ReactNode
 }) {
-  return (
-    <Card className="pa-card pa-chart-card" padded={false}>
-      <div className="pa-chart-card__body">
-        <div className="pa-chart-card__meta">
-          <span>{title}</span>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button type="button" className="pa-info-btn" aria-label={tip}>
-                <Icon name="info" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>{tip}</TooltipContent>
-          </Tooltip>
-        </div>
-        <div className="pa-chart-card__total tabular-nums" dir="ltr">
-          {total}
-        </div>
-        <div className="pa-chart-card__content">{children}</div>
-      </div>
-      <div className="pa-chart-card__footer">{footer}</div>
-    </Card>
-  )
+  return <StatTile label={title} tip={tip} value={total} chart={children} footer={footer} />
 }
 
 /** A field in a ChartCard footer: label then value. */
@@ -338,7 +317,7 @@ export default function ProtonAntDashboardPage() {
         </section>
 
         {/* Sales card: tabs + bar chart + ranking */}
-        <Card className="pa-card pa-sales-card" padded={false}>
+        <Card className="pa-sales-card" padded={false}>
           <Tabs
             variant="line"
             className="pa-card-tabs"
@@ -396,7 +375,6 @@ export default function ProtonAntDashboardPage() {
         {/* Keywords + category pie */}
         <div className="gap-4 lg:gap-6 xl:grid-cols-2 grid">
           <Card
-            className="pa-card"
             headingLevel={2}
             title={tr("Top searches", "ގިނައިން ހޯދާ")}
             actions={
@@ -469,7 +447,6 @@ export default function ProtonAntDashboardPage() {
           </Card>
 
           <Card
-            className="pa-card"
             headingLevel={2}
             title={tr("Applications by service", "ޚިދުމަތުން އެޕްލިކޭޝަން")}
             actions={
@@ -501,7 +478,6 @@ export default function ProtonAntDashboardPage() {
         {/* Recent applications + activity */}
         <div className="gap-4 lg:gap-6 xl:grid-cols-[minmax(0,5fr)_minmax(0,3fr)] grid">
           <Card
-            className="pa-card"
             headingLevel={2}
             title={tr("Recent applications", "ފަހުގެ އެޕްލިކޭޝަންތައް")}
             actions={
@@ -558,7 +534,7 @@ export default function ProtonAntDashboardPage() {
             </div>
           </Card>
 
-          <Card className="pa-card" headingLevel={2} title={tr("Activity", "ހަރަކާތްތައް")}>
+          <Card headingLevel={2} title={tr("Activity", "ހަރަކާތްތައް")}>
             <Timeline items={activity} now={new Date(today + 12 * 3600_000)} className="pa-timeline" size="sm" />
           </Card>
         </div>

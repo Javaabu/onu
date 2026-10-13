@@ -12,7 +12,8 @@ export const navTabsVariants = cva(
   {
     variants: {
       variant: {
-        line: "h-10 px-3 after:inset-x-1 after:h-0.5 rounded-t-md text-muted-foreground after:absolute after:-bottom-px after:rounded-full after:bg-transparent hover:text-foreground data-active:text-foreground data-active:after:bg-primary",
+        // Ant's line tabs: plain labels 32px apart, the brand colour and a 2px ink bar on the current one.
+        line: "h-11 px-0 font-normal after:inset-x-0 after:h-0.5 text-foreground after:absolute after:-bottom-px after:bg-transparent hover:text-primary data-active:text-primary data-active:[text-shadow:0_0_0.25px_currentColor] data-active:after:bg-primary",
         pill: "h-8 px-3 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground data-active:bg-primary-subtle data-active:text-primary-subtle-foreground",
       },
     },
@@ -92,7 +93,11 @@ export function NavTabs({
     >
       <ul
         ref={listRef}
-        className={cn("gap-1 no-scrollbar flex scroll-fade-x overflow-x-auto overscroll-x-contain", classNames?.list)}
+        className={cn(
+          (variant ?? "line") === "line" ? "gap-8" : "gap-1",
+          "no-scrollbar flex scroll-fade-x overflow-x-auto overscroll-x-contain",
+          classNames?.list,
+        )}
       >
         {items.map((item, i) => {
           const active = !item.disabled && isActive(item)

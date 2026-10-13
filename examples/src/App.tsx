@@ -1,13 +1,30 @@
 import * as React from "react"
 import { HashRouter, Link, Navigate, Route, Routes } from "react-router"
-import { OnuProvider, ThemeProvider, Toaster, TooltipProvider } from "@javaabu/onu"
+import { OnuProvider, Spinner, ThemeProvider, Toaster, TooltipProvider } from "@javaabu/onu"
 import { googleMapsAdapter, MapProvider } from "@javaabu/onu/maps"
 
-import { Home } from "./components/home"
 import { SearchProvider } from "./components/search"
-import { EntryView, SectionIndex, componentsSection, pagesSection } from "./components/views"
+import { EntryView, PageReady, SectionIndex, componentsSection, pagesSection } from "./components/views"
 import { demos, pages } from "./registry"
 import { SettingsProvider, useSettings } from "./settings"
+
+/** The landing page has charts and form demos; load it as its own chunk so deep links skip it. */
+const Home = React.lazy(() => import("./components/home").then((m) => ({ default: m.Home })))
+
+function HomeRoute() {
+  return (
+    <React.Suspense
+      fallback={
+        <div className="flex min-h-svh items-center justify-center">
+          <Spinner size="lg" label="Loading…" className="text-muted-foreground" />
+        </div>
+      }
+    >
+      <Home />
+      <PageReady />
+    </React.Suspense>
+  )
+}
 
 const RouterLink = React.forwardRef<
   HTMLAnchorElement,
@@ -55,7 +72,7 @@ export default function App() {
           <HashRouter>
             <SearchProvider>
               <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<HomeRoute />} />
                 <Route path="/components" element={<SectionIndex section={componentsSection} />} />
                 <Route path="/pages" element={<SectionIndex section={pagesSection} />} />
                 <Route path="/components/*" element={<EntryView entries={demos} />} />

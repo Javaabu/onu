@@ -188,6 +188,7 @@
   --shell-field: var(--onu-shell-field);
   --shell-hover: var(--onu-shell-hover);
   --shell-active: var(--onu-shell-active);
+  --shell-weak: var(--onu-shell-weak);
   /* The grey page behind dashboard cards (Ant colorBgLayout). */
   --layout: var(--onu-layout);
 

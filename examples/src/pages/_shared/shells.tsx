@@ -1,20 +1,25 @@
 import * as React from "react"
-import { useLocation } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 import {
   AppHeader,
   AppLayout,
   AppSidebar,
+  AppSwitcher,
   BottomNav,
-  Breadcrumbs,
   Density,
+  Icon,
   LanguageSwitcher,
+  LinkButton,
   Logo,
   NotificationCenter,
+  SearchBox,
   SiteFooter,
   ThemeToggle,
   TopNav,
+  UsageMeter,
   UserProfile,
   cn,
+  type BreadcrumbsItem,
   type NavGroup,
 } from "@javaabu/onu"
 
@@ -22,12 +27,15 @@ import { useSettings } from "../../settings"
 import { useTr } from "./i18n"
 import { routes } from "./routes"
 import { BrandMark } from "../../components/layout"
+import { ISLANDS, SERVICES, useApplications } from "../admin-records/_data"
 
 // Fixed demo times, computed once (not during render).
 const NOW = Date.now()
 
+/** The current path and query, so sidebar items that link to a filtered list (folders, labels) light up. */
 function useCurrent() {
-  return useLocation().pathname
+  const { pathname, search } = useLocation()
+  return `${pathname}${search}`
 }
 
 function Language({ variant = "select" }: { variant?: "select" | "menu" }) {
@@ -47,99 +55,189 @@ export interface Crumb {
   href?: string
 }
 
-/** Breadcrumbs in app headers: hidden on phones, where the page title already says where you are. */
-function HeaderCrumbs({ items }: { items: Crumb[] }) {
-  return items.length ? (
-    <div className="min-w-0 sm:block hidden">
-      <Breadcrumbs items={items} />
-    </div>
-  ) : null
+/** Proton's label palette for folders and labels. Decorative only: every colour sits next to a text label. */
+export const LABEL_COLORS = ["#8080ff", "#db60d6", "#415df0", "#179fd9", "#1da583", "#f78400", "#e93671", "#b4a40e"]
+
+/** The applications index, filtered (`app_filter[service]=building`), as the sidebar folders and labels link to it. */
+export function filteredApplications(key: string, value: string) {
+  const params = new URLSearchParams({ [`app_filter[${key}]`]: value })
+  return `${routes.adminRecords.indexTable}?${params.toString()}`
 }
 
-function adminNav(tr: ReturnType<typeof useTr>): NavGroup[] {
+function adminNav(tr: ReturnType<typeof useTr>, counts: { submitted: number; inReview: number }): NavGroup[] {
   return [
     {
-      items: [{ label: tr("Dashboard", "ޑޭޝްބޯޑް"), href: routes.adminRecords.dashboard, icon: "home" }],
-    },
-    {
-      label: tr("Records", "ރެކޯޑުތައް"),
       items: [
+        { label: tr("Dashboard", "ޑޭޝްބޯޑް"), href: routes.adminRecords.dashboard, icon: "home" },
         {
           label: tr("Applications", "އެޕްލިކޭޝަންތައް"),
+          href: routes.adminRecords.indexTable,
           icon: "file-text",
-          badge: 12,
+          badge: counts.submitted,
+        },
+        {
+          label: tr("In review", "ރިވިއުކުރަނީ"),
+          href: filteredApplications("status", "in_review"),
+          icon: "clock",
+          badge: counts.inReview,
+          badgeTone: "neutral",
+        },
+        { label: tr("Board", "ބޯޑް"), href: routes.adminRecords.indexKanban, icon: "kanban" },
+        { label: tr("Activity log", "އެކްޓިވިޓީ ލޮގް"), href: routes.adminRecords.activityLog, icon: "history" },
+        {
+          label: tr("Import & export", "އިމްޕޯޓް އަދި އެކްސްޕޯޓް"),
+          icon: "upload",
           items: [
-            { label: tr("All applications", "ހުރިހާ އެޕްލިކޭޝަނެއް"), href: routes.adminRecords.indexTable },
-            { label: tr("List view", "ލިސްޓް"), href: routes.adminRecords.indexList },
-            { label: tr("Grid view", "ގްރިޑް"), href: routes.adminRecords.indexGrid },
-            { label: tr("Board", "ބޯޑް"), href: routes.adminRecords.indexKanban },
-            { label: tr("Trash", "ކުނިފޮށި"), href: routes.adminRecords.trash },
+            { label: tr("Import", "އިމްޕޯޓް"), href: routes.adminRecords.import },
+            { label: tr("Export", "އެކްސްޕޯޓް"), href: routes.adminRecords.export },
           ],
         },
-        { label: tr("Activity log", "އެކްޓިވިޓީ ލޮގް"), href: routes.adminRecords.activityLog, icon: "history" },
-        { label: tr("Import", "އިމްޕޯޓް"), href: routes.adminRecords.import, icon: "upload" },
-        { label: tr("Export", "އެކްސްޕޯޓް"), href: routes.adminRecords.export, icon: "download" },
+        { label: tr("Trash", "ކުނިފޮށި"), href: routes.adminRecords.trash, icon: "trash" },
       ],
     },
     {
-      label: tr("Content", "ކޮންޓެންޓް"),
-      items: [
-        { label: tr("Posts", "ޕޯސްޓްތައް"), href: routes.adminContent.postEditor, icon: "edit" },
-        { label: tr("Pages", "ސަފްހާތައް"), href: routes.adminContent.pageBuilder, icon: "file" },
-        { label: tr("Media", "މީޑިއާ"), href: routes.adminContent.mediaLibrary, icon: "image" },
-        { label: tr("Menus", "މެނޫތައް"), href: routes.adminContent.menuBuilder, icon: "menu" },
-        { label: tr("Translations", "ތަރުޖަމާ"), href: routes.adminContent.translations, icon: "languages" },
-      ],
+      label: tr("Folders", "ފޯލްޑަރުތައް"),
+      items: SERVICES.slice(0, 4).map((s, i) => ({
+        id: `folder-${s.value}`,
+        label: tr(s.en, s.dv),
+        href: filteredApplications("service", s.value),
+        icon: "folder",
+        color: LABEL_COLORS[i],
+      })),
     },
     {
-      label: tr("Settings & access", "ސެޓިންގްސް"),
+      label: tr("Labels", "ލޭބަލްތައް"),
+      items: ISLANDS.slice(0, 3).map((isl, i) => ({
+        id: `label-${isl.value}`,
+        label: tr(isl.en, isl.dv),
+        href: filteredApplications("island", isl.value),
+        color: LABEL_COLORS[(i + 4) % LABEL_COLORS.length],
+      })),
+    },
+    {
+      label: tr("Administration", "އިދާރީ"),
       items: [
-        { label: tr("Users", "މެމްބަރުން"), href: routes.adminSettings.users, icon: "users" },
-        { label: tr("Roles", "ރޯލްތައް"), href: routes.adminSettings.roles, icon: "lock" },
-        { label: tr("API keys", "އޭޕީއައި ކީ"), href: routes.adminSettings.apiKeys, icon: "key" },
-        { label: tr("Notifications", "ނޮޓިފިކޭޝަން"), href: routes.adminSettings.notifications, icon: "bell" },
-        { label: tr("Settings", "ސެޓިންގްސް"), href: routes.adminSettings.settings, icon: "settings" },
+        {
+          label: tr("Content", "ކޮންޓެންޓް"),
+          icon: "edit",
+          items: [
+            { label: tr("Posts", "ޕޯސްޓްތައް"), href: routes.adminContent.postEditor },
+            { label: tr("Pages", "ސަފްހާތައް"), href: routes.adminContent.pageBuilder },
+            { label: tr("Media", "މީޑިއާ"), href: routes.adminContent.mediaLibrary },
+            { label: tr("Menus", "މެނޫތައް"), href: routes.adminContent.menuBuilder },
+            { label: tr("Translations", "ތަރުޖަމާ"), href: routes.adminContent.translations },
+          ],
+        },
+        {
+          label: tr("Settings & access", "ސެޓިންގްސް"),
+          icon: "settings",
+          items: [
+            { label: tr("Users", "މެމްބަރުން"), href: routes.adminSettings.users },
+            { label: tr("Roles", "ރޯލްތައް"), href: routes.adminSettings.roles },
+            { label: tr("API keys", "އޭޕީއައި ކީ"), href: routes.adminSettings.apiKeys },
+            { label: tr("Notifications", "ނޮޓިފިކޭޝަން"), href: routes.adminSettings.notifications },
+            { label: tr("Settings", "ސެޓިންގްސް"), href: routes.adminSettings.settings },
+          ],
+        },
       ],
     },
   ]
 }
 
-/** Admin panel shell: sidebar, header with breadcrumbs, theme/language, notifications. */
+/** The header search: searches the applications index. */
+function AdminSearch() {
+  const tr = useTr()
+  const navigate = useNavigate()
+  const { settings } = useSettings()
+  return (
+    <SearchBox
+      placeholder={tr("Search applications", "އެޕްލިކޭޝަން ހޯދާ")}
+      thaana={settings.locale === "dv"}
+      onSearch={(q) => {
+        const params = new URLSearchParams(q ? { app_search: q } : {})
+        void navigate(`${routes.adminRecords.indexTable}${q ? `?${params.toString()}` : ""}`)
+      }}
+    />
+  )
+}
+
+/**
+ * Admin panel shell (Proton): the sidebar with the app switcher, a "New
+ * application" button, nav with counts, folders, labels and a quota meter; the
+ * header with search, settings, help, language, theme, notifications and the
+ * account menu; the page on a white panel. Breadcrumbs show in the page header.
+ */
 export function AdminShell({
   breadcrumbs = [],
   children,
   contentWidth = "default",
+  background,
 }: {
   breadcrumbs?: Crumb[]
   children: React.ReactNode
   contentWidth?: "full" | "wide" | "default" | "narrow"
+  /** `layout`: the light grey behind dashboards made of cards. */
+  background?: "default" | "layout"
 }) {
   const tr = useTr()
   const current = useCurrent()
+  const apps = useApplications()
+  const counts = {
+    submitted: apps.filter((a) => a.status === "submitted").length,
+    inReview: apps.filter((a) => a.status === "in_review").length,
+  }
+  const trail: BreadcrumbsItem[] = breadcrumbs.length
+    ? [{ label: tr("Home", "ފުރަތަމަ ސަފްހާ"), href: routes.adminRecords.dashboard }, ...breadcrumbs]
+    : []
+
   return (
     <AppLayout
       contentWidth={contentWidth}
+      background={background}
+      breadcrumbs={trail}
       sidebar={
         <AppSidebar
           collapsible="icon"
-          groups={adminNav(tr)}
+          groups={adminNav(tr, counts)}
           currentHref={current}
           header={
-            <Logo
-              children={<BrandMark className="size-7" />}
-              alt="Onu"
-              text={tr("Onu Admin", "އޮނު އެޑްމިން")}
-              href={routes.adminRecords.dashboard}
-            />
+            <div className="gap-2 flex items-center justify-between">
+              <Logo
+                children={<BrandMark className="size-7" />}
+                alt="Onu"
+                text={tr("Onu Admin", "އޮނު އެޑްމިން")}
+                href={routes.adminRecords.dashboard}
+              />
+              <AppSwitcher
+                label={tr("Onu apps", "އޮނު އެޕްތައް")}
+                apps={[
+                  {
+                    label: tr("Records", "ރެކޯޑްސް"),
+                    href: routes.adminRecords.dashboard,
+                    icon: "file-text",
+                    current: true,
+                  },
+                  { label: tr("Content", "ކޮންޓެންޓް"), href: routes.adminContent.postEditor, icon: "edit" },
+                  { label: tr("Maps", "މެޕް"), href: routes.maps.fleet, icon: "map-pin" },
+                  { label: tr("Learning", "ދަސްކުރުން"), href: routes.learning.courses, icon: "play" },
+                  { label: tr("Directory", "ޑިރެކްޓަރީ"), href: routes.adminSettings.users, icon: "users" },
+                ]}
+              />
+            </div>
+          }
+          action={
+            <LinkButton href={routes.adminRecords.create} startIcon="add">
+              {tr("New application", "އައު އެޕްލިކޭޝަން")}
+            </LinkButton>
           }
           footer={
-            <UserProfile
-              name={tr("Aishath Shifa", "އައިޝަތު ޝިފާ")}
-              subtitle="shifa@javaabu.com"
-              profileHref={routes.adminSettings.userProfile}
-              settingsHref={routes.adminSettings.settings}
-              onSignOut={() => {}}
-              side="top"
+            <UsageMeter
+              label={tr("Records quota", "ރެކޯޑު ކޯޓާ")}
+              icon="file-archive"
+              value={1284}
+              max={2000}
+              link={{ label: tr("Get more space", "އިތުރު ޖާގަ"), href: routes.adminSettings.settings }}
+              meta={<span dir="ltr">v5.0.42</span>}
             />
           }
         />
@@ -149,7 +247,17 @@ export function AdminShell({
           sidebarTrigger
           actions={
             <>
-              <Language variant="menu" />
+              <span className="sm:contents hidden">
+                <LinkButton
+                  href={routes.adminSettings.settings}
+                  variant="ghost"
+                  size="icon"
+                  aria-label={tr("Settings", "ސެޓިންގްސް")}
+                >
+                  <Icon name="settings" />
+                </LinkButton>
+                <Language variant="menu" />
+              </span>
               <ThemeToggle />
               <NotificationCenter
                 notifications={[
@@ -167,10 +275,19 @@ export function AdminShell({
                 ]}
                 onMarkRead={() => {}}
               />
+              <UserProfile
+                name={tr("Aishath Shifa", "އައިޝަތު ޝިފާ")}
+                subtitle="shifa@javaabu.com"
+                profileHref={routes.adminSettings.userProfile}
+                settingsHref={routes.adminSettings.settings}
+                onSignOut={() => {}}
+                align="end"
+                className="ms-1"
+              />
             </>
           }
         >
-          <HeaderCrumbs items={breadcrumbs} />
+          <AdminSearch />
         </AppHeader>
       }
     >
@@ -199,10 +316,16 @@ export function CitizenShell({ breadcrumbs = [], children }: { breadcrumbs?: Cru
   return (
     <Density value="comfortable" className="contents">
       <AppLayout
+        breadcrumbs={breadcrumbs}
         sidebar={
           <AppSidebar
             items={items}
             currentHref={current}
+            action={
+              <LinkButton href={routes.applications.wizard} startIcon="add">
+                {tr("Apply for a service", "ޚިދުމަތަކަށް އެދޭ")}
+              </LinkButton>
+            }
             header={
               <Logo
                 children={<BrandMark className="size-7" />}
@@ -231,9 +354,7 @@ export function CitizenShell({ breadcrumbs = [], children }: { breadcrumbs?: Cru
                 <ThemeToggle />
               </>
             }
-          >
-            {breadcrumbs.length ? <Breadcrumbs items={breadcrumbs} /> : null}
-          </AppHeader>
+          />
         }
         bottomNav={<BottomNav currentHref={current} items={items.slice(0, 4)} />}
       >

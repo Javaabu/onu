@@ -1,4 +1,4 @@
-import type { ComponentType } from "react"
+import * as React from "react"
 
 export interface EntryMeta {
   title: string
@@ -13,34 +13,74 @@ export interface Entry {
   /** Path under `showcase/` or `pages/` without the suffix, e.g. `text-inputs/text-input`. */
   slug: string
   meta: EntryMeta
-  Component: ComponentType
-  source: string
+  /** Lazily loaded: each demo and sample page is its own chunk. Render inside `<Suspense>`. */
+  Component: React.LazyExoticComponent<React.ComponentType>
+  /** Starts loading the component's chunk (e.g. on hover) and resolves when it is ready. */
+  preload: () => Promise<unknown>
+  /** The file's source text, fetched on first call and cached. */
+  source: () => Promise<string>
+  /** `<DemoSection>` titles whose code `sectionSource` can extract from the source. */
+  sections: string[]
 }
 
-type Module = { default: ComponentType; meta: EntryMeta }
+type Loader<T> = () => Promise<T>
+type MetaModule = { meta: EntryMeta; sections: string[] }
 
-const demoModules = import.meta.glob<Module>("./showcase/**/*.demo.tsx", { eager: true })
-const demoSources = import.meta.glob<string>("./showcase/**/*.demo.tsx", {
+/*
+ * Only the metadata is eager: `?meta` (see vite.config.ts) compiles each file to
+ * its `meta` literal, so navigation and search are instant without pulling every
+ * demo into the main chunk. Components and raw sources load on navigation.
+ */
+const demoMeta = import.meta.glob<MetaModule>("./showcase/**/*.demo.tsx", {
   eager: true,
-  query: "?raw",
+  query: "?meta",
   import: "default",
 })
-const pageModules = import.meta.glob<Module>("./pages/**/*.page.tsx", { eager: true })
-const pageSources = import.meta.glob<string>("./pages/**/*.page.tsx", { eager: true, query: "?raw", import: "default" })
+const demoModules = import.meta.glob<React.ComponentType>("./showcase/**/*.demo.tsx", { import: "default" })
+const demoSources = import.meta.glob<string>("./showcase/**/*.demo.tsx", { query: "?raw", import: "default" })
+const pageMeta = import.meta.glob<MetaModule>("./pages/**/*.page.tsx", {
+  eager: true,
+  query: "?meta",
+  import: "default",
+})
+const pageModules = import.meta.glob<React.ComponentType>("./pages/**/*.page.tsx", { import: "default" })
+const pageSources = import.meta.glob<string>("./pages/**/*.page.tsx", { query: "?raw", import: "default" })
 
-function collect(modules: Record<string, Module>, sources: Record<string, string>, suffix: RegExp): Entry[] {
-  return Object.entries(modules)
-    .map(([path, mod]) => ({
-      slug: path.replace(/^\.\/(showcase|pages)\//, "").replace(suffix, ""),
-      meta: mod.meta,
-      Component: mod.default,
-      source: sources[path] ?? "",
-    }))
+function once<T>(load: Loader<T>): Loader<T> {
+  let promise: Promise<T> | undefined
+  return () => {
+    promise ??= load().catch((error: unknown) => {
+      promise = undefined // let a later attempt retry, e.g. after a flaky network
+      throw error
+    })
+    return promise
+  }
+}
+
+function collect(
+  metas: Record<string, MetaModule>,
+  modules: Record<string, Loader<React.ComponentType>>,
+  sources: Record<string, Loader<string>>,
+  suffix: RegExp,
+): Entry[] {
+  return Object.entries(metas)
+    .map(([path, { meta, sections }]) => {
+      const load = once(modules[path]!)
+      const source = sources[path]
+      return {
+        slug: path.replace(/^\.\/(showcase|pages)\//, "").replace(suffix, ""),
+        meta,
+        sections,
+        Component: React.lazy(() => load().then((C) => ({ default: C }))),
+        preload: load,
+        source: source ? once(source) : () => Promise.resolve(""),
+      }
+    })
     .sort((a, b) => (a.meta.order ?? 100) - (b.meta.order ?? 100) || a.meta.title.localeCompare(b.meta.title))
 }
 
-export const demos = collect(demoModules, demoSources, /\.demo\.tsx$/)
-export const pages = collect(pageModules, pageSources, /\.page\.tsx$/)
+export const demos = collect(demoMeta, demoModules, demoSources, /\.demo\.tsx$/)
+export const pages = collect(pageMeta, pageModules, pageSources, /\.page\.tsx$/)
 
 /** Navigation order: foundations, then REQUIREMENTS §22 and §23 order. Unknown groups go last. */
 const GROUP_ORDER = [

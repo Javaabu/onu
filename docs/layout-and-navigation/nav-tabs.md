@@ -27,7 +27,7 @@ On a **create** page ([§25.9](../requirements)) mark the tabs that need a saved
 | `items`       | `{ label, href, count?, icon?, badge?, disabled?, isActive? }[]` |            | Tabs                                         |
 | `currentHref` | `string`                                                         |            | Current URL (path and query)             |
 | `match`       | `'exact' \| 'prefix'`                                            | `'exact'`  | `prefix` keeps a tab active on its sub-pages |
-| `variant`     | `'line' \| 'pill'`                                               | `'line'`   | Underline or pill style                      |
+| `variant`     | `'line' \| 'pill'`                                               | `'line'`   | Ant line tabs (brand colour and a 2px ink bar on the current tab, 32px apart) or pills |
 | `aria-label`  | `string`                                                         | "Sections" | Landmark name                                |
 | `classNames`  | `{ list, item, count }`                                          |            | Classes for each part                        |
 

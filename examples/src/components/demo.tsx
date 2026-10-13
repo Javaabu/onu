@@ -3,8 +3,17 @@ import { useLocation, useNavigate } from "react-router"
 import { CodeBlock } from "@javaabu/onu/editor"
 import { Spinner, Tabs, TabsContent, TabsList, TabsTrigger, cn } from "@javaabu/onu"
 
-/** The demo file's source, so each section can show its own code. */
-export const DemoSourceContext = React.createContext<string>("")
+import { sectionSource } from "./section-source"
+
+/** The demo file's source (loaded on demand), so each section can show its own code. */
+export interface DemoSource {
+  /** Section titles with extractable code, known at build time. */
+  sections: string[]
+  /** Fetches the file's source text; cached, so every call returns the same promise. */
+  load: () => Promise<string>
+}
+
+export const DemoSourceContext = React.createContext<DemoSource | null>(null)
 
 /** Code views; the CodeBlock loads its Shiki highlighter only when it first renders. */
 export const LazyCodeBlock = CodeBlock
@@ -19,55 +28,19 @@ export function slugify(text: string) {
   )
 }
 
-/** Index just past the `>` that closes the JSX opening tag starting at `start`. */
-function openTagEnd(source: string, start: number) {
-  let depth = 0
-  let quote = ""
-  for (let i = start; i < source.length; i++) {
-    const ch = source[i]
-    if (quote) {
-      if (ch === quote) quote = ""
-    } else if (ch === "{") depth++
-    else if (ch === "}") depth--
-    else if (depth === 0 && (ch === '"' || ch === "'")) quote = ch
-    else if (depth === 0 && ch === ">") return source[i - 1] === "/" ? -1 : i + 1
-  }
-  return -1
-}
-
-function dedent(code: string) {
-  const lines = code
-    .replace(/^\s*\n/, "")
-    .replace(/\s+$/, "")
-    .split("\n")
-  const indent = Math.min(...lines.filter((l) => l.trim()).map((l) => l.match(/^ */)![0].length))
-  return lines.map((l) => l.slice(indent)).join("\n")
-}
-
-/** The JSX inside `<DemoSection title="…">` in a demo file, or "" when it can't be found. */
-export function sectionSource(source: string, title: string) {
-  const marker = source.indexOf(`title=${JSON.stringify(title)}`)
-  if (marker === -1) return ""
-  const start = source.lastIndexOf("<DemoSection", marker)
-  if (start === -1) return ""
-  const bodyStart = openTagEnd(source, start)
-  if (bodyStart === -1) return ""
-  let depth = 1
-  const tag = /<DemoSection\b|<\/DemoSection>/g
-  tag.lastIndex = bodyStart
-  for (let m = tag.exec(source); m; m = tag.exec(source)) {
-    depth += m[0] === "</DemoSection>" ? -1 : 1
-    if (depth === 0) return dedent(source.slice(bodyStart, m.index))
-  }
-  return ""
-}
-
 export function CodeFallback() {
   return (
     <div className="h-32 flex items-center justify-center text-muted-foreground">
       <Spinner />
     </div>
   )
+}
+
+/** A section's code. The Code tab mounts this only when opened, so the source loads then. */
+function SectionCode({ load, title }: { load: () => Promise<string>; title: string }) {
+  const source = React.use(load())
+  const code = React.useMemo(() => sectionSource(source, title), [source, title])
+  return <LazyCodeBlock code={code} language="tsx" className="my-0 rounded-xl" classNames={{ pre: "max-h-[28rem]" }} />
 }
 
 /** A titled block on a showcase page: heading, description, then a Preview / Code card. */
@@ -83,7 +56,7 @@ export function DemoSection({
   className?: string
 }) {
   const source = React.useContext(DemoSourceContext)
-  const code = React.useMemo(() => (source ? sectionSource(source, title) : ""), [source, title])
+  const hasCode = !!source?.sections.includes(title)
   const id = slugify(title)
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -122,7 +95,7 @@ export function DemoSection({
           <span dir="auto">{description}</span>
         </p>
       ) : null}
-      {code ? (
+      {source && hasCode ? (
         <Tabs defaultValue="preview" className="gap-3">
           <TabsList variant="line" aria-label={`${title}: preview or code`} className="-ms-1">
             <TabsTrigger value="preview">Preview</TabsTrigger>
@@ -131,12 +104,7 @@ export function DemoSection({
           <TabsContent value="preview">{preview}</TabsContent>
           <TabsContent value="code" data-axe-skip>
             <React.Suspense fallback={<CodeFallback />}>
-              <LazyCodeBlock
-                code={code}
-                language="tsx"
-                className="my-0 rounded-xl"
-                classNames={{ pre: "max-h-[28rem]" }}
-              />
+              <SectionCode load={source.load} title={title} />
             </React.Suspense>
           </TabsContent>
         </Tabs>

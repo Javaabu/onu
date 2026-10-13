@@ -16,6 +16,21 @@ import { StatTile, StatTiles } from "@javaabu/onu/charts"
 </StatTiles>
 ```
 
+## Chart card (Ant Design Pro)
+
+The tile is Ant Design Pro's **ChartCard**: a muted label row, a 30px regular-weight figure, a 46px chart slot and a footer row under a line. Add an info button after the label with `tip`, and put any mini chart (bars, a `ProgressBar`, trend text) in the slot with `chart` instead of `sparkline`:
+
+```tsx
+<StatTile
+  label="Service target"
+  tip="Applications closed within 14 days"
+  value={0.78}
+  valueFormat="percent"
+  chart={<ProgressBar value={78} size="sm" aria-label="Service target: 78%" />}
+  footer="Daily average 12"
+/>
+```
+
 ## As a link
 
 ```tsx
@@ -42,7 +57,9 @@ The child element becomes the tile and the tile content is placed inside it.
 | `sparklineVariant` | `"line" \| "area"`                                 | `"area"`             | Sparkline style                            |
 | `sparklineGradient` | `boolean`                                         | `true`               | Gradient sparkline area (see [Sparkline](./sparkline#gradient-fills)) |
 | `loading`          | `boolean`                                          | `false`              | Skeletons, `aria-busy`                     |
-| `footer`           | `ReactNode`                                        |                      | Bottom content                             |
+| `chart`            | `ReactNode`                                        |                      | A mini chart in the 46px slot (instead of `sparkline`) |
+| `tip`              | `ReactNode`                                        |                      | Info button with a tooltip after the label |
+| `footer`           | `ReactNode`                                        |                      | Footer row under a line                    |
 | `size`             | `"sm" \| "default" \| "lg"`                        | `"default"`          | Padding and figure size                    |
 | `asChild`          | `boolean`                                          | `false`              | Render as the child element                |
 | `className`        | `string`                                           |                      | Classes for the root                       |

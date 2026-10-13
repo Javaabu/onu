@@ -89,9 +89,30 @@ describe("StatTile", () => {
       />,
     )
     expect(container.querySelector('[data-slot="stat-tile-label"]')).toHaveClass("l-x")
-    expect(container.querySelector('[data-slot="stat-tile-value"]')).toHaveClass("v-x", "text-3xl")
+    expect(container.querySelector('[data-slot="stat-tile-value"]')).toHaveClass("v-x", "text-4xl")
     expect(container.querySelector('[data-slot="delta-indicator"]')).toHaveClass("d-x")
     expect(statTileVariants({ size: "sm" })).toContain("p-3")
+  })
+
+  it("is Ant's ChartCard: an info tip, a chart slot and a footer row under a line", async () => {
+    const { container } = renderWithOnu(
+      <StatTile
+        label="Total fees"
+        tip="Approved fees this year"
+        value="MVR 122,600"
+        chart={<div data-testid="bars" />}
+        sparkline={[1, 2, 3]}
+        footer="Daily fees MVR 336"
+      />,
+    )
+    const tip = screen.getByRole("button", { name: "Approved fees this year" })
+    expect(tip).toHaveAttribute("data-slot", "stat-tile-tip")
+    // A chart replaces the sparkline in the 46px slot.
+    expect(container.querySelector("[data-slot=stat-tile-chart]")).toContainElement(screen.getByTestId("bars"))
+    expect(screen.queryByRole("img", { name: /Total fees/ })).toBeNull()
+    expect(container.querySelector("[data-slot=stat-tile-footer]")).toHaveClass("border-t")
+    expect(screen.getByRole("group", { name: "Total fees" })).toHaveClass("has-[>[data-slot=stat-tile-footer]]:pb-0")
+    await expectNoA11yViolations(container)
   })
 
   it.each(directions)("renders in %s", (dir) => {

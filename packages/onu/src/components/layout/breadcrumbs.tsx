@@ -82,7 +82,14 @@ export function Breadcrumbs({
           <span className="truncate">{item.label}</span>
         </BreadcrumbPage>
       ) : (
-        <BreadcrumbLink asChild className={cn("gap-1.5 min-w-0 inline-flex items-center", classNames?.link)}>
+        <BreadcrumbLink
+          asChild
+          className={cn(
+            // Ant: a muted link with a soft fill on hover.
+            "gap-1.5 min-w-0 -mx-1 px-1 inline-flex items-center rounded-sm hover:bg-foreground/6",
+            classNames?.link,
+          )}
+        >
           <NavLink href={item.href}>
             <NavIcon icon={item.icon} className="size-3.5" />
             <span className="truncate">{item.label}</span>
@@ -145,7 +152,7 @@ export function Breadcrumbs({
       className={className}
       {...props}
     >
-      <BreadcrumbList className={cn("sm:flex-wrap flex-nowrap", classNames?.list)}>{nodes}</BreadcrumbList>
+      <BreadcrumbList className={cn("gap-2 sm:flex-wrap flex-nowrap", classNames?.list)}>{nodes}</BreadcrumbList>
     </Breadcrumb>
   )
 }
