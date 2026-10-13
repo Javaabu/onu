@@ -263,7 +263,7 @@
   .dark,
   [data-theme="dark"],
   :is(.dark, [data-theme="dark"]) :is([data-onu-theme], [data-onu-tint]) {
-    --primary: var(--onu-primary-dark, oklch(from var(--onu-primary) max(l, 0.7) c h));
+    --primary: var(--onu-primary-dark, oklch(from var(--onu-primary) max(l, 0.72) c h));
   }
 }
 

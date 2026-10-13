@@ -281,7 +281,7 @@
       "type": "color"
     },
     "destructive": {
-      "value": "oklch(0.706 0.158 23.3)",
+      "value": "oklch(0.76 0.14 23)",
       "type": "color"
     },
     "destructive-foreground": {

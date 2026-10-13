@@ -90,7 +90,7 @@
   --onu-neutral-muted-foreground: oklch(0.725 0 0);
   --onu-neutral-accent: oklch(0.289 0 0);
   --onu-neutral-accent-foreground: oklch(0.955 0 0);
-  --onu-destructive: oklch(0.706 0.158 23.3);
+  --onu-destructive: oklch(0.76 0.14 23);
   --onu-destructive-foreground: oklch(0.191 0 0);
   --onu-success: oklch(0.722 0.185 136.3);
   --onu-success-foreground: oklch(0.191 0 0);
