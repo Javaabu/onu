@@ -644,17 +644,42 @@ function PlaceholderTrail({ path, tone = "primary", width = 4 }: AdapterTrailPro
 }
 
 const CLUSTER_CELL = 56
+/** Cluster buttons are 36px; keep their centres at least this far apart. */
+const CLUSTER_MIN_GAP = 44
 
 function PlaceholderClusters({ markers, selectedId, onMarkerClick }: AdapterClusterProps) {
   const { t } = useTranslation()
   const { toPoint, camera, moveTo } = useViewport()
   // Simple grid clustering in screen space, like markerclusterer's default.
-  const cells = new Map<string, typeof markers>()
+  const grid = new Map<string, typeof markers>()
   for (const m of markers) {
     const p = toPoint(m.position)
     const key = `${Math.floor(p.x / CLUSTER_CELL)}:${Math.floor(p.y / CLUSTER_CELL)}`
-    cells.set(key, [...(cells.get(key) ?? []), m])
+    grid.set(key, [...(grid.get(key) ?? []), m])
   }
+  // Grid cells can put two cluster centres closer than a cluster's size, so the buttons
+  // overlap (and fail WCAG 2.5.8 target spacing). Merge groups whose centres are too close.
+  const groups = [...grid.entries()].map(([key, group]) => ({ key, group }))
+  const centre = (group: typeof markers) => {
+    const pts = group.map((m) => toPoint(m.position))
+    return { x: pts.reduce((n, q) => n + q.x, 0) / pts.length, y: pts.reduce((n, q) => n + q.y, 0) / pts.length }
+  }
+  for (let merged = true; merged;) {
+    merged = false
+    outer: for (let i = 0; i < groups.length; i++) {
+      for (let j = i + 1; j < groups.length; j++) {
+        const a = centre(groups[i]!.group)
+        const b = centre(groups[j]!.group)
+        if (Math.hypot(a.x - b.x, a.y - b.y) < CLUSTER_MIN_GAP) {
+          groups[i]!.group = [...groups[i]!.group, ...groups[j]!.group]
+          groups.splice(j, 1)
+          merged = true
+          break outer
+        }
+      }
+    }
+  }
+  const cells = new Map(groups.map(({ key, group }) => [key, group]))
   return (
     <>
       {[...cells.entries()].map(([key, group]) => {
