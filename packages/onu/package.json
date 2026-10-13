@@ -91,7 +91,8 @@
     "./fonts-optional.css": "./src/styles/fonts-optional.css"
   },
   "scripts": {
-    "build": "vite build && node ./node_modules/typescript-native/bin/tsc -p tsconfig.build.json",
+    "build": "vite build && node scripts/build-types.mjs",
+    "build:types": "node scripts/build-types.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
