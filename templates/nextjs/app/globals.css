@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@import "@javaabu/onu/tailwind.css";
+/* Inter, JetBrains Mono and Noto Sans Thaana (needs the @fontsource-variable packages). */
+@import "@javaabu/onu/fonts.css";
+
+/* Re-theme everything with one variable:
+:root {
+  --onu-primary: oklch(0.55 0.15 240);
+}
+*/

@@ -1,0 +1,100 @@
+name: Templates
+
+# Builds the starter templates in templates/ against the workspace copy of
+# @javaabu/onu, runs the Laravel feature tests and checks the Next.js app's
+# server-rendered HTML (R16.1). Only runs when the library or a template changes.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - packages/onu/**
+      - templates/**
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - .github/workflows/templates.yml
+  pull_request:
+    paths:
+      - packages/onu/**
+      - templates/**
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - .github/workflows/templates.yml
+  workflow_dispatch:
+
+concurrency:
+  group: templates-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NEXT_TELEMETRY_DISABLED: 1
+
+jobs:
+  nextjs:
+    name: Next.js (build + server rendering)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build the library
+        run: pnpm build
+      - name: Typecheck
+        run: pnpm --filter onu-template-nextjs typecheck
+      - name: next build
+        run: pnpm --filter onu-template-nextjs build
+      - name: Server-rendered HTML contains Onu's markup
+        run: pnpm --filter onu-template-nextjs test:ssr
+
+  laravel:
+    name: Laravel + Inertia (build + tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: templates/laravel-inertia-react
+    steps:
+      - uses: actions/checkout@v5
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, pdo_sqlite, sqlite3
+          coverage: none
+          tools: composer:v2
+      - uses: ramsey/composer-install@v3
+        with:
+          working-directory: templates/laravel-inertia-react
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build the library
+        run: pnpm --filter @javaabu/onu build
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Vite build
+        run: pnpm build
+      - name: Prepare the environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          touch database/database.sqlite
+          php artisan migrate --force
+      - name: Feature tests
+        run: php artisan test
+      - name: The built page loads its assets
+        run: |
+          php artisan serve --port=8123 > /dev/null 2>&1 &
+          for _ in $(seq 1 30); do curl -sf http://127.0.0.1:8123/up > /dev/null && break; sleep 1; done
+          html=$(curl -sf http://127.0.0.1:8123/)
+          echo "$html" | grep -q '<html lang="en" dir="ltr">'
+          echo "$html" | grep -Eq '/build/assets/app-[A-Za-z0-9_-]+\.js'
+          echo "$html" | grep -q '"component":"dashboard"'

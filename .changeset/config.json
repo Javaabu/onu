@@ -7,5 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["onu-examples"]
+  "ignore": ["onu-examples", "onu-template-laravel-inertia-react", "onu-template-nextjs"]
 }
