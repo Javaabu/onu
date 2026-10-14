@@ -23,6 +23,8 @@ export default tseslint.config(
       "**/*.config.*",
       "docs/**",
       "**/playwright-report/**",
+      // Built Figma plugin bundle (generated from figma/plugin/src, committed for designers).
+      "figma/plugin/code.js",
     ],
   },
   js.configs.recommended,

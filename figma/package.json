@@ -1,0 +1,20 @@
+{
+  "name": "onu-figma",
+  "private": true,
+  "type": "module",
+  "description": "Figma tooling for Onu: the \"Onu kit\" plugin, token sync and Code Connect.",
+  "scripts": {
+    "build:plugin": "node plugin/build.mjs",
+    "icons": "node plugin/scripts/icons.mjs",
+    "typecheck": "tsc --noEmit -p plugin/tsconfig.json && tsc --noEmit -p plugin/test/tsconfig.json",
+    "test": "vitest run --root plugin"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.139.0",
+    "@types/node": "^26.6.4",
+    "lucide-react": "^1.52.0",
+    "rolldown": "^1.2.13",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.3"
+  }
+}
