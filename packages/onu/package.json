@@ -1,6 +1,6 @@
 {
   "name": "@javaabu/onu",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Javaabu's React UI component library: shadcn/ui based, RTL and Dhivehi first, Thaana keyboard input, one-variable theming.",
   "license": "MIT",
   "author": {
