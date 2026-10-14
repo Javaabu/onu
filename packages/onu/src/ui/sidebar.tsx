@@ -14,7 +14,7 @@ import { Input } from "./input"
 import { Separator } from "./separator"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "./sheet"
 import { Skeleton } from "./skeleton"
-import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip"
 // onu: fixed glyphs passed as Icon fallbacks, so primitives work without OnuProvider and the full icon map.
 import { PanelLeftIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
@@ -122,6 +122,8 @@ function SidebarProvider({
 
   return (
     <SidebarContext.Provider value={contextValue}>
+      {/* onu: the menu buttons' collapsed-state tooltips need a provider; apps no longer have to add one. */}
+      <TooltipProvider delayDuration={0}>
       <div
         data-slot="sidebar-wrapper"
         style={
@@ -136,6 +138,7 @@ function SidebarProvider({
       >
         {children}
       </div>
+      </TooltipProvider>
     </SidebarContext.Provider>
   )
 }
