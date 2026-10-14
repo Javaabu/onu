@@ -1,0 +1,39 @@
+name: Figma
+
+# Run by hand from the Actions tab. `probe` reports what the FIGMA_API_KEY token
+# can do with the Onu Figma file; `sync-variables` pushes tokens.json to Figma
+# Variables (needs the Variables REST API, i.e. an Enterprise plan).
+
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: What to run
+        type: choice
+        options: [probe, sync-variables]
+        default: probe
+
+permissions:
+  contents: read
+
+env:
+  FIGMA_FILE_KEY: hilfEQCV33vZNet92CWRJp
+
+jobs:
+  figma:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Probe
+        if: ${{ inputs.task == 'probe' }}
+        run: node figma/probe.mjs
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_API_KEY }}
+      - name: Sync variables
+        if: ${{ inputs.task == 'sync-variables' }}
+        run: node figma/sync-variables.mjs
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_API_KEY }}
