@@ -6,6 +6,7 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { useFormField } from "../form/form-field"
+import { BmlConnectLogo, BmlTransferLogo } from "./bml-logos"
 import { RadioGroup, type RadioGroupProps } from "./radio-group"
 import { Radio } from "./radio"
 
@@ -22,8 +23,8 @@ export interface PaymentMethodConfig {
   label?: LocalizedText
   description?: LocalizedText
   /**
-   * The gateway's logo. Use the asset supplied by BML under its branding
-   * guidelines (R16.8); Onu ships only a neutral placeholder.
+   * The method's logo. BML Transfer and BML Connect show BML's official logos
+   * (R16.8) by default; other methods show a neutral placeholder icon.
    */
   logo?: React.ReactNode
   /** Semantic icon for the placeholder logo of a custom method. Default `"credit-card"`. */
@@ -44,34 +45,52 @@ export interface PaymentMethodSelectorProps extends Omit<
   onValueChange?: (value: PaymentMethodId) => void
 }
 
-const PLACEHOLDER_ICONS: Record<BmlPaymentMethodId, string> = {
-  "bml-transfer": "bank",
-  "bml-connect": "credit-card",
-}
-
 const DEFAULT_TEXT: Partial<Record<string, { label: string; description: string }>> = {
   "bml-transfer": { label: "choice.bmlTransfer", description: "choice.bmlTransferDescription" },
   "bml-connect": { label: "choice.bmlConnect", description: "choice.bmlConnectDescription" },
 }
 
-/** A neutral placeholder shown until the project supplies the gateway's real logo. */
-function LogoPlaceholder({ id, icon }: { id: PaymentMethodId; icon?: string }) {
+/** A neutral placeholder for project-defined methods without a `logo`. */
+function LogoPlaceholder({ icon }: { icon?: string }) {
   return (
     <span
       data-slot="payment-logo-placeholder"
       className="size-10 group-data-[size=lg]/radio-card:size-12 flex items-center justify-center rounded-md border border-border bg-muted text-muted-foreground"
     >
-      <Icon name={icon ?? PLACEHOLDER_ICONS[id as BmlPaymentMethodId] ?? "credit-card"} className="size-5" />
+      <Icon name={icon ?? "credit-card"} className="size-5" />
     </span>
   )
+}
+
+/*
+ * BML's logos sit on a white tile in light and dark mode (the card marks in
+ * the BML Connect logo need a light surface). They are decorative here: the
+ * card's label already names the method.
+ */
+const LOGO_TILE = "rounded-md bg-white p-1 ring-1 ring-border dark:ring-white/15"
+
+function MethodLogo({ id, icon }: { id: PaymentMethodId; icon?: string }) {
+  if (id === "bml-transfer") {
+    return <BmlTransferLogo decorative className={cn("size-10 group-data-[size=lg]/radio-card:size-12", LOGO_TILE)} />
+  }
+  if (id === "bml-connect") {
+    // Wide artwork: narrower on phones so the label keeps its room.
+    return (
+      <BmlConnectLogo
+        decorative
+        className={cn("w-32 sm:w-44 sm:group-data-[size=lg]/radio-card:w-52 h-auto", LOGO_TILE)}
+      />
+    )
+  }
+  return <LogoPlaceholder icon={icon} />
 }
 
 /**
  * Choose how to pay: BML Transfer and/or BML Connect (plus any project-defined
  * methods such as cash, with their own `label`) as a radio group of large
- * cards (R16.8). Selection only; redirects and callbacks belong to the app.
- * Labels and descriptions can be replaced per locale, and each method takes
- * the gateway's own `logo`.
+ * cards (R16.8), shown with BML's official logos. Selection only; redirects
+ * and callbacks belong to the app. Labels, descriptions and logos can be
+ * replaced per method.
  */
 export function PaymentMethodSelector({
   methods = ["bml-transfer", "bml-connect"],
@@ -111,7 +130,7 @@ export function PaymentMethodSelector({
           data-method={m.id}
           label={localize(m.label, DEFAULT_TEXT[m.id] ? t(DEFAULT_TEXT[m.id]!.label) : m.id)}
           description={localize(m.description, DEFAULT_TEXT[m.id] ? t(DEFAULT_TEXT[m.id]!.description) : "")}
-          media={m.logo ?? <LogoPlaceholder id={m.id} icon={m.icon} />}
+          media={m.logo ?? <MethodLogo id={m.id} icon={m.icon} />}
           aside={m.aside}
           disabled={m.disabled}
           className="touch:min-h-20 items-center"

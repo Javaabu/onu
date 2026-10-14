@@ -30,4 +30,7 @@ export const auth = {
   resetTitle: "ޕާސްވޯޑް ބަދަލުކުރުން",
   resetDescription: "އެކައުންޓަށް އައު ޕާސްވޯޑެއް ޚިޔާރުކުރައްވާ.",
   resetPassword: "ޕާސްވޯޑް ބަދަލުކުރޭ",
+  efaasSignIn: "eFaas އިން ސައިން އިން ކުރައްވާ",
+  efaasRegister: "eFaas އިން ރަޖިސްޓަރ ކުރައްވާ",
+  efaasRedirecting: "eFaas އަށް ގެންދަނީ…",
 } satisfies Record<keyof typeof en, MessageDict[string]> & MessageDict

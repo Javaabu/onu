@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useNavigate } from "react-router"
-import { Button, Icon, Notice, SignInForm, toast } from "@javaabu/onu"
+import { EfaasButton, Notice, SignInForm, toast } from "@javaabu/onu"
 
 import { useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -58,24 +58,17 @@ export default function SignInPage() {
             navigate(routes.auth.twoFactor)
           }}
           efaas={
-            // Placeholder: real projects use the button and assets eFaas supplies (R16.7).
-            <Button
-              type="button"
-              variant="outline"
-              size="lg"
-              className="touch:min-h-11 w-full"
-              disabled={redirecting}
+            // Real projects link to their eFaas redirect route and pass the eFaas icon as `logo` (R16.7).
+            <EfaasButton
+              fullWidth
+              loading={redirecting}
               onClick={async () => {
                 setRedirecting(true)
-                toast.info(tr("Redirecting to eFaas…", "eFaas އަށް ގެންދަނީ…"))
                 await wait(1200)
                 setRedirecting(false)
                 navigate(routes.auth.twoFactor)
               }}
-            >
-              <Icon name="log-in" data-icon="inline-start" />
-              {tr("Sign in with eFaas", "eFaas އިން ސައިން އިން ކުރައްވާ")}
-            </Button>
+            />
           }
         />
         <Notice tone="info" variant="bordered" icon="info">

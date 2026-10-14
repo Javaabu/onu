@@ -1,5 +1,5 @@
 import * as React from "react"
-import { FormField, PaymentMethodSelector, type PaymentMethodId } from "@javaabu/onu"
+import { BmlConnectLogo, BmlTransferLogo, FormField, PaymentMethodSelector, type PaymentMethodId } from "@javaabu/onu"
 
 import { DemoPage, DemoSection } from "../../components/demo"
 
@@ -7,8 +7,7 @@ export const meta = {
   title: "Payment method selector",
   group: "Choice inputs",
   order: 15,
-  description:
-    "BML Transfer and BML Connect as large cards. Selection only. Logos are neutral placeholders: pass BML's own assets with the logo prop.",
+  description: "BML Transfer and BML Connect as large cards with BML's official logos. Selection only.",
 }
 
 export default function PaymentMethodSelectorDemo() {
@@ -39,6 +38,19 @@ export default function PaymentMethodSelectorDemo() {
         <FormField label="Transfer only">
           <PaymentMethodSelector methods={["bml-transfer"]} defaultValue="bml-transfer" />
         </FormField>
+        <FormField label="With a project-defined method">
+          <PaymentMethodSelector
+            methods={["bml-transfer", { id: "cash", label: "Cash at the counter", icon: "banknote" }]}
+          />
+        </FormField>
+      </DemoSection>
+      <DemoSection
+        title="Logos"
+        description="BmlTransferLogo and BmlConnectLogo on their own, e.g. on a receipt. The card marks need a white tile on dark surfaces."
+        className="items-center"
+      >
+        <BmlTransferLogo className="size-12" />
+        <BmlConnectLogo className="h-12 bg-white p-1 rounded-md ring-1 ring-border" />
       </DemoSection>
     </DemoPage>
   )

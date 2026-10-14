@@ -11,7 +11,7 @@ vi.setConfig({ testTimeout: 30_000 })
 configure({ asyncUtilTimeout: 5_000 })
 
 describe("PaymentMethodSelector", () => {
-  it("offers both BML gateways as large cards by default", async () => {
+  it("offers both BML gateways as large cards with BML's logos by default", async () => {
     const onValueChange = vi.fn()
     renderWithOnu(<PaymentMethodSelector onValueChange={onValueChange} />)
     const group = screen.getByRole("radiogroup", { name: "Payment method" })
@@ -20,7 +20,10 @@ describe("PaymentMethodSelector", () => {
     const connect = screen.getByRole("radio", { name: "BML Connect" })
     expect(transfer).toHaveAttribute("data-size", "lg")
     expect(connect).toHaveAccessibleDescription("Pay online by card through Bank of Maldives.")
-    expect(document.querySelectorAll("[data-slot=payment-logo-placeholder]")).toHaveLength(2)
+    // Official logos, decorative: the card label already names the method.
+    expect(transfer.querySelector("[data-slot=bml-transfer-logo]")).toHaveAttribute("aria-hidden", "true")
+    expect(connect.querySelector("[data-slot=bml-connect-logo]")).toHaveAttribute("aria-hidden", "true")
+    expect(document.querySelectorAll("[data-slot=payment-logo-placeholder]")).toHaveLength(0)
     await userEvent.click(connect)
     expect(onValueChange).toHaveBeenCalledWith("bml-connect")
   })
@@ -49,7 +52,16 @@ describe("PaymentMethodSelector", () => {
     expect(screen.getByRole("radio", { name: "ކާޑުން" })).toBeChecked()
     expect(screen.getByRole("radio", { name: "Bank transfer" })).toBeDisabled()
     expect(screen.getByText("MVR 0")).toBeInTheDocument()
-    expect(document.querySelectorAll("[data-slot=payment-logo-placeholder]")).toHaveLength(1)
+    // The custom logo replaces BML Connect's; BML Transfer keeps its own.
+    expect(document.querySelectorAll("[data-slot=bml-connect-logo]")).toHaveLength(0)
+    expect(document.querySelectorAll("[data-slot=bml-transfer-logo]")).toHaveLength(1)
+  })
+
+  it("shows a neutral placeholder for a project-defined method", () => {
+    renderWithOnu(<PaymentMethodSelector methods={["bml-transfer", { id: "cash", label: "Cash", icon: "banknote" }]} />)
+    expect(
+      screen.getByRole("radio", { name: "Cash" }).querySelector("[data-slot=payment-logo-placeholder]"),
+    ).not.toBeNull()
   })
 
   it("only offers BML Transfer when asked and falls back to English text", () => {

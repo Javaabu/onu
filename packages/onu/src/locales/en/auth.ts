@@ -29,4 +29,7 @@ export const auth = {
   resetTitle: "Reset your password",
   resetDescription: "Choose a new password for your account.",
   resetPassword: "Reset password",
+  efaasSignIn: "Sign in with eFaas",
+  efaasRegister: "Register with eFaas",
+  efaasRedirecting: "Redirecting to eFaas…",
 } satisfies MessageDict
