@@ -3,6 +3,7 @@ import { FormField } from "@javaabu/onu"
 import { RouteStopEditor, type RouteStop } from "@javaabu/onu/maps"
 
 import { DemoPage, DemoSection } from "../../components/demo"
+import { JAVAABU_OFFICE } from "./_data"
 
 export const meta = {
   title: "Route stop editor",
@@ -33,7 +34,7 @@ export default function RouteStopEditorDemo() {
         </FormField>
       </DemoSection>
       <DemoSection title="Empty, Thaana names" className="block">
-        <RouteStopEditor center={{ lat: 4.175, lng: 73.51 }} zoom={14} thaana />
+        <RouteStopEditor center={JAVAABU_OFFICE} zoom={14} thaana />
       </DemoSection>
       <DemoSection title="Disabled" className="block">
         <RouteStopEditor defaultValue={initial.slice(0, 3)} disabled />

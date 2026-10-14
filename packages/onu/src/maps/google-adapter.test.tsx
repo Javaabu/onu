@@ -245,6 +245,11 @@ describe("Google Maps adapter", () => {
     expect(last("Map")).toMatchObject({ mapId: "dark", colorScheme: "DARK" })
   })
 
+  it("falls back to DEMO_MAP_ID when the Map ID is an empty string (an unset secret)", () => {
+    renderGoogle(<MapView />, { provider: { maps: { googleMapsApiKey: "k", mapId: "", darkMapId: "" } } })
+    expect(last("Map")).toMatchObject({ mapId: "DEMO_MAP_ID" })
+  })
+
   it("keeps the camera when the map is recreated for a new colour scheme", () => {
     const { rerender } = renderGoogle(
       <MapProvider colorScheme="light">

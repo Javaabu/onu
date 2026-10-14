@@ -146,8 +146,8 @@ function GoogleMapView({
     <div role="region" aria-label={label} data-slot="google-map" className={cn("relative size-full", className)}>
       <GoogleMap
         // Map ID and colour scheme are fixed when the map is created.
-        key={`${mapId ?? DEMO_MAP_ID}-${colorScheme}`}
-        mapId={mapId ?? DEMO_MAP_ID}
+        key={`${mapId || DEMO_MAP_ID}-${colorScheme}`}
+        mapId={mapId || DEMO_MAP_ID}
         colorScheme={colorScheme === "dark" ? "DARK" : "LIGHT"}
         defaultCenter={defaultCenter}
         defaultZoom={defaultZoom}

@@ -2,7 +2,7 @@ import * as React from "react"
 import { HashRouter, Link, Navigate, Route, Routes } from "react-router"
 import { OnuProvider, Spinner, ThemeProvider, Toaster, TooltipProvider } from "@javaabu/onu"
 import { dv } from "@javaabu/onu/locales/dv"
-import { googleMapsAdapter, MapProvider } from "@javaabu/onu/maps"
+import { DEMO_MAP_ID, googleMapsAdapter, MapProvider } from "@javaabu/onu/maps"
 
 import { SearchProvider } from "./components/search"
 import { EntryView, PageReady, SectionIndex, componentsSection, pagesSection } from "./components/views"
@@ -37,11 +37,19 @@ const RouterLink = React.forwardRef<
 /**
  * `VITE_GOOGLE_MAPS_FORCE=1` runs every map on the real Google Maps adapter even
  * without `VITE_GOOGLE_MAPS_API_KEY`, for local verification. Google then loads in
- * development mode (watermarked, "NoApiKeys" console warnings); set
- * `VITE_GOOGLE_MAPS_MAP_ID=DEMO_MAP_ID` for advanced markers. Examples only: the
+ * development mode (watermarked, "NoApiKeys" console warnings). Examples only: the
  * library still uses the placeholder when an app has no key.
  */
 const forceGoogleMaps = import.meta.env.VITE_GOOGLE_MAPS_FORCE === "1"
+
+/*
+ * The demo build passes the GOOGLE_MAPS_API_KEY and GOOGLE_MAPS_MAP_ID secrets.
+ * An unset secret arrives as an empty string: without a key the maps use the
+ * placeholder adapter, and without a Map ID they use Google's DEMO_MAP_ID so
+ * advanced markers still work.
+ */
+const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || undefined
+const googleMapsMapId = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID || DEMO_MAP_ID
 
 function Providers({ children }: { children: React.ReactNode }) {
   const { settings } = useSettings()
@@ -53,8 +61,8 @@ function Providers({ children }: { children: React.ReactNode }) {
       labelLayout={settings.labelLayout}
       linkComponent={RouterLink}
       maps={{
-        googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-        mapId: import.meta.env.VITE_GOOGLE_MAPS_MAP_ID,
+        googleMapsApiKey,
+        mapId: googleMapsMapId,
       }}
     >
       <TooltipProvider>

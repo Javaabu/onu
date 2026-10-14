@@ -454,7 +454,8 @@ export function staticMapUrl({
   url.searchParams.set("size", `${Math.round(width)}x${Math.round(height)}`)
   url.searchParams.set("scale", String(scale))
   url.searchParams.set("markers", markerColor ? `color:0x${markerColor.replace("#", "")}|${at}` : at)
-  if (mapId) url.searchParams.set("map_id", mapId)
+  // Google documents DEMO_MAP_ID for the Maps JavaScript API; static images keep the default style.
+  if (mapId && mapId !== "DEMO_MAP_ID") url.searchParams.set("map_id", mapId)
   if (language) url.searchParams.set("language", language)
   url.searchParams.set("key", apiKey)
   return url.toString()

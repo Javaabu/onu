@@ -1,6 +1,7 @@
 import * as React from "react"
 import { useNavigate } from "react-router"
 import {
+  BmlConnectLogo,
   Button,
   Callout,
   Card,
@@ -291,17 +292,23 @@ export default function CheckoutPage() {
             <p className="text-sm">{tr("Authorising your card…", "ކާޑު ޗެކްކުރަނީ…")}</p>
           </div>
         ) : (
-          <DescriptionList
-            items={[
-              {
-                label: tr("Merchant", "ވިޔަފާރިވެރިޔާ"),
-                value: tr("Ministry of Economic Development", "އިޤްތިޞާދީ ތަރައްޤީއާ ބެހޭ ވުޒާރާ"),
-              },
-              { label: tr("Order", "އޯޑަރު"), value: order.ref },
-              { label: tr("Amount", "ޢަދަދު"), value: <strong className="tabular-nums">{money(order.total)}</strong> },
-              { label: tr("Card", "ކާޑު"), value: <span dir="ltr">Visa •••• 4242</span> },
-            ]}
-          />
+          <div className="gap-4 grid">
+            <BmlConnectLogo className="h-10 bg-white p-1 justify-self-start rounded-md ring-1 ring-border" />
+            <DescriptionList
+              items={[
+                {
+                  label: tr("Merchant", "ވިޔަފާރިވެރިޔާ"),
+                  value: tr("Ministry of Economic Development", "އިޤްތިޞާދީ ތަރައްޤީއާ ބެހޭ ވުޒާރާ"),
+                },
+                { label: tr("Order", "އޯޑަރު"), value: order.ref },
+                {
+                  label: tr("Amount", "ޢަދަދު"),
+                  value: <strong className="tabular-nums">{money(order.total)}</strong>,
+                },
+                { label: tr("Card", "ކާޑު"), value: <span dir="ltr">Visa •••• 4242</span> },
+              ]}
+            />
+          </div>
         )}
       </Modal>
     </CitizenShell>

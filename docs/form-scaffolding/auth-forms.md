@@ -6,7 +6,7 @@ sidebar_position: 20
 Ready-made, presentational authentication forms: `SignInForm`, `RegisterForm`, `ForgotPasswordForm` and `ResetPasswordForm`. They render the fields Laravel's auth scaffolding expects, call `onSubmit` with typed values, and show the `errors`, `processing` and `status` you pass. They never make requests themselves.
 
 ```tsx
-import { SignInForm } from "@javaabu/onu"
+import { EfaasButton, SignInForm } from "@javaabu/onu"
 import { useForm } from "@inertiajs/react"
 
 const form = useForm({ email: "", password: "", remember: false })
@@ -17,7 +17,7 @@ const form = useForm({ email: "", password: "", remember: false })
   processing={processing}
   forgotPasswordHref="/forgot-password"
   registerHref="/register"
-  efaas={<EfaasButton href="/login/efaas" />}
+  efaas={<EfaasButton href="/login/efaas" logo={<img src={efaasIcon} alt="" />} fullWidth />}
 />
 ```
 
@@ -44,7 +44,7 @@ Fields: `email`, `password` (with show/hide), `remember`. Values: `{ email, pass
 | `efaas`              | `ReactNode` |         | eFaas (or other SSO) button under an "or" divider |
 
 :::info eFaas branding
-Onu does not draw the eFaas button. Pass the button and assets eFaas supplies (R16.7).
+Use [`EfaasButton`](./efaas-button), styled after the eFaas brand guide, with the eFaas icon from eFaas's brand kit as its `logo` (R16.7).
 :::
 
 ## RegisterForm

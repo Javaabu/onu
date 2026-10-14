@@ -1,6 +1,6 @@
 import * as React from "react"
 import {
-  Button,
+  EfaasButton,
   ForgotPasswordForm,
   RegisterForm,
   ResetPasswordForm,
@@ -46,12 +46,8 @@ export default function AuthFormsDemo() {
           processing={processing}
           forgotPasswordHref="#/components/form-scaffolding/auth-forms"
           registerHref="#/components/form-scaffolding/auth-forms"
-          efaas={
-            // Placeholder: projects use the official eFaas button and assets (R16.7).
-            <Button variant="outline" size="lg" className="w-full">
-              Sign in with eFaas
-            </Button>
-          }
+          // Projects also pass the eFaas icon from eFaas's brand kit as `logo` (R16.7).
+          efaas={<EfaasButton href="#/components/form-scaffolding/auth-forms" fullWidth />}
           onSubmit={async ({ password }) => {
             setErrors(null)
             setProcessing(true)

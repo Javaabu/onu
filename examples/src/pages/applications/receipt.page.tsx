@@ -1,5 +1,6 @@
 import {
   BackButton,
+  BmlConnectLogo,
   Card,
   DescriptionList,
   Divider,
@@ -82,7 +83,12 @@ export default function ReceiptPage() {
                     { label: tr("Application", "އެޕްލިކޭޝަން"), value: order.application },
                     {
                       label: tr("Method", "ދެއްކި ގޮތް"),
-                      value: tr("BML Connect (Visa •••• 4242)", "ބީއެމްއެލް ކަނެކްޓް (ވިސާ 4242)"),
+                      value: (
+                        <span className="gap-2 inline-flex flex-wrap items-center">
+                          <BmlConnectLogo decorative className="h-6 bg-white p-0.5 rounded-sm ring-1 ring-border" />
+                          {tr("BML Connect (Visa •••• 4242)", "ބީއެމްއެލް ކަނެކްޓް (ވިސާ 4242)")}
+                        </span>
+                      ),
                     },
                     { label: tr("Transaction", "ޓްރާންޒެކްޝަން"), value: order.transaction },
                     {

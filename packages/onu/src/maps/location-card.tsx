@@ -73,7 +73,7 @@ export function LocationCard({
   const dark = useIsDark()
   const colors = useMapColors()
   const apiKey = apiKeyProp ?? ctx?.apiKey ?? maps.googleMapsApiKey
-  const mapId = ctx?.mapId ?? (dark ? (maps.darkMapId ?? maps.mapId) : maps.mapId)
+  const mapId = ctx?.mapId || (dark ? maps.darkMapId || maps.mapId : maps.mapId) || undefined
   const [failed, setFailed] = React.useState(false)
   const coords = formatLatLng(position, t, locale.numberLocale, 5)
   const place = typeof title === "string" ? title : coords

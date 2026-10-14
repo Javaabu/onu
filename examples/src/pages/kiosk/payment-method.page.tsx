@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useNavigate } from "react-router"
-import { Button, Card, DynamicIcon, FormField, LinkButton, RadioGroup } from "@javaabu/onu"
+import { BmlConnectLogo, Button, Card, DynamicIcon, FormField, LinkButton, RadioGroup } from "@javaabu/onu"
 
 import { KioskShell } from "../_shared/shells"
 import { useTr } from "../_shared/i18n"
@@ -77,7 +77,12 @@ export default function KioskPaymentMethodPage() {
                     "BML Connect · tap, insert or swipe Visa, Mastercard or Amex",
                     "ބީއެމްއެލް ކަނެކްޓް · ވިސާ، މާސްޓަކާޑް ނުވަތަ އެމެކްސް",
                   ),
-                  media: <MethodIcon id="lucide:credit-card" />,
+                  media: (
+                    <BmlConnectLogo
+                      decorative
+                      className="w-36 sm:w-56 bg-white p-1.5 dark:ring-white/15 h-auto rounded-lg ring-1 ring-border"
+                    />
+                  ),
                 },
                 {
                   value: "qr",

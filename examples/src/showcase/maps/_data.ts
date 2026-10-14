@@ -102,6 +102,13 @@ export async function searchIslands(query: string, { signal }: { signal: AbortSi
 
 export const MALE: LatLng = { lat: 4.1755, lng: 73.5093 }
 
+/**
+ * Where the map demos open: Javaabu's office in Malé. The exact office
+ * coordinates are not confirmed yet, so this is central Malé; replace it with
+ * the office's position once known.
+ */
+export const JAVAABU_OFFICE: LatLng = MALE
+
 /** Rough ward-style zones in Malé, for the polygon demo. */
 export const ZONES: PolygonCollection = {
   type: "FeatureCollection",

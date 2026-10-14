@@ -299,7 +299,8 @@ export function ListingPage<T extends RowData>({
             data-slot="listing-toolbar"
             className="gap-x-4 gap-y-3 px-4 py-4 sm:px-6 flex flex-wrap items-center justify-between"
           >
-            <div className="gap-3 min-w-0 flex flex-1 flex-wrap items-center">
+            {/* The minimum width keeps the search usable: on phones the tools wrap below it. */}
+            <div className="gap-3 flex min-w-[min(100%,14rem)] flex-1 flex-wrap items-center">
               {tableTitle ? (
                 <h2 data-slot="listing-card-title" className="text-base font-semibold m-0 text-foreground">
                   {tableTitle}

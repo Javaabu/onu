@@ -192,7 +192,7 @@ export interface SignInFormProps extends AuthFormProps<SignInValues> {
   showRemember?: boolean
   /**
    * An eFaas (or other single sign-on) button, shown under an "or" divider.
-   * Use the button and assets eFaas supplies; Onu does not draw eFaas branding (R16.7).
+   * Usually an `EfaasButton` with the eFaas icon from eFaas's brand kit (R16.7).
    */
   efaas?: React.ReactNode
 }
