@@ -2,13 +2,14 @@
 
 import * as React from "react"
 
+import { LiveRegion } from "../../a11y/live-region"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
 import { Badge } from "../../ui/badge"
 import { useFormFieldControl } from "../form/form-field"
-import { LiveMessage, useControllableState } from "./_shared"
+import { useControllableState } from "./_shared"
 import {
   SuggestionList,
   suggestionsShown,
@@ -257,7 +258,7 @@ export function TagsInput({
               {t("input.tagLimit", { count: max })}
             </span>
           ) : null}
-          <LiveMessage>{announce}</LiveMessage>
+          <LiveRegion>{announce}</LiveRegion>
         </div>
       }
       open={combobox.open && !full}

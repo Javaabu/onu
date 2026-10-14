@@ -16,13 +16,14 @@ import {
 } from "@tanstack/react-table"
 import { cva, type VariantProps } from "class-variance-authority"
 
+import { useAnnouncer } from "../../a11y/use-announcer"
 import { useIsMobile } from "../../hooks/use-mobile"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
 import { Skeleton } from "../../ui/skeleton"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../../ui/table"
-import { isInteractiveTarget, useAnnouncer } from "./_shared"
+import { isInteractiveTarget } from "./_shared"
 import { SelectionCheckbox } from "./_selection-checkbox"
 import { SortMenu } from "./_sort-menu"
 import { formatFilterLabel, useActiveFilterChips } from "./active-filter-chips"
@@ -185,7 +186,7 @@ export function DataTable<T extends RowData>({
   const state = stateProp ?? internal
   const isMobile = useIsMobile()
   const cards = layout === "cards" || (layout === "auto" && isMobile)
-  const { announce, region } = useAnnouncer()
+  const { announce, region } = useAnnouncer({ role: "status" })
   const chips = useActiveFilterChips(filters, state.filters)
 
   const selectable = !trash && (selectableProp ?? !!bulkActions?.length)

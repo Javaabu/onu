@@ -5,6 +5,7 @@ import { move } from "@dnd-kit/helpers"
 import { DragDropProvider } from "@dnd-kit/react"
 import { useSortable } from "@dnd-kit/react/sortable"
 
+import { useAnnouncer } from "../a11y/use-announcer"
 import { useFormField } from "../components/form/form-field"
 import { useFormDisabled } from "../components/form/form-context"
 import { TextInput } from "../components/inputs/text-input"
@@ -14,7 +15,7 @@ import { useTranslation } from "../providers/onu-provider"
 import type { ThaanaProp } from "../thaana/use-thaana-field"
 import { Button } from "../ui/button"
 import { CoordinateFields } from "./_coordinate-fields"
-import { useAnnouncer, useControllableState } from "./_hooks"
+import { useControllableState } from "./_hooks"
 import { boundsOf, formatDistance, formatLatLng, pathLength, roundLatLng } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import { MapMarker, MapPolylineShape, MapView } from "./map-view"
@@ -208,7 +209,7 @@ function RouteStopEditorInner({
   const [stops, setStops] = useControllableState<RouteStop[]>(valueProp, defaultValue, onChange)
   const [expandedId, setExpandedId] = React.useState<string | null>(null)
   const mapRef = React.useRef<MapHandle>(null)
-  const { message, announce } = useAnnouncer()
+  const { announce, region } = useAnnouncer()
   const full = max !== undefined && stops.length >= max
   const placed = stops.flatMap((s) => (s.position ? [s.position] : []))
   // Without an explicit centre or zoom, fit the stops (once, also when they load later).
@@ -342,9 +343,7 @@ function RouteStopEditorInner({
             </React.Fragment>
           ))
         : null}
-      <div aria-live="polite" className="sr-only">
-        {message}
-      </div>
+      {region}
     </div>
   )
 }

@@ -29,25 +29,6 @@ export function useNoun(noun: ListingNoun | undefined) {
   )
 }
 
-/**
- * A polite live region and a function that announces a message through it.
- * The message is cleared first so the same text is announced again.
- */
-export function useAnnouncer() {
-  const [message, setMessage] = React.useState("")
-  const announce = React.useCallback((text: string) => {
-    setMessage("")
-    // Next frame, so screen readers notice a repeated message.
-    window.setTimeout(() => setMessage(text), 30)
-  }, [])
-  const region = (
-    <span className="sr-only" role="status" aria-live="polite" aria-atomic="true" data-slot="listing-announcer">
-      {message}
-    </span>
-  )
-  return { announce, region, message }
-}
-
 /** Whether a click landed on (or inside) an interactive element, so row clicks can ignore it. */
 export function isInteractiveTarget(target: EventTarget | null, stopAt?: Element | null) {
   let el = target instanceof Element ? target : null

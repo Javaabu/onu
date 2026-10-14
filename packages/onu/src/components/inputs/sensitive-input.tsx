@@ -2,11 +2,12 @@
 
 import * as React from "react"
 
+import { LiveRegion } from "../../a11y/live-region"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { InputGroupButton } from "../../ui/input-group"
-import { CopyButton, LiveMessage, useControllableState } from "./_shared"
+import { CopyButton, useControllableState } from "./_shared"
 import { TextInput, type TextInputProps } from "./text-input"
 
 /** `sk_live_abcd1234` → `••••••••1234`. The dot count is fixed so the length is not leaked. */
@@ -98,7 +99,7 @@ export function SensitiveInput({
         spellCheck={false}
         dir="ltr"
       />
-      <LiveMessage>{announced}</LiveMessage>
+      <LiveRegion>{announced}</LiveRegion>
     </>
   )
 }

@@ -3,11 +3,12 @@
 import * as React from "react"
 import slugify from "@sindresorhus/slugify"
 
+import { LiveRegion } from "../../a11y/live-region"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { InputGroupButton } from "../../ui/input-group"
-import { LiveMessage, useControllableState } from "./_shared"
+import { useControllableState } from "./_shared"
 import { thaanaToLatin } from "./_thaana-latin"
 import { TextInput, useMergedRef, type TextInputProps } from "./text-input"
 
@@ -164,7 +165,7 @@ export function SlugInput({
           <span className="font-medium text-foreground">{slug}</span>
         </p>
       ) : null}
-      <LiveMessage>{announce}</LiveMessage>
+      <LiveRegion>{announce}</LiveRegion>
     </div>
   )
 }

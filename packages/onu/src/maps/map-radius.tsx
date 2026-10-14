@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { useAnnouncer } from "../a11y/use-announcer"
 import { useFormField, useFormFieldControl } from "../components/form/form-field"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
@@ -10,7 +11,7 @@ import { Button } from "../ui/button"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group"
 import { Label } from "../ui/label"
 import { CoordinateFields } from "./_coordinate-fields"
-import { useAnnouncer, useControllableState } from "./_hooks"
+import { useControllableState } from "./_hooks"
 import { formatArea, formatDistance, formatLatLng, roundLatLng } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import { MALE, MapCircleShape, MapView } from "./map-view"
@@ -81,7 +82,7 @@ function MapRadiusInner(props: MapRadiusProps) {
   const [value, setValue] = useControllableState<MapRadiusValue | null>(valueProp, defaultValue, onChange)
   const [radiusText, setRadiusText] = React.useState<string | null>(null)
   const mapRef = React.useRef<MapHandle>(null)
-  const { message, announce } = useAnnouncer()
+  const { announce, region } = useAnnouncer()
   const radiusId = React.useId()
 
   const commit = (next: MapRadiusValue | null) => {
@@ -191,9 +192,7 @@ function MapRadiusInner(props: MapRadiusProps) {
           <input type="hidden" name={`${control.name}[radius]`} value={value?.radius ?? ""} />
         </>
       ) : null}
-      <div aria-live="polite" className="sr-only">
-        {message}
-      </div>
+      {region}
     </div>
   )
 }

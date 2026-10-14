@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { LiveMessage } from "../components/inputs/_shared"
+import { LiveRegion } from "../a11y/live-region"
 import { TextInput } from "../components/inputs/text-input"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
@@ -308,7 +308,7 @@ export function QrCodeScanner({
           </Button>
         </div>
       ) : null}
-      <LiveMessage>{announce}</LiveMessage>
+      <LiveRegion>{announce}</LiveRegion>
     </div>
   )
 }

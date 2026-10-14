@@ -5,6 +5,7 @@ import { move } from "@dnd-kit/helpers"
 import { DragDropProvider, useDroppable } from "@dnd-kit/react"
 import { useSortable } from "@dnd-kit/react/sortable"
 
+import { useAnnouncer } from "../../a11y/use-announcer"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
@@ -18,7 +19,6 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu"
 import { useDndPlugins } from "./_dnd"
-import { useAnnouncer } from "./_shared"
 
 export interface KanbanColumn {
   id: string
@@ -225,7 +225,7 @@ export function KanbanBoard<T>({
   classNames,
 }: KanbanBoardProps<T>) {
   const { t } = useTranslation()
-  const { announce, region } = useAnnouncer()
+  const { announce, region } = useAnnouncer({ role: "status" })
 
   const layoutFromProps = React.useMemo<Layout>(
     () => Object.fromEntries(columns.map((c) => [c.id, (items[c.id] ?? []).map(getId)])),

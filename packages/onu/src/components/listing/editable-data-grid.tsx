@@ -2,12 +2,12 @@
 
 import * as React from "react"
 
+import { useAnnouncer } from "../../a11y/use-announcer"
 import { cn } from "../../lib/utils"
 import { useOnu, useTranslation } from "../../providers/onu-provider"
 import type { ThaanaProp } from "../../thaana/use-thaana-field"
 import { NativeSelect, NativeSelectOption } from "../../ui/native-select"
 import { TextInput } from "../inputs/text-input"
-import { useAnnouncer } from "./_shared"
 
 export interface EditableColumn<T> {
   id: string
@@ -68,7 +68,7 @@ export function EditableDataGrid<T>({
 }: EditableDataGridProps<T>) {
   const { t } = useTranslation()
   const { dir } = useOnu()
-  const { announce, region } = useAnnouncer()
+  const { announce, region } = useAnnouncer({ role: "status" })
   const id = React.useId()
   const [active, setActive] = React.useState<Pos>({ row: 0, col: 0 })
   const [editing, setEditing] = React.useState<{ pos: Pos; value: string; error?: string } | null>(null)

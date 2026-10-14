@@ -2,11 +2,11 @@
 
 import * as React from "react"
 
+import { LiveRegion } from "../../a11y/live-region"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Popover, PopoverAnchor, PopoverContent } from "../../ui/popover"
-import { LiveMessage } from "./_shared"
 
 /** A suggestion: a plain string, or a value with a label and description. */
 export type SuggestionOption =
@@ -314,7 +314,7 @@ export function SuggestionList({
           <div className="px-2 py-1.5 text-sm text-muted-foreground">{empty}</div>
         ) : null}
       </PopoverContent>
-      <LiveMessage>{status}</LiveMessage>
+      <LiveRegion>{status}</LiveRegion>
     </Popover>
   )
 }

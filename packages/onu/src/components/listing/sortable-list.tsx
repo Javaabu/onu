@@ -5,12 +5,12 @@ import { arrayMove, move } from "@dnd-kit/helpers"
 import { DragDropProvider } from "@dnd-kit/react"
 import { useSortable } from "@dnd-kit/react/sortable"
 
+import { useAnnouncer } from "../../a11y/use-announcer"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { useDndPlugins } from "./_dnd"
-import { useAnnouncer } from "./_shared"
 
 export interface SortableListItemParts {
   /** The drag handle button (also keyboard-draggable: Space, arrows, Space). */
@@ -146,7 +146,7 @@ export function SortableList<T>({
   ...props
 }: SortableListProps<T>) {
   const { t, locale } = useTranslation()
-  const { announce, region } = useAnnouncer()
+  const { announce, region } = useAnnouncer({ role: "status" })
   const ids = items.map(getId)
   const byId = new Map(items.map((item) => [getId(item), item]))
   const nameOf = (id: string | number) => {

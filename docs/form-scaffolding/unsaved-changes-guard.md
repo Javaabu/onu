@@ -1,6 +1,7 @@
 ---
 title: useUnsavedChangesGuard
 sidebar_position: 14
+reference: hook
 ---
 
 Warns before leaving a page with unsaved changes (§25.9). [`SaveBar`](./save-bar) uses it; call it yourself for programmatic navigation.

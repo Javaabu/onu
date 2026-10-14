@@ -13,7 +13,9 @@ import { SkeletonCard, SkeletonTable, SkeletonText } from "@javaabu/onu"
 <SkeletonTable rows={10} columns={5} selectable />
 ```
 
-## SkeletonText
+## Props
+
+### SkeletonText
 
 | Prop         | Type                   | Default        | Description                                |
 | ------------ | ---------------------- | -------------- | ------------------------------------------ |
@@ -22,7 +24,7 @@ import { SkeletonCard, SkeletonTable, SkeletonText } from "@javaabu/onu"
 | `size`       | `'sm' \| 'md' \| 'lg'` | `'md'`         | Line height, to match the text it replaces |
 | `classNames` | `{ line }`             |                | Classes for each line                      |
 
-## SkeletonCard
+### SkeletonCard
 
 | Prop         | Type                                     | Default | Description                   |
 | ------------ | ---------------------------------------- | ------- | ----------------------------- |
@@ -32,7 +34,7 @@ import { SkeletonCard, SkeletonTable, SkeletonText } from "@javaabu/onu"
 | `actions`    | `number`                                 | `0`     | Button-shaped bars at the end |
 | `classNames` | `{ media, avatar, title, line, action }` |         | Classes for each part         |
 
-## SkeletonTable
+### SkeletonTable
 
 | Prop         | Type                    | Default | Description           |
 | ------------ | ----------------------- | ------- | --------------------- |

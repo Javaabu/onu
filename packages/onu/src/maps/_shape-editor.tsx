@@ -2,13 +2,13 @@
 
 import * as React from "react"
 
+import { useAnnouncer } from "../a11y/use-announcer"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
 import { Button } from "../ui/button"
 import { CoordinateFields } from "./_coordinate-fields"
 import { useMapEngine } from "./_context"
-import { useAnnouncer } from "./_hooks"
 import { boundsOf, formatLatLng } from "./geo"
 import { MALE, MapView } from "./map-view"
 import type { DrawShape, LatLng, MapHandle, MapTone } from "./types"
@@ -111,7 +111,7 @@ export function ShapeEditor({
   const [selectedId, setSelectedId] = React.useState<string | null>(shapes[0]?.id ?? null)
   const [newPoint, setNewPoint] = React.useState<LatLng | null>(null)
   const mapRef = React.useRef<MapHandle>(null)
-  const { message, announce } = useAnnouncer()
+  const { announce, region } = useAnnouncer()
   // Without an explicit centre or zoom, fit the shapes (once, also when they load later).
   const initialBounds = center || zoom !== undefined ? null : boundsOf(shapes.flatMap((s) => s.path))
 
@@ -386,9 +386,7 @@ export function ShapeEditor({
           </section>
         ) : null}
       </div>
-      <div aria-live="polite" className="sr-only">
-        {message}
-      </div>
+      {region}
     </div>
   )
 }

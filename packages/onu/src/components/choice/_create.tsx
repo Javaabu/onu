@@ -2,8 +2,8 @@
 
 import * as React from "react"
 
+import { useAnnouncer } from "../../a11y/use-announcer"
 import { useTranslation } from "../../providers/onu-provider"
-import { useAnnouncer } from "./_hooks"
 import { hasExactMatch, type ChoiceOption } from "./options"
 
 export interface CreateDialogRenderProps {
@@ -50,7 +50,7 @@ export function useQuickCreate({
   const [failed, setFailed] = React.useState<string | null>(null)
   const [dialogQuery, setDialogQuery] = React.useState<string | null>(null)
   const [created, setCreated] = React.useState<ChoiceOption[]>([])
-  const [announcement, announce] = useAnnouncer()
+  const { message: announcement, announce } = useAnnouncer()
   const enabled = !!(config.onCreate || config.renderCreateDialog)
   const q = query.trim()
   const all = React.useMemo(() => [...options, ...created], [options, created])

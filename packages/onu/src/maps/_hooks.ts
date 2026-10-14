@@ -68,10 +68,3 @@ export function useAnimatedLatLng(target: LatLng, duration = 800): LatLng {
   }, [target, duration, instant])
   return instant ? target : shown
 }
-
-/** Polite live-region text: set a message, render `message` in an `aria-live` element. */
-export function useAnnouncer() {
-  const [message, setMessage] = React.useState("")
-  const announce = React.useCallback((text: string) => setMessage(text), [])
-  return { message, announce }
-}
