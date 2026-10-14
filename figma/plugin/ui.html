@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        margin: 0;
+        padding: 16px;
+        font:
+          12px/1.5 Inter,
+          system-ui,
+          sans-serif;
+        color: var(--figma-color-text, #1f1f1f);
+        background: var(--figma-color-bg, #fff);
+      }
+      h1 {
+        margin: 0 0 4px;
+        font-size: 14px;
+      }
+      p {
+        margin: 0 0 12px;
+        color: var(--figma-color-text-secondary, #595959);
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+      }
+      input[type="text"] {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 6px 8px;
+        border: 1px solid var(--figma-color-border, #d9d9d9);
+        border-radius: 6px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+      }
+      button {
+        padding: 6px 14px;
+        border: 0;
+        border-radius: 6px;
+        background: var(--figma-color-bg-brand, #6d4aff);
+        color: var(--figma-color-text-onbrand, #fff);
+        font: inherit;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: var(--figma-color-bg-secondary, #f0f0f0);
+        color: inherit;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: progress;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin: 12px 0;
+      }
+      pre,
+      textarea {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid var(--figma-color-border, #d9d9d9);
+        border-radius: 6px;
+        background: var(--figma-color-bg-secondary, #fafafa);
+        color: inherit;
+        font:
+          11px/1.5 "JetBrains Mono",
+          ui-monospace,
+          monospace;
+        padding: 8px;
+      }
+      pre {
+        max-height: 140px;
+        overflow: auto;
+        white-space: pre-wrap;
+        margin: 0;
+      }
+      textarea {
+        height: 200px;
+        resize: vertical;
+      }
+      .error {
+        color: var(--figma-color-text-danger, #cf1322);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Onu kit</h1>
+    <p>
+      Creates or updates the Onu variables, text styles, components and sample frames in this file from tokens.json.
+      Re-running updates everything in place by name.
+    </p>
+    <label>
+      Brand primary (oklch() or hex)
+      <input id="primary" type="text" spellcheck="false" />
+    </label>
+    <label><input id="samples" type="checkbox" checked /> Build sample frames (dashboard, application form)</label>
+    <div class="row">
+      <button id="generate">Generate / update kit</button>
+      <button id="close" class="secondary">Close</button>
+      <span id="version"></span>
+    </div>
+    <pre id="log" aria-live="polite"></pre>
+    <div id="output" hidden>
+      <p style="margin-top: 12px">
+        Paste into a file and run <code>node figma/apply-node-ids.mjs &lt;file&gt;</code> to fill
+        <code>figmaUrl</code> in figma/components.json:
+      </p>
+      <textarea id="json" readonly></textarea>
+      <div class="row"><button id="copy" class="secondary">Copy JSON</button></div>
+    </div>
+    <script>
+      const $ = (id) => document.getElementById(id)
+      const post = (msg) => parent.postMessage({ pluginMessage: msg }, "*")
+      const log = (text, cls) => {
+        const line = document.createElement("div")
+        line.textContent = text
+        if (cls) line.className = cls
+        $("log").appendChild(line)
+        $("log").scrollTop = $("log").scrollHeight
+      }
+      $("generate").onclick = () => {
+        $("generate").disabled = true
+        $("log").textContent = ""
+        $("output").hidden = true
+        post({ type: "generate", primary: $("primary").value.trim(), samples: $("samples").checked })
+      }
+      $("close").onclick = () => post({ type: "close" })
+      $("copy").onclick = () => {
+        $("json").select()
+        document.execCommand("copy")
+      }
+      onmessage = (event) => {
+        const msg = event.data.pluginMessage
+        if (!msg) return
+        if (msg.type === "init") {
+          $("primary").value = msg.primary
+          $("version").textContent = msg.version ? "@javaabu/onu " + msg.version : ""
+        } else if (msg.type === "log") log(msg.text)
+        else if (msg.type === "error") {
+          log(msg.text, "error")
+          $("generate").disabled = false
+        } else if (msg.type === "done") {
+          const r = msg.result
+          log(
+            r.stats.componentSets +
+              " component sets, " +
+              r.stats.variants +
+              " variants, " +
+              r.stats.textStyles +
+              " text styles.",
+          )
+          $("json").value = JSON.stringify(
+            { fileKey: r.fileKey, figmaUrls: r.figmaUrls, nodeIds: r.nodeIds, components: r.components },
+            null,
+            2,
+          )
+          $("output").hidden = false
+          $("generate").disabled = false
+        }
+      }
+    </script>
+  </body>
+</html>

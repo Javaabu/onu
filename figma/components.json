@@ -19,8 +19,8 @@
   },
   "charts/map-chart": {
     "title": "MapChart",
-    "component": "OnuProvider",
-    "import": "@javaabu/onu",
+    "component": "MapChart",
+    "import": "@javaabu/onu/charts",
     "figmaUrl": null
   },
   "charts/period-comparison-chart": {
@@ -529,7 +529,7 @@
   },
   "form-scaffolding/button-group": {
     "title": "ButtonGroup",
-    "component": "Button",
+    "component": "ButtonGroup",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -547,7 +547,7 @@
   },
   "form-scaffolding/floating-submit": {
     "title": "FloatingSubmit",
-    "component": "Form",
+    "component": "FloatingSubmit",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -559,7 +559,7 @@
   },
   "form-scaffolding/form-container": {
     "title": "FormContainer",
-    "component": "Form",
+    "component": "FormContainer",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -584,6 +584,12 @@
   "form-scaffolding/help-text": {
     "title": "HelpText",
     "component": "HelpText",
+    "import": "@javaabu/onu",
+    "figmaUrl": null
+  },
+  "form-scaffolding/icon-button": {
+    "title": "IconButton",
+    "component": "Button",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -619,13 +625,13 @@
   },
   "form-scaffolding/save-bar": {
     "title": "SaveBar",
-    "component": "Form",
+    "component": "SaveBar",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
   "form-scaffolding/submit-button": {
     "title": "SubmitButton",
-    "component": "Form",
+    "component": "SubmitButton",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -655,7 +661,7 @@
   },
   "layout-and-navigation/app-layout": {
     "title": "AppLayout",
-    "component": "AppHeader",
+    "component": "AppLayout",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -685,7 +691,7 @@
   },
   "layout-and-navigation/card": {
     "title": "Card",
-    "component": "Button",
+    "component": "Card",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -721,13 +727,13 @@
   },
   "layout-and-navigation/masonry-grid": {
     "title": "MasonryGrid",
-    "component": "Card",
+    "component": "MasonryGrid",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
   "layout-and-navigation/mega-menu": {
     "title": "MegaMenu",
-    "component": "Card",
+    "component": "MegaMenu",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -751,19 +757,19 @@
   },
   "layout-and-navigation/overlay-menu": {
     "title": "OverlayMenu",
-    "component": "Button",
+    "component": "OverlayMenu",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
   "layout-and-navigation/page-title": {
     "title": "PageTitle",
-    "component": "Breadcrumbs",
+    "component": "PageTitle",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
   "layout-and-navigation/section": {
     "title": "Section",
-    "component": "Button",
+    "component": "Section",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -775,7 +781,7 @@
   },
   "layout-and-navigation/site-footer": {
     "title": "SiteFooter",
-    "component": "LanguageSwitcher",
+    "component": "SiteFooter",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -799,7 +805,7 @@
   },
   "layout-and-navigation/theme-toggle": {
     "title": "ThemeToggle",
-    "component": "ThemeProvider",
+    "component": "ThemeToggle",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -913,7 +919,7 @@
   },
   "listing-pages/listing-page": {
     "title": "ListingPage",
-    "component": "Button",
+    "component": "ListingPage",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -961,7 +967,7 @@
   },
   "listing-pages/search-results": {
     "title": "SearchResults",
-    "component": "Highlight",
+    "component": "SearchResults",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -1003,7 +1009,7 @@
   },
   "loading/placeholder-input": {
     "title": "PlaceholderInput",
-    "component": "FormField",
+    "component": "PlaceholderInput",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -1081,8 +1087,8 @@
   },
   "maps/map-provider": {
     "title": "MapProvider",
-    "component": "OnuProvider",
-    "import": "@javaabu/onu",
+    "component": "MapProvider",
+    "import": "@javaabu/onu/maps",
     "figmaUrl": null
   },
   "maps/map-radius": {
@@ -1141,37 +1147,43 @@
   },
   "overlays/confirm-dialog": {
     "title": "ConfirmDialog",
-    "component": "Button",
+    "component": "ConfirmDialog",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
   "overlays/context-action-menu": {
     "title": "ContextActionMenu",
-    "component": "ActionMenu",
+    "component": "ContextActionMenu",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
   "overlays/modal": {
     "title": "Modal",
-    "component": "Button",
+    "component": "Modal",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
   "overlays/popover-panel": {
     "title": "PopoverPanel",
-    "component": "Button",
+    "component": "PopoverPanel",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
   "overlays/slide-over": {
     "title": "SlideOver",
-    "component": "Button",
+    "component": "SlideOver",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
   "overlays/tip": {
     "title": "Tip",
-    "component": "Button",
+    "component": "Tip",
+    "import": "@javaabu/onu",
+    "figmaUrl": null
+  },
+  "primitives/badge": {
+    "title": "Badge",
+    "component": "Badge",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -1249,7 +1261,7 @@
   },
   "text-inputs/icon-picker": {
     "title": "IconPicker",
-    "component": "DynamicIcon",
+    "component": "IconPicker",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },

@@ -2,8 +2,9 @@
 /**
  * Generates Figma Code Connect files (R3.15) from figma/components.json.
  *
- * 1. In the Onu Figma library, copy each component's link ("Copy link to selection")
- *    into its `figmaUrl` in figma/components.json.
+ * 1. Fill `figmaUrl` in figma/components.json: run the "Onu kit" plugin and
+ *    `node figma/apply-node-ids.mjs <its JSON>`, or copy a component's link
+ *    ("Copy link to selection") by hand.
  * 2. node figma/generate-code-connect.mjs
  * 3. npx figma connect publish --token $FIGMA_TOKEN
  *

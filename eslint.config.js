@@ -26,6 +26,8 @@ export default tseslint.config(
       "**/.next/**",
       "**/next-env.d.ts",
       "templates/laravel-inertia-react/{vendor,public,storage,bootstrap/cache}/**",
+      // Built Figma plugin bundle (generated from figma/plugin/src, committed for designers).
+      "figma/plugin/code.js",
     ],
   },
   js.configs.recommended,
