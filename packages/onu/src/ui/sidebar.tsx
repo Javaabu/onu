@@ -201,6 +201,12 @@ function Sidebar({
             } as React.CSSProperties
           }
           side={side}
+          // onu: focus the drawer itself, not its first field, so opening the menu on a phone
+          // doesn't bring up the keyboard (a filter or search field at the top would get focus).
+          onOpenAutoFocus={(event) => {
+            event.preventDefault()
+            ;(event.currentTarget as HTMLElement | null)?.focus()
+          }}
         >
           <SheetHeader className="sr-only">
             <SheetTitle>{t("layout.sidebar")}</SheetTitle>

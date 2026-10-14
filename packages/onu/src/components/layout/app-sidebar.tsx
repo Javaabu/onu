@@ -129,7 +129,7 @@ function Badge({ item, ctx }: { item: NavItem; ctx: Ctx }) {
         ctx.classNames?.badge,
       )}
     >
-      <NavBadge badge={item.badge} />
+      <NavBadge badge={item.badge} tone={item.badgeTone} />
     </SidebarMenuBadge>
   )
 }
@@ -188,6 +188,7 @@ function InlineBadge({ item, ctx }: { item: NavItem; ctx: Ctx }) {
   return (
     <NavBadge
       badge={item.badge}
+      tone={item.badgeTone}
       className={cn(
         "h-5 min-w-5 px-1 text-xs font-medium ms-auto flex shrink-0 items-center justify-center rounded-md tabular-nums group-data-[collapsible=icon]:hidden",
         ctx.shell &&
@@ -243,6 +244,12 @@ function ParentItem({ item, ctx }: { item: NavItem; ctx: Ctx }) {
   const withinActive = isItemActive(item, ctx.activeHref)
   const selfActive = isSelfActive(item, ctx.activeHref)
   const [open, setOpen] = React.useState(withinActive)
+  const [wasWithinActive, setWasWithinActive] = React.useState(withinActive)
+  if (wasWithinActive !== withinActive) {
+    // Navigating into this item's pages expands it (state adjusted during render).
+    setWasWithinActive(withinActive)
+    if (withinActive) setOpen(true)
+  }
   const children = item.items ?? []
   const buttonClass = cn("touch:min-h-11", ctx.shell && SHELL_BUTTON, ctx.shell && "pe-2.5")
 
@@ -360,6 +367,7 @@ function ParentItem({ item, ctx }: { item: NavItem; ctx: Ctx }) {
                         <span>{child.label}</span>
                         <NavBadge
                           badge={child.badge}
+                          tone={child.badgeTone}
                           className="text-xs ms-auto text-sidebar-foreground/70 tabular-nums"
                         />
                       </NavLink>

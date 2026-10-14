@@ -136,6 +136,24 @@ describe("AppSidebar", () => {
     expect(screen.getByRole("link", { name: "Monthly" })).toBeVisible()
   })
 
+  it("expands a collapsed parent when navigation moves into it", async () => {
+    const { rerender } = renderSidebar(<AppSidebar groups={groups} currentHref="/" />)
+    const toggle = screen.getByRole("button", { name: "Show or hide Users" })
+    expect(toggle).toHaveAttribute("aria-expanded", "false")
+    rerender(
+      <TooltipProvider>
+        <SidebarProvider defaultOpen>
+          <AppSidebar groups={groups} currentHref="/users/invitations" />
+          <SidebarTrigger />
+        </SidebarProvider>
+      </TooltipProvider>,
+    )
+    expect(toggle).toHaveAttribute("aria-expanded", "true")
+    // Leaving keeps it as the user left it; they can still close it.
+    await userEvent.click(toggle)
+    expect(toggle).toHaveAttribute("aria-expanded", "false")
+  })
+
   it("calls onNavigate and item onSelect", async () => {
     const onNavigate = vi.fn()
     const onSelect = vi.fn()
@@ -175,6 +193,16 @@ describe("AppSidebar", () => {
     expect(sidebar).toHaveAttribute("data-state", "collapsed")
     await userEvent.keyboard("{Control>}b{/Control}")
     expect(sidebar).toHaveAttribute("data-state", "expanded")
+  })
+
+  it("focuses the phone drawer itself, so a field at the top doesn't bring up the keyboard", async () => {
+    mockMobile()
+    renderSidebar(<AppSidebar groups={groups} header={<input aria-label="Filter" />} />)
+    await userEvent.click(document.querySelector<HTMLElement>("[data-slot=sidebar-trigger]")!)
+    const dialog = await screen.findByRole("dialog", { name: "Sidebar" })
+    expect(dialog).toHaveFocus()
+    await userEvent.tab()
+    expect(screen.getByRole("textbox", { name: "Filter" })).toHaveFocus()
   })
 
   it("is an off-canvas drawer on phones that closes after navigating", async () => {
@@ -219,6 +247,9 @@ describe("AppSidebar", () => {
     expect(pill).toHaveClass("rounded-full", "bg-primary")
     const neutral = screen.getByRole("link", { name: /In review/ }).parentElement!
     expect(neutral.querySelector("[data-slot=sidebar-menu-badge]")).toHaveAttribute("data-tone", "neutral")
+    // A total, not unread items: read as the number alone.
+    expect(screen.getByText("12 new")).toBeInTheDocument()
+    expect(neutral.querySelector("[data-slot=nav-badge]")).toHaveTextContent(/^4$/)
 
     const folder = screen.getByRole("link", { name: "Permits" }).querySelector("[data-slot=nav-color-icon]")!
     expect(folder).toHaveAttribute("data-icon-name", "folder")

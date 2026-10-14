@@ -17,8 +17,8 @@ export interface NavItem {
   badge?: React.ReactNode
   /**
    * How a numeric badge looks in `AppSidebar` on the shell: `brand` (default)
-   * is a brand-coloured pill for unread-like counts; `neutral` is a plain
-   * muted number for totals.
+   * is a brand-coloured pill for unread-like counts, read as "12 new";
+   * `neutral` is a plain muted number for totals, read as the number alone.
    */
   badgeTone?: "brand" | "neutral"
   /**
@@ -194,12 +194,31 @@ export function formatCount(count: number, numberLocale: string, max = 99) {
   return count > max ? `${fmt.format(max)}+` : fmt.format(count)
 }
 
-/** A count badge with a screen-reader phrase ("3 new"); other nodes are rendered as-is. */
-export function NavBadge({ badge, className }: { badge: React.ReactNode; className?: string }) {
+/**
+ * A count badge with a screen-reader phrase ("3 new"); a `neutral` count (a
+ * total, not unread items) reads as the number alone. Other nodes are
+ * rendered as-is.
+ */
+export function NavBadge({
+  badge,
+  tone = "brand",
+  className,
+}: {
+  badge: React.ReactNode
+  tone?: NavItem["badgeTone"]
+  className?: string
+}) {
   const { t, locale } = useTranslation()
   if (badge === undefined || badge === null || badge === false) return null
   if (typeof badge === "number") {
     if (badge <= 0) return null
+    if (tone === "neutral") {
+      return (
+        <span data-slot="nav-badge" className={className}>
+          {formatCount(badge, locale.numberLocale)}
+        </span>
+      )
+    }
     return (
       <span data-slot="nav-badge" className={className}>
         <span aria-hidden="true">{formatCount(badge, locale.numberLocale)}</span>

@@ -26,7 +26,7 @@ import {
 import { useSettings } from "../../settings"
 import { useTr } from "./i18n"
 import { routes } from "./routes"
-import { BrandMark } from "../../components/layout"
+import { BrandMark } from "../../components/brand-mark"
 import { ISLANDS, SERVICES, useApplications } from "../admin-records/_data"
 
 // Fixed demo times, computed once (not during render).

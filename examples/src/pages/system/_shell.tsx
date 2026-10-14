@@ -4,7 +4,7 @@ import { LanguageSwitcher, Logo, ThemeToggle } from "@javaabu/onu"
 import { useSettings } from "../../settings"
 import { useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
-import { BrandMark } from "../../components/layout"
+import { BrandMark } from "../../components/brand-mark"
 
 /**
  * Bare frame for full-page system states (500, 503) shown when the app shell

@@ -41,7 +41,7 @@ Inside a panel `AppLayout` (the default) the sidebar uses `surface="shell"`: Pro
 
 - **Items** are 36px rows with 8px corners, a grey hover and a grey active state with a semibold label and a brand icon (no edge line, no brand tint).
 - **`action`**: the main call to action under the header, as a full-width 44px button (Proton's "New message"). Collapsed to icons, only its icon shows; the label stays its accessible name.
-- **Count pills**: numeric badges are brand-coloured pills for unread-like counts. Set `badgeTone: "neutral"` on an item for a plain muted total.
+- **Count pills**: numeric badges are brand-coloured pills for unread-like counts, read as "12 new" by screen readers. Set `badgeTone: "neutral"` on an item for a plain muted total, read as the number alone.
 - **Folders and labels**: give an item a `color`. With a semantic icon (`icon: "folder"`) the icon is tinted; with no icon it shows a coloured dot. The colour is decorative; the label carries the meaning.
 - **Header and footer**: put a `Logo` and an [`AppSwitcher`](./app-switcher) in `header`, and a [`UsageMeter`](./usage-meter) (or a `UserProfile`) in `footer`.
 
@@ -82,9 +82,9 @@ Items use the shared `NavItem` shape: `{ label, href?, icon?, badge?, badgeTone?
 - `icon`: a semantic icon name (`"home"`) or any node.
 - `badge`: a number (shown as a count, "99+" above 99, with "3 new" for screen readers) or any node. On an item with nested items the badge sits inside the button, before the chevron or the submenu toggle, so the two never overlap (LTR and RTL).
 - `items`: nested items. A parent with an `href` gets a separate expand button; without one, the whole row toggles.
-- **Active state**: the item matching `currentHref` gets `aria-current="page"`; its parent starts expanded. `match="prefix"` (default) keeps `/users` active on `/users/12/edit`; set `isActive` to override. Items whose `href` has a query string (`/users?status=active`) also match on its parameters.
+- **Active state**: the item matching `currentHref` gets `aria-current="page"`; its parent starts expanded, and expands when `currentHref` moves into it later. `match="prefix"` (default) keeps `/users` active on `/users/12/edit`; set `isActive` to override. Items whose `href` has a query string (`/users?status=active`) also match on its parameters.
 - **Collapsed to icons**: labels become tooltips and nested items open in a flyout menu.
-- On phones the drawer closes after an item is chosen.
+- On phones the drawer takes focus itself when it opens (so a filter or search field at the top doesn't bring up the keyboard; <kbd>Tab</kbd> moves into it) and closes after an item is chosen.
 
 ## Props
 
