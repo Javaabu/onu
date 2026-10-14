@@ -15,6 +15,10 @@ import { Label } from "../ui/label"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Switch } from "../ui/switch"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+
+registerEnglish({ common: en_common })
 
 export type AttributeFieldType =
   | "text"

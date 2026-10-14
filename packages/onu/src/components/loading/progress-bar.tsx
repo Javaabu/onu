@@ -7,6 +7,10 @@ import { Progress as ProgressPrimitive } from "radix-ui"
 import { useMediaQuery } from "../../hooks/use-media-query"
 import { cn } from "../../lib/utils"
 import { useOnu } from "../../providers/onu-provider"
+import { registerEnglish } from "../../i18n/english"
+import { overlay as en_overlay } from "../../locales/en/overlay"
+
+registerEnglish({ overlay: en_overlay })
 
 export const progressTrackVariants = cva("relative w-full overflow-hidden rounded-full bg-muted", {
   variants: {

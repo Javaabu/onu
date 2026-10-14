@@ -16,6 +16,10 @@ import { fileKey, validateFiles, type FileRejection, type FileValidationOptions 
 import { defaultUploadValue } from "./instant-file-upload"
 import { UploadProgress } from "./upload-progress"
 import { useRejectionMessage, useUploadQueue, type UploadItem, type UploadSource } from "./use-files"
+import { registerEnglish } from "../../i18n/english"
+import { file as en_file } from "../../locales/en/file"
+
+registerEnglish({ file: en_file })
 
 export const dropzoneVariants = cva(
   "gap-2 relative flex w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-input bg-muted/30 text-center text-muted-foreground transition-colors data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 data-[drag-active]:border-primary data-[drag-active]:bg-primary-subtle data-[drag-active]:text-primary-subtle-foreground data-[invalid]:border-destructive",

@@ -11,6 +11,10 @@ import { Button } from "../ui/button"
 import { LabelledSlider } from "./_labelled-slider"
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group"
 import { cropImage, cropImageToFile, type CropImageOptions, type PixelCrop } from "./crop-image"
+import { registerEnglish } from "../i18n/english"
+import { file as en_file } from "../locales/en/file"
+
+registerEnglish({ file: en_file })
 
 export interface AspectOption {
   label: string

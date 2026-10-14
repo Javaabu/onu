@@ -29,10 +29,11 @@ Wrap your app in `ThemeProvider` (light, dark and system themes) and `OnuProvide
 
 ```tsx
 import { OnuProvider, ThemeProvider } from "@javaabu/onu"
+import { dv } from "@javaabu/onu/locales/dv"
 
 createRoot(document.getElementById("root")).render(
   <ThemeProvider>
-    <OnuProvider locale="dv">
+    <OnuProvider locale={dv}>
       <App />
     </OnuProvider>
   </ThemeProvider>,
@@ -41,15 +42,17 @@ createRoot(document.getElementById("root")).render(
 
 `OnuProvider` sets `lang`, `dir` and `data-density` on `<html>`, so dialogs and menus rendered in portals follow the same direction. Pass `syncDocument={false}` if Onu only controls part of a page.
 
+English-only apps leave out `locale` and import nothing else: each component brings its own English text, so neither the Dhivehi strings nor the full English set end up in the bundle. `locale="dv"` also works and loads the Dhivehi text on demand (see [Dhivehi & locales](./guides/dhivehi-and-locales#loading-dhivehi)).
+
 | Prop            | Default     | Description                                                        |
 | --------------- | ----------- | ------------------------------------------------------------------ |
-| `locale`        | `"en"`      | `"en"`, `"dv"` or a custom locale object                           |
+| `locale`        | `"en"`      | A locale object (`dv` from `@javaabu/onu/locales/dv`), `"en"` or `"dv"` |
 | `dir`           | from locale | Override the direction                                             |
 | `messages`      |             | Override individual strings, e.g. `{ common: { save: "Submit" } }` |
 | `density`       | `"default"` | `"compact"`, `"default"`, `"comfortable"` or `"touch"`             |
 | `labelLayout`   | `"stacked"` | Default label layout for form fields: `"stacked"` or `"inline"`    |
 | `linkComponent` | `"a"`       | Component used for links, e.g. Inertia's or Next's `Link`          |
-| `icons`         | Lucide      | Map semantic icon names to another set, e.g. FontAwesome Pro       |
+| `icons`         | Lucide      | Map semantic icon names to another set, e.g. FontAwesome Pro (the default Lucide set loads on demand) |
 | `iconSources`   |             | Icon sources for `DynamicIcon` and the icon picker                 |
 | `maps`          |             | `{ googleMapsApiKey, mapId, darkMapId }`                           |
 

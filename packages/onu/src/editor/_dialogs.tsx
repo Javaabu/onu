@@ -12,6 +12,11 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "../ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { isSafeImageUrl, normalizeUrl, toEmbedUrl } from "./_schema"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+import { editor as en_editor } from "../locales/en/editor"
+
+registerEnglish({ common: en_common, editor: en_editor })
 
 /** Applies a link from the link dialog: wraps the selection, or inserts the URL at the caret. */
 export function applyLink(editor: Editor, { href, newTab }: { href: string; newTab: boolean }) {

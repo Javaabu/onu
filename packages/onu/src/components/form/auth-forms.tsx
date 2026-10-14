@@ -16,6 +16,10 @@ import { useFieldErrors, useFormDisabled, type FormErrors } from "./form-context
 import { FormField } from "./form-field"
 import { Label } from "./label"
 import { SubmitButton } from "./submit-button"
+import { registerEnglish } from "../../i18n/english"
+import { auth as en_auth } from "../../locales/en/auth"
+
+registerEnglish({ auth: en_auth })
 
 /**
  * What an auth form submits: its built-in fields, typed, plus any other named

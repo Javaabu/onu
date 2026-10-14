@@ -3,6 +3,7 @@ import { render, type RenderOptions } from "@testing-library/react"
 import axe from "axe-core"
 import { expect } from "vitest"
 
+import { dv } from "../src/locales/dv"
 import { OnuProvider, type OnuProviderProps } from "../src/providers/onu-provider"
 
 export interface RenderWithOnuOptions extends Omit<RenderOptions, "wrapper"> {
@@ -12,7 +13,11 @@ export interface RenderWithOnuOptions extends Omit<RenderOptions, "wrapper"> {
   provider?: Omit<OnuProviderProps, "children" | "locale" | "dir">
 }
 
-/** Renders inside OnuProvider with a locale, direction and theme. */
+/**
+ * Renders inside OnuProvider with a locale, direction and theme. `locale: "dv"` passes
+ * the Dhivehi locale object, so the first render is already in Dhivehi (the provider
+ * would otherwise load it on demand).
+ */
 export function renderWithOnu(
   ui: React.ReactElement,
   { locale = "en", dir, dark, provider, ...options }: RenderWithOnuOptions = {},
@@ -20,7 +25,7 @@ export function renderWithOnu(
   if (dark) document.documentElement.classList.add("dark")
   return render(ui, {
     wrapper: ({ children }) => (
-      <OnuProvider locale={locale} dir={dir} {...provider}>
+      <OnuProvider locale={locale === "dv" ? dv : locale} dir={dir} {...provider}>
         {children}
       </OnuProvider>
     ),

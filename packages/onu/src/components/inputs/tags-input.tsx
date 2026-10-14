@@ -19,6 +19,10 @@ import {
 } from "./_suggestions"
 import { ThaanaToggle } from "./thaana-toggle"
 import { useMergedRef } from "./text-input"
+import { registerEnglish } from "../../i18n/english"
+import { input as en_input } from "../../locales/en/input"
+
+registerEnglish({ input: en_input })
 
 export interface TagsInputProps extends Omit<
   React.ComponentProps<"input">,

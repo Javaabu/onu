@@ -8,6 +8,10 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { latLngEquals } from "./geo"
 import type { LatLng } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ map: en_map })
 
 export interface CoordinateFieldsProps {
   value: LatLng | null

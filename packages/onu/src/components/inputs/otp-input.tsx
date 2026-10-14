@@ -10,6 +10,10 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../../
 import { useFormFieldControl } from "../form/form-field"
 import { useControllableState } from "./_shared"
 import { useMergedRef } from "./text-input"
+import { registerEnglish } from "../../i18n/english"
+import { input as en_input } from "../../locales/en/input"
+
+registerEnglish({ input: en_input })
 
 export const otpSlotVariants = cva("", {
   variants: {

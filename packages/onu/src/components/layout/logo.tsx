@@ -6,6 +6,10 @@ import { Slot } from "radix-ui"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { NavLink } from "./_nav"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 export interface LogoProps extends Omit<React.ComponentProps<"span">, "children"> {
   /** Image for light mode (and dark mode when `darkSrc` is not set). */

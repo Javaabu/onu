@@ -1,12 +1,17 @@
 import * as React from "react"
-import { render, screen } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
 import { Direction } from "radix-ui"
 import { describe, expect, it } from "vitest"
 
+import { registerEnglish } from "../i18n/english"
 import { Icon } from "../icons/icon"
 import type { IconComponentProps } from "../icons/types"
 import { dv, en } from "../locales"
+import { common as en_common } from "../locales/en/common"
 import { Density, OnuProvider, useDirection, useLinkComponent, useOnu, useTranslation } from "./onu-provider"
+
+// Like a component, the probe registers the English text it uses.
+registerEnglish({ common: en_common })
 
 function Probe() {
   const onu = useOnu()
@@ -47,7 +52,7 @@ describe("OnuProvider", () => {
     expect(document.documentElement).not.toHaveAttribute("lang")
   })
 
-  it("takes a built-in locale by code and follows its direction", () => {
+  it("takes a built-in locale by code and follows its direction", async () => {
     render(
       <OnuProvider locale="dv">
         <Probe />
@@ -56,7 +61,8 @@ describe("OnuProvider", () => {
     expect(text("locale")).toBe("dv")
     expect(text("dir")).toBe("rtl")
     expect(text("radix-dir")).toBe("rtl")
-    expect(text("yes")).toBe(dv.messages.common.yes)
+    // The Dhivehi text loads on demand.
+    await waitFor(() => expect(text("yes")).toBe(dv.messages.common!.yes))
   })
 
   it("takes a locale object, a direction override and settings", () => {
@@ -74,7 +80,7 @@ describe("OnuProvider", () => {
   })
 
   it("overrides individual strings and falls back to English for missing ones", () => {
-    const { yes: _yes, ...common } = dv.messages.common
+    const { yes: _yes, ...common } = dv.messages.common!
     const partial = { ...dv, messages: { ...dv.messages, common } }
     const { rerender } = render(
       <OnuProvider locale="en" messages={{ common: { yes: "Yep" } }}>

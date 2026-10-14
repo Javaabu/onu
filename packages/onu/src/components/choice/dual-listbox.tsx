@@ -11,6 +11,11 @@ import { Button } from "../../ui/button"
 import { useFormField, useFormFieldControl } from "../form/form-field"
 import { useControllableState } from "./_hooks"
 import { filterOptions, normalizeOptions, type ChoiceOption, type ChoiceOptionInput } from "./options"
+import { registerEnglish } from "../../i18n/english"
+import { choice as en_choice } from "../../locales/en/choice"
+import { common as en_common } from "../../locales/en/common"
+
+registerEnglish({ choice: en_choice, common: en_common })
 
 export interface DualListboxProps extends Omit<React.ComponentProps<"div">, "defaultValue" | "onChange" | "dir"> {
   options: ReadonlyArray<ChoiceOptionInput>

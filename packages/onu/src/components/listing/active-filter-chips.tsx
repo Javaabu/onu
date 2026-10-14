@@ -8,6 +8,10 @@ import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { formatFilter, type FormattedFilter } from "./_filter-format"
 import type { FilterDefinition, FilterValue, FilterValues } from "./listing-types"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export { formatFilter, formatFilterDate, type FormattedFilter } from "./_filter-format"
 

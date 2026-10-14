@@ -7,6 +7,10 @@ import { cn } from "../../lib/utils"
 import { useOnu } from "../../providers/onu-provider"
 import { toHijri, type HijriParts } from "./_hijri"
 import { DEFAULT_DATE_FORMAT, formatDate, pad2, toISODate } from "./_utils"
+import { registerEnglish } from "../../i18n/english"
+import { date as en_date } from "../../locales/en/date"
+
+registerEnglish({ date: en_date })
 
 export { addHijriMonths, fromHijri, hijriDaysInMonth, toHijri, type HijriParts } from "./_hijri"
 

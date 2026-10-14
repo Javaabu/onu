@@ -12,6 +12,10 @@ import { PeriodGrid } from "./_period-grid"
 import { HiddenInput, PickerShell, type PickerFieldProps } from "./_picker-shell"
 import { useControllableState } from "./_use-controllable-state"
 import { DEFAULT_DATE_FORMAT, formatDate, toISODate, yearBlockStart, type DateRangeValue } from "./_utils"
+import { registerEnglish } from "../../i18n/english"
+import { date as en_date } from "../../locales/en/date"
+
+registerEnglish({ date: en_date })
 
 export type ReportingPeriodType = "monthly" | "quarterly" | "yearly" | "custom"
 

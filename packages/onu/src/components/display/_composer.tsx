@@ -8,6 +8,11 @@ import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { Icon } from "../../icons/icon"
 import { Textarea } from "../inputs/textarea"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ common: en_common, display: en_display })
 
 export interface ComposerProps {
   label: string

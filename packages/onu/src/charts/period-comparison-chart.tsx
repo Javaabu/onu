@@ -35,6 +35,10 @@ import {
 } from "./_shared"
 import { DeltaIndicator } from "./delta-indicator"
 import { aggregate, computeDelta, useChartFormat, type ValueFormat } from "./format"
+import { registerEnglish } from "../i18n/english"
+import { chart as en_chart } from "../locales/en/chart"
+
+registerEnglish({ chart: en_chart })
 
 export interface PeriodComparisonChartProps extends ChartBaseProps {
   /** One object per step of the period, e.g. `{ day: "Sun", current: 120, previous: 98 }`. */

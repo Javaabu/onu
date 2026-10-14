@@ -13,6 +13,11 @@ import { boundsEqual } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import { MapMarker, MapView } from "./map-view"
 import type { ClusterMarker, LatLng, LatLngBounds, MapHandle, MapViewState } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ common: en_common, map: en_map })
 
 export interface ViewportMarker extends ClusterMarker {
   /** Secondary text for the list. */

@@ -8,6 +8,7 @@ import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test
 import { ActiveFilterChips, useActiveFilterLabels, useFormatFilter } from "./active-filter-chips"
 import { FilterPanel } from "./filter-panel"
 import type { FilterDefinition, FilterValues } from "./listing-types"
+import { dv } from "../../locales/dv"
 import { OnuProvider } from "../../providers/onu-provider"
 
 // Interaction-heavy tests: allow for slow CI machines and coverage instrumentation.
@@ -422,7 +423,7 @@ describe("filter label helpers", () => {
 
   it("uses the active locale", () => {
     const { result } = renderHook(() => useFormatFilter(), {
-      wrapper: ({ children }) => <OnuProvider locale="dv">{children}</OnuProvider>,
+      wrapper: ({ children }) => <OnuProvider locale={dv}>{children}</OnuProvider>,
     })
     expect(result.current(userFilters[2]!, "1")).toMatch(/^Verified: (?!Yes)/)
   })

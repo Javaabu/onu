@@ -12,6 +12,10 @@ import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, Dr
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../../ui/empty"
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
 import { NavIcon, NavLink, formatCount } from "./_nav"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 export interface NotificationItem {
   id: string

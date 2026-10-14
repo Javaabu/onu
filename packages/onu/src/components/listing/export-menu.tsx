@@ -15,6 +15,10 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu"
 import { Spinner } from "../../ui/spinner"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export type ExportFormat = "csv" | "excel" | "pdf" | (string & {})
 

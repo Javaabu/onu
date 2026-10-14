@@ -5,6 +5,10 @@ import * as React from "react"
 import { useAnnouncer } from "../../a11y/use-announcer"
 import { useTranslation } from "../../providers/onu-provider"
 import { hasExactMatch, type ChoiceOption } from "./options"
+import { registerEnglish } from "../../i18n/english"
+import { choice as en_choice } from "../../locales/en/choice"
+
+registerEnglish({ choice: en_choice })
 
 export interface CreateDialogRenderProps {
   /** What the user typed. */

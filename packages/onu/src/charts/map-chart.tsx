@@ -9,6 +9,10 @@ import { Skeleton } from "../ui/skeleton"
 import { chartColor, ChartFrame, type ChartBaseProps, type ChartDatum } from "./_shared"
 import { choroplethRegions, stepOpacity, type ChoroplethRegion, type GeoJsonFeatureCollection } from "./choropleth"
 import { useChartFormat, type ValueFormat } from "./format"
+import { registerEnglish } from "../i18n/english"
+import { chart as en_chart } from "../locales/en/chart"
+
+registerEnglish({ chart: en_chart })
 
 export interface MapChartProps extends Omit<ChartBaseProps, "showTableToggle"> {
   /** Region shapes, e.g. atolls or islands. */

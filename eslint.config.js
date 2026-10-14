@@ -65,8 +65,8 @@ export default tseslint.config(
     },
   },
   {
-    // The full Lucide map (~250 icons) reaches components through OnuProvider's icon context.
-    // Importing it directly puts it in every bundle that uses that component.
+    // The full Lucide map (~250 icons) reaches components through OnuProvider's icon context,
+    // which loads it on demand. Importing it directly puts it in every bundle that uses that component.
     files: ["packages/onu/src/**/*.{ts,tsx}"],
     ignores: [
       "packages/onu/src/icons/index.ts",

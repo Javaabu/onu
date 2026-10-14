@@ -25,6 +25,10 @@ import {
   type ChartDatum,
 } from "./_shared"
 import { useChartFormat, type ValueFormat } from "./format"
+import { registerEnglish } from "../i18n/english"
+import { chart as en_chart } from "../locales/en/chart"
+
+registerEnglish({ chart: en_chart })
 
 export interface PieChartProps extends ChartBaseProps {
   /** One object per slice, e.g. `{ name: "Malé", value: 212000 }`. */

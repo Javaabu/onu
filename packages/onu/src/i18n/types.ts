@@ -41,8 +41,13 @@ export interface OnuLocale {
   /** Native name for language switchers. */
   name: string
   dir: "ltr" | "rtl"
-  messages: Messages
-  dateFns: DateFnsLocale
+  /**
+   * Translated strings. May be partial: missing strings fall back to English,
+   * which each component brings for the namespaces it uses.
+   */
+  messages: PartialMessages
+  /** date-fns locale for month and weekday names. Omit for English (date-fns's default, `en-US`). */
+  dateFns?: DateFnsLocale
   /** 0 = Sunday … 6 = Saturday. */
   weekStartsOn: 0 | 1 | 2 | 3 | 4 | 5 | 6
   /** Locale used for `Intl.NumberFormat` (Western digits in Dhivehi, R12.6). */

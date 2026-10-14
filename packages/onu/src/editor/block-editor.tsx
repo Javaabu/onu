@@ -24,6 +24,10 @@ import { EditorToolbar, type ToolbarItem } from "./_toolbar"
 import { useOnuEditor } from "./_use-editor"
 import type { EditorValue } from "./_value"
 import { editorVariants } from "./wysiwyg-editor"
+import { registerEnglish } from "../i18n/english"
+import { editor as en_editor } from "../locales/en/editor"
+
+registerEnglish({ editor: en_editor })
 
 /** Block type ids the slash and "+" menus offer. */
 export type BlockTypeId =

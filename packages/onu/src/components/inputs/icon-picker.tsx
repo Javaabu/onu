@@ -13,6 +13,10 @@ import { NativeSelect, NativeSelectOption } from "../../ui/native-select"
 import { useFormFieldControl } from "../form/form-field"
 import { PickerSurface } from "./_picker-surface"
 import { useControllableState } from "./_shared"
+import { registerEnglish } from "../../i18n/english"
+import { input as en_input } from "../../locales/en/input"
+
+registerEnglish({ input: en_input })
 
 const RECENT_KEY = "onu-icon-picker-recent"
 const CELL = 44

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { render, screen } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
 import { CheckIcon, Loader2Icon, SearchIcon } from "lucide-react"
 import { describe, expect, it } from "vitest"
 
@@ -86,9 +86,11 @@ describe("Icon", () => {
 })
 
 describe("Icon resolution", () => {
-  it("resolves names from the default set that OnuProvider supplies", () => {
+  it("resolves names from the default set that OnuProvider supplies", async () => {
     const { container } = renderWithOnu(<Icon name="search" />)
-    expect(glyph(container.querySelector("svg"))).toBe(reference(SearchIcon))
+    const expected = reference(SearchIcon)
+    // The default set loads on demand (see onu-provider.test.tsx); it may already be loaded.
+    await waitFor(() => expect(glyph(container.querySelector("svg"))).toBe(expected))
   })
 
   it("uses the fallback glyph outside OnuProvider", () => {

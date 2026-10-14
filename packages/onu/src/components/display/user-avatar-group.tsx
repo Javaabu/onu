@@ -6,6 +6,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
 import { UserAvatar, type UserAvatarProps } from "./user-avatar"
+import { registerEnglish } from "../../i18n/english"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ display: en_display })
 
 export interface AvatarGroupUser {
   id?: string | number

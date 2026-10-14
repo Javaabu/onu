@@ -5,6 +5,10 @@ import * as React from "react"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Kbd, KbdGroup } from "../../ui/kbd"
+import { registerEnglish } from "../../i18n/english"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ display: en_display })
 
 export type KeyPlatform = "mac" | "other"
 

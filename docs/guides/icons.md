@@ -26,13 +26,23 @@ import { Icon } from '@javaabu/onu';
 `<Icon name="…">` looks for the name in this order:
 
 1. your overrides from `OnuProvider icons={…}`
-2. the default Lucide set (`lucideIconMap`), which `OnuProvider` supplies
+2. the default Lucide set (`lucideIconMap`), which `OnuProvider` loads on demand
 3. the `fallback` prop
 4. a generic alert icon
 
-Onu's components get the default set from `OnuProvider` instead of importing it, so a page that uses only a few components does not ship all ~250 default icons with each one. For example, importing just `Button` is about 12 kB (brotli) rather than 21 kB. Components that always show the same glyph, such as `Spinner`, a button's loading spinner, dialog close buttons and menu chevrons, pass that Lucide icon as `fallback`. They work even outside `OnuProvider`, and your `icons` overrides still replace them.
+Neither Onu's components nor `OnuProvider` import the default set, so a page that uses only a few components does not ship all ~250 default icons. For example, importing just `Button` is about 12 kB (brotli) rather than 21 kB, and `OnuProvider` about 1 kB. Components that always show the same glyph, such as `Spinner`, a button's loading spinner, dialog close buttons and menu chevrons, pass that Lucide icon as `fallback`. They work even outside `OnuProvider`, and your `icons` overrides still replace them.
 
-Wrap your app in `OnuProvider` (see [Installation](../installation-and-setup)). Outside it, icons chosen by name at runtime, such as `<Button startIcon="add">`, fall back to the generic icon. The `Icon` you import from `@javaabu/onu` is the exception: it includes the default set, so it resolves every name anywhere.
+The first time an icon is chosen by name at runtime, such as `<Button startIcon="add">` or a navigation item's `icon: "home"`, `OnuProvider` loads the default set as a separate chunk (about 9 kB brotli). Until it arrives, which is usually within the first frames, the icon renders as an empty placeholder of the same size, so nothing shifts. Apps that never choose icons by name never download it.
+
+To have every name resolved on the first render (for example in server-rendered pages or screenshots), bundle the set up front by passing it as overrides:
+
+```tsx
+import { lucideIconMap, OnuProvider } from '@javaabu/onu';
+
+<OnuProvider icons={lucideIconMap}>            // or { ...lucideIconMap, add: MyAddIcon }
+```
+
+Wrap your app in `OnuProvider` (see [Installation](../installation-and-setup)). Outside it, icons chosen by name at runtime fall back to the generic icon. The `Icon` you import from `@javaabu/onu` is the exception: it includes the default set, so it resolves every name anywhere.
 
 # FontAwesome Pro
 

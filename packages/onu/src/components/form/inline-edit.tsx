@@ -9,6 +9,10 @@ import type { ThaanaProp } from "../../thaana/use-thaana-field"
 import { TextInput } from "../inputs/text-input"
 import { Textarea } from "../inputs/textarea"
 import { Button } from "./button"
+import { registerEnglish } from "../../i18n/english"
+import { form as en_form } from "../../locales/en/form"
+
+registerEnglish({ form: en_form })
 
 export interface InlineEditProps extends Omit<
   React.ComponentProps<"div">,

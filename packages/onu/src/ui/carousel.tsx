@@ -13,6 +13,10 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 // onu: direction and translated labels.
 import { useOnu } from "../providers/onu-provider"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+
+registerEnglish({ common: en_common })
 
 type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>

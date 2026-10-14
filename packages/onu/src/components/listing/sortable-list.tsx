@@ -11,6 +11,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { useDndPlugins } from "./_dnd"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export interface SortableListItemParts {
   /** The drag handle button (also keyboard-draggable: Space, arrows, Space). */

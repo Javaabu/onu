@@ -18,6 +18,11 @@ import { formatLatLng, roundLatLng } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import { MALE, MapMarker, MapView } from "./map-view"
 import type { LatLng, MapHandle, PlaceSearch } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ common: en_common, map: en_map })
 
 export interface MapPickerProps {
   /** Controlled value. `null` = nothing picked. */

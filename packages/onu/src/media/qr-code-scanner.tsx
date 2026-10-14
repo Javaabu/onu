@@ -8,6 +8,10 @@ import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
 import { Button } from "../ui/button"
+import { registerEnglish } from "../i18n/english"
+import { input as en_input } from "../locales/en/input"
+
+registerEnglish({ input: en_input })
 
 /** The part of the `BarcodeDetector` API the scanner uses. */
 export interface BarcodeDetectorLike {

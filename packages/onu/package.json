@@ -48,6 +48,10 @@
       "types": "./dist/thaana/index.d.ts",
       "default": "./dist/thaana/index.js"
     },
+    "./locales/dv": {
+      "types": "./dist/locales/dv/index.d.ts",
+      "default": "./dist/locales/dv/index.js"
+    },
     "./charts": {
       "types": "./dist/charts/index.d.ts",
       "default": "./dist/charts/index.js"
@@ -403,28 +407,158 @@
       "limit": "13 kB"
     },
     {
-      "name": "core (OnuProvider + Button)",
-      "path": "dist/index.js",
-      "import": "{ OnuProvider, Button }",
-      "limit": "51 kB"
-    },
-    {
-      "name": "core (form field + text input)",
+      "name": "core (FormField + TextInput)",
       "path": "dist/index.js",
       "import": "{ FormField, TextInput }",
-      "limit": "31 kB"
+      "limit": "17.5 kB"
+    },
+    {
+      "name": "core (Modal)",
+      "path": "dist/index.js",
+      "import": "{ Modal }",
+      "limit": "26 kB"
+    },
+    {
+      "name": "core (Select)",
+      "path": "dist/index.js",
+      "import": "{ Select }",
+      "limit": "41 kB"
+    },
+    {
+      "name": "core (DataTable)",
+      "path": "dist/index.js",
+      "import": "{ DataTable }",
+      "limit": "78 kB"
+    },
+    {
+      "name": "core (OnuProvider)",
+      "path": "dist/index.js",
+      "import": "{ OnuProvider }",
+      "entry": [
+        "index"
+      ],
+      "limit": "1.5 kB"
+    },
+    {
+      "name": "core (admin form: OnuProvider + 8 form components)",
+      "path": "dist/index.js",
+      "import": "{ OnuProvider, FormField, TextInput, Textarea, Select, Checkbox, RadioGroup, Switch, DatePicker, Button }",
+      "entry": [
+        "index"
+      ],
+      "limit": "87 kB"
     },
     {
       "name": "core (everything)",
       "path": "dist/index.js",
       "import": "*",
-      "limit": "1.2 MB"
+      "limit": "1.25 MB"
+    },
+    {
+      "name": "primitives",
+      "path": "dist/ui/index.js",
+      "import": "*",
+      "limit": "180 kB"
     },
     {
       "name": "thaana",
       "path": "dist/thaana/index.js",
       "import": "*",
-      "limit": "4 kB"
+      "limit": "2.2 kB"
+    },
+    {
+      "name": "locales/dv",
+      "path": "dist/locales/dv/index.js",
+      "import": "*",
+      "limit": "16 kB"
+    },
+    {
+      "name": "charts",
+      "path": "dist/charts/index.js",
+      "import": "*",
+      "limit": "50 kB"
+    },
+    {
+      "name": "maps",
+      "path": "dist/maps/index.js",
+      "import": "*",
+      "limit": "105 kB"
+    },
+    {
+      "name": "editor",
+      "path": "dist/editor/index.js",
+      "import": "*",
+      "limit": "78 kB"
+    },
+    {
+      "name": "calendar",
+      "path": "dist/calendar/index.js",
+      "import": "*",
+      "limit": "44 kB"
+    },
+    {
+      "name": "media",
+      "path": "dist/media/index.js",
+      "import": "*",
+      "limit": "54 kB"
+    },
+    {
+      "name": "query-builder",
+      "path": "dist/query-builder/index.js",
+      "import": "*",
+      "limit": "22 kB"
+    },
+    {
+      "name": "export",
+      "path": "dist/export/index.js",
+      "import": "*",
+      "limit": "36 kB"
+    },
+    {
+      "name": "icons/iconify",
+      "path": "dist/icons/iconify/index.js",
+      "import": "*",
+      "limit": "600 B"
+    },
+    {
+      "name": "icons/fontawesome",
+      "path": "dist/icons/fontawesome/index.js",
+      "import": "*",
+      "limit": "2.1 kB"
+    },
+    {
+      "name": "styles.css (with its imports)",
+      "path": [
+        "src/styles/styles.css",
+        "src/styles/tokens.css",
+        "src/styles/theme.css"
+      ],
+      "rolldown": false,
+      "limit": "4.5 kB"
+    },
+    {
+      "name": "tailwind.css (with its imports)",
+      "path": [
+        "src/styles/tailwind.css",
+        "src/styles/shadcn.css",
+        "src/styles/tokens.css",
+        "src/styles/theme.css",
+        "src/styles/base.css"
+      ],
+      "rolldown": false,
+      "limit": "8.5 kB"
+    },
+    {
+      "name": "fonts.css",
+      "path": "src/styles/fonts.css",
+      "rolldown": false,
+      "limit": "600 B"
+    },
+    {
+      "name": "fonts-optional.css",
+      "path": "src/styles/fonts-optional.css",
+      "rolldown": false,
+      "limit": "300 B"
     }
   ]
 }

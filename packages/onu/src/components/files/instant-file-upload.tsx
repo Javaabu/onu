@@ -9,6 +9,10 @@ import { useMergedRef } from "../inputs/text-input"
 import { FileInput, type FileInputProps } from "./file-input"
 import { UploadProgress } from "./upload-progress"
 import { useUploadQueue, type UploadItem, type UploadSource } from "./use-files"
+import { registerEnglish } from "../../i18n/english"
+import { file as en_file } from "../../locales/en/file"
+
+registerEnglish({ file: en_file })
 
 const NO_FILES: File[] = []
 

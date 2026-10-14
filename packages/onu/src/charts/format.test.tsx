@@ -2,6 +2,7 @@ import { renderHook } from "@testing-library/react"
 import * as React from "react"
 import { describe, expect, it } from "vitest"
 
+import { dv } from "../locales/dv"
 import { OnuProvider } from "../providers/onu-provider"
 import {
   aggregate,
@@ -97,7 +98,9 @@ describe("aggregate", () => {
 describe("useChartFormat", () => {
   const wrapper =
     (locale: "en" | "dv") =>
-    ({ children }: { children: React.ReactNode }) => <OnuProvider locale={locale}>{children}</OnuProvider>
+    ({ children }: { children: React.ReactNode }) => (
+      <OnuProvider locale={locale === "dv" ? dv : locale}>{children}</OnuProvider>
+    )
 
   it("formats with the active locale in English", () => {
     const { result } = renderHook(() => useChartFormat("currency"), { wrapper: wrapper("en") })

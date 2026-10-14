@@ -16,6 +16,10 @@ import {
 } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import type { DrawShape, LatLng, MapTone } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ map: en_map })
 
 export type RouteFeature = GeoJsonFeature<GeoJsonLineString>
 

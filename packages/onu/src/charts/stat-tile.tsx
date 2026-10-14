@@ -13,6 +13,12 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import { DeltaIndicator } from "./delta-indicator"
 import { useChartFormat, type ValueFormat } from "./format"
 import { Sparkline, type SparklineProps } from "./sparkline"
+import { registerEnglish } from "../i18n/english"
+import { chart as en_chart } from "../locales/en/chart"
+import { common as en_common } from "../locales/en/common"
+import { overlay as en_overlay } from "../locales/en/overlay"
+
+registerEnglish({ chart: en_chart, common: en_common, overlay: en_overlay })
 
 // Ant Design Pro's ChartCard: 20px 24px padding, a muted label row, a big regular-weight
 // figure, a 46px chart slot and a footer row under a split line.

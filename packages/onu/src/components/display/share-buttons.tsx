@@ -7,6 +7,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { useCopyToClipboard } from "./_utils"
+import { registerEnglish } from "../../i18n/english"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ display: en_display })
 
 export type ShareNetwork = "copy" | "facebook" | "x" | "whatsapp" | "viber" | "telegram" | "email"
 

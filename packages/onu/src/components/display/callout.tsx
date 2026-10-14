@@ -8,6 +8,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Alert, AlertDescription, AlertTitle } from "../../ui/alert"
 import { Button } from "../../ui/button"
+import { registerEnglish } from "../../i18n/english"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ display: en_display })
 
 export const calloutVariants = cva("", {
   variants: {

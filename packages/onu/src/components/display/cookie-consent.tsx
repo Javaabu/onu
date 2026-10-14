@@ -18,6 +18,11 @@ import {
 import { Switch } from "../../ui/switch"
 import { readStorage, writeStorage } from "./_utils"
 import { AppLink } from "./_link"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ common: en_common, display: en_display })
 
 export interface CookieCategory {
   id: string

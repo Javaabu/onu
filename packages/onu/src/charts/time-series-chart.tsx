@@ -56,6 +56,10 @@ import {
   type ChartDatum,
 } from "./_shared"
 import { useChartFormat, type ValueFormat } from "./format"
+import { registerEnglish } from "../i18n/english"
+import { chart as en_chart } from "../locales/en/chart"
+
+registerEnglish({ chart: en_chart })
 
 export type TimeInterval = "hour" | "day" | "week" | "month"
 

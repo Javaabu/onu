@@ -3,6 +3,10 @@
 import { LiveRegion } from "../../a11y/live-region"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
+import { registerEnglish } from "../../i18n/english"
+import { thaana as en_thaana } from "../../locales/en/thaana"
+
+registerEnglish({ thaana: en_thaana })
 
 export interface ThaanaToggleProps extends Omit<React.ComponentProps<"button">, "onToggle"> {
   enabled: boolean

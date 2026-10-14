@@ -23,6 +23,11 @@ import { TextInput } from "../inputs/text-input"
 import { Spinner } from "../loading/spinner"
 import { useControllableState } from "./_use-controllable-state"
 import { useRestoreFocus } from "./_use-restore-focus"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { overlay as en_overlay } from "../../locales/en/overlay"
+
+registerEnglish({ common: en_common, overlay: en_overlay })
 
 const THAANA = /[ހ-޿]/
 

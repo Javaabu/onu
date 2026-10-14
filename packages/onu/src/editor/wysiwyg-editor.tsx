@@ -13,6 +13,10 @@ import { editingClasses, proseVariants } from "./_prose"
 import { DEFAULT_TOOLBAR, EditorToolbar, type ToolbarItem } from "./_toolbar"
 import { useOnuEditor } from "./_use-editor"
 import type { EditorFormat, EditorValue } from "./_value"
+import { registerEnglish } from "../i18n/english"
+import { editor as en_editor } from "../locales/en/editor"
+
+registerEnglish({ editor: en_editor })
 
 export const editorVariants = cva(
   [

@@ -14,6 +14,11 @@ import { useControllable } from "./_use-controllable"
 import { FileIcon } from "./file-icon"
 import { getFileKind } from "./file-utils"
 import { useFormatFileSize } from "./use-files"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { file as en_file } from "../../locales/en/file"
+
+registerEnglish({ common: en_common, file: en_file })
 
 export type MediaId = string | number
 

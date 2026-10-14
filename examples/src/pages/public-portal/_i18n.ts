@@ -54,10 +54,15 @@ export function toDate(input: string | Date) {
  */
 export function useDates() {
   const { locale } = useOnu()
-  const loc = locale.dateFns.localize
+  // English has no date-fns locale (Onu leaves it out of English-only bundles); use Intl there.
+  const loc = locale.dateFns?.localize
   const pad = (n: number) => String(n).padStart(2, "0")
-  const month = (d: Date, width: "abbreviated" | "wide" = "wide") => loc.month(d.getMonth() as never, { width })
-  const weekday = (d: Date) => loc.day(d.getDay() as never, { width: "wide" })
+  const month = (d: Date, width: "abbreviated" | "wide" = "wide") =>
+    loc
+      ? loc.month(d.getMonth() as never, { width })
+      : d.toLocaleDateString("en", { month: width === "wide" ? "long" : "short" })
+  const weekday = (d: Date) =>
+    loc ? loc.day(d.getDay() as never, { width: "wide" }) : d.toLocaleDateString("en", { weekday: "long" })
   const time = (input: string | Date) => {
     const d = toDate(input)
     return `${pad(d.getHours())}:${pad(d.getMinutes())}`

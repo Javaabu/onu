@@ -19,6 +19,10 @@ import { useFormFieldControl } from "../form/form-field"
 import { useMergedRef } from "../inputs/text-input"
 import { useControllableState } from "./_hooks"
 import { groupOptions, normalizeOptions, type ChoiceOptionInput } from "./options"
+import { registerEnglish } from "../../i18n/english"
+import { choice as en_choice } from "../../locales/en/choice"
+
+registerEnglish({ choice: en_choice })
 
 type RootProps = React.ComponentProps<typeof SelectPrimitive.Root>
 type TriggerProps = Omit<React.ComponentProps<"button">, "value" | "defaultValue" | "dir" | "children" | "ref">

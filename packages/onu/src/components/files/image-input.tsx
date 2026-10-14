@@ -12,6 +12,10 @@ import { useMergedRef } from "../inputs/text-input"
 import { useControllable } from "./_use-controllable"
 import { syncInputFiles, validateFile, type FileRejection } from "./file-utils"
 import { useObjectUrl, useRejectionMessage } from "./use-files"
+import { registerEnglish } from "../../i18n/english"
+import { file as en_file } from "../../locales/en/file"
+
+registerEnglish({ file: en_file })
 
 export const imageInputVariants = cva(
   "relative flex items-center justify-center overflow-hidden border border-border bg-muted/40",

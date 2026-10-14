@@ -23,6 +23,10 @@ import { useTranslation } from "../../providers/onu-provider"
 import { useFormFieldControl } from "../form/form-field"
 import { PickerSurface } from "./_picker-surface"
 import { useControllableState } from "./_shared"
+import { registerEnglish } from "../../i18n/english"
+import { input as en_input } from "../../locales/en/input"
+
+registerEnglish({ input: en_input })
 
 /** Default swatches: a neutral range plus Onu's chart palette hues. */
 export const DEFAULT_COLOUR_PRESETS = [

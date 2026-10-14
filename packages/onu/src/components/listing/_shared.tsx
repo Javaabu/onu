@@ -15,6 +15,11 @@ import {
 } from "../../ui/alert-dialog"
 import { Spinner } from "../../ui/spinner"
 import type { ListingNoun } from "./listing-types"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ common: en_common, listing: en_listing })
 
 /** Picks the singular or plural form of a noun for a count, in the active locale. */
 export function useNoun(noun: ListingNoun | undefined) {

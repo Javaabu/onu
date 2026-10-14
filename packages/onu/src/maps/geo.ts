@@ -2,6 +2,10 @@ import { area as turfArea, bearing as turfBearing, distance as turfDistance, lin
 
 import type { Translate } from "../i18n/types"
 import type { DrawShape, LatLng, LatLngBounds, RouteLeg, RouteResult } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ map: en_map })
 
 // ---------------------------------------------------------------------------
 // GeoJSON (a minimal subset, so consumers do not need @types/geojson)

@@ -5,6 +5,10 @@ import * as React from "react"
 import { Icon } from "../../icons/icon"
 import { useTranslation } from "../../providers/onu-provider"
 import { TextInput, type TextInputProps } from "../inputs/text-input"
+import { registerEnglish } from "../../i18n/english"
+import { auth as en_auth } from "../../locales/en/auth"
+
+registerEnglish({ auth: en_auth })
 
 /** Password field with a show/hide toggle, used by the auth forms. Latin only, so no `thaana`. */
 export function PasswordField(props: Omit<TextInputProps, "type" | "thaana">) {

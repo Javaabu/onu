@@ -8,6 +8,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { readStorage, writeStorage } from "./_utils"
 import { AppLink } from "./_link"
+import { registerEnglish } from "../../i18n/english"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ display: en_display })
 
 export const announcementBarVariants = cva(
   "gap-x-3 gap-y-1 px-4 py-2 text-sm relative flex w-full flex-wrap items-center justify-center text-center",

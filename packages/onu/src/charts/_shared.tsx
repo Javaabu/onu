@@ -10,6 +10,10 @@ import { Button } from "../ui/button"
 import type { ChartConfig } from "../ui/chart"
 import { Skeleton } from "../ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
+import { registerEnglish } from "../i18n/english"
+import { chart as en_chart } from "../locales/en/chart"
+
+registerEnglish({ chart: en_chart })
 
 /** A data row: a category (or date) plus one value per series. */
 export type ChartDatum = Record<string, unknown>

@@ -7,6 +7,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { NativeSelect, NativeSelectOption } from "../../ui/native-select"
 import { NavBadge, NavIcon } from "./_nav"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 export interface StackedTabItem {
   value: string

@@ -9,6 +9,11 @@ import { Button } from "../../ui/button"
 import { Skeleton } from "../../ui/skeleton"
 import { Spinner } from "../../ui/spinner"
 import { EmptyState } from "./empty-state"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ common: en_common, listing: en_listing })
 
 function escapeRegExp(text: string) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")

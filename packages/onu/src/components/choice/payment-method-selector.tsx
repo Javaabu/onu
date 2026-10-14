@@ -8,6 +8,10 @@ import { useTranslation } from "../../providers/onu-provider"
 import { useFormField } from "../form/form-field"
 import { RadioGroup, type RadioGroupProps } from "./radio-group"
 import { Radio } from "./radio"
+import { registerEnglish } from "../../i18n/english"
+import { choice as en_choice } from "../../locales/en/choice"
+
+registerEnglish({ choice: en_choice })
 
 /** The built-in BML gateways (R16.8). */
 export type BmlPaymentMethodId = "bml-transfer" | "bml-connect"

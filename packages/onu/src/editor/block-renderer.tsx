@@ -13,6 +13,10 @@ import { CALLOUT_VARIANTS, createSchemaExtensions, isSafeImageUrl, isSafeUrl, to
 import { parseJsonContent } from "./_value"
 import { CodeBlock, type CodeBlockProps } from "./code-block"
 import { VideoEmbed } from "../components/files/video-embed"
+import { registerEnglish } from "../i18n/english"
+import { editor as en_editor } from "../locales/en/editor"
+
+registerEnglish({ editor: en_editor })
 
 type NodeRenderer = (props: { node: PMNode; children?: React.ReactNode }) => React.ReactNode
 type MarkRenderer = (props: { mark: PMMark; children?: React.ReactNode }) => React.ReactNode

@@ -15,6 +15,10 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu"
 import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 export interface ThemeToggleProps {
   /**

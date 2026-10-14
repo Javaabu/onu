@@ -4,6 +4,10 @@ import type { Locale as DateFnsLocale } from "date-fns"
 import type { Translate } from "../../i18n/types"
 import type { DateRangeFilterValue, FilterDefinition, FilterOption, FilterValue } from "./listing-types"
 import { isFilterValueEmpty } from "./use-listing-state"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export function optionText(option: FilterOption | undefined, fallback: string) {
   if (!option) return fallback
@@ -12,7 +16,7 @@ export function optionText(option: FilterOption | undefined, fallback: string) {
 }
 
 /** Formats a `yyyy-MM-dd` date as "1 Mar" (adding the year when it is not this year). */
-export function formatFilterDate(value: string, dateLocale: DateFnsLocale, now = new Date()) {
+export function formatFilterDate(value: string, dateLocale: DateFnsLocale | undefined, now = new Date()) {
   const date = parseISO(value)
   if (!isValid(date)) return value
   return format(date, date.getFullYear() === now.getFullYear() ? "d MMM" : "d MMM yyyy", { locale: dateLocale })
@@ -33,7 +37,7 @@ export function formatFilter(
   definition: FilterDefinition,
   value: FilterValue | undefined,
   t: Translate,
-  dateLocale: DateFnsLocale,
+  dateLocale: DateFnsLocale | undefined,
 ): FormattedFilter | null {
   if (value === undefined || isFilterValueEmpty(value)) return null
   if (definition.format) {

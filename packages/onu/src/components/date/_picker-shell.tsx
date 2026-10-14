@@ -13,6 +13,10 @@ import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, Dr
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
 import { useFormField, useFormFieldControl } from "../form/form-field"
 import { useControllableState } from "./_use-controllable-state"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+
+registerEnglish({ common: en_common })
 
 const DetachedContext = React.createContext(false)
 

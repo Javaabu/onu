@@ -23,6 +23,10 @@ import { Pagination } from "./pagination"
 import { SearchBox } from "./search-box"
 import { SortMenu } from "./_sort-menu"
 import { useListingState, type ListingController } from "./use-listing-state"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export interface ListingPageLink {
   label: string

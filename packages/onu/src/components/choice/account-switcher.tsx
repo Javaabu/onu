@@ -22,6 +22,10 @@ import { useControllableState } from "./_hooks"
 import { Picker, PickerContent, PickerTrigger } from "./_picker"
 import { useOpenState } from "./_selection"
 import { matchesQuery } from "./options"
+import { registerEnglish } from "../../i18n/english"
+import { choice as en_choice } from "../../locales/en/choice"
+
+registerEnglish({ choice: en_choice })
 
 export type AccountType = "personal" | "organisation" | "delegated"
 

@@ -5,6 +5,10 @@ import * as React from "react"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
+import { registerEnglish } from "../../i18n/english"
+import { overlay as en_overlay } from "../../locales/en/overlay"
+
+registerEnglish({ overlay: en_overlay })
 
 /** Becomes `true` only after `value` has stayed `true` for `delay` ms (avoids flicker). */
 export function useDelayedFlag(value: boolean, delay: number) {

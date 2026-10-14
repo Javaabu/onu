@@ -12,6 +12,11 @@ import "yet-another-react-lightbox/plugins/counter.css"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+import { file as en_file } from "../locales/en/file"
+
+registerEnglish({ common: en_common, file: en_file })
 
 const THEME_VARS: Record<`--yarl__${string}`, string> = {
   "--yarl__color_backdrop": "color-mix(in oklch, var(--background) 96%, transparent)",

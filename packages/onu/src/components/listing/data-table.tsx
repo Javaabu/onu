@@ -33,6 +33,11 @@ import type { FilterDefinition, ListingNoun } from "./listing-types"
 import { Pagination } from "./pagination"
 import { RowActions, type RecordAction } from "./row-actions"
 import { useListingState, type ListingController } from "./use-listing-state"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ common: en_common, listing: en_listing })
 
 /** A column of a `DataTable`. */
 export interface DataTableColumn<T extends RowData> {

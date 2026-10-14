@@ -26,6 +26,10 @@ import type {
   SelectFilterDefinition,
   TextFilterDefinition,
 } from "./listing-types"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 const ANY = "__any__"
 

@@ -9,6 +9,10 @@ import { ShapeEditor, useShapesValue, type ShapeEditorClassNames } from "./_shap
 import { formatArea, polygonArea, polygonsToShapes, shapesToPolygons, type PolygonCollection } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import type { DrawShape, LatLng, MapTone } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ map: en_map })
 
 export interface MapPolygonProps {
   /** GeoJSON FeatureCollection of Polygons. `null` when empty. */

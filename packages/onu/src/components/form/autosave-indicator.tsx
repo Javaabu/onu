@@ -7,6 +7,11 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useOnu } from "../../providers/onu-provider"
 import { Button } from "./button"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { form as en_form } from "../../locales/en/form"
+
+registerEnglish({ common: en_common, form: en_form })
 
 export type AutosaveStatus = "idle" | "saving" | "saved" | "error"
 

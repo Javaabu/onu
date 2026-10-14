@@ -3,7 +3,11 @@ import { format } from "date-fns"
 
 import { createTranslator } from "../i18n/translate"
 import type { OnuLocale } from "../i18n/types"
-import { dv, en } from "../locales"
+import { dv } from "../locales/dv/dv"
+import { registerEnglish } from "../i18n/english"
+import { date as en_date } from "../locales/en/date"
+
+registerEnglish({ date: en_date })
 
 interface FormatArg {
   date: { year: number; month: number; day: number; hour: number; minute: number }
@@ -28,7 +32,7 @@ export interface FullCalendarLocaleOptions {
  * no Dhivehi date data).
  */
 export function fullCalendarLocale(locale: OnuLocale, options: FullCalendarLocaleOptions = {}): LocaleInput {
-  const t = createTranslator(locale, en)
+  const t = createTranslator(locale)
   const twelve = (options.hourCycle ?? locale.hourCycle) === 12
   return {
     code: locale.code,
@@ -59,4 +63,4 @@ export function fullCalendarLocale(locale: OnuLocale, options: FullCalendarLocal
 }
 
 /** Dhivehi FullCalendar locale (RTL, Sunday week start, Dhivehi names). */
-export const dvFullCalendarLocale: LocaleInput = fullCalendarLocale(dv)
+export const dvFullCalendarLocale: LocaleInput = /* @__PURE__ */ fullCalendarLocale(dv)

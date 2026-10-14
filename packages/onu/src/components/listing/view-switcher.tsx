@@ -6,6 +6,10 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export type ListingView = "table" | "list" | "grid" | "kanban" | (string & {})
 

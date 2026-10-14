@@ -1,5 +1,9 @@
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+
+registerEnglish({ common: en_common })
 
 export interface RequiredMarkerProps extends React.ComponentProps<"span"> {
   /** Marker character. Default `*`. */

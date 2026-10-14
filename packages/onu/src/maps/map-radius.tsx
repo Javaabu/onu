@@ -16,6 +16,11 @@ import { formatArea, formatDistance, formatLatLng, roundLatLng } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import { MALE, MapCircleShape, MapView } from "./map-view"
 import type { LatLng, MapHandle, MapTone } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ common: en_common, map: en_map })
 
 export interface MapRadiusValue {
   center: LatLng

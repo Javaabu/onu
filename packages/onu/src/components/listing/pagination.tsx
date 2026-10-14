@@ -10,6 +10,11 @@ import { buttonVariants } from "../../ui/button"
 import { useNoun } from "./_shared"
 import type { ListingNoun } from "./listing-types"
 import { PerPage } from "./per-page"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ common: en_common, listing: en_listing })
 
 /** `meta` of a Laravel API resource collection, or the top level of `paginator->toArray()`. */
 export interface LaravelPaginationMeta {

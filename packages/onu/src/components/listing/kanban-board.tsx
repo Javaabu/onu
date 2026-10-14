@@ -19,6 +19,10 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu"
 import { useDndPlugins } from "./_dnd"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export interface KanbanColumn {
   id: string

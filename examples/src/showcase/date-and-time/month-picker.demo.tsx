@@ -1,4 +1,5 @@
 import { FormField, MonthPicker, OnuProvider, YearPicker } from "@javaabu/onu"
+import { dv } from "@javaabu/onu/locales/dv"
 
 import { DemoPage, DemoSection } from "../../components/demo"
 
@@ -29,7 +30,7 @@ export default function MonthPickerDemo() {
         </FormField>
       </DemoSection>
       <DemoSection title="ދިވެހި" className="max-w-md gap-4 grid">
-        <OnuProvider locale="dv" syncDocument={false}>
+        <OnuProvider locale={dv} syncDocument={false}>
           <div dir="rtl" lang="dv">
             <FormField label="މަސް">
               <MonthPicker defaultValue={new Date(2026, 6, 1)} />

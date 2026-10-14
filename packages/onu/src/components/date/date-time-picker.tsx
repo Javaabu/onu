@@ -19,6 +19,10 @@ import {
   type TimeValue,
 } from "./_utils"
 import { TimePanel } from "./time-panel"
+import { registerEnglish } from "../../i18n/english"
+import { date as en_date } from "../../locales/en/date"
+
+registerEnglish({ date: en_date })
 
 export interface DateTimePickerProps extends PickerFieldProps {
   /** Selected date and time (controlled). `null` is empty. */

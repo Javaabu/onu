@@ -10,6 +10,10 @@ import { Button } from "../../ui/button"
 import { toDate, useNow, type DateInput } from "./_utils"
 import { RelativeDate } from "./relative-date"
 import { UserAvatar } from "./user-avatar"
+import { registerEnglish } from "../../i18n/english"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ display: en_display })
 
 export interface ActivityItem {
   id: string | number

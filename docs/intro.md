@@ -18,10 +18,11 @@ It is built on [shadcn/ui](https://ui.shadcn.com) and [Tailwind CSS](https://tai
 
 ```tsx
 import { FormField, OnuProvider, TextInput } from "@javaabu/onu"
+import { dv } from "@javaabu/onu/locales/dv"
 
 export function NameField() {
   return (
-    <OnuProvider locale="dv">
+    <OnuProvider locale={dv}>
       <FormField label="ނަން" required>
         <TextInput thaana />
       </FormField>

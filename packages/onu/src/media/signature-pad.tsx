@@ -10,6 +10,10 @@ import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
 import type { ThaanaProp } from "../thaana/use-thaana-field"
 import { Button } from "../ui/button"
+import { registerEnglish } from "../i18n/english"
+import { input as en_input } from "../locales/en/input"
+
+registerEnglish({ input: en_input })
 
 /** Fonts tried, in order, for typed signatures. */
 export const TYPED_SIGNATURE_FONT = `"Segoe Script", "Brush Script MT", "Snell Roundhand", "MV Waheed", cursive`

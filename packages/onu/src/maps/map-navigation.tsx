@@ -14,6 +14,10 @@ import { boundsOf, compassLabel, formatDistance, formatDuration, googleDirection
 import { EnsureMapProvider } from "./map-provider"
 import { MapMarker, MapPolylineShape, MapView } from "./map-view"
 import type { LatLng, MapHandle, MapTone, RouteResult, RouteService, RouteStep } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ map: en_map })
 
 export interface NavigationStop {
   id?: string

@@ -21,6 +21,10 @@ import { CalendarHeader } from "./_calendar-header"
 import { PeriodGrid, type GridItem } from "./_period-grid"
 import { useControllableState } from "./_use-controllable-state"
 import { decadeSpanStart, formatDate, isOutOfRange, yearBlockStart, type DateRangeValue } from "./_utils"
+import { registerEnglish } from "../../i18n/english"
+import { date as en_date } from "../../locales/en/date"
+
+registerEnglish({ date: en_date })
 
 /** Zoom levels of the calendar (§25.1 "Zooming out"). */
 export type CalendarView = "day" | "month" | "year" | "decade"
@@ -412,7 +416,7 @@ interface PeriodContext {
   min?: Date
   max?: Date
   selectedDates: Date[]
-  locale: import("date-fns").Locale
+  locale: import("date-fns").Locale | undefined
 }
 
 function periodItems(view: CalendarView, ctx: PeriodContext): { item: GridItem; date: Date }[] {

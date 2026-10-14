@@ -16,6 +16,11 @@ import {
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useOnu, useTranslation } from "../../providers/onu-provider"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ common: en_common, listing: en_listing })
 
 export interface TreeNode {
   id: string

@@ -7,6 +7,10 @@ import type { Translate } from "../../i18n/types"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { toDate, useNow, type DateInput } from "./_utils"
+import { registerEnglish } from "../../i18n/english"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ display: en_display })
 
 export interface CountdownParts {
   days: number

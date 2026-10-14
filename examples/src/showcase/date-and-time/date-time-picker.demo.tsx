@@ -1,4 +1,5 @@
 import { DateTimePicker, FormField, OnuProvider } from "@javaabu/onu"
+import { dv } from "@javaabu/onu/locales/dv"
 
 import { DemoPage, DemoSection } from "../../components/demo"
 
@@ -34,7 +35,7 @@ export default function DateTimePickerDemo() {
         </FormField>
       </DemoSection>
       <DemoSection title="ދިވެހި" className="max-w-md gap-4 grid">
-        <OnuProvider locale="dv" syncDocument={false}>
+        <OnuProvider locale={dv} syncDocument={false}>
           <div dir="rtl" lang="dv">
             <FormField label="ބައްދަލުވުން ފަށާ ވަގުތު">
               <DateTimePicker defaultValue={new Date(2026, 2, 12, 10, 0)} />

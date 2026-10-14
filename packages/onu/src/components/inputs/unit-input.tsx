@@ -7,6 +7,10 @@ import { useTranslation } from "../../providers/onu-provider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
 import { useControllableState } from "./_shared"
 import { NumberInput, type NumberInputProps } from "./number-input"
+import { registerEnglish } from "../../i18n/english"
+import { input as en_input } from "../../locales/en/input"
+
+registerEnglish({ input: en_input })
 
 export interface UnitOption {
   value: string

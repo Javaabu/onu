@@ -16,8 +16,17 @@ export interface IconSource {
 export interface IconContextValue {
   /** Project overrides (`OnuProvider icons`). */
   icons?: IconMap
-  /** Default icon set used for names without an override. `OnuProvider` supplies `lucideIconMap`. */
+  /**
+   * Default icon set used for names without an override. `OnuProvider` loads
+   * `lucideIconMap` on demand (see `loadDefaults`) and supplies it here once loaded.
+   */
   defaults?: IconMap
+  /**
+   * Asks for the default icon set. `<Icon>` calls it when a name has no override,
+   * no `fallback` and the default set is not loaded yet; the set then loads in a
+   * separate chunk, so apps whose icons are all fixed glyphs never download it.
+   */
+  loadDefaults?: () => void
   sources?: IconSource[]
 }
 

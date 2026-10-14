@@ -11,6 +11,11 @@ import type { ThaanaProp } from "../thaana/use-thaana-field"
 import { Button } from "../ui/button"
 import { Label } from "../ui/label"
 import { Switch } from "../ui/switch"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+import { editor as en_editor } from "../locales/en/editor"
+
+registerEnglish({ common: en_common, editor: en_editor })
 
 /** A language column. */
 export interface TranslationLocale {
