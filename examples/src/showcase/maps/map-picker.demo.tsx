@@ -3,7 +3,7 @@ import { FormField, useTranslation } from "@javaabu/onu"
 import { formatLatLng, MapPicker, type LatLng } from "@javaabu/onu/maps"
 
 import { DemoPage, DemoSection } from "../../components/demo"
-import { searchIslands } from "./_data"
+import { JAVAABU_OFFICE, searchIslands } from "./_data"
 
 export const meta = {
   title: "Map picker",
@@ -15,7 +15,7 @@ export const meta = {
 
 export default function MapPickerDemo() {
   const { t, locale } = useTranslation()
-  const [value, setValue] = React.useState<LatLng | null>({ lat: 4.1752, lng: 73.5091 })
+  const [value, setValue] = React.useState<LatLng | null>(JAVAABU_OFFICE)
   return (
     <DemoPage>
       <DemoSection
@@ -32,7 +32,7 @@ export default function MapPickerDemo() {
       </DemoSection>
       <DemoSection title="Empty, with Thaana search" className="grid">
         <FormField label="ތަން">
-          <MapPicker search={searchIslands} thaana />
+          <MapPicker search={searchIslands} thaana center={JAVAABU_OFFICE} />
         </FormField>
       </DemoSection>
       <DemoSection title="Disabled" className="grid">
@@ -42,7 +42,7 @@ export default function MapPickerDemo() {
       </DemoSection>
       <DemoSection title="Error" className="grid">
         <FormField label="Site location" error="Pick the site location on the map." required>
-          <MapPicker search={false} locate={false} />
+          <MapPicker search={false} locate={false} center={JAVAABU_OFFICE} />
         </FormField>
       </DemoSection>
     </DemoPage>

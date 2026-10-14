@@ -3,6 +3,7 @@ import { FormField } from "@javaabu/onu"
 import { MapRadius, type MapRadiusValue } from "@javaabu/onu/maps"
 
 import { DemoPage, DemoSection } from "../../components/demo"
+import { JAVAABU_OFFICE } from "./_data"
 
 export const meta = {
   title: "Map radius",
@@ -13,7 +14,7 @@ export const meta = {
 
 export default function MapRadiusDemo() {
   const [value, setValue] = React.useState<MapRadiusValue | null>({
-    center: { lat: 4.1755, lng: 73.5093 },
+    center: JAVAABU_OFFICE,
     radius: 800,
   })
   return (

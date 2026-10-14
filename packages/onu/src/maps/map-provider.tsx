@@ -55,8 +55,9 @@ export function MapProvider({
 }: MapProviderProps) {
   const { maps, locale } = useOnu()
   const apiKey = apiKeyProp ?? maps.googleMapsApiKey
-  const lightMapId = mapIdProp ?? maps.mapId
-  const darkMapId = darkMapIdProp ?? maps.darkMapId
+  // An empty string (e.g. an unset CI secret) counts as no Map ID.
+  const lightMapId = mapIdProp || maps.mapId || undefined
+  const darkMapId = darkMapIdProp || maps.darkMapId || undefined
   const dark = useIsDark()
   const colorScheme = colorSchemeProp ?? (dark ? "dark" : "light")
   const colors = useMapColors()

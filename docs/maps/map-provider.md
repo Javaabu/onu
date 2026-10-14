@@ -31,7 +31,7 @@ Install the optional peers for the maps entry: `@vis.gl/react-google-maps`, `ter
 - The colour scheme follows the page (`.dark` or `data-theme="dark"` on `<html>`). With `darkMapId` the dark Map ID is used in dark mode; otherwise Google's `colorScheme` is switched.
 - Markers and shapes use theme tokens (`--primary`, `--chart-1` … `--chart-8`, `--success`, …), so they recolour with `--onu-primary`.
 - Map tiles use the active locale. Google has **no Dhivehi map language**, so with `locale="dv"` tiles and Google's own controls fall back to English while Onu's UI stays in Dhivehi and RTL.
-- Without a Map ID, Google's `DEMO_MAP_ID` is used so advanced markers work. Set your own Map ID in production.
+- Without a Map ID, Google's `DEMO_MAP_ID` (exported as `DEMO_MAP_ID` from `@javaabu/onu/maps`) is used so advanced markers work. An empty string counts as no Map ID, so an unset environment variable or CI secret also falls back. Set your own Map ID in production; static map images (`LocationCard`) never send `DEMO_MAP_ID`.
 
 :::info No API key?
 Without a Google Maps API key the map renders a labelled **schematic preview** (no tiles, no network) instead of crashing. Everything else, including the text alternative, keeps working. See [MapProvider](./map-provider).

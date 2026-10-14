@@ -256,5 +256,8 @@ describe("links", () => {
     expect(s).toContain("markers=color%3A0x1f7a4d%7C4.1755%2C73.5093")
     expect(s).toContain("map_id=m")
     expect(staticMapUrl({ apiKey: "k", center: male, width: 1, height: 1 })).toContain("markers=4.1755")
+    expect(staticMapUrl({ apiKey: "k", center: male, width: 1, height: 1, mapId: "DEMO_MAP_ID" })).not.toContain(
+      "map_id",
+    )
   })
 })
