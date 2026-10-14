@@ -6,6 +6,10 @@ import { Icon } from "../../icons/icon"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
 import { DropdownMenuItem, DropdownMenuSeparator } from "../../ui/dropdown-menu"
 import { ConfirmDialog, type ConfirmOptions } from "./_shared"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 /** An action on one record: a row's ⋯ menu or a record page header. */
 export interface RecordAction {

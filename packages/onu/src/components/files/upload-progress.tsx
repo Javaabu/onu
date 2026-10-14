@@ -9,6 +9,10 @@ import { Button } from "../../ui/button"
 import { Progress as ProgressPrimitive } from "radix-ui"
 import { FileRow } from "./_file-row"
 import type { UploadItem, UploadStatus } from "./use-files"
+import { registerEnglish } from "../../i18n/english"
+import { file as en_file } from "../../locales/en/file"
+
+registerEnglish({ file: en_file })
 
 export interface UploadProgressItemProps extends Omit<React.ComponentProps<"li">, "children"> {
   name: string

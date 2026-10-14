@@ -14,6 +14,10 @@ import {
   type NavItem,
   type NavMatch,
 } from "./_nav"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 export interface BottomNavProps extends Omit<React.ComponentProps<"nav">, "children"> {
   /** Three to five destinations, each with an icon and a short label. */

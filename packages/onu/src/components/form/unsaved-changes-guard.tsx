@@ -13,6 +13,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../../ui/alert-dialog"
+import { registerEnglish } from "../../i18n/english"
+import { form as en_form } from "../../locales/en/form"
+
+registerEnglish({ form: en_form })
 
 export interface UnsavedChangesGuardOptions {
   /** Show the browser's own "Leave site?" warning on close/reload. Default `true`. */

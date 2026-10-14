@@ -10,6 +10,10 @@ import {
 } from "./columns"
 import { downloadBlob } from "./download"
 import type { SheetData } from "write-excel-file/browser"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+
+registerEnglish({ common: en_common })
 
 /** A cell as `write-excel-file` takes it. */
 export interface ExcelCell {

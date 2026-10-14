@@ -9,6 +9,10 @@ import { useOnu, useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { useRestoreFocus } from "./_use-restore-focus"
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "../../ui/sheet"
+import { registerEnglish } from "../../i18n/english"
+import { overlay as en_overlay } from "../../locales/en/overlay"
+
+registerEnglish({ overlay: en_overlay })
 
 export const slideOverVariants = cva(
   "gap-0 p-0 data-[side=left]:w-[calc(100%-2.5rem)] data-[side=right]:w-[calc(100%-2.5rem)]",

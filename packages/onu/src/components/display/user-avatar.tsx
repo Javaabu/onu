@@ -7,6 +7,10 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar"
+import { registerEnglish } from "../../i18n/english"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ display: en_display })
 
 const THAANA = /[ހ-޿]/
 

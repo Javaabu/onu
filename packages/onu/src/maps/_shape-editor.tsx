@@ -12,6 +12,11 @@ import { useAnnouncer } from "./_hooks"
 import { boundsOf, formatLatLng } from "./geo"
 import { MALE, MapView } from "./map-view"
 import type { DrawShape, LatLng, MapHandle, MapTone } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ common: en_common, map: en_map })
 
 export interface ShapeEditorClassNames {
   root?: string

@@ -2,6 +2,7 @@ import * as React from "react"
 import { renderHook } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
+import { dv } from "../locales/dv"
 import { OnuProvider } from "../providers/onu-provider"
 import {
   buildExcelSheet,
@@ -472,7 +473,7 @@ describe("exportRows", () => {
     captureDownloads()
     const { result } = renderHook(() => useExportRows(), {
       wrapper: ({ children }) => (
-        <OnuProvider locale="dv" syncDocument={false}>
+        <OnuProvider locale={dv} syncDocument={false}>
           {children}
         </OnuProvider>
       ),

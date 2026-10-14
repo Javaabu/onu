@@ -41,17 +41,42 @@ export interface IconProps extends Omit<React.SVGAttributes<SVGSVGElement>, "nam
  * Lookup order: `OnuProvider icons` overrides, the default set (`lucideIconMap`, supplied
  * by `OnuProvider`), the `fallback` glyph, then a generic alert icon. This module does
  * not import the default set itself, so a component that only needs a few fixed glyphs
- * does not pull ~250 icons into the bundle. The `Icon` exported from the package root
- * adds the default set as `fallback`, so it also works outside `OnuProvider`.
+ * does not pull ~250 icons into the bundle. `OnuProvider` loads the default set on
+ * demand, the first time a name needs it; until then the icon renders as an empty,
+ * same-sized placeholder. The `Icon` exported from the package root adds the default
+ * set as `fallback`, so it also works outside `OnuProvider`.
  */
 export function Icon({ name, label, size, flip, fallback, className, ...rest }: IconProps) {
-  const { icons, defaults } = useIconContext()
-  const entry = icons?.[name] ?? defaults?.[name] ?? fallback ?? fallbackIcon
+  const { icons, defaults, loadDefaults } = useIconContext()
+  const resolved = icons?.[name] ?? defaults?.[name] ?? fallback
+  const pending = !resolved && !defaults && !!loadDefaults
+  const entry = resolved ?? fallbackIcon
   const mirror = flip ?? DIRECTIONAL_ICONS.has(name)
+
+  React.useEffect(() => {
+    if (pending) loadDefaults?.()
+  }, [pending, loadDefaults])
 
   const classes = cn(typeof size === "string" && SIZES[size], mirror && "rtl:-scale-x-100", className)
   if (typeof size === "number") Object.assign(rest, { width: size, height: size })
   const a11y = label ? ({ role: "img", "aria-label": label } as const) : ({ "aria-hidden": true } as const)
+
+  if (pending) {
+    // Same box as a Lucide icon, so nothing shifts when the default set arrives.
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={24}
+        height={24}
+        viewBox="0 0 24 24"
+        {...(rest as object)}
+        {...a11y}
+        data-icon-name={name}
+        data-icon-pending=""
+        className={cn("lucide", classes)}
+      />
+    )
+  }
 
   if (React.isValidElement<{ className?: string }>(entry)) {
     return React.cloneElement(entry, {

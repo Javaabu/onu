@@ -2,12 +2,15 @@ import * as React from "react"
 import { renderHook } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 
+import { dv } from "../locales/dv"
 import { OnuProvider } from "../providers/onu-provider"
 import * as root from "../index"
 import { useFormatCurrency, useFormatDate, useFormatNumber } from "./format"
 
 function wrapper(locale: "en" | "dv") {
-  return ({ children }: { children: React.ReactNode }) => <OnuProvider locale={locale}>{children}</OnuProvider>
+  return ({ children }: { children: React.ReactNode }) => (
+    <OnuProvider locale={locale === "dv" ? dv : locale}>{children}</OnuProvider>
+  )
 }
 
 function hooks(locale: "en" | "dv") {

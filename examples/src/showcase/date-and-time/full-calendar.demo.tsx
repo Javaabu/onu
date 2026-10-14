@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Card, CardContent, OnuProvider } from "@javaabu/onu"
 import { FullCalendar, type CalendarEvent } from "@javaabu/onu/calendar"
+import { dv } from "@javaabu/onu/locales/dv"
 
 import { DemoPage, DemoSection } from "../../components/demo"
 
@@ -52,7 +53,7 @@ export default function FullCalendarDemo() {
         />
       </DemoSection>
       <DemoSection title="ދިވެހި" description="Right to left, Dhivehi names." className="block">
-        <OnuProvider locale="dv" syncDocument={false}>
+        <OnuProvider locale={dv} syncDocument={false}>
           <Card dir="rtl" lang="dv">
             <CardContent>
               <FullCalendar events={events} defaultView="week" />

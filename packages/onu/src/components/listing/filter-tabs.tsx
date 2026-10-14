@@ -6,6 +6,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Badge } from "../../ui/badge"
 import { Tabs, TabsList, TabsTrigger } from "../../ui/tabs"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export interface FilterTab {
   value: string

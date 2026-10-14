@@ -14,6 +14,10 @@ import { FileRow } from "./_file-row"
 import { useControllable } from "./_use-controllable"
 import { FileInput, type FileInputProps } from "./file-input"
 import { syncInputFiles } from "./file-utils"
+import { registerEnglish } from "../../i18n/english"
+import { file as en_file } from "../../locales/en/file"
+
+registerEnglish({ file: en_file })
 
 /** A file already attached to the record. */
 export interface ExistingAttachment {

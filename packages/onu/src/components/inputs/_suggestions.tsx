@@ -7,6 +7,11 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Popover, PopoverAnchor, PopoverContent } from "../../ui/popover"
 import { LiveMessage } from "./_shared"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { input as en_input } from "../../locales/en/input"
+
+registerEnglish({ common: en_common, input: en_input })
 
 /** A suggestion: a plain string, or a value with a label and description. */
 export type SuggestionOption =

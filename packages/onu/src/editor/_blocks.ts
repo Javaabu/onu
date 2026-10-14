@@ -1,5 +1,9 @@
 import type { Editor, Range } from "@tiptap/core"
 import { TextSelection } from "@tiptap/pm/state"
+import { registerEnglish } from "../i18n/english"
+import { editor as en_editor } from "../locales/en/editor"
+
+registerEnglish({ editor: en_editor })
 
 /** What a block type needs from the editor UI (dialogs). */
 export interface BlockContext {

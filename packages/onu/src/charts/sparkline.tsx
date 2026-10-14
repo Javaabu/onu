@@ -9,6 +9,10 @@ import { ChartContainer } from "../ui/chart"
 import { areaGradient, ChartGradients, fillUrl, GRADIENT_FALLBACK, useChartGradient, useGradientId } from "./_gradient"
 import { chartColor, SVG_LTR, useChartAnimation, type ChartDatum } from "./_shared"
 import { useChartFormat, type ValueFormat } from "./format"
+import { registerEnglish } from "../i18n/english"
+import { chart as en_chart } from "../locales/en/chart"
+
+registerEnglish({ chart: en_chart })
 
 export interface SparklineProps extends Omit<React.ComponentProps<"div">, "children" | "color"> {
   /** Numbers, or objects with a `valueKey`. `null` leaves a gap. */

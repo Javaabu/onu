@@ -14,6 +14,10 @@ import { useControllableState } from "./_hooks"
 import { atollLabel, findAtoll, MALDIVES_ATOLLS } from "./maldives"
 import { MapPicker } from "./map-picker"
 import type { LatLng, PlaceSearch } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ map: en_map })
 
 /** A structured Maldivian address. */
 export interface MaldivesAddress {

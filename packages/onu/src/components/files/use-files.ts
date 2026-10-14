@@ -14,6 +14,10 @@ import {
   type UploadFn,
   type XhrUploadOptions,
 } from "./file-utils"
+import { registerEnglish } from "../../i18n/english"
+import { file as en_file } from "../../locales/en/file"
+
+registerEnglish({ file: en_file })
 
 /** Formats byte counts with the active locale's number format and unit labels. */
 export function useFormatFileSize() {

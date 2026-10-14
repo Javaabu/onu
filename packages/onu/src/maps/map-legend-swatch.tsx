@@ -7,6 +7,10 @@ import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
 import { toneVar } from "./_colors"
 import type { MapTone } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ map: en_map })
 
 export type MapLegendShape = "circle" | "square" | "pin" | "line" | "dashed" | "area" | "gradient"
 

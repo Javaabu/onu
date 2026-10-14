@@ -11,6 +11,10 @@ import { useMapContext } from "./_context"
 import { formatLatLng, googleMapsUrl, staticMapUrl } from "./geo"
 import { mapLanguage } from "./map-provider"
 import type { LatLng } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ map: en_map })
 
 export const locationCardVariants = cva(
   "text-sm @container/location-card flex overflow-hidden rounded-xl border bg-card text-card-foreground",

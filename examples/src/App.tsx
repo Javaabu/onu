@@ -1,6 +1,7 @@
 import * as React from "react"
 import { HashRouter, Link, Navigate, Route, Routes } from "react-router"
 import { OnuProvider, Spinner, ThemeProvider, Toaster, TooltipProvider } from "@javaabu/onu"
+import { dv } from "@javaabu/onu/locales/dv"
 import { googleMapsAdapter, MapProvider } from "@javaabu/onu/maps"
 
 import { SearchProvider } from "./components/search"
@@ -46,7 +47,7 @@ function Providers({ children }: { children: React.ReactNode }) {
   const { settings } = useSettings()
   return (
     <OnuProvider
-      locale={settings.locale}
+      locale={settings.locale === "dv" ? dv : "en"}
       dir={settings.dir === "auto" ? undefined : settings.dir}
       density={settings.density}
       labelLayout={settings.labelLayout}

@@ -16,6 +16,7 @@ const entries = {
   index: "src/index.ts",
   "ui/index": "src/ui/index.ts",
   "thaana/index": "src/thaana/index.ts",
+  "locales/dv/index": "src/locales/dv/index.ts",
   "charts/index": "src/charts/index.ts",
   "maps/index": "src/maps/index.ts",
   "editor/index": "src/editor/index.ts",

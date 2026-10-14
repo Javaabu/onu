@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
+import { dv } from "../../locales/dv"
 import { OnuProvider } from "../../providers/onu-provider"
 import { addHijriMonths, fromHijri, hijriDaysInMonth, toHijri } from "./_hijri"
 import { HijriDate, useHijriFormatter } from "./hijri-date"
@@ -56,7 +57,7 @@ describe("HijriDate", () => {
 
   it("has a formatter hook", () => {
     const { result } = renderHook(() => useHijriFormatter(), {
-      wrapper: ({ children }) => <OnuProvider locale="dv">{children}</OnuProvider>,
+      wrapper: ({ children }) => <OnuProvider locale={dv}>{children}</OnuProvider>,
     })
     expect(result.current(new Date(2026, 4, 30), "month-year")).toBe("ޛުލްޙިއްޖާ 1447")
   })

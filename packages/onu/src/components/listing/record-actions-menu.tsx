@@ -9,6 +9,10 @@ import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../../ui/dropdown-menu"
 import { ActionMenuItems, useActionRunner, visibleActions, type RecordAction } from "./_actions"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export interface RecordActionsMenuProps extends Omit<React.ComponentProps<"div">, "children"> {
   /** The record's display name, used in confirmations ("Delete Jane Doe?"). */

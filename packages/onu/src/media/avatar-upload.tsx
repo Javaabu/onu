@@ -16,6 +16,11 @@ import { Button } from "../ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
 import type { CropImageOptions } from "./crop-image"
 import { ImageCropper, type ImageCropperHandle } from "./image-cropper"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+import { file as en_file } from "../locales/en/file"
+
+registerEnglish({ common: en_common, file: en_file })
 
 export const avatarUploadVariants = cva("", {
   variants: {

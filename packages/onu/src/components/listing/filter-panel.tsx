@@ -13,6 +13,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
 import { FilterControl } from "./_filter-controls"
 import type { FilterDefinition, FilterValue, FilterValues } from "./listing-types"
 import { cleanFilters, isFilterValueEmpty } from "./use-listing-state"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export type { FilterDefinition } from "./listing-types"
 

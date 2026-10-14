@@ -13,6 +13,10 @@ import { FileRow } from "./_file-row"
 import { useControllable } from "./_use-controllable"
 import { fileKey, syncInputFiles, validateFiles, type FileRejection, type FileValidationOptions } from "./file-utils"
 import { useRejectionMessage } from "./use-files"
+import { registerEnglish } from "../../i18n/english"
+import { file as en_file } from "../../locales/en/file"
+
+registerEnglish({ file: en_file })
 
 export const fileInputVariants = cva(
   "group/file-input min-w-0 text-sm touch:min-h-11 relative flex w-full items-center rounded-lg border border-input bg-transparent transition-colors has-[input:disabled]:cursor-not-allowed has-[input:disabled]:opacity-50 has-[input:focus-visible]:border-ring has-[input:focus-visible]:ring-3 has-[input:focus-visible]:ring-ring/50 has-[input[aria-invalid=true]]:border-destructive has-[input[aria-invalid=true]]:ring-destructive/20 dark:bg-input/30",

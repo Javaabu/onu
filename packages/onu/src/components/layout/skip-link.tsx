@@ -4,6 +4,10 @@ import * as React from "react"
 
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 export interface SkipLinkProps extends React.ComponentProps<"a"> {
   /** Target of the skip link. Defaults to `#main-content` (the id `AppLayout` gives `<main>`). */

@@ -8,6 +8,10 @@ import { useTranslation } from "../../providers/onu-provider"
 import { InputGroupButton } from "../../ui/input-group"
 import { CopyButton, LiveMessage, useControllableState } from "./_shared"
 import { TextInput, type TextInputProps } from "./text-input"
+import { registerEnglish } from "../../i18n/english"
+import { input as en_input } from "../../locales/en/input"
+
+registerEnglish({ input: en_input })
 
 /** `sk_live_abcd1234` → `••••••••1234`. The dot count is fixed so the length is not leaked. */
 export function maskSecret(value: string, visibleChars = 4, maskLength = 8, maskChar = "•"): string {

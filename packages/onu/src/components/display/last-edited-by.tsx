@@ -8,6 +8,10 @@ import type { DateInput } from "./_utils"
 import { ConditionalLink } from "./conditional-link"
 import { RelativeDate, type RelativeDateProps } from "./relative-date"
 import { UserAvatar } from "./user-avatar"
+import { registerEnglish } from "../../i18n/english"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ display: en_display })
 
 export interface LastEditedByProps extends React.ComponentProps<"div"> {
   /** The person who made the last change. */

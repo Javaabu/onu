@@ -8,6 +8,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { useFormField, useFormFieldControl } from "../form/form-field"
 import type { SelectionProps } from "./_selection"
+import { registerEnglish } from "../../i18n/english"
+import { choice as en_choice } from "../../locales/en/choice"
+
+registerEnglish({ choice: en_choice })
 
 export interface ImageOption {
   value: string

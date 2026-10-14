@@ -13,6 +13,10 @@ import {
   type DataTableModel,
   type SeriesInfo,
 } from "./_shared"
+import { registerEnglish } from "../i18n/english"
+import { chart as en_chart } from "../locales/en/chart"
+
+registerEnglish({ chart: en_chart })
 
 /** Props shared by category charts (bar, line, period comparison). */
 export interface CartesianChartProps extends ChartBaseProps {

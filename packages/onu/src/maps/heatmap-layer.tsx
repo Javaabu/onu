@@ -3,6 +3,10 @@
 import { useTranslation } from "../providers/onu-provider"
 import { useMapEngine } from "./_context"
 import type { HeatmapPoint, MapTone } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ map: en_map })
 
 /** Default heat ramp, low to high, from theme tokens. */
 export const HEATMAP_TONES: MapTone[] = ["info", "chart-6", "success", "warning", "destructive"]

@@ -9,6 +9,10 @@ import { useTranslation } from "../../providers/onu-provider"
 import { InputGroupButton } from "../../ui/input-group"
 import { useControllableState } from "./_shared"
 import { NumberInput, type NumberInputProps } from "./number-input"
+import { registerEnglish } from "../../i18n/english"
+import { input as en_input } from "../../locales/en/input"
+
+registerEnglish({ input: en_input })
 
 export const quantityStepperVariants = cva("", {
   variants: {

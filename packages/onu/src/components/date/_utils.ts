@@ -31,7 +31,7 @@ export function defaultTimeFormat(hourCycle: 12 | 24) {
   return hourCycle === 24 ? "HH:mm" : "h:mm a"
 }
 
-export function formatDate(date: Date, pattern: string, locale: Locale) {
+export function formatDate(date: Date, pattern: string, locale: Locale | undefined) {
   return formatFns(date, pattern, { locale })
 }
 

@@ -6,6 +6,10 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { InputGroupButton } from "../../ui/input-group"
+import { registerEnglish } from "../../i18n/english"
+import { input as en_input } from "../../locales/en/input"
+
+registerEnglish({ input: en_input })
 
 /**
  * Controlled/uncontrolled state in one hook: uses `value` when it is not

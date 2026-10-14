@@ -8,6 +8,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { Carousel as BaseCarousel, type CarouselApi } from "../../ui/carousel"
+import { registerEnglish } from "../../i18n/english"
+import { file as en_file } from "../../locales/en/file"
+
+registerEnglish({ file: en_file })
 
 export interface CarouselAutoplayOptions {
   /** Milliseconds per slide. Default 5000. */

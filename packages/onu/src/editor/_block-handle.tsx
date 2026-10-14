@@ -25,6 +25,10 @@ import {
   type BlockType,
 } from "./_blocks"
 import { blockTitle } from "./_slash-menu"
+import { registerEnglish } from "../i18n/english"
+import { editor as en_editor } from "../locales/en/editor"
+
+registerEnglish({ editor: en_editor })
 
 function blockDom(editor: Editor, index: number): HTMLElement | null {
   const pos = blockPositions(editor)[index]

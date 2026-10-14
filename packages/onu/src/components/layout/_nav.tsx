@@ -4,6 +4,10 @@ import * as React from "react"
 
 import { Icon } from "../../icons/icon"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 /** A navigation entry shared by AppSidebar, SideNav, TopNav, OverlayMenu, BottomNav and MegaMenu. */
 export interface NavItem {

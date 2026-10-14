@@ -18,6 +18,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../ui/dialog"
+import { registerEnglish } from "../../i18n/english"
+import { overlay as en_overlay } from "../../locales/en/overlay"
+
+registerEnglish({ overlay: en_overlay })
 
 /** Centred dialog box. Used unprefixed (mobile="dialog") and from `sm` up for the other modes. */
 const CENTRED =

@@ -1,6 +1,10 @@
 import * as React from "react"
 
 import { useOnu } from "../providers/onu-provider"
+import { registerEnglish } from "../i18n/english"
+import { chart as en_chart } from "../locales/en/chart"
+
+registerEnglish({ chart: en_chart })
 
 /**
  * How a chart formats its values.

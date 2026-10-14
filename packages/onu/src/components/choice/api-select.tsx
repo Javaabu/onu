@@ -19,6 +19,11 @@ import {
   type ApiOptionsSource,
 } from "./api-options"
 import { normalizeOptions, type ChoiceOption, type ChoiceOptionInput } from "./options"
+import { registerEnglish } from "../../i18n/english"
+import { choice as en_choice } from "../../locales/en/choice"
+import { common as en_common } from "../../locales/en/common"
+
+registerEnglish({ choice: en_choice, common: en_common })
 
 type TriggerProps = Omit<
   React.ComponentProps<"button">,

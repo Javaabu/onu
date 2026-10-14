@@ -14,6 +14,11 @@ import { Command, CommandGroup, CommandItem, CommandList, CommandSeparator } fro
 import { useMergedRef } from "../inputs/text-input"
 import { Picker, PickerAnchor, PickerContent, PickerTrigger } from "./_picker"
 import { groupOptions, type ChoiceOption } from "./options"
+import { registerEnglish } from "../../i18n/english"
+import { choice as en_choice } from "../../locales/en/choice"
+import { common as en_common } from "../../locales/en/common"
+
+registerEnglish({ choice: en_choice, common: en_common })
 
 /** The bordered box around a select-like trigger (exported for custom pickers). */
 export const choiceFieldVariants = cva(

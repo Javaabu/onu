@@ -12,6 +12,11 @@ import { ConfirmDeleteButton } from "./_confirm-delete"
 import type { DateInput } from "./_utils"
 import { RelativeDate } from "./relative-date"
 import { UserAvatar } from "./user-avatar"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ common: en_common, display: en_display })
 
 export type CommentId = string | number
 

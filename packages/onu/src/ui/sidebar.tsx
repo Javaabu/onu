@@ -21,6 +21,11 @@ import { Icon } from "../icons/icon"
 import { useTranslation } from "../providers/onu-provider"
 // onu: the app shell surface (Proton), shared with AppHeader and AppLayout.
 import { shellClasses } from "../components/layout/_shell"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+import { layout as en_layout } from "../locales/en/layout"
+
+registerEnglish({ common: en_common, layout: en_layout })
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7

@@ -7,6 +7,10 @@ import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useOnu } from "../providers/onu-provider"
 import { computeDelta, deltaSentiment, useChartFormat, type DeltaDirection } from "./format"
+import { registerEnglish } from "../i18n/english"
+import { chart as en_chart } from "../locales/en/chart"
+
+registerEnglish({ chart: en_chart })
 
 export const deltaIndicatorVariants = cva("gap-1 font-medium inline-flex items-center whitespace-nowrap tabular-nums", {
   variants: {

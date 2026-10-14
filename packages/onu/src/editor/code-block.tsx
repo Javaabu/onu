@@ -14,6 +14,10 @@ import {
   type CodeThemes,
   type HighlightToken,
 } from "./_highlight"
+import { registerEnglish } from "../i18n/english"
+import { editor as en_editor } from "../locales/en/editor"
+
+registerEnglish({ editor: en_editor })
 
 export interface CodeBlockProps extends Omit<React.ComponentProps<"figure">, "children" | "title"> {
   /** The code to show. */

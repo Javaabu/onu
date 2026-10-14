@@ -36,11 +36,12 @@ npm install @javaabu/onu
 
 ```tsx
 import { Button, OnuProvider, ThemeProvider } from "@javaabu/onu"
+import { dv } from "@javaabu/onu/locales/dv"
 
 export function App() {
   return (
     <ThemeProvider>
-      <OnuProvider locale="dv">
+      <OnuProvider locale={dv}>
         <Button>ސޭވްކުރޭ</Button>
       </OnuProvider>
     </ThemeProvider>

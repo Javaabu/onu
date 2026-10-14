@@ -16,6 +16,11 @@ import {
   AlertDialogTrigger,
 } from "../../ui/alert-dialog"
 import { Button } from "../../ui/button"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ common: en_common, display: en_display })
 
 /** Icon button that asks for confirmation before deleting. Focus returns to it on cancel. */
 export function ConfirmDeleteButton({

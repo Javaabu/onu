@@ -9,6 +9,10 @@ import { Button } from "../../ui/button"
 import { FileIcon } from "./file-icon"
 import { getExtension, getFileKind } from "./file-utils"
 import { useFormatFileSize } from "./use-files"
+import { registerEnglish } from "../../i18n/english"
+import { file as en_file } from "../../locales/en/file"
+
+registerEnglish({ file: en_file })
 
 /** Native names for built-in languages, shown in their own script. */
 const LANGUAGE_NAMES: Record<string, string> = { en: "English", dv: "ދިވެހި" }

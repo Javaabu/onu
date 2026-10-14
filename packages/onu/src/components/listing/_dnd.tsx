@@ -5,6 +5,10 @@ import { Accessibility, type DragEndEvent, type DragOverEvent, type DragStartEve
 import type { DragDropProvider } from "@dnd-kit/react"
 
 import { useTranslation } from "../../providers/onu-provider"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 type ProviderProps = React.ComponentProps<typeof DragDropProvider>
 type PluginsInput = NonNullable<ProviderProps["plugins"]>

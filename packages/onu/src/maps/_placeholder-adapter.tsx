@@ -34,6 +34,10 @@ import type {
   MapAdapter,
   MapHandle,
 } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ map: en_map })
 
 /*
  * The keyless fallback engine: a schematic Web Mercator preview drawn with SVG

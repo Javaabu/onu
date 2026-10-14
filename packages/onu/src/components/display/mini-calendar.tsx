@@ -9,6 +9,10 @@ import { useOnu } from "../../providers/onu-provider"
 import { Calendar, CalendarDayButton } from "../../ui/calendar"
 import { toDate, type DateInput } from "./_utils"
 import { ConditionalLink } from "./conditional-link"
+import { registerEnglish } from "../../i18n/english"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ display: en_display })
 
 export type MiniCalendarEventTone = "primary" | "success" | "warning" | "destructive" | "info" | "muted"
 

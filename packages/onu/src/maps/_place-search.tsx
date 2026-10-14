@@ -10,6 +10,11 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group"
 import { Spinner } from "../ui/spinner"
 import { useLatest } from "./_hooks"
 import type { PlaceResult, PlaceSearch } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ common: en_common, map: en_map })
 
 export interface UsePlaceSearchBoxOptions {
   /** The search function, e.g. the map engine's geocoder or your own API. `null` disables searching. */

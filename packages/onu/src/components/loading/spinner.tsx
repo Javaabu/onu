@@ -7,6 +7,10 @@ import { Loader2Icon } from "lucide-react"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
+import { registerEnglish } from "../../i18n/english"
+import { overlay as en_overlay } from "../../locales/en/overlay"
+
+registerEnglish({ overlay: en_overlay })
 
 export const spinnerVariants = cva("animate-spin shrink-0", {
   variants: {

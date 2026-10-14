@@ -3,6 +3,10 @@
 import { useTranslation } from "../../providers/onu-provider"
 import { Button, type ButtonProps } from "./button"
 import { useOnuForm } from "./form"
+import { registerEnglish } from "../../i18n/english"
+import { form as en_form } from "../../locales/en/form"
+
+registerEnglish({ form: en_form })
 
 export interface SubmitButtonProps extends Omit<ButtonProps, "type" | "loading"> {
   /** Show the spinner and block submits. Defaults to the enclosing `Form`'s processing state. */

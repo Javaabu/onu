@@ -7,6 +7,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import type { FormErrors } from "./form-context"
 import { errorEntries, findField, focusField, isValidationPayload, type ValidationPayload } from "./validation"
+import { registerEnglish } from "../../i18n/english"
+import { form as en_form } from "../../locales/en/form"
+
+registerEnglish({ form: en_form })
 
 export interface ValidationSummaryProps extends Omit<React.ComponentProps<"div">, "title"> {
   /** Errors keyed by field name, or a whole Laravel 422 body (`{ message, errors }`). */

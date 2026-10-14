@@ -7,6 +7,10 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 export interface BackToTopProps extends Omit<React.ComponentProps<typeof Button>, "children"> {
   /** Show the button after scrolling this many pixels. */

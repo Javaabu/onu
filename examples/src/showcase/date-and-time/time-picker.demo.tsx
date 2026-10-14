@@ -1,5 +1,6 @@
 import * as React from "react"
 import { FormField, OnuProvider, TimePicker } from "@javaabu/onu"
+import { dv } from "@javaabu/onu/locales/dv"
 
 import { DemoPage, DemoSection } from "../../components/demo"
 
@@ -42,7 +43,7 @@ export default function TimePickerDemo() {
       </DemoSection>
 
       <DemoSection title="ދިވެހި" className="max-w-md gap-4 grid">
-        <OnuProvider locale="dv" syncDocument={false}>
+        <OnuProvider locale={dv} syncDocument={false}>
           <div dir="rtl" lang="dv">
             <FormField label="ހުޅުވާ ގަޑި">
               <TimePicker defaultValue={new Date(2026, 2, 12, 20, 15)} />

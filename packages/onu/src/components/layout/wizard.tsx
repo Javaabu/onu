@@ -6,6 +6,11 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ common: en_common, layout: en_layout })
 
 export interface WizardStep {
   id: string

@@ -6,6 +6,10 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
+import { registerEnglish } from "../../i18n/english"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ display: en_display })
 
 /**
  * Ant Design tags: 22px, 4px corners, a hairline border and 12px text. `default` is

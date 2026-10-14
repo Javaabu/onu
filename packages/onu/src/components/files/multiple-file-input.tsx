@@ -7,6 +7,10 @@ import { useTranslation } from "../../providers/onu-provider"
 import { useControllable } from "./_use-controllable"
 import { FileInput, type FileInputProps } from "./file-input"
 import { useFormatFileSize } from "./use-files"
+import { registerEnglish } from "../../i18n/english"
+import { file as en_file } from "../../locales/en/file"
+
+registerEnglish({ file: en_file })
 
 export interface MultipleFileInputProps extends Omit<FileInputProps, "multiple" | "append"> {
   /** Show a hint with the limits (`Up to 5 files, 10 MB each`). Default `true`. */

@@ -24,6 +24,10 @@ import {
 import { areaSeriesFills, ChartGradients, GRADIENT_FALLBACK, useChartGradient, useGradientId } from "./_gradient"
 import { ChartFrame, resolveSeries, seriesConfig, SVG_LTR, useChartAnimation, useTooltipTrigger } from "./_shared"
 import { useChartFormat } from "./format"
+import { registerEnglish } from "../i18n/english"
+import { chart as en_chart } from "../locales/en/chart"
+
+registerEnglish({ chart: en_chart })
 
 export type LineCurve = "monotone" | "linear" | "step" | "natural"
 

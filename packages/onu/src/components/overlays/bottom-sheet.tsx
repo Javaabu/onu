@@ -19,6 +19,10 @@ import {
 } from "../../ui/drawer"
 import { useControllableState } from "./_use-controllable-state"
 import { useRestoreFocus } from "./_use-restore-focus"
+import { registerEnglish } from "../../i18n/english"
+import { overlay as en_overlay } from "../../locales/en/overlay"
+
+registerEnglish({ overlay: en_overlay })
 
 export const bottomSheetVariants = cva(
   "group/bottom-sheet inset-x-0 bottom-0 text-sm fixed z-50 mx-auto flex flex-col rounded-t-2xl bg-popover text-popover-foreground shadow-popup ring-1 ring-border outline-none",

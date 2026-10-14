@@ -8,6 +8,10 @@ import { Slot } from "radix-ui"
 import { ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 import { useTranslation } from "../providers/onu-provider"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+
+registerEnglish({ common: en_common })
 
 function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
   const { t } = useTranslation() // onu: translated labels

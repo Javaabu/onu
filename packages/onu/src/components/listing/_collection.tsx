@@ -6,6 +6,10 @@ import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
 import { isInteractiveTarget } from "./_shared"
 import { SelectionCheckbox } from "./_selection-checkbox"
 import { RowActions, type RecordAction } from "./row-actions"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 /** Props shared by `ListView` and `GridView`. */
 export interface CollectionProps<T> {

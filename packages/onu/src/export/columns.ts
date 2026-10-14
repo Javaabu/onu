@@ -3,6 +3,10 @@ import { format as formatDateFns, isValid, parseISO } from "date-fns"
 import { createTranslator } from "../i18n/translate"
 import type { OnuLocale, Translate } from "../i18n/types"
 import { en, locales } from "../locales"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+
+registerEnglish({ common: en_common })
 
 /**
  * How a column's values are written. `number` and `currency` stay numeric in

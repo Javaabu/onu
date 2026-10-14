@@ -9,6 +9,10 @@ import { Button } from "../../ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../../ui/dropdown-menu"
 import { useMergedRef } from "../inputs/text-input"
 import { ActionMenuItems, useActionRunner, visibleActions, type RecordAction } from "./_actions"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export type { RecordAction } from "./_actions"
 

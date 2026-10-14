@@ -1,4 +1,5 @@
 import { FormField, HijriCalendar, HijriDate, HijriDatePicker, OnuProvider } from "@javaabu/onu"
+import { dv } from "@javaabu/onu/locales/dv"
 
 import { DemoPage, DemoSection } from "../../components/demo"
 
@@ -18,7 +19,7 @@ export default function HijriDateDemo() {
         <HijriDate date={today} />
         <HijriDate date={today} format="short" showGregorian />
         <HijriDate date={today} format="numeric" />
-        <OnuProvider locale="dv" syncDocument={false}>
+        <OnuProvider locale={dv} syncDocument={false}>
           <p dir="rtl" lang="dv">
             <HijriDate date={today} showGregorian />
           </p>
@@ -28,7 +29,7 @@ export default function HijriDateDemo() {
         <FormField label="Date of the event" name="event_date" help="The value stays Gregorian (yyyy-MM-dd).">
           <HijriDatePicker />
         </FormField>
-        <OnuProvider locale="dv" syncDocument={false}>
+        <OnuProvider locale={dv} syncDocument={false}>
           <div dir="rtl" lang="dv">
             <FormField label="ހިޖްރީ ތާރީޚު">
               <HijriDatePicker defaultValue={today} />

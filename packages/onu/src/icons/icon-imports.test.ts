@@ -3,13 +3,14 @@ import path from "node:path"
 import { describe, expect, it } from "vitest"
 
 /**
- * Keeps the full Lucide map (~250 icons, ~9 kB brotli) out of single-component bundles.
- * `<Icon>` gets the default set from `OnuProvider`; components with fixed glyphs pass a
- * `fallback`. Only the modules below may import `lucide-map` (size-limit guards the rest).
+ * Keeps the full Lucide map (~250 icons, ~9 kB brotli) out of single-component bundles
+ * and out of `OnuProvider`. `<Icon>` gets the default set from `OnuProvider`, which loads
+ * it on demand with a dynamic `import()`; components with fixed glyphs pass a `fallback`.
+ * Only the modules below may import `lucide-map` statically (size-limit guards the rest).
  */
 const SRC = path.resolve(__dirname, "..")
 const MAP = path.join(SRC, "icons/lucide-map.ts")
-const ALLOWED_IMPORTERS = ["icons/index.ts", "icons/standalone-icon.tsx", "providers/onu-provider.tsx"]
+const ALLOWED_IMPORTERS = ["icons/index.ts", "icons/standalone-icon.tsx"]
 
 function resolveImport(from: string, spec: string) {
   const base = path.resolve(path.dirname(from), spec)
@@ -25,14 +26,7 @@ function relativeImports(file: string) {
   return specs.map((s) => resolveImport(file, s)).filter((f): f is string => !!f)
 }
 
-/**
- * `OnuProvider` uses the map only inside the provider component, so modules that import
- * just its hooks (`useTranslation`, `useOnu`) tree-shake the map away. The walk stops there;
- * size-limit's "core (Button)" and "core (form field + text input)" checks cover the real bundle.
- */
-const PROVIDER = path.join(SRC, "providers/onu-provider.tsx")
-
-/** Modules reachable from `entry` through relative imports. */
+/** Modules reachable from `entry` through static relative imports. */
 function reachable(entry: string) {
   const seen = new Set<string>()
   const queue = [path.join(SRC, entry)]
@@ -40,7 +34,7 @@ function reachable(entry: string) {
     const file = queue.pop()!
     if (seen.has(file)) continue
     seen.add(file)
-    if (file !== PROVIDER) queue.push(...relativeImports(file))
+    queue.push(...relativeImports(file))
   }
   return seen
 }
@@ -68,6 +62,7 @@ describe("icon map boundary", () => {
 
   it.each([
     "components/form/button.tsx",
+    "providers/onu-provider.tsx",
     "icons/icon.tsx",
     "ui/spinner.tsx",
     ...readdirSync(path.join(SRC, "ui"))

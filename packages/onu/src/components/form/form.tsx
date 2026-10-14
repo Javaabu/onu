@@ -15,6 +15,10 @@ import {
   type ValidationPayload,
 } from "./validation"
 import { ValidationSummary } from "./validation-summary"
+import { registerEnglish } from "../../i18n/english"
+import { form as en_form } from "../../locales/en/form"
+
+registerEnglish({ form: en_form })
 
 /** Values of a form without react-hook-form: `FormData` as an object (repeated names become arrays). */
 export type FormValues = Record<string, FormDataEntryValue | FormDataEntryValue[]>

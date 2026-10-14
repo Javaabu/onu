@@ -7,6 +7,10 @@ import { useOnChange } from "./_hooks"
 import type { ChoiceOptionInput } from "./options"
 import { ApiSelect, type ApiSelectProps } from "./api-select"
 import { SearchableSelect, type SearchableSelectProps } from "./searchable-select"
+import { registerEnglish } from "../../i18n/english"
+import { choice as en_choice } from "../../locales/en/choice"
+
+registerEnglish({ choice: en_choice })
 
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never
 

@@ -9,6 +9,11 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip"
 import { toDate, useNow, type DateInput } from "./_utils"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ common: en_common, display: en_display })
 
 /** Below this many seconds either side of now, the date reads "just now". */
 const JUST_NOW_SECONDS = 45

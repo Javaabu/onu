@@ -7,6 +7,11 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useOnu } from "../../providers/onu-provider"
 import { useTheme } from "../../providers/theme-provider"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ common: en_common, display: en_display })
 
 /** Logical positions: `start` / `end` follow the reading direction (they flip in RTL). */
 export type ToastPosition = "top-start" | "top-center" | "top-end" | "bottom-start" | "bottom-center" | "bottom-end"

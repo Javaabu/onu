@@ -13,6 +13,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { toDate, type DateInput } from "./_utils"
 import { StatusBadge, type StatusMap } from "./status-badge"
 import { AppLink } from "./_link"
+import { registerEnglish } from "../../i18n/english"
+import { display as en_display } from "../../locales/en/display"
+
+registerEnglish({ display: en_display })
 
 export type PublishStatus = "draft" | "pending" | "scheduled" | "published" | (string & {})
 export type PublishVisibility = "public" | "private" | (string & {})

@@ -10,6 +10,10 @@ import { InputGroupButton } from "../../ui/input-group"
 import { LiveMessage, useControllableState } from "./_shared"
 import { thaanaToLatin } from "./_thaana-latin"
 import { TextInput, useMergedRef, type TextInputProps } from "./text-input"
+import { registerEnglish } from "../../i18n/english"
+import { input as en_input } from "../../locales/en/input"
+
+registerEnglish({ input: en_input })
 
 export { thaanaToLatin }
 

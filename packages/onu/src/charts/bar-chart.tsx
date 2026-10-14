@@ -16,6 +16,10 @@ import {
 import { barSeriesFills, ChartGradients, GRADIENT_FALLBACK, useChartGradient, useGradientId } from "./_gradient"
 import { ChartFrame, resolveSeries, seriesConfig, SVG_LTR, useChartAnimation, useTooltipTrigger } from "./_shared"
 import { useChartFormat } from "./format"
+import { registerEnglish } from "../i18n/english"
+import { chart as en_chart } from "../locales/en/chart"
+
+registerEnglish({ chart: en_chart })
 
 export interface BarChartProps extends CartesianChartProps {
   /** `"vertical"` draws columns (categories along the bottom); `"horizontal"` draws bars (categories down the side). */

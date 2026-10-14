@@ -24,6 +24,10 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu"
 import { MenuItems, type MenuItem, type MenuParts } from "./_menu-items"
+import { registerEnglish } from "../../i18n/english"
+import { overlay as en_overlay } from "../../locales/en/overlay"
+
+registerEnglish({ overlay: en_overlay })
 
 export type {
   MenuItem,

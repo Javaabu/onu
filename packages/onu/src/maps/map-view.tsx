@@ -16,6 +16,10 @@ import type {
   MapHandle,
   MapViewState,
 } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ map: en_map })
 
 /** Malé, the default centre. */
 export const MALE: LatLng = { lat: 4.1755, lng: 73.5093 }

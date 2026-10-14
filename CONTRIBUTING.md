@@ -34,7 +34,9 @@ A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `
 - Use logical Tailwind utilities (`ms-`, `pe-`, `start-`, `text-start`, …). ESLint rejects physical `left`/`right` ones.
 - Use theme tokens (`bg-primary`, `text-muted-foreground`), never raw colours.
 - Use `<Icon name="…">` (from `src/icons/icon`) with semantic names, so `OnuProvider icons` overrides apply. Never render a Lucide component directly. When a component always shows the same glyph (a spinner, a close button, a chevron), also pass that Lucide icon as `fallback`, e.g. `<Icon name="loading" fallback={Loader2Icon} />`: overrides still win, and the component keeps its glyph outside `OnuProvider`.
-- Never import `src/icons/lucide-map` in a component. `OnuProvider` supplies the default set, so a single component does not ship ~250 icons. ESLint and `src/icons/icon-imports.test.ts` enforce this, and `pnpm --filter @javaabu/onu size` checks the bundle budgets.
+- Never import `src/icons/lucide-map` in a component. `OnuProvider` loads the default set on demand, so neither a single component nor the provider ships ~250 icons. ESLint and `src/icons/icon-imports.test.ts` enforce this, and `pnpm --filter @javaabu/onu size` checks the bundle budgets.
+- Built-in strings: a module that uses `t("form.…")` registers the English namespaces it uses at the top level, e.g. `registerEnglish({ form: en_form })` with `import { form as en_form } from "../../locales/en/form"`. Never import the whole locale (`src/locales`, `locales/en/messages`) in a component, so a bundle carries only the English text of the components it uses. `src/i18n/english-registry.test.ts` checks this.
+- Every `package.json` export has a `size-limit` budget (`pnpm --filter @javaabu/onu size`, run in CI). When a change grows an entry on purpose, raise its budget in the same PR and say why; keep budgets a little above the measured size.
 - Prefer shadcn/ui or an approved library (REQUIREMENTS §4) before building from scratch. Record new dependencies in `DEPENDENCIES.md`.
 - Add a changeset: `pnpm changeset`.
 

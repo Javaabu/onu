@@ -8,6 +8,11 @@ import type { ThaanaProp } from "../../thaana/use-thaana-field"
 import { NativeSelect, NativeSelectOption } from "../../ui/native-select"
 import { TextInput } from "../inputs/text-input"
 import { useAnnouncer } from "./_shared"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ common: en_common, listing: en_listing })
 
 export interface EditableColumn<T> {
   id: string

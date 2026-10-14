@@ -6,6 +6,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Label as BaseLabel } from "../../ui/label"
 import { RequiredMarker } from "./required-marker"
+import { registerEnglish } from "../../i18n/english"
+import { form as en_form } from "../../locales/en/form"
+
+registerEnglish({ form: en_form })
 
 export interface LabelProps extends React.ComponentProps<typeof BaseLabel> {
   /** Add the required marker (`*`, hidden from screen readers). */

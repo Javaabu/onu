@@ -1,4 +1,5 @@
 import { FormField, MultipleDatePicker, OnuProvider } from "@javaabu/onu"
+import { dv } from "@javaabu/onu/locales/dv"
 
 import { DemoPage, DemoSection } from "../../components/demo"
 
@@ -29,7 +30,7 @@ export default function MultipleDatePickerDemo() {
         </FormField>
       </DemoSection>
       <DemoSection title="ދިވެހި" className="max-w-md gap-4 grid">
-        <OnuProvider locale="dv" syncDocument={false}>
+        <OnuProvider locale={dv} syncDocument={false}>
           <div dir="rtl" lang="dv">
             <FormField label="ތަމްރީނު ދުވަސްތައް">
               <MultipleDatePicker defaultValue={[new Date(2026, 2, 3), new Date(2026, 2, 10), new Date(2026, 2, 17)]} />

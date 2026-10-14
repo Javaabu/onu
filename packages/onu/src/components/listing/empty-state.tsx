@@ -10,6 +10,10 @@ import { Button } from "../../ui/button"
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../../ui/empty"
 import { useNoun } from "./_shared"
 import type { ListingNoun } from "./listing-types"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export const emptyStateVariants = cva("", {
   variants: {

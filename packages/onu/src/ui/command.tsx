@@ -13,6 +13,10 @@ import { InputGroup, InputGroupAddon } from "./input-group"
 import { CheckIcon, SearchIcon } from "lucide-react"
 import { Icon } from "../icons/icon"
 import { useTranslation } from "../providers/onu-provider"
+import { registerEnglish } from "../i18n/english"
+import { common as en_common } from "../locales/en/common"
+
+registerEnglish({ common: en_common })
 
 function Command({ className, ...props }: React.ComponentProps<typeof CommandPrimitive>) {
   return (

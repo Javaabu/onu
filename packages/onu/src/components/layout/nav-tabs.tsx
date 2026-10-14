@@ -6,6 +6,10 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { NavBadge, NavIcon, NavLink, formatCount, isItemActive, resolveActiveHref, type NavMatch } from "./_nav"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 export const navTabsVariants = cva(
   "gap-1.5 text-sm font-medium touch:min-h-11 [&_svg]:size-4 relative inline-flex shrink-0 items-center whitespace-nowrap transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:shrink-0",

@@ -6,6 +6,10 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { useDelayedFlag } from "./loading-overlay"
+import { registerEnglish } from "../../i18n/english"
+import { overlay as en_overlay } from "../../locales/en/overlay"
+
+registerEnglish({ overlay: en_overlay })
 
 export interface PageProgressState {
   /** A load is in progress (or the bar is finishing). */

@@ -22,6 +22,10 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
+import { registerEnglish } from "../i18n/english"
+import { editor as en_editor } from "../locales/en/editor"
+
+registerEnglish({ editor: en_editor })
 
 /** Toolbar controls, in order. `"|"` draws a separator. */
 export type ToolbarItem =

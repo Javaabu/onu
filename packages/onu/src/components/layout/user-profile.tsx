@@ -18,6 +18,10 @@ import {
 } from "../../ui/dropdown-menu"
 import { getInitials } from "../display/user-avatar"
 import { NavIcon, NavLink } from "./_nav"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 export interface UserProfileMenuItem {
   label: React.ReactNode

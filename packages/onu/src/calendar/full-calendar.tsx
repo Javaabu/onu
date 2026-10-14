@@ -27,6 +27,10 @@ import { useOnu } from "../providers/onu-provider"
 import { Button } from "../ui/button"
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group"
 import { fullCalendarLocale } from "./full-calendar-locale"
+import { registerEnglish } from "../i18n/english"
+import { date as en_date } from "../locales/en/date"
+
+registerEnglish({ date: en_date })
 
 export type FullCalendarView = "month" | "week" | "day" | "agenda"
 
@@ -132,7 +136,12 @@ export function toEventInput({ color, ...event }: CalendarEvent): EventInput {
 }
 
 /** Visible-range title: "March 2026", "8 – 14 Mar 2026", "Thursday, 12 March 2026". */
-export function rangeTitle(view: FullCalendarView, start: Date, end: Date, locale: import("date-fns").Locale) {
+export function rangeTitle(
+  view: FullCalendarView,
+  start: Date,
+  end: Date,
+  locale: import("date-fns").Locale | undefined,
+) {
   const last = addDays(end, -1)
   if (view === "day") return formatDate(start, "EEEE, d MMMM yyyy", locale)
   if (view === "week") {

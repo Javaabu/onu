@@ -47,6 +47,10 @@ import {
   type NavItem,
   type NavMatch,
 } from "./_nav"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 export interface AppSidebarProps extends Omit<React.ComponentProps<typeof Sidebar>, "children"> {
   /** Flat list of items (or use `groups`). */

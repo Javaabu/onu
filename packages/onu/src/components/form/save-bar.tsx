@@ -10,6 +10,11 @@ import type { OnuLocale, Translate } from "../../i18n/types"
 import { Button } from "./button"
 import { useOnuForm } from "./form"
 import { useUnsavedChangesGuard } from "./unsaved-changes-guard"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { form as en_form } from "../../locales/en/form"
+
+registerEnglish({ common: en_common, form: en_form })
 
 export interface SaveBarChange {
   /** Stable key. Defaults to the field label. */

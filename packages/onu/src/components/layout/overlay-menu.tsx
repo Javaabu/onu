@@ -9,6 +9,10 @@ import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import type { NavGroup, NavItem, NavMatch } from "./_nav"
 import { SideNav } from "./side-nav"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 export interface OverlayMenuProps {
   items?: NavItem[]

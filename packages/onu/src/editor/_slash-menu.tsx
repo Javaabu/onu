@@ -11,6 +11,10 @@ import { cn } from "../lib/utils"
 import type { Translate } from "../i18n/types"
 import { useTranslation } from "../providers/onu-provider"
 import type { BlockType } from "./_blocks"
+import { registerEnglish } from "../i18n/english"
+import { editor as en_editor } from "../locales/en/editor"
+
+registerEnglish({ editor: en_editor })
 
 export const slashMenuPluginKey = new PluginKey("onuSlashMenu")
 

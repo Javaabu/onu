@@ -13,6 +13,10 @@ import { HiddenInput, PickerShell, type PickerFieldProps } from "./_picker-shell
 import { useControllableState } from "./_use-controllable-state"
 import { DEFAULT_DATE_FORMAT, formatDate, isOutOfRange, toISODate, yearBlockStart } from "./_utils"
 import { formatHijriParts, hijriMonthName, type HijriFormat } from "./hijri-date"
+import { registerEnglish } from "../../i18n/english"
+import { date as en_date } from "../../locales/en/date"
+
+registerEnglish({ date: en_date })
 
 export interface HijriCalendarProps {
   /** Selected (Gregorian) date. */

@@ -11,6 +11,11 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, Di
 import { FileIcon } from "./file-icon"
 import { getExtension, getFileKind } from "./file-utils"
 import { useFormatFileSize } from "./use-files"
+import { registerEnglish } from "../../i18n/english"
+import { common as en_common } from "../../locales/en/common"
+import { file as en_file } from "../../locales/en/file"
+
+registerEnglish({ common: en_common, file: en_file })
 
 export const attachmentPreviewVariants = cva("group/attachment border border-border bg-card text-card-foreground", {
   variants: {

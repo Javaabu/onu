@@ -5,6 +5,10 @@ import * as React from "react"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Skeleton } from "../../ui/skeleton"
+import { registerEnglish } from "../../i18n/english"
+import { overlay as en_overlay } from "../../locales/en/overlay"
+
+registerEnglish({ overlay: en_overlay })
 
 interface SkeletonRootProps extends React.ComponentProps<"div"> {
   /** Screen-reader text for the loading region. Default "Loading…". */

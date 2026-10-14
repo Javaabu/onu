@@ -12,6 +12,10 @@ import { boundsOf, compassDirection, compassLabel, formatLatLng } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import { MALE, MapMarker, MapView } from "./map-view"
 import type { LatLng, MapHandle, MapTone } from "./types"
+import { registerEnglish } from "../i18n/english"
+import { map as en_map } from "../locales/en/map"
+
+registerEnglish({ map: en_map })
 
 export interface LiveMapMarker {
   id: string

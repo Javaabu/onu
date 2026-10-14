@@ -4,6 +4,10 @@ import { Icon } from "../../icons/icon"
 import { useTranslation } from "../../providers/onu-provider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
 import type { ListingSort } from "./listing-types"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export interface SortMenuProps {
   /** Sortable columns: `id` and the header text. */

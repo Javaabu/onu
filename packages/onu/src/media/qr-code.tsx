@@ -9,6 +9,10 @@ import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
 import { Button } from "../ui/button"
+import { registerEnglish } from "../i18n/english"
+import { file as en_file } from "../locales/en/file"
+
+registerEnglish({ file: en_file })
 
 /** Error-correction level: L ≈ 7%, M ≈ 15%, Q ≈ 25%, H ≈ 30% of the code can be damaged or covered. */
 export type QrCodeLevel = "L" | "M" | "Q" | "H"

@@ -29,6 +29,10 @@ import {
   type NavMatch,
 } from "./_nav"
 import { SideNav } from "./side-nav"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 export interface TopNavProps extends Omit<React.ComponentProps<"div">, "children"> {
   items: NavItem[]

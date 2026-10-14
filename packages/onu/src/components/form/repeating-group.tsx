@@ -5,6 +5,10 @@ import * as React from "react"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "./button"
+import { registerEnglish } from "../../i18n/english"
+import { form as en_form } from "../../locales/en/form"
+
+registerEnglish({ form: en_form })
 
 export interface RepeatingGroupRow<T> {
   item: T

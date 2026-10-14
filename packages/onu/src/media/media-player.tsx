@@ -20,6 +20,10 @@ import { addTranslation, setLanguage } from "media-chrome/dist/utils/i18n.js"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
 import type { Translate } from "../i18n/types"
+import { registerEnglish } from "../i18n/english"
+import { file as en_file } from "../locales/en/file"
+
+registerEnglish({ file: en_file })
 
 export interface MediaTrack {
   src: string

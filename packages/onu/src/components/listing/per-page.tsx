@@ -6,6 +6,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
 import { DEFAULT_PER_PAGE_OPTIONS } from "./use-listing-state"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export interface PerPageProps extends Omit<React.ComponentProps<"div">, "onChange"> {
   value: number

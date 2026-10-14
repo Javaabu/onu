@@ -11,6 +11,10 @@ import { Button } from "../../ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
 import { BottomSheet } from "./bottom-sheet"
 import { useControllableState } from "./_use-controllable-state"
+import { registerEnglish } from "../../i18n/english"
+import { overlay as en_overlay } from "../../locales/en/overlay"
+
+registerEnglish({ overlay: en_overlay })
 
 export interface PopoverPanelProps extends Omit<
   React.ComponentProps<typeof PopoverPrimitive.Content>,

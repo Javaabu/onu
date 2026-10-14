@@ -1,4 +1,5 @@
-import type { Message, MessageDict, Messages, OnuLocale, PartialMessages, Translate, TranslateParams } from "./types"
+import { englishNamespace } from "./english"
+import type { Message, MessageDict, Namespace, OnuLocale, PartialMessages, Translate, TranslateParams } from "./types"
 
 const pluralRulesCache = new Map<string, Intl.PluralRules>()
 
@@ -29,25 +30,26 @@ function pick(message: Message, params: TranslateParams | undefined, code: strin
 }
 
 /** Deep-merges message overrides into a locale's messages (consumer overrides, R12.2). */
-export function mergeMessages(base: Messages, overrides?: PartialMessages): Messages {
+export function mergeMessages<T extends PartialMessages>(base: T, overrides?: PartialMessages): T {
   if (!overrides) return base
-  const merged = { ...base }
-  for (const ns of Object.keys(overrides) as (keyof Messages)[]) {
+  const merged: PartialMessages = { ...base }
+  for (const ns of Object.keys(overrides) as Namespace[]) {
     merged[ns] = { ...base[ns], ...(overrides[ns] as MessageDict) }
   }
-  return merged
+  return merged as T
 }
 
 /**
- * Creates `t("namespace.key", params)`. Missing keys fall back to `fallback`
- * (English) and then to the key itself, so a missing translation never crashes.
+ * Creates `t("namespace.key", params)`. Missing keys fall back to `fallback`, then
+ * to the English text of the loaded components (each component brings the English
+ * namespaces it uses), and then to the key itself, so a missing translation never crashes.
  */
 export function createTranslator(locale: OnuLocale, fallback?: OnuLocale): Translate {
   return (key, params) => {
     const dot = key.indexOf(".")
-    const ns = key.slice(0, dot) as keyof Messages
+    const ns = key.slice(0, dot) as Namespace
     const name = key.slice(dot + 1)
-    const message = locale.messages[ns]?.[name] ?? fallback?.messages[ns]?.[name]
+    const message = locale.messages[ns]?.[name] ?? fallback?.messages[ns]?.[name] ?? englishNamespace(ns)?.[name]
     if (message === undefined) return key
     return interpolate(pick(message, params, locale.code), params, locale.numberLocale)
   }

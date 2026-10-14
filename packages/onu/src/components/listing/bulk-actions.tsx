@@ -9,6 +9,10 @@ import { Button } from "../../ui/button"
 import { Spinner } from "../../ui/spinner"
 import { ConfirmDialog, useNoun, type ConfirmOptions } from "./_shared"
 import type { ListingNoun } from "./listing-types"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export interface BulkActionFormProps<V = unknown> {
   value: V | undefined

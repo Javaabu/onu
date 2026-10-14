@@ -19,6 +19,10 @@ import { Button } from "../../ui/button"
 import { Checkbox } from "../../ui/checkbox"
 import { Input } from "../../ui/input"
 import { NativeSelect, NativeSelectOption } from "../../ui/native-select"
+import { registerEnglish } from "../../i18n/english"
+import { listing as en_listing } from "../../locales/en/listing"
+
+registerEnglish({ listing: en_listing })
 
 export type { Field as ConditionField, RuleGroupType as ConditionGroup } from "react-querybuilder"
 export { formatQuery } from "react-querybuilder"

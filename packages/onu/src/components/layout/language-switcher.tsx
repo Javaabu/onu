@@ -5,7 +5,7 @@ import * as React from "react"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
-import { locales as builtInLocales } from "../../locales"
+import { BUILT_IN_LOCALES } from "../../locales/base"
 import { Button } from "../../ui/button"
 import {
   DropdownMenu,
@@ -16,6 +16,10 @@ import {
 } from "../../ui/dropdown-menu"
 import { NativeSelect, NativeSelectOption } from "../../ui/native-select"
 import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group"
+import { registerEnglish } from "../../i18n/english"
+import { layout as en_layout } from "../../locales/en/layout"
+
+registerEnglish({ layout: en_layout })
 
 export interface LanguageOption {
   /** BCP 47 code, e.g. `en`, `dv`. */
@@ -41,7 +45,7 @@ export interface LanguageSwitcherProps {
   id?: string
 }
 
-const DEFAULT_LANGUAGES: LanguageOption[] = Object.values(builtInLocales).map((l) => ({
+const DEFAULT_LANGUAGES: LanguageOption[] = BUILT_IN_LOCALES.map((l) => ({
   code: l.code,
   name: l.name,
   dir: l.dir,

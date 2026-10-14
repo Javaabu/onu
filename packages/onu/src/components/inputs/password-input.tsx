@@ -7,6 +7,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { InputGroupButton } from "../../ui/input-group"
 import { TextInput, type TextInputProps } from "./text-input"
+import { registerEnglish } from "../../i18n/english"
+import { input as en_input } from "../../locales/en/input"
+
+registerEnglish({ input: en_input })
 
 /** 0 = very weak … 4 = strong. */
 export type PasswordScore = 0 | 1 | 2 | 3 | 4

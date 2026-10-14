@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Button, DatePicker, FormField, OnuProvider } from "@javaabu/onu"
+import { dv } from "@javaabu/onu/locales/dv"
 
 import { DemoPage, DemoSection } from "../../components/demo"
 
@@ -83,7 +84,7 @@ export default function DatePickerDemo() {
         description="Dhivehi month and day names, right to left."
         className="max-w-md gap-4 grid"
       >
-        <OnuProvider locale="dv" syncDocument={false}>
+        <OnuProvider locale={dv} syncDocument={false}>
           <div dir="rtl" lang="dv">
             <FormField label="އުފަން ތާރީޚު">
               <DatePicker />
