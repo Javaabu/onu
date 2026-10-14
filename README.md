@@ -62,6 +62,7 @@ Re-theme with one variable:
 | -------------- | ---------------------------------------------------------------------- |
 | `packages/onu` | The `@javaabu/onu` package                                             |
 | `examples`     | Showcase of every component and the sample pages (`pnpm dev`)          |
+| `templates`    | Starter apps: Laravel + Inertia + React, and Next.js (App Router)      |
 | `docs`         | Developer documentation (Docusaurus format)                            |
 | `figma`        | Figma token sync and Code Connect mappings                             |
 | `tokens.json`  | Design tokens (DTCG), the source for CSS variables and Figma Variables |
@@ -73,6 +74,20 @@ pnpm test           # unit tests
 pnpm test:coverage  # with coverage thresholds
 pnpm lint && pnpm typecheck
 pnpm build          # build the package
+```
+
+## Starter templates
+
+Ready-to-copy apps wired up with Onu (provider, Tailwind, fonts, an English / Dhivehi switch):
+
+- [`templates/laravel-inertia-react`](templates/laravel-inertia-react): Laravel + Inertia + React + TypeScript with an admin shell (`AppLayout`, `AppSidebar`) and a form that shows Laravel validation errors, plus feature tests.
+- [`templates/nextjs`](templates/nextjs): Next.js App Router with Server Components rendering Onu, client components where needed, and a server-rendering check.
+
+CI builds both against the workspace copy of the library ([`templates.yml`](.github/workflows/templates.yml)). Each template's README shows how to use it on its own with the npm package.
+
+```bash
+pnpm build && pnpm build:templates
+pnpm --filter onu-template-nextjs test:ssr
 ```
 
 ## Contributing

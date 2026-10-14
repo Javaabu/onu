@@ -7,3 +7,11 @@ packages/onu/src/styles/tokens.css
 REQUIREMENTS.md
 docs
 .claude
+.next
+next-env.d.ts
+templates/laravel-inertia-react/vendor
+templates/laravel-inertia-react/public
+templates/laravel-inertia-react/storage
+templates/laravel-inertia-react/bootstrap/cache
+templates/laravel-inertia-react/composer.json
+templates/laravel-inertia-react/composer.lock
