@@ -62,3 +62,7 @@ sudo fallocate -l 1G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapf
 ```
 
 Running `node scripts/build.mjs` in `examples/` instead of `pnpm build:examples` saves the ~75 MB that pnpm itself holds during the build.
+
+## Releasing
+
+Every change that affects the published package adds a changeset (`pnpm changeset`). To release, run the **Release** workflow from the Actions tab: it applies the pending changesets (version bump and CHANGELOG), commits them to `main`, publishes to npm and pushes the version tags. Untick "publish" to only bump versions. There is no standing release pull request or branch.

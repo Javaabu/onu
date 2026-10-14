@@ -1,14 +1,21 @@
 name: Release
 
+# Run by hand from the Actions tab when you want to publish. It applies the pending
+# changesets (version bump + CHANGELOG), commits that straight to main, publishes
+# to npm and pushes the version tags. No standing "Version Packages" PR or branch.
+
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish to npm after versioning (untick to only bump versions and changelogs)
+        type: boolean
+        default: true
 
 concurrency: release
 
 permissions:
   contents: write
-  pull-requests: write
   id-token: write
 
 jobs:
@@ -16,6 +23,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
@@ -23,11 +33,31 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
-      - name: Create release PR or publish
-        uses: changesets/action@v1
-        with:
-          publish: pnpm release
-          version: pnpm changeset version
+
+      - name: Version packages
+        id: version
+        run: |
+          if [ -z "$(ls .changeset/*.md 2>/dev/null | grep -v README.md)" ]; then
+            echo "No pending changesets; nothing to version."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          pnpm changeset version
+          pnpm install --lockfile-only
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Version packages"
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to npm
+        if: ${{ inputs.publish }}
+        run: |
+          pnpm release
+          git push origin --tags
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
