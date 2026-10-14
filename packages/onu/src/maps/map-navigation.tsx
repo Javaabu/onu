@@ -2,13 +2,14 @@
 
 import * as React from "react"
 
+import { useAnnouncer } from "../a11y/use-announcer"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
 import { Button } from "../ui/button"
 import { Spinner } from "../ui/spinner"
 import { useMapEngine } from "./_context"
-import { useAnnouncer, useControllableState } from "./_hooks"
+import { useControllableState } from "./_hooks"
 import { boundsOf, compassLabel, formatDistance, formatDuration, googleDirectionsUrl, straightRoute } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import { MapMarker, MapPolylineShape, MapView } from "./map-view"
@@ -65,7 +66,7 @@ function MapNavigationInner({
   const service = routeService === false ? null : (routeService ?? engineService)
   const mapRef = React.useRef<MapHandle>(null)
   const [active, setActive] = useControllableState(activeProp, defaultActiveStep, onActiveStepChange)
-  const { message, announce } = useAnnouncer()
+  const { announce, region } = useAnnouncer()
   const positions = React.useMemo(() => stops.map((s) => s.position), [stops])
   const key = JSON.stringify(positions)
   const [initialBounds] = React.useState(() => boundsOf(positions))
@@ -259,9 +260,7 @@ function MapNavigationInner({
           </ol>
         </section>
       </div>
-      <div aria-live="polite" className="sr-only">
-        {message}
-      </div>
+      {region}
     </div>
   )
 }

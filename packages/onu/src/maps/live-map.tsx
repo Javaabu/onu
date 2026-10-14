@@ -3,11 +3,12 @@
 import * as React from "react"
 import { format } from "date-fns"
 
+import { useAnnouncer } from "../a11y/use-announcer"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
 import { Button } from "../ui/button"
-import { useAnimatedLatLng, useAnnouncer, useControllableState, useLatest } from "./_hooks"
+import { useAnimatedLatLng, useControllableState, useLatest } from "./_hooks"
 import { boundsOf, compassDirection, compassLabel, formatLatLng } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import { MALE, MapMarker, MapView } from "./map-view"
@@ -104,7 +105,7 @@ function LiveMapInner({
   const [selectedId, setSelectedId] = useControllableState(selectedProp, defaultSelectedId, onSelect)
   const [followId, setFollowId] = useControllableState(followProp, defaultFollowId, onFollowChange)
   const mapRef = React.useRef<MapHandle>(null)
-  const { message, announce } = useAnnouncer()
+  const { announce, region } = useAnnouncer()
 
   React.useEffect(() => {
     if (!subscribe) return
@@ -247,9 +248,7 @@ function LiveMapInner({
           )}
         </section>
       ) : null}
-      <div aria-live="polite" className="sr-only">
-        {message}
-      </div>
+      {region}
     </div>
   )
 }

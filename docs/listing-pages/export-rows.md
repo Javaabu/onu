@@ -1,6 +1,7 @@
 ---
 title: exportRows (client-side export)
 sidebar_position: 16.5
+reference: function
 ---
 
 Builds a **CSV**, **Excel** or **PDF** file in the browser from the rows you already have, for apps without a server export. It lives in its own entry point, `@javaabu/onu/export`, so it never adds to the core bundle. It fits the [`ExportMenu`](export-menu) and [`ListingPage`](listing-page) `onExport` prop in one line.

@@ -1,5 +1,6 @@
 "use client"
 
+import { LiveRegion } from "../../a11y/live-region"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 
@@ -37,9 +38,7 @@ export function ThaanaToggle({ enabled, onToggle, className, ...props }: ThaanaT
           {enabled ? "ދ" : "A"}
         </span>
       </button>
-      <span className="sr-only" aria-live="polite">
-        {enabled ? t("thaana.on") : t("thaana.off")}
-      </span>
+      <LiveRegion>{enabled ? t("thaana.on") : t("thaana.off")}</LiveRegion>
     </>
   )
 }

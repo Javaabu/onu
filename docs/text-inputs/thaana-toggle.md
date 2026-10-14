@@ -21,9 +21,19 @@ function MyField() {
 }
 ```
 
-| Prop       | Type         | Description                       |
-| ---------- | ------------ | --------------------------------- |
-| `enabled`  | `boolean`    | Whether Thaana typing is on       |
-| `onToggle` | `() => void` | Called when the button is pressed |
+## Props
 
-The button shows "ދ" when Thaana is on and "A" when Latin is on, exposes its state with `aria-pressed`, and announces each change. It is at least 44px on touch screens.
+| Prop        | Type         | Default | Description                       |
+| ----------- | ------------ | ------- | --------------------------------- |
+| `enabled`   | `boolean`    |         | Whether Thaana typing is on       |
+| `onToggle`  | `() => void` |         | Called when the button is pressed |
+| `className` | `string`     |         | Merged with the button's classes  |
+
+Every other `<button>` prop (such as `disabled`) is passed through. The button is always `type="button"`, so it never submits a form.
+
+## Accessibility
+
+- A toggle button: its state is `aria-pressed` (`true` while Thaana is on) and its name is "Switch between Thaana and Latin typing" (translated, `thaana.toggle`). The visible "ދ" / "A" is `aria-hidden`; the tooltip adds the shortcut, <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd>.
+- Each change is announced through a polite [`LiveRegion`](../accessibility/live-region): "Thaana typing on" / "Latin typing on" (`thaana.on` / `thaana.off`), so the shortcut is heard too.
+- Pressing it with the mouse does not take focus away from the field, so users keep typing where they were. It works with <kbd>Enter</kbd> and <kbd>Space</kbd> like any button.
+- At least 44×44px on touch screens.

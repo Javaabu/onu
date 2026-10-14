@@ -1,0 +1,5 @@
+---
+"@javaabu/onu": minor
+---
+
+Accessibility foundations: `VisuallyHidden` (screen-reader-only content, with `asChild` and a `focusable` mode for skip links), `LiveRegion` (an `aria-live` region, visually hidden by default, with `politeness`, `atomic`, `role` and `visible`) and an announcer: `useAnnouncer()` returns `{ announce, clear, message, region }` for a component's own live region, and `announce(message, { politeness })` speaks through a page-wide region from anywhere. Repeating the same message is announced again. Onu's own components now use them instead of private copies: the data table, editable grid, sortable list, reorderable table, Kanban board, dual listbox, quick-create selects, map components, and the inputs and media components that announced through a hidden region (tags, slug, sensitive and copy inputs, suggestions, Thaana toggle, QR code, QR scanner and signature pad). Announcements now set `aria-atomic="true"` everywhere, and map announcements of a repeated message are read again.

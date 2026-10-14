@@ -2,13 +2,14 @@
 
 import * as React from "react"
 
+import { useAnnouncer } from "../../a11y/use-announcer"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
 import { Button } from "../../ui/button"
 import { useFormField, useFormFieldControl } from "../form/form-field"
-import { useAnnouncer, useControllableState } from "./_hooks"
+import { useControllableState } from "./_hooks"
 import { filterOptions, normalizeOptions, type ChoiceOption, type ChoiceOptionInput } from "./options"
 
 export interface DualListboxProps extends Omit<React.ComponentProps<"div">, "defaultValue" | "onChange" | "dir"> {
@@ -295,7 +296,7 @@ export function DualListbox({
   )
   const [marked, setMarked] = React.useState<Record<Side, Set<string>>>({ available: new Set(), chosen: new Set() })
   const [queries, setQueries] = React.useState<Record<Side, string>>({ available: "", chosen: "" })
-  const [message, announce] = useAnnouncer()
+  const { announce, region } = useAnnouncer({ role: "status" })
 
   const chosenSet = new Set(value)
   const titles: Record<Side, string> = {
@@ -420,9 +421,7 @@ export function DualListbox({
       {name
         ? value.map((v) => <input key={v} type="hidden" name={name.endsWith("[]") ? name : `${name}[]`} value={v} />)
         : null}
-      <span role="status" aria-live="polite" className="sr-only">
-        {message}
-      </span>
+      {region}
     </div>
   )
 }

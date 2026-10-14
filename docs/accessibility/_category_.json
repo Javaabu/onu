@@ -1,0 +1,11 @@
+{
+  "position": 1.3,
+  "label": "Accessibility",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "slug": "/onu/_categories/accessibility",
+    "description": "Screen-reader helpers: visually hidden text, live regions and announcements"
+  }
+}

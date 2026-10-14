@@ -5,12 +5,12 @@ import { arrayMove, move } from "@dnd-kit/helpers"
 import { DragDropProvider } from "@dnd-kit/react"
 import { useSortable } from "@dnd-kit/react/sortable"
 
+import { useAnnouncer } from "../../a11y/use-announcer"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../../ui/table"
 import { useDndPlugins } from "./_dnd"
-import { useAnnouncer } from "./_shared"
 
 export interface ReorderableColumn<T> {
   id: string
@@ -112,7 +112,7 @@ export function ReorderableTable<T>({
   classNames,
 }: ReorderableTableProps<T>) {
   const { t, locale } = useTranslation()
-  const { announce, region } = useAnnouncer()
+  const { announce, region } = useAnnouncer({ role: "status" })
   const ids = rows.map(getId)
   const byId = new Map(rows.map((row) => [getId(row), row]))
   const nameOf = (id: string | number) => {

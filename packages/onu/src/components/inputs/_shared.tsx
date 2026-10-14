@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { LiveRegion } from "../../a11y/live-region"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
@@ -78,15 +79,6 @@ export function useCopy(timeout = 2000) {
   return { status, copy }
 }
 
-/** A visually hidden polite live region. */
-export function LiveMessage({ children, className }: { children?: React.ReactNode; className?: string }) {
-  return (
-    <span className={cn("sr-only", className)} aria-live="polite" aria-atomic="true">
-      {children}
-    </span>
-  )
-}
-
 export interface CopyButtonProps extends Omit<React.ComponentProps<typeof InputGroupButton>, "onCopy" | "value"> {
   value: string
   onCopy?: (value: string) => void
@@ -113,9 +105,9 @@ export function CopyButton({ value, onCopy, className, disabled, ...props }: Cop
       >
         <Icon name={status === "copied" ? "check" : "copy"} />
       </InputGroupButton>
-      <LiveMessage>
+      <LiveRegion>
         {status === "copied" ? t("input.copied") : status === "failed" ? t("input.copyFailed") : null}
-      </LiveMessage>
+      </LiveRegion>
     </>
   )
 }

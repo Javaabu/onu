@@ -1,6 +1,7 @@
 ---
 title: useListingState
 sidebar_position: 2
+reference: hook
 ---
 
 State for an index page — search, sort, page, rows per page, filters, view, selection and column visibility — with the rules from REQUIREMENTS §25.6 built in:
@@ -39,7 +40,23 @@ Laravel / spatie-query-builder style: `?search=jane&sort=-name&page=2&per_page=5
 
 ## Returned controller
 
-The state (`search`, `sort`, `page`, `perPage`, `filters`, `view`, `selection`, `columnVisibility`, `activeFilterCount`, `isFiltered`) and these actions: `setSearch`, `clearSearch`, `toggleSort`, `setSort`, `setPage`, `setPerPage`, `setFilters`, `setFilter`, `removeFilter`, `clearFilters`, `setView`, `setSelection`, `toggleSelected`, `clearSelection`, `setColumnVisibility`, `reset` and `toSearchParams()`.
+| Field                                                     | Type                                                       | Description                                                      |
+| --------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------- |
+| `search`, `page`, `perPage`                               | `string`, `number`, `number`                               | `page` is 1-based                                                |
+| `sort`                                                    | `{ id, desc? } \| null`                                    |                                                                  |
+| `filters`                                                 | `FilterValues`                                             | Applied filters, by key                                          |
+| `view`                                                    | `string \| undefined`                                      | `table`, `list`, `grid`, `kanban`, …                             |
+| `selection` / `columnVisibility`                          | `string[]` / `Record<string, boolean>`                     |                                                                  |
+| `activeFilterCount` / `isFiltered`                        | `number` / `boolean`                                       | Badge count; whether a search or filter is applied               |
+| `setSearch`, `clearSearch`                                | `(search) => void`, `() => void`                           | Back to page 1, clears the selection                             |
+| `toggleSort` / `setSort`                                  | `(id) => void` / `(sort \| null) => void`                  | Same column flips; a new column starts ascending; back to page 1 |
+| `setPage`, `setPerPage`                                   | `(n) => void`                                              | Paging clears the selection; `setPerPage` goes back to page 1    |
+| `setFilters`, `setFilter`, `removeFilter`, `clearFilters` | replace all / `(key, value \| undefined)` / `(key)` / `()` | Back to page 1, clears the selection                             |
+| `setView`                                                 | `(view) => void`                                           |                                                                  |
+| `setSelection`, `toggleSelected`, `clearSelection`        | `(ids)` / `(id, selected?)` / `()`                         |                                                                  |
+| `setColumnVisibility`                                     | `(visibility) => void`                                     |                                                                  |
+| `reset`                                                   | `() => void`                                               | Back to `defaultState`                                           |
+| `toSearchParams`                                          | `() => URLSearchParams`                                    | For your API: always includes sort, filters and `per_page`       |
 
 ## Helpers
 
@@ -48,3 +65,9 @@ The state (`search`, `sort`, `page`, `perPage`, `filters`, `view`, `selection`, 
 - `isFilterValueEmpty(value)` and `cleanFilters(filters)`.
 
 Filter values are strings, string arrays (multi-select) or `{ field?, from?, to? }` date ranges with `yyyy-MM-dd` dates. Yes/No filters use `"1"` / `"0"`; the deleted-records filter uses `"with"` / `"only"` (absent means hide), like Laravel's `withTrashed` / `onlyTrashed`.
+
+## Accessibility
+
+The hook renders nothing; the listing components you pass it to announce its changes. [`DataTable`](./data-table) announces a new sort ("Sorted by Name, ascending") and [`Pagination`](./pagination)'s "Showing 26–50 of 312" summary is a polite live region, so paging, searching and filtering are heard without moving focus. State changes never move focus themselves.
+
+Because the URL is updated with `history.replaceState`, Back leaves the listing instead of stepping through every keystroke and filter change, which is what keyboard and screen-reader users expect from Back. Reloading or sharing the link restores the same view.

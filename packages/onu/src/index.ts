@@ -15,6 +15,7 @@ export * from "./i18n/types"
 export { en, dv, locales, dvDateFns } from "./locales"
 export { useIsMobile } from "./hooks/use-mobile"
 export { useMediaQuery, useCoarsePointer, useNoHover } from "./hooks/use-media-query"
+export * from "./a11y"
 
 // shadcn/ui primitives
 export * from "./ui"

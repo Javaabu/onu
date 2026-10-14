@@ -65,6 +65,8 @@ const ICONS: Record<string, SidebarItem["icon"]> = {
   "/": "home",
   "/components/foundations/design-foundations": palette,
   "/components/foundations/theme-builder": paintbrush,
+  "/components/foundations/visually-hidden": "eye-off",
+  "/components/foundations/live-region": "volume",
   // Components
   charts: chart,
   "choice-inputs": "check",

@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { useAnnouncer } from "../a11y/use-announcer"
 import { useFormField, useFormFieldControl } from "../components/form/form-field"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
@@ -10,7 +11,7 @@ import type { ThaanaProp } from "../thaana/use-thaana-field"
 import { Button } from "../ui/button"
 import { Spinner } from "../ui/spinner"
 import { CoordinateFields } from "./_coordinate-fields"
-import { useAnnouncer, useControllableState } from "./_hooks"
+import { useControllableState } from "./_hooks"
 import { PlaceSearchBox } from "./_place-search"
 import { useMapEngine } from "./_context"
 import { formatLatLng, roundLatLng } from "./geo"
@@ -90,7 +91,7 @@ function MapPickerInner(props: MapPickerProps) {
   const searchFn = typeof search === "function" ? search : search ? engineSearch : null
   const [value, setValue] = useControllableState<LatLng | null>(valueProp, defaultValue, onChange)
   const mapRef = React.useRef<MapHandle>(null)
-  const { message, announce } = useAnnouncer()
+  const { announce, region } = useAnnouncer()
   const [locateState, setLocateState] = React.useState<LocateState>("idle")
   const canLocate = locate && typeof navigator !== "undefined" && !!navigator.geolocation
 
@@ -217,9 +218,7 @@ function MapPickerInner(props: MapPickerProps) {
           <input type="hidden" name={`${control.name}[lng]`} value={value?.lng ?? ""} />
         </>
       ) : null}
-      <div aria-live="polite" className="sr-only">
-        {message}
-      </div>
+      {region}
     </div>
   )
 }

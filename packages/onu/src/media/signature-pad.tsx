@@ -3,7 +3,7 @@
 import * as React from "react"
 import SignaturePadLib from "signature_pad"
 
-import { LiveMessage } from "../components/inputs/_shared"
+import { LiveRegion } from "../a11y/live-region"
 import { TextInput } from "../components/inputs/text-input"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
@@ -306,7 +306,7 @@ export function SignaturePad({
         </Button>
       </div>
       {name ? <input type="hidden" name={name} value={dataUrl ?? ""} /> : null}
-      <LiveMessage>{announce}</LiveMessage>
+      <LiveRegion>{announce}</LiveRegion>
     </div>
   )
 }

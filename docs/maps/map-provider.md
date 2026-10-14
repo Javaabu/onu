@@ -76,3 +76,13 @@ To repeat the check in the examples app without a key, build it with `VITE_GOOGL
 ## Helpers
 
 The maps entry also exports pure helpers: `distanceMeters`, `pathLength`, `polygonArea` (turf), `formatLatLng`, `formatDistance`, `formatArea`, `formatDuration`, `boundsOf`, `googleMapsUrl`, `googleDirectionsUrl`, `staticMapUrl`, GeoJSON converters (`shapesToPolygons`, `polygonsToShapes`, `pathToLineString`), track helpers (`normalizeTrack`, `trackStateAt`) and `MALDIVES_ATOLLS`.
+
+## Accessibility
+
+`MapProvider` renders no UI of its own. What it sets up affects every map inside it:
+
+- **Language.** The adapter gets the active locale; Onu's labels, controls, text alternatives and announcements are always in that locale (Dhivehi included) even though Google draws its tiles in English for `dv`.
+- **Colour scheme.** Maps follow the page's dark mode, and markers and shapes use theme tokens, so contrast tuned for the theme carries over to the map.
+- **No key.** Without an API key the placeholder adapter still renders a labelled map region with named zoom buttons and markers, and the list or table each Onu map pairs with keeps working.
+
+Keyboard support, marker names and the text alternative belong to [`MapView`](./map-view#accessibility) and the components built on it.

@@ -55,13 +55,3 @@ export function useOnChange(dep: unknown, callback: () => void) {
     cb.current()
   }, [key])
 }
-
-/** Polite live-region text that re-announces even when the same message repeats. */
-export function useAnnouncer() {
-  const [message, setMessage] = React.useState("")
-  const announce = React.useCallback((text: string) => {
-    setMessage("")
-    setTimeout(() => setMessage(text), 30)
-  }, [])
-  return [message, announce] as const
-}

@@ -4,7 +4,8 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { encode } from "uqr"
 
-import { LiveMessage, useCopy } from "../components/inputs/_shared"
+import { LiveRegion } from "../a11y/live-region"
+import { useCopy } from "../components/inputs/_shared"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
@@ -454,9 +455,9 @@ export function QrCode({
               {t("file.qrCopyValue")}
             </Button>
           ) : null}
-          <LiveMessage>
+          <LiveRegion>
             {status === "copied" ? t("file.qrCopied") : status === "failed" ? t("file.qrCopyFailed") : null}
-          </LiveMessage>
+          </LiveRegion>
         </div>
       ) : null}
     </div>

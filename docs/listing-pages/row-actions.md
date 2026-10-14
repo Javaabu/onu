@@ -38,7 +38,15 @@ const { t } = useTranslation()
 
 ## Props
 
-`name`, `actions`, `align` (`"end"`), `classNames` (`{ trigger, content }`) and button props; `ref` points at the ⋯ button. Renders nothing when no action is permitted.
+| Prop         | Type                           | Default | Description                                                   |
+| ------------ | ------------------------------ | ------- | ------------------------------------------------------------- |
+| `name`       | `string`                       |         | The record's name: "Actions for Jane Doe", "Delete Jane Doe?" |
+| `actions`    | `RecordAction[]`               |         | See above                                                     |
+| `align`      | `"start" \| "center" \| "end"` | `"end"` | Menu alignment                                                |
+| `classNames` | `{ trigger, content }`         |         | Classes for the ⋯ button and the menu                         |
+| `ref`        | `Ref<HTMLButtonElement>`       |         | The ⋯ button                                                  |
+
+Other button props are passed to the ⋯ button. Renders nothing when no action is permitted.
 
 ## Accessibility
 
