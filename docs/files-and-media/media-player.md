@@ -44,7 +44,7 @@ import { MediaPlayer } from "@javaabu/onu/media"
 
 ## Accessibility
 
-Every control has a label; the captions button appears when `tracks` are given (R14.10). Controls are at least 44px on touch screens; the volume slider hides in narrow players (mute stays).
+Every control has a label; the captions button appears when `tracks` are given (R14.10). Controls are at least 44px on touch screens. In narrow players (under 24rem) the volume slider and the seek buttons hide so the timeline keeps its room and nothing overlaps the time display; mute stays, and the arrow keys still seek.
 
 | Key                                          | Action              |
 | -------------------------------------------- | ------------------- |

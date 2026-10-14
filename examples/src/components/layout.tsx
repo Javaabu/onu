@@ -284,11 +284,14 @@ export function SiteLayout({
   )
 }
 
-/** Floating controls on full-screen sample pages: back to the docs, and Customize. */
+/**
+ * Floating controls on full-screen sample pages: back to the docs, and Customize.
+ * On phones they sit above a page's BottomNav instead of covering its tabs.
+ */
 export function BareChrome() {
   return (
     <div
-      className="end-3 bottom-3 gap-1 p-1 shadow-lg backdrop-blur fixed z-50 flex items-center rounded-full border bg-background/95"
+      className="end-3 bottom-3 gap-1 p-1 shadow-lg backdrop-blur max-md:[:root:has([data-slot=bottom-nav])_&]:bottom-[calc(4.75rem+env(safe-area-inset-bottom))] fixed z-50 flex items-center rounded-full border bg-background/95"
       data-print="hide"
     >
       <Button asChild variant="ghost" size="sm" className="rounded-full">
