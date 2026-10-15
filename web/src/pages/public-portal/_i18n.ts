@@ -50,7 +50,7 @@ export function toDate(input: string | Date) {
 
 /**
  * Date formatting in the active locale (Dhivehi month names come from the
- * locale's date-fns `localize`), without pulling date-fns into the examples app.
+ * locale's date-fns `localize`), without pulling date-fns into the web app.
  */
 export function useDates() {
   const { locale } = useOnu()

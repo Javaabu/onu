@@ -28,13 +28,13 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build:examples
+      - run: pnpm build:web
         env:
           EXAMPLES_BASE: /onu/
           VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
           VITE_GOOGLE_MAPS_MAP_ID: ${{ secrets.GOOGLE_MAPS_MAP_ID }}
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: examples/dist
+          path: web/dist
       - id: deployment
         uses: actions/deploy-pages@v4

@@ -1,6 +1,6 @@
 name: Demo site build
 
-# Builds the examples site on GitHub's runners and pushes the static files to the
+# Builds the web app on GitHub's runners and pushes the static files to the
 # `demo-dist` branch, so a server (e.g. Laravel Forge) only has to pull and serve
 # them: no Node or build step on the server.
 
@@ -27,12 +27,12 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build:examples
+      - run: pnpm build:web
         env:
           VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
           VITE_GOOGLE_MAPS_MAP_ID: ${{ secrets.GOOGLE_MAPS_MAP_ID }}
       - name: Push to demo-dist
-        working-directory: examples/dist
+        working-directory: web/dist
         run: |
           git init -q -b demo-dist
           git config user.name "github-actions[bot]"

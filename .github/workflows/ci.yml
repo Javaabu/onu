@@ -44,8 +44,8 @@ jobs:
         run: pnpm build
       - name: Size budgets
         run: pnpm --filter @javaabu/onu size
-      - name: Build examples
-        run: pnpm build:examples
+      - name: Build web app
+        run: pnpm build:web
       - name: Docs cover every component
         run: node scripts/check-docs.mjs
       - name: Licences

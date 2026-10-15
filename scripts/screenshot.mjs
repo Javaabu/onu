@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * Screenshot a page of the examples app (dev helper).
+ * Screenshot a page of the web app (dev helper).
  *
  *   node scripts/screenshot.mjs <url> <out.png> '{"dark":true,"locale":"dv","dir":"rtl","w":390,"h":844,"full":true,"primary":"oklch(0.55 0.2 260)"}'
  *
- * Start the app first: pnpm build:examples && pnpm --filter onu-examples preview --port 4173
+ * Start the app first: pnpm build:web && pnpm --filter onu-web preview --port 4173
  */
 import { existsSync } from "node:fs"
 import { chromium } from "@playwright/test"

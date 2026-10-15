@@ -60,7 +60,7 @@ The Google adapter was driven end to end in Chromium (Playwright) against the re
 
 Limitations of that run: it had **no API key**, so Google showed its "for development purposes only" watermark and dialog, logged `NoApiKeys` / `InvalidKey` / `ApiProjectMapError`, and drew the map as a raster map. Services that need a key were not verified: geocoding search (`search={true}`) and routed directions (`MapNavigation` fell back to straight lines, as designed). Google also logs that `DirectionsService` is deprecated in favour of `google.maps.routes.Route.computeRoutes` (still supported). `@googlemaps/markerclusterer` 2.6 logs a deprecation warning about `addListener` on its cluster markers.
 
-To repeat the check in the examples app without a key, build it with `VITE_GOOGLE_MAPS_FORCE=1 VITE_GOOGLE_MAPS_MAP_ID=DEMO_MAP_ID`. The flag only exists in the examples app: it wraps the app in `<MapProvider adapter={googleMapsAdapter}>`. The library itself still uses the placeholder when an app sets no key.
+To repeat the check in the web app without a key, build it with `VITE_GOOGLE_MAPS_FORCE=1 VITE_GOOGLE_MAPS_MAP_ID=DEMO_MAP_ID`. The flag only exists in the web app: it wraps the app in `<MapProvider adapter={googleMapsAdapter}>`. The library itself still uses the placeholder when an app sets no key.
 
 ## Props
 

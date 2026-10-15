@@ -8,8 +8,8 @@
   },
   "scripts": {
     "build": "pnpm --filter @javaabu/onu build",
-    "build:examples": "pnpm --filter onu-examples build",
-    "dev": "pnpm --filter onu-examples dev",
+    "build:web": "pnpm --filter onu-web build",
+    "dev": "pnpm --filter onu-web dev",
     "test": "pnpm --filter @javaabu/onu test",
     "test:coverage": "pnpm --filter @javaabu/onu test:coverage",
     "typecheck": "pnpm -r --filter \"!./templates/*\" typecheck",

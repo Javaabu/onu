@@ -7,14 +7,14 @@ Thanks for helping build Onu. The full specification is in [`REQUIREMENTS.md`](R
 ```bash
 corepack enable
 pnpm install
-pnpm dev   # examples app at http://localhost:5173
+pnpm dev   # web app at http://localhost:5173
 ```
 
-Maps in the examples app use Google Maps when `VITE_GOOGLE_MAPS_API_KEY` (and optionally `VITE_GOOGLE_MAPS_MAP_ID`) is set, and the keyless placeholder otherwise. Until a Map ID is set (locally or as the `GOOGLE_MAPS_MAP_ID` secret of the demo build), the examples use Google's `DEMO_MAP_ID`, so advanced markers work. The map demos open on Javaabu's office in Malé (`JAVAABU_OFFICE` in `examples/src/showcase/maps/_data.ts`). To try the real Google adapter without a key (development mode, watermarked), set `VITE_GOOGLE_MAPS_FORCE=1 VITE_GOOGLE_MAPS_MAP_ID=DEMO_MAP_ID`. See [MapProvider](docs/maps/map-provider.md#verified-against-google-maps-js-api).
+Maps in the web app use Google Maps when `VITE_GOOGLE_MAPS_API_KEY` (and optionally `VITE_GOOGLE_MAPS_MAP_ID`) is set, and the keyless placeholder otherwise. Until a Map ID is set (locally or as the `GOOGLE_MAPS_MAP_ID` secret of the demo build), the examples use Google's `DEMO_MAP_ID`, so advanced markers work. The map demos open on Javaabu's office in Malé (`JAVAABU_OFFICE` in `web/src/showcase/maps/_data.ts`). To try the real Google adapter without a key (development mode, watermarked), set `VITE_GOOGLE_MAPS_FORCE=1 VITE_GOOGLE_MAPS_MAP_ID=DEMO_MAP_ID`. See [MapProvider](docs/maps/map-provider.md#verified-against-google-maps-js-api).
 
 ## Definition of done
 
-A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `dv` locale, `thaana` prop for free text, tokens-only colours, responsive and touch-friendly, `className`/`classNames`/`asChild` overrides, WCAG 2.2 AA with axe tests, unit tests, a showcase demo in `examples/src/showcase`, a docs page in `docs/`, and a changeset.
+A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `dv` locale, `thaana` prop for free text, tokens-only colours, responsive and touch-friendly, `className`/`classNames`/`asChild` overrides, WCAG 2.2 AA with axe tests, unit tests, a showcase demo in `web/src/showcase`, a docs page in `docs/`, and a changeset.
 
 ## Where things go
 
@@ -25,8 +25,8 @@ A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `
 | Heavy components     | `packages/onu/src/{charts,maps,editor,calendar,media}` (separate entry points)                                    |
 | Built-in strings     | `packages/onu/src/locales/{en,dv}/<namespace>.ts`; never hard-code English                                        |
 | Design tokens        | `tokens.json`, then `pnpm --filter @javaabu/onu tokens`                                                           |
-| Showcase demos       | `examples/src/showcase/<group>/<name>.demo.tsx` (auto-discovered)                                                 |
-| Sample pages         | `examples/src/pages/<group>/<name>.page.tsx` (auto-discovered)                                                    |
+| Showcase demos       | `web/src/showcase/<group>/<name>.demo.tsx` (auto-discovered)                                                      |
+| Sample pages         | `web/src/pages/<group>/<name>.page.tsx` (auto-discovered)                                                         |
 | Docs                 | `docs/<group>/<name>.md`                                                                                          |
 
 ## Rules of thumb
@@ -59,20 +59,20 @@ pnpm lint && pnpm format:check && pnpm typecheck && pnpm test:coverage && pnpm b
 
 Measured on 1 vCPU with no swap:
 
-| Command               | Peak memory | Time |
-| --------------------- | ----------- | ---- |
-| `pnpm build`          | ~450 MB     | ~15s |
-| `pnpm build:examples` | ~800 MB     | ~12s |
+| Command          | Peak memory | Time |
+| ---------------- | ----------- | ---- |
+| `pnpm build`     | ~450 MB     | ~15s |
+| `pnpm build:web` | ~800 MB     | ~12s |
 
 The package build fits a 1 GB server. Its type declarations are emitted one entry point at a time without type checking (`pnpm typecheck` does that).
 
-The examples site needs most of 1 GB on its own, so on a 1 GB server add swap first, or serve the prebuilt `demo-dist` branch:
+The web app needs most of 1 GB on its own, so on a 1 GB server add swap first, or serve the prebuilt `demo-dist` branch:
 
 ```bash
 sudo fallocate -l 1G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
 ```
 
-Running `node scripts/build.mjs` in `examples/` instead of `pnpm build:examples` saves the ~75 MB that pnpm itself holds during the build.
+Running `node scripts/build.mjs` in `web/` instead of `pnpm build:web` saves the ~75 MB that pnpm itself holds during the build.
 
 ## Releasing
 

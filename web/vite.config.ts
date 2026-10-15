@@ -32,7 +32,7 @@ function objectEnd(code: string, start: number) {
  */
 function registryMeta(): Plugin {
   return {
-    name: "onu-examples:registry-meta",
+    name: "onu-web:registry-meta",
     enforce: "pre",
     load(id) {
       const [file, query] = id.split("?")

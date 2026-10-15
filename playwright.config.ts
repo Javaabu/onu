@@ -3,7 +3,7 @@ import { defineConfig, devices } from "@playwright/test"
 const PORT = Number(process.env.E2E_PORT ?? 4300)
 const chromiumPath = process.env.CHROMIUM_PATH
 
-/** E2E, accessibility and visual tests against the examples app (REQUIREMENTS §17 R17.3). */
+/** E2E, accessibility and visual tests against the web app (REQUIREMENTS §17 R17.3). */
 export default defineConfig({
   testDir: "e2e",
   fullyParallel: true,
@@ -18,7 +18,7 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
-    command: `pnpm --filter onu-examples preview --port ${PORT} --strictPort`,
+    command: `pnpm --filter onu-web preview --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: !process.env.CI,
   },

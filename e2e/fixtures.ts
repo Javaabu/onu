@@ -2,7 +2,7 @@ import { test as base, type Page } from "@playwright/test"
 
 import type { Variant } from "./routes"
 
-/** Applies the examples app's theme/locale settings before the page loads. */
+/** Applies the web app's theme/locale settings before the page loads. */
 export async function applyVariant(page: Page, variant: Variant) {
   await page.addInitScript(
     ([settings, theme]) => {
@@ -17,7 +17,7 @@ export async function applyVariant(page: Page, variant: Variant) {
 }
 
 /**
- * Waits until the route's lazily loaded content has mounted: the examples app sets
+ * Waits until the route's lazily loaded content has mounted: the web app sets
  * `html[data-page-ready]` to the router path (`/#/components/x` → `/components/x`)
  * once the demo, sample page or index has rendered, then for network idle so its
  * own lazy parts (charts, maps, highlighters) have loaded too.

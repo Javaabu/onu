@@ -62,7 +62,7 @@ Re-theme with one variable:
 | Path           | What                                                                   |
 | -------------- | ---------------------------------------------------------------------- |
 | `packages/onu` | The `@javaabu/onu` package                                             |
-| `examples`     | Showcase of every component and the sample pages (`pnpm dev`)          |
+| `web`          | Docs site: every component and the sample pages (`pnpm dev`)           |
 | `templates`    | Starter apps: Laravel + Inertia + React, and Next.js (App Router)      |
 | `docs`         | Developer documentation (Docusaurus format)                            |
 | `figma`        | Figma token sync and Code Connect mappings                             |
@@ -70,7 +70,7 @@ Re-theme with one variable:
 
 ```bash
 pnpm install
-pnpm dev            # examples app
+pnpm dev            # web app
 pnpm test           # unit tests
 pnpm test:coverage  # with coverage thresholds
 pnpm lint && pnpm typecheck

@@ -24,4 +24,4 @@ What you still need to do:
 - Add a [`SkipLink`](../layout-and-navigation/skip-link) at the top of each layout.
 - Keep your own colours to the token palette, or check their contrast.
 
-Each component's docs page lists its keyboard interactions. Onu's tests run [axe](https://github.com/dequelabs/axe-core) on every component, and the examples site is scanned in CI.
+Each component's docs page lists its keyboard interactions. Onu's tests run [axe](https://github.com/dequelabs/axe-core) on every component, and the web app is scanned in CI.

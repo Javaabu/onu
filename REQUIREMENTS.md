@@ -113,7 +113,7 @@ Onu is used mainly for admin panels, but the same system has to work for public 
 - **R3.7** **Beyond admin**: layout pieces for portal and content pages (hero, feature grid, content card, masonry). Prose styling (`@tailwindcss/typography`) is tuned for both Latin and Thaana for articles and the laws reader.
 - **R3.8** **Data-dense details**: tabular numerals, truncation with tooltip, sticky headers and columns, and zebra/hover rows as options.
 - **R3.9** **Print**: print styles for certificates, receipts, invoices and detail views.
-- **R3.10** **Foundations first**: before the component build starts, a *Design foundations* page in `examples/` (colour, type, spacing, elevation, radius, iconography, density) is reviewed and signed off.
+- **R3.10** **Foundations first**: before the component build starts, a *Design foundations* page in `web/` (colour, type, spacing, elevation, radius, iconography, density) is reviewed and signed off.
 
 ### Figma kit (required)
 
@@ -212,7 +212,7 @@ Governance:
 | Dates | `date-fns` + `react-day-picker`; `@internationalized/date` for Hijri and date/time fields |
 | Unit tests | Vitest + React Testing Library + `user-event` + jsdom |
 | a11y tests | `vitest-axe` (axe-core) + `@axe-core/playwright` |
-| E2E / visual | Playwright (examples app) |
+| E2E / visual | Playwright (web app) |
 | Docs | Markdown in `/docs`, rendered by Docusaurus (see §19) |
 
 ### Sourcing map
@@ -303,7 +303,7 @@ Recommended font pack. Latin and mono fonts are open-licensed (OFL) and **self-h
   - Density: `--onu-spacing-scale` (compact / comfortable layouts, e.g. kiosk vs admin).
 - **R9.5** Tokens are exposed to Tailwind via `@theme inline` so consumers write `bg-primary`, `text-muted-foreground`, `rounded-lg`, etc.
 - **R9.6** Themes can be scoped: setting variables on any element re-themes that subtree only.
-- **R9.7** Ship a few preset themes (e.g. *Onu green* default, neutral, blue) and a theme-builder page in the examples app that outputs the CSS to copy.
+- **R9.7** Ship a few preset themes (e.g. *Onu green* default, neutral, blue) and a theme-builder page in the web app that outputs the CSS to copy.
 
 ## 10. Dark mode
 
@@ -423,7 +423,7 @@ Javaabu currently uses the JTK (JavaScript Thaana Keyboard) approach for typing 
 
 - **R17.1** Every component has tests covering: rendering, responsive behaviour, touch interaction where relevant, variants, controlled/uncontrolled behaviour, keyboard interaction, RTL, dark mode class application, `className`/`classNames` overrides, and axe accessibility.
 - **R17.2** Coverage thresholds enforced in CI (initial target: **90% lines/statements/functions, 85% branches**; 100% for the Thaana engine). CI fails below threshold.
-- **R17.3** Playwright tests run against the examples app (Chromium, Firefox, WebKit) for interaction-heavy components and sample pages, including visual regression snapshots in light/dark × LTR/RTL × phone/tablet/desktop widths, plus touch emulation on mobile device profiles.
+- **R17.3** Playwright tests run against the web app (Chromium, Firefox, WebKit) for interaction-heavy components and sample pages, including visual regression snapshots in light/dark × LTR/RTL × phone/tablet/desktop widths, plus touch emulation on mobile device profiles.
 - **R17.4** GitHub Actions workflows:
   - `ci.yml` (PRs + `main`): install → lint (ESLint, incl. logical-property rule) → format check (Prettier) → typecheck → unit tests with coverage → build package → build examples → build docs → size check.
   - `e2e.yml`: Playwright across browsers.
@@ -440,7 +440,7 @@ Javaabu currently uses the JTK (JavaScript Thaana Keyboard) approach for typing 
 
 ## 18. Examples
 
-- **R18.1** An `examples/` directory containing a runnable Vite + React + TypeScript app consuming the package via the workspace (`pnpm` workspaces).
+- **R18.1** A `web/` directory (the docs site) containing a runnable Vite + React + TypeScript app consuming the package via the workspace (`pnpm` workspaces).
 - **R18.2** **Component showcase**: one page per component demonstrating every variant, size and state (default, hover, focus, disabled, loading, error, empty), with copyable code.
 - **R18.3** Global toolbar on every page to toggle: light/dark, LTR/RTL, `en`/`dv` locale, primary colour (colour picker driving `--onu-primary`), density.
 - **R18.4** **Sample pages** (see §23) built only from Onu components and realistic mock data (Dhivehi + English), demonstrating real-world composition.
@@ -486,7 +486,7 @@ onu/
 ├── .github/workflows/        # ci.yml, e2e.yml, release.yml
 ├── docs/                     # Docusaurus-format markdown (see §19)
 ├── figma/                    # Code Connect mappings + token sync scripts
-├── examples/                 # Vite showcase + sample pages app
+├── web/                      # Vite docs site: showcase + sample pages
 ├── packages/
 │   └── onu/                  # @javaabu/onu
 │       ├── src/
@@ -523,7 +523,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Matches the expected UI behaviour in §25 where that component is specified, with a test for each listed behaviour
 - [ ] Unit tests meeting coverage thresholds
 - [ ] Matching Figma component published in the kit, with Code Connect
-- [ ] Showcase page in `examples/`
+- [ ] Showcase page in `web/`
 - [ ] Docs page in `docs/`
 - [ ] Changeset added
 
@@ -785,7 +785,7 @@ A build-list item is ticked only when all of the following are true:
 
 ## 23. Sample pages
 
-All sample pages live in `examples/` and must render correctly in light/dark, LTR/RTL and `en`/`dv`.
+All sample pages live in `web/` and must render correctly in light/dark, LTR/RTL and `en`/`dv`.
 
 ### Auth
 - [ ] Sign in (email and eFaas)
@@ -896,7 +896,7 @@ All sample pages live in `examples/` and must render correctly in light/dark, LT
 To be resolved before (or while) building the affected components:
 
 1. **Licence** — MIT like other Javaabu packages, or private/internal?
-2. **Google Maps billing**: whose Google Cloud project/API key is used for the examples app and CI, and is a Map ID set up for vector maps?
+2. **Google Maps billing**: whose Google Cloud project/API key is used for the web app and CI, and is a Map ID set up for vector maps?
 3. ~~**Thaana font licence**~~: resolved. Faruma and MV Faseyha are free to redistribute; Javaabu supplied the files.
 4. **FontAwesome Pro**: which Pro licence/Kit should CI use (needs a `FONTAWESOME_NPM_AUTH_TOKEN` secret)?
 5. **Figma**: which Figma team/workspace hosts the library, and is a paid plan with Dev Mode available for Code Connect?
