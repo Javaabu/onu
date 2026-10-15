@@ -129,7 +129,10 @@ export function groupBy(entries: Entry[]) {
 
 export interface NavItem {
   title: string
-  /** Router path, e.g. `/components/text-inputs/text-input`. */
+  /**
+   * Router path, e.g. `/components/text-inputs/text-input`. Sample pages link to
+   * their block on the category page, e.g. `/pages/auth#sign-in`.
+   */
   href: string
   /** Category label shown in breadcrumbs and search. */
   group: string
@@ -141,6 +144,8 @@ export interface NavCategory {
   /** Folder name, e.g. `text-inputs`. */
   id: string
   label: string
+  /** Sample pages: the category's blocks page, e.g. `/pages/auth`. */
+  href?: string
   items: NavItem[]
 }
 
@@ -171,6 +176,27 @@ function categorise(base: string, entries: Entry[]): NavCategory[] {
     items: list.map((e) => toItem(base, e)),
   }))
 }
+
+/** `auth/sign-in` → `sign-in`: a sample page's anchor on its category's blocks page. */
+export function blockId(entry: Entry) {
+  return entry.slug.split("/").slice(1).join("-")
+}
+
+/** Sample pages: one category per folder, each item a block on the category page (`/pages/auth#sign-in`). */
+function categorisePages(entries: Entry[]): NavCategory[] {
+  return [...groupBy(entries)].map(([label, list]) => {
+    const id = list[0]!.slug.split("/")[0]!
+    return {
+      id,
+      label,
+      href: `/pages/${id}`,
+      items: list.map((e) => ({ ...toItem("/pages", e), href: `/pages/${id}#${blockId(e)}` })),
+    }
+  })
+}
+
+/** Sample pages shown in the docs: everything except the internal design explorations. */
+export const samplePages = pages.filter((p) => !p.slug.startsWith("design-options/"))
 
 export const introduction: NavItem = {
   title: "Introduction",
@@ -204,11 +230,16 @@ export const navSections: NavSection[] = [
       demos.filter((d) => d.meta.group !== FOUNDATIONS),
     ),
   },
-  { id: "pages", label: "Sample pages", href: "/pages", categories: categorise("/pages", pages) },
+  { id: "pages", label: "Sample pages", href: "/pages", categories: categorisePages(samplePages) },
 ]
 
 /** Every nav item in sidebar order. */
 export const navItems: NavItem[] = navSections.flatMap((s) => s.categories.flatMap((c) => c.items))
+
+/** The sample-page category for a blocks route, e.g. `/pages/auth`. */
+export function pageCategory(id: string) {
+  return navSections[2]!.categories.find((c) => c.id === id)
+}
 
 /** Finds the section, category and item for a router path. */
 export function locate(pathname: string) {

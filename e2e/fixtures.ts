@@ -19,13 +19,15 @@ export async function applyVariant(page: Page, variant: Variant) {
 /**
  * Waits until the route's lazily loaded content has mounted: the web app sets
  * `html[data-page-ready]` to the router path (`/#/components/x` → `/components/x`)
- * once the demo, sample page or index has rendered, then for network idle so its
- * own lazy parts (charts, maps, highlighters) have loaded too.
+ * once the demo, sample page or index has rendered, then (unless `networkIdle`
+ * is false) for network idle so its own lazy parts (charts, maps, highlighters)
+ * have loaded too.
  */
-export async function waitForPage(page: Page, route: string) {
+export async function waitForPage(page: Page, route: string, { networkIdle = true } = {}) {
   const path = route.replace(/^\/?#/, "").replace(/#.*$/, "") || "/"
   await page.waitForFunction((p) => document.documentElement.dataset.pageReady === p, path, { timeout: 30_000 })
-  await page.waitForLoadState("networkidle")
+  // Blocks pages hold live sample pages in iframes, which may never go idle; they are tested on their own routes.
+  if (networkIdle) await page.waitForLoadState("networkidle")
 }
 
 /** Positions and sizes of the chart parts that depend on fonts and container width. */

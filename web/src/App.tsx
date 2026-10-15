@@ -5,6 +5,7 @@ import { dv } from "@javaabu/onu/locales/dv"
 import { DEMO_MAP_ID, googleMapsAdapter, MapProvider } from "@javaabu/onu/maps"
 
 import { SearchProvider } from "./components/search"
+import { BlocksPage } from "./components/blocks"
 import { EntryView, PageReady, SectionIndex, componentsSection, pagesSection } from "./components/views"
 import { demos, pages } from "./registry"
 import { SettingsProvider, useSettings } from "./settings"
@@ -85,6 +86,7 @@ export default function App() {
                 <Route path="/components" element={<SectionIndex section={componentsSection} />} />
                 <Route path="/pages" element={<SectionIndex section={pagesSection} />} />
                 <Route path="/components/*" element={<EntryView entries={demos} />} />
+                <Route path="/pages/:category" element={<BlocksPage />} />
                 <Route path="/pages/*" element={<EntryView entries={pages} />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>

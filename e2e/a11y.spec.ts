@@ -1,11 +1,11 @@
 import AxeBuilder from "@axe-core/playwright"
 
 import { applyVariant, expect, test, waitForPage } from "./fixtures"
-import { demoRoutes, pageRoutes, variants } from "./routes"
+import { blockRoutes, demoRoutes, pageRoutes, variants } from "./routes"
 
 // Accessibility scan of the docs home and indexes, every demo and every sample page (REQUIREMENTS R14.11), in light LTR and dark RTL.
 for (const variant of variants) {
-  for (const route of ["/#/", "/#/components", "/#/pages", ...demoRoutes, ...pageRoutes]) {
+  for (const route of ["/#/", "/#/components", "/#/pages", ...blockRoutes, ...demoRoutes, ...pageRoutes]) {
     test(`a11y ${variant.name} ${route}`, async ({ page, pageErrors }, testInfo) => {
       test.skip(
         testInfo.project.name !== "chromium" && testInfo.project.name !== "mobile-chrome",
@@ -13,8 +13,12 @@ for (const variant of variants) {
       )
       await applyVariant(page, variant)
       await page.goto(route)
-      await waitForPage(page, route)
-      const results = await new AxeBuilder({ page })
+      const blocks = blockRoutes.includes(route)
+      await waitForPage(page, route, { networkIdle: !blocks })
+      const axe = new AxeBuilder({ page })
+      // A blocks page previews sample pages in iframes; each one is scanned on its own route.
+      if (blocks) axe.exclude("iframe")
+      const results = await axe
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
         // The showcase's code tab and third-party map tiles are out of scope.
         .exclude("[data-axe-skip]")

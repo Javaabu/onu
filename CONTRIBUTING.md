@@ -18,16 +18,16 @@ A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `
 
 ## Where things go
 
-| What                 | Where                                                                                                             |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| shadcn/ui primitives | `packages/onu/src/ui`: Onu-owned code, started from shadcn/ui (see [shadcn/ui primitives](#shadcnui-primitives)). |
-| Onu components       | `packages/onu/src/components/<group>/<name>.tsx` + `<name>.test.tsx`, exported from the group's `index.ts`        |
-| Heavy components     | `packages/onu/src/{charts,maps,editor,calendar,media}` (separate entry points)                                    |
-| Built-in strings     | `packages/onu/src/locales/{en,dv}/<namespace>.ts`; never hard-code English                                        |
-| Design tokens        | `tokens.json`, then `pnpm --filter @javaabu/onu tokens`                                                           |
-| Showcase demos       | `web/src/showcase/<group>/<name>.demo.tsx` (auto-discovered)                                                      |
-| Sample pages         | `web/src/pages/<group>/<name>.page.tsx` (auto-discovered)                                                         |
-| Docs                 | `docs/<group>/<name>.md`                                                                                          |
+| What                 | Where                                                                                                                   |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| shadcn/ui primitives | `packages/onu/src/ui`: Onu-owned code, started from shadcn/ui (see [shadcn/ui primitives](#shadcnui-primitives)).       |
+| Onu components       | `packages/onu/src/components/<group>/<name>.tsx` + `<name>.test.tsx`, exported from the group's `index.ts`              |
+| Heavy components     | `packages/onu/src/{charts,maps,editor,calendar,media}` (separate entry points)                                          |
+| Built-in strings     | `packages/onu/src/locales/{en,dv}/<namespace>.ts`; never hard-code English                                              |
+| Design tokens        | `tokens.json`, then `pnpm --filter @javaabu/onu tokens`                                                                 |
+| Showcase demos       | `web/src/showcase/<group>/<name>.demo.tsx` (auto-discovered)                                                            |
+| Sample pages         | `web/src/pages/<group>/<name>.page.tsx` (auto-discovered; shown as blocks, with preview and code, on `#/pages/<group>`) |
+| Docs                 | `docs/<group>/<name>.md`                                                                                                |
 
 ## Rules of thumb
 

@@ -20,7 +20,7 @@ import { locate, navSections, neighbours, type Entry, type NavSection } from "..
 import { CodeFallback, DemoSourceContext, LazyCodeBlock } from "./demo"
 import { BareChrome, SiteLayout } from "./layout"
 
-function PageHeader({
+export function PageHeader({
   crumbs,
   title,
   description,
@@ -128,7 +128,7 @@ function FullSource({ load }: { load: () => Promise<string> }) {
 }
 
 /** Scrolls to `#/route#section` on load and when the route changes. */
-function useScrollToHash() {
+export function useScrollToHash() {
   const { pathname, hash } = useLocation()
   React.useEffect(() => {
     if (!hash) {
@@ -269,7 +269,7 @@ export function SectionIndex({ section }: { section: NavSection }) {
   const count = section.categories.reduce((n, c) => n + c.items.length, 0)
   const description =
     section.id === "pages"
-      ? `${count} full-screen sample pages built only from Onu components: real app shells for admin, citizen and public services.`
+      ? `${count} sample pages built only from Onu components: real app shells for admin, citizen and public services. Open a category to preview its pages side by side, with their code.`
       : `${count} components for Maldivian apps, grouped by what they do. Each one works in light and dark, LTR and RTL, English and Dhivehi.`
   return (
     <SiteLayout>
@@ -283,7 +283,13 @@ export function SectionIndex({ section }: { section: NavSection }) {
         {section.categories.map((category) => (
           <section key={category.id} aria-labelledby={`cat-${category.id}`} className="space-y-4">
             <h2 id={`cat-${category.id}`} className="gap-2 text-xl font-semibold tracking-tight flex items-baseline">
-              {category.label}
+              {category.href ? (
+                <Link to={category.href} className="underline-offset-4 hover:underline">
+                  {category.label}
+                </Link>
+              ) : (
+                category.label
+              )}
               <span className="text-sm font-normal text-muted-foreground tabular-nums">{category.items.length}</span>
             </h2>
             <ul className="gap-x-8 gap-y-1 sm:grid-cols-2 md:grid-cols-3 grid">

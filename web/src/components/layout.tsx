@@ -1,8 +1,6 @@
 import * as React from "react"
 import { Link, useLocation } from "react-router"
 import {
-  AppHeader,
-  AppLayout,
   Button,
   Icon,
   LanguageSwitcher,
@@ -12,6 +10,8 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SidebarProvider,
+  SidebarTrigger,
   SkipLink,
   ThemeToggle,
   Tooltip,
@@ -120,13 +120,22 @@ function IconLink({ href, label, children }: { href: string; label: string; chil
   )
 }
 
-/** Sticky top bar: logo, main links, search, GitHub, language, theme and Customize. */
-export function SiteHeader() {
+/**
+ * Sticky top bar on every docs page: logo, main links, search, GitHub,
+ * language, theme and Customize. With `sidebarTrigger` (pages with the docs
+ * menu) the menu button toggles the sidebar, a drawer on phones.
+ */
+export function SiteHeader({ sidebarTrigger = false }: { sidebarTrigger?: boolean }) {
   const { pathname } = useLocation()
   return (
     <header className="top-0 backdrop-blur sticky z-40 w-full border-b bg-background/80 supports-backdrop-filter:bg-background/70">
-      <div className="max-w-screen-2xl gap-2 px-4 md:px-6 h-14 mx-auto flex items-center">
-        <MobileNav />
+      <div
+        className={cn(
+          "gap-2 px-4 md:px-6 h-14 flex items-center",
+          sidebarTrigger ? "w-full" : "max-w-screen-2xl mx-auto",
+        )}
+      >
+        {sidebarTrigger ? <SidebarTrigger className="-ms-1.5 size-9" /> : <MobileNav />}
         <Logo className="me-4" />
         <nav aria-label="Main" className="gap-1 lg:flex hidden items-center">
           {MAIN_LINKS.map((l) => {
@@ -219,41 +228,44 @@ function useSidebarOpen() {
 }
 
 /**
- * The docs pages' app shell, the same as the admin sample pages: the library's
- * `AppLayout` with the docs menu in an `AppSidebar` and an `AppHeader` with
- * search and the site controls. `toc` adds the "On this page" column (from xl).
+ * The docs pages: the same top bar as the home page, and below it the docs
+ * menu (the library's `AppSidebar`) beside the content. `toc` adds the "On this
+ * page" column (from xl).
  */
 function DocsShell({ children, toc }: { children: React.ReactNode; toc: boolean }) {
   const [open, setOpen] = useSidebarOpen()
   return (
-    <AppLayout
+    <SidebarProvider
       data-docs-chrome
+      open={open}
+      onOpenChange={setOpen}
       // Wide enough for "Layout and navigation" with its count.
       style={{ "--sidebar-width": "17.5rem" } as React.CSSProperties}
-      sidebarOpen={open}
-      onSidebarOpenChange={setOpen}
-      sidebar={<DocsSidebar />}
-      header={
-        <AppHeader sidebarTrigger actions={<HeaderActions />}>
-          <Logo className="md:hidden" />
-          <span className="md:hidden flex-1" />
-          <SearchButton className="max-w-md lg:w-full h-9 w-full rounded-lg border-[color:var(--shell-border,#e5e3e0)] bg-[color:var(--shell-field,#ffffff)] dark:border-[color:var(--shell-border,#343140)] dark:bg-[color:var(--shell-field,#292733)]" />
-        </AppHeader>
-      }
-      footer={<SiteFooter />}
-      classNames={{ main: "lg:px-10 lg:py-8" }}
+      className="flex-col bg-background text-foreground"
     >
-      <div className={cn("max-w-screen-xl mx-auto", toc && "xl:gap-10 xl:grid xl:grid-cols-[minmax(0,1fr)_13rem]")}>
-        <div className="max-w-4xl min-w-0 mx-auto w-full">{children}</div>
-        {toc ? (
-          <aside aria-label="On this page" className="xl:block hidden">
-            <div className="top-24 sticky max-h-[calc(100svh-7rem)] overflow-y-auto">
-              <TableOfContents />
+      <SkipLink href="#main-content" />
+      <SiteHeader sidebarTrigger />
+      <div className="flex flex-1">
+        <DocsSidebar />
+        <div className="min-w-0 flex flex-1 flex-col">
+          <main id="main-content" tabIndex={-1} className="px-4 py-6 md:px-6 lg:px-10 lg:py-8 flex-1 outline-none">
+            <div
+              className={cn("max-w-screen-xl mx-auto", toc && "xl:gap-10 xl:grid xl:grid-cols-[minmax(0,1fr)_13rem]")}
+            >
+              <div className="max-w-4xl min-w-0 mx-auto w-full">{children}</div>
+              {toc ? (
+                <aside aria-label="On this page" className="xl:block hidden">
+                  <div className="top-20 sticky max-h-[calc(100svh-6rem)] overflow-y-auto">
+                    <TableOfContents />
+                  </div>
+                </aside>
+              ) : null}
             </div>
-          </aside>
-        ) : null}
+          </main>
+          <SiteFooter />
+        </div>
       </div>
-    </AppLayout>
+    </SidebarProvider>
   )
 }
 
@@ -285,17 +297,23 @@ export function SiteLayout({
 }
 
 /**
- * Floating controls on full-screen sample pages: back to the docs, and Customize.
- * On phones they sit above a page's BottomNav instead of covering its tabs.
+ * Floating controls on full-screen sample pages: back to the page's block in
+ * the docs, and Customize. On phones they sit above a page's BottomNav instead
+ * of covering its tabs. Hidden inside a blocks preview (an iframe), where the
+ * docs page around it has the controls.
  */
 export function BareChrome() {
+  const { pathname } = useLocation()
+  if (typeof window !== "undefined" && window.self !== window.top) return null
+  const [, , category, ...rest] = pathname.split("/")
+  const back = category ? `/pages/${category}#${rest.join("-")}` : navSections[2]!.href
   return (
     <div
       className="end-3 bottom-3 gap-1 p-1 shadow-lg backdrop-blur max-md:[:root:has([data-slot=bottom-nav])_&]:bottom-[calc(4.75rem+env(safe-area-inset-bottom))] fixed z-50 flex items-center rounded-full border bg-background/95"
       data-print="hide"
     >
       <Button asChild variant="ghost" size="sm" className="rounded-full">
-        <Link to={navSections[2]!.href}>
+        <Link to={back}>
           <Icon name="arrow-left" /> Back to docs
         </Link>
       </Button>

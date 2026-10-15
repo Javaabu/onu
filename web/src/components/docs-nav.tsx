@@ -1,9 +1,8 @@
 import * as React from "react"
 import { useLocation } from "react-router"
-import { AppSidebar, Icon, Logo, TextInput, type NavGroup, type NavItem as SidebarItem } from "@javaabu/onu"
+import { AppSidebar, Icon, TextInput, type NavGroup, type NavItem as SidebarItem } from "@javaabu/onu"
 
 import { navSections, type NavCategory, type NavItem } from "../registry"
-import { BrandMark } from "./brand-mark"
 
 /** A Lucide icon drawn inline, for the few menu entries with no semantic icon name. */
 function Lucide({ children }: { children: React.ReactNode }) {
@@ -115,6 +114,17 @@ function leaf(item: NavItem, icon?: SidebarItem["icon"]): SidebarItem {
 }
 
 function category(c: NavCategory): SidebarItem {
+  // Sample pages: one entry per category, opening its blocks page (every page of the category, with preview and code).
+  if (c.href) {
+    return {
+      id: c.id,
+      label: SHORT[c.id] ?? c.label,
+      href: c.href,
+      icon: ICONS[c.id],
+      badge: c.items.length,
+      badgeTone: "neutral",
+    }
+  }
   return {
     id: c.id,
     label: SHORT[c.id] ?? c.label,
@@ -190,32 +200,23 @@ export function DocsSidebar() {
   return (
     <AppSidebar
       data-docs-sidebar
+      // Below the site's top bar (3.5rem), which stays on every docs page.
+      className="top-14! h-[calc(100svh-3.5rem)]!"
       collapsible="icon"
       match="exact"
       navLabel="Docs"
       groups={groups}
       currentHref={pathname}
       header={
-        <div className="gap-4 grid">
-          <Logo
-            alt="Onu"
-            text="Onu"
-            href="/"
-            classNames={{ text: "group-data-[collapsible=icon]:hidden" }}
-            className="h-8"
-          >
-            <BrandMark className="size-7" />
-          </Logo>
-          <TextInput
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Filter"
-            aria-label="Filter the menu"
-            startAddon={<Icon name="filter" />}
-            className="bg-[color:var(--shell-field,#ffffff)] group-data-[collapsible=icon]:hidden dark:bg-[color:var(--shell-field,#292733)]"
-          />
-        </div>
+        <TextInput
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Filter"
+          aria-label="Filter the menu"
+          startAddon={<Icon name="filter" />}
+          className="bg-[color:var(--shell-field,#ffffff)] group-data-[collapsible=icon]:hidden dark:bg-[color:var(--shell-field,#292733)]"
+        />
       }
     >
       {q && !groups.length ? (

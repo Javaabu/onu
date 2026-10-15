@@ -14,6 +14,14 @@ function walk(dir: string, suffix: string, base = dir): string[] {
 /** Every showcase demo and sample page in the web app, as hash routes. */
 export const demoRoutes = walk(path.join(web, "showcase"), ".demo.tsx").map((slug) => `/#/components/${slug}`)
 export const pageRoutes = walk(path.join(web, "pages"), ".page.tsx").map((slug) => `/#/pages/${slug}`)
+/** Sample-page categories: each is a blocks page with every page of the category (preview and code). */
+export const blockRoutes = [
+  ...new Set(
+    walk(path.join(web, "pages"), ".page.tsx")
+      .map((slug) => slug.split("/")[0]!)
+      .filter((category) => category !== "design-options"),
+  ),
+].map((category) => `/#/pages/${category}`)
 
 export interface Variant {
   name: string
