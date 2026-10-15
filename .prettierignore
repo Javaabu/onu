@@ -16,3 +16,4 @@ templates/laravel-inertia-react/bootstrap/cache
 templates/laravel-inertia-react/composer.json
 templates/laravel-inertia-react/composer.lock
 figma/plugin/code.js
+packages/onu/src/components/form/efaas-logo-*.data.ts

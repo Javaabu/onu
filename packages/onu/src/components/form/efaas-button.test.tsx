@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react"
+import { screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
@@ -39,9 +39,45 @@ describe("EfaasButton", () => {
     expect(screen.getByTestId("logo").parentElement).toHaveAttribute("aria-hidden", "true")
     expect(screen.getByRole("button", { name: "Sign in with eFaas" })).toBeInTheDocument()
     expect(screen.getByText("Sign in with eFaas")).toHaveClass("sr-only")
-    // Without a logo the label stays visible.
-    rerender(<EfaasButton iconOnly />)
+    // Without any logo the label stays visible.
+    rerender(<EfaasButton logoVariant="none" iconOnly />)
     expect(screen.getByText("Sign in with eFaas")).not.toHaveClass("sr-only")
+  })
+
+  it("shows the official icon made for each button colour by default", () => {
+    renderWithOnu(
+      <>
+        <EfaasButton variant="blue" />
+        <EfaasButton variant="black" intent="register" />
+        <EfaasButton variant="white" href="/login/efaas" />
+      </>,
+    )
+    const icon = (el: HTMLElement) => el.querySelector("[data-slot=efaas-logo]")
+    const blue = screen.getByRole("button", { name: "Sign in with eFaas" })
+    expect(blue).toHaveAttribute("data-logo-variant", "15")
+    expect(icon(blue)).toHaveAttribute("data-variant", "15")
+    expect(icon(blue)).toHaveAttribute("aria-hidden", "true")
+    expect(icon(screen.getByRole("button", { name: "Register with eFaas" }))).toHaveAttribute("data-variant", "14")
+    expect(icon(screen.getByRole("link", { name: "Sign in with eFaas" }))).toHaveAttribute("data-variant", "9")
+    // The label stays visible next to an icon mark.
+    expect(screen.getAllByText("Sign in with eFaas")[0]).not.toHaveClass("sr-only")
+  })
+
+  it("switches logos with logoVariant: a wordmark logo replaces the visible label", async () => {
+    const { rerender } = renderWithOnu(<EfaasButton logoVariant={18} />)
+    const button = screen.getByRole("button", { name: "Sign in with eFaas" })
+    expect(button).toHaveAttribute("data-logo-variant", "18")
+    expect(screen.getByText("Sign in with eFaas")).toHaveClass("sr-only")
+    const logo = button.querySelector("[data-slot=efaas-logo]")!
+    expect(logo).toHaveAttribute("data-variant", "18")
+    await waitFor(() => expect(logo.querySelector("path")).not.toBeNull())
+    // A stacked logo makes the button taller.
+    rerender(<EfaasButton logoVariant={22} variant="black" />)
+    expect(screen.getByRole("button")).toHaveClass("h-auto")
+    // An icon mark goes back before the visible label; iconOnly hides the label.
+    rerender(<EfaasButton logoVariant={10} variant="white" iconOnly />)
+    expect(screen.getByRole("button").querySelector("[data-slot=efaas-logo]")).toHaveAttribute("data-variant", "10")
+    expect(screen.getByText("Sign in with eFaas")).toHaveClass("sr-only")
   })
 
   it("announces the redirect and ignores clicks while loading", async () => {

@@ -7,15 +7,15 @@ The **Sign in with eFaas** button, styled after the [eFaas brand guide](https://
 
 ```tsx
 import { EfaasButton, SignInForm } from "@javaabu/onu"
-import efaasIcon from "./efaas-icon.svg" // from eFaas's brand kit
 
-<SignInForm
-  onSubmit={login}
-  efaas={<EfaasButton href="/login/efaas" logo={<img src={efaasIcon} alt="" />} fullWidth />}
-/>
+<SignInForm onSubmit={login} efaas={<EfaasButton href="/login/efaas" fullWidth />} />
 
-<EfaasButton intent="register" href="/register/efaas" logo={<img src={efaasIcon} alt="" />} />
-<EfaasButton variant="white" iconOnly href="/login/efaas" logo={<img src={efaasIcon} alt="" />} />
+<EfaasButton intent="register" href="/register/efaas" />
+<EfaasButton variant="white" iconOnly href="/login/efaas" />
+
+// Any of the 22 official eFaas logos, by number
+<EfaasButton logoVariant={18} href="/login/efaas" />                  // white "efaas" wordmark on blue
+<EfaasButton logoVariant={1} variant="white" href="/login/efaas" />  // blue wordmark on white
 ```
 
 ## Props
@@ -29,8 +29,9 @@ Every `<a>` prop (with `href`) or `<button>` prop (without), plus:
 | `variant`   | `"blue" \| "black" \| "white"`   | `"blue"`    | eFaas colour variation                                                      |
 | `size`      | `"default" \| "lg"`              | `"default"` | 40px (44px on touch screens) or 48px tall                                   |
 | `shape`     | `"rounded" \| "square"`          | `"rounded"` | Corner style                                                                |
-| `logo`      | `ReactNode`                      |             | The eFaas icon from eFaas's brand kit; sized to the button and decorative   |
-| `iconOnly`  | `boolean`                        | `false`     | Only the icon (needs `logo`); the wording stays as the accessible name      |
+| `logoVariant` | `1`–`22` \| `"none"`          | by colour   | Which [official eFaas logo](./efaas-logo) to show (see below). Default: the icon made for the button colour, 15 on blue, 14 on black, 9 on white |
+| `logo`      | `ReactNode`                      |             | A custom logo node instead of `logoVariant`; sized like the icon marks      |
+| `iconOnly`  | `boolean`                        | `false`     | Only the icon (needs an icon mark); the wording stays as the accessible name |
 | `fullWidth` | `boolean`                        | `false`     | Stretch to the container                                                    |
 | `loading`   | `boolean`                        | `false`     | Spinner and "Redirecting to eFaas…"; clicks are ignored                     |
 | `children`  | `ReactNode`                      |             | Replace the label (keep eFaas's wording)                                    |
@@ -45,9 +46,14 @@ What the button follows from the eFaas brand guide:
 - **Layout**: the icon and label keep their order and position. Only the corners (`shape`) and the side padding (via `className`) may change.
 - **Clear space**: keep the protected zone the guide defines around the button (X/2 on its grid) free of other graphics and text. Under `SignInForm` the "or" divider provides it.
 
-:::warning Logo
-Onu does not draw the eFaas logomark (R16.7: assets come from eFaas, not invented). Download the icon from eFaas's brand kit and pass it as `logo`; without it the button shows the wording only.
-:::
+## Logos
+
+The button shows one of the 22 official logos from eFaas's brand kit, picked by number with `logoVariant` (the numbers are the kit's file numbers, `Efaas Logos SVG-01` … `-22`; the full list is on [EfaasLogo](./efaas-logo)).
+
+- **Icon marks** (9, 10, 11, 14, 15) sit before the label: "[icon] Sign in with eFaas".
+- **Every other variant** already spells "efaas" (in English or Dhivehi, some with the "Key to a digital Maldives" tagline), so it replaces the visible label. The wording stays the button's accessible name. Stacked logos (5, 6, 21, 22) make the button taller.
+- Pick a logo made for the button's colour: logos for light backgrounds (1–10) on the `white` button, logos for dark backgrounds (11–22) on `blue` or `black`.
+- `logoVariant="none"` shows the wording alone.
 
 :::caution Not verified against the guide
 The guide could not be opened while this component was built. The palette, typeface, wording and layout rules above come from the guide's published text; the exact button heights, icon size, white-variant text colour, the fourth colour variation and the clear-space measurement still need to be checked against [efaas.egov.mv/Home/Branding](https://efaas.egov.mv/Home/Branding).
