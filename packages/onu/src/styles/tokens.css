@@ -61,10 +61,11 @@
   --onu-chart-8: oklch(0.494 0.228 295.6);
   --onu-radius: 0.375rem;
   --onu-tint: 0%;
-  --onu-font-sans: "Inter Variable", "MV Waheed", Faruma, "Noto Sans Thaana Variable", ui-sans-serif, system-ui, sans-serif;
-  --onu-font-thaana: "MV Waheed", Faruma, "Noto Sans Thaana Variable", "Inter Variable", sans-serif;
+  --onu-font-sans: "Inter Variable", Faruma, "MV Faseyha", "Noto Sans Thaana Variable", ui-sans-serif, system-ui, sans-serif;
+  --onu-font-thaana: Faruma, "MV Faseyha", "Noto Sans Thaana Variable", "Inter Variable", sans-serif;
+  --onu-font-thaana-bold: "MV Faseyha", Faruma, "Noto Sans Thaana Variable", "Inter Variable", sans-serif;
   --onu-font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --onu-font-serif: "Source Serif 4 Variable", "MV Waheed", Georgia, serif;
+  --onu-font-serif: "Source Serif 4 Variable", "MV Faseyha", Georgia, serif;
   --onu-font-size: 0.875rem;
   --onu-line-height: 1.5714;
   --onu-label-width: 12rem;

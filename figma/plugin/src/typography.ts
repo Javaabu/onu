@@ -48,8 +48,10 @@ async function tryLoad(font: FontName) {
 
 /**
  * Picks the first available family from each list (Figma's font list plus a
- * defensive figma.loadFontAsync), so a missing MV Waheed / Faruma falls back to
- * Noto Sans Thaana and then Inter instead of failing.
+ * defensive figma.loadFontAsync), so a missing Faruma / MV Faseyha falls back to
+ * Noto Sans Thaana and then Inter instead of failing. As in Onu's CSS, Dhivehi
+ * text uses Faruma and semibold/bold Dhivehi (headings) uses MV Faseyha
+ * (`--onu-font-thaana-bold`), since both have a single weight.
  */
 export async function loadFonts(): Promise<FontSet> {
   let available: Font[] = []
@@ -93,7 +95,9 @@ export async function loadFonts(): Promise<FontSet> {
   }
 
   const ui = await pick(["Inter", "Roboto"], "UI font")
-  const thaana = await pick(["MV Waheed", "Faruma", "Noto Sans Thaana", "Inter"], "Thaana font")
+  const text = await pick(["Faruma", "MV Faseyha", "Noto Sans Thaana", "Inter"], "Thaana font")
+  const headings = await pick(["MV Faseyha", "Faruma", "Noto Sans Thaana", "Inter"], "Thaana heading font")
+  const thaana = { ...text, Semibold: headings.Semibold, Bold: headings.Bold }
   const mono = await pick(["JetBrains Mono", "Roboto Mono", "Inter"], "Mono font")
   return { ui, thaana, mono, notes }
 }

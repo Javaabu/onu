@@ -10,7 +10,8 @@ it("built code.js generates the kit when the UI asks", async () => {
     ["Inter", "Medium"],
     ["Inter", "Semi Bold"],
     ["Inter", "Bold"],
-    ["MV Waheed", "Regular"],
+    ["Faruma", "Regular"],
+    ["MV Faseyha", "Regular"],
     ["JetBrains Mono", "Regular"],
   ])
   const code = readFileSync(path.join(import.meta.dirname, "../code.js"), "utf8")
@@ -21,7 +22,8 @@ it("built code.js generates the kit when the UI asks", async () => {
   expect(api.posted.find((m) => m.type === "error")).toBeUndefined()
   expect(done.result.stats.componentSets).toBeGreaterThan(25)
   expect(done.result.nodeIds["form-scaffolding/button"]).toMatch(/^\d+:\d+$/)
-  // MV Waheed is available here, so it is used for Thaana text without a fallback note.
-  expect(api.styles.find((s) => s.name === "Thaana/sm/Regular").fontName.family).toBe("MV Waheed")
+  // Faruma and MV Faseyha are available here: Faruma for Thaana text, MV Faseyha for bold (headings).
+  expect(api.styles.find((s) => s.name === "Thaana/sm/Regular").fontName.family).toBe("Faruma")
+  expect(api.styles.find((s) => s.name === "Thaana/2xl/Bold").fontName.family).toBe("MV Faseyha")
   expect(done.result.notes).toEqual([])
 })

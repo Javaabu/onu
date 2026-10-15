@@ -44,10 +44,10 @@ overwritten on the next run; build your own components from instances instead.
   - `Onu / Shape`: `radius/base`, `radius/sm` … `radius/4xl`, `size/label-width`, `size/touch-target`.
   - Each variable's Web code syntax is the CSS variable (`var(--border)`, `calc(var(--spacing) * 2)`), so Dev Mode
     shows the right token.
-- **Text styles**: `UI/<size>/<weight>` (Inter), `Thaana/<size>/<weight>` (MV Waheed, else Faruma, else Noto Sans
-  Thaana; line height 1.75) and `Mono/<size>` (JetBrains Mono), on Onu's scale: 14px/22px body (`UI/sm`), 12, 16, 18,
+- **Text styles**: `UI/<size>/<weight>` (Inter), `Thaana/<size>/<weight>` (Faruma; MV Faseyha for Semibold and Bold,
+  as in Onu's CSS; else Noto Sans Thaana; line height 1.75) and `Mono/<size>` (JetBrains Mono), on Onu's scale: 14px/22px body (`UI/sm`), 12, 16, 18,
   20, 24, 30 and 38px. Fonts that are missing in Figma fall back without failing; the plugin lists the fallbacks.
-  Install MV Waheed or Faruma locally before running if you have them.
+  Install Faruma and MV Faseyha locally before running (the files are in `packages/onu/src/styles/fonts/`).
 - **Pages**: Cover, Foundations (colours, type, spacing and radius, the Lucide icons used by the kit), Inputs,
   Display, Navigation, Overlays, Data and Samples.
 - **Component sets** (auto layout, bound to the variables):

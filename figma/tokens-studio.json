@@ -499,11 +499,15 @@
   },
   "font": {
     "sans": {
-      "value": "Inter Variable, MV Waheed, Faruma, Noto Sans Thaana Variable, ui-sans-serif, system-ui, sans-serif",
+      "value": "Inter Variable, Faruma, MV Faseyha, Noto Sans Thaana Variable, ui-sans-serif, system-ui, sans-serif",
       "type": "fontFamilies"
     },
     "thaana": {
-      "value": "MV Waheed, Faruma, Noto Sans Thaana Variable, Inter Variable, sans-serif",
+      "value": "Faruma, MV Faseyha, Noto Sans Thaana Variable, Inter Variable, sans-serif",
+      "type": "fontFamilies"
+    },
+    "thaana-bold": {
+      "value": "MV Faseyha, Faruma, Noto Sans Thaana Variable, Inter Variable, sans-serif",
       "type": "fontFamilies"
     },
     "mono": {
@@ -511,7 +515,7 @@
       "type": "fontFamilies"
     },
     "serif": {
-      "value": "Source Serif 4 Variable, MV Waheed, Georgia, serif",
+      "value": "Source Serif 4 Variable, MV Faseyha, Georgia, serif",
       "type": "fontFamilies"
     }
   },

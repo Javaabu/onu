@@ -12,7 +12,8 @@ Onu's optional font pack:
 | Role | Font | Source |
 |---|---|---|
 | Interface | Inter | `@fontsource-variable/inter` |
-| Thaana | **MV Waheed** | your project (see below) |
+| Thaana text | **Faruma** | bundled with Onu |
+| Thaana headings and bold | **MV Faseyha** | bundled with Onu |
 | Thaana fallback | Noto Sans Thaana | `@fontsource-variable/noto-sans-thaana` |
 | Code, IDs, keys | JetBrains Mono | `@fontsource-variable/jetbrains-mono` |
 
@@ -20,22 +21,15 @@ Optional presets in `@javaabu/onu/fonts-optional.css`: Geist (set `data-font="ge
 
 All of these are self-hosted from npm, so no requests go to a font CDN.
 
-# MV Waheed
+# Thaana fonts
 
-MV Waheed is the default Thaana font. Its files are not bundled with Onu until redistribution rights are confirmed, so add it to your project:
+Onu ships Faruma and MV Faseyha with `fonts.css`, as `woff2` files subset to Thaana and its punctuation (about 12 kB each). Their `unicode-range` means a browser only downloads them when a page shows Thaana text, and Latin text in a mixed sentence stays in Inter.
 
-```css
-@font-face {
-    font-family: "MV Waheed";
-    src: url("/fonts/mv-waheed.woff2") format("woff2");
-    font-display: swap;
-    unicode-range: U+0780-07BF, U+FDF2, U+060C, U+061B, U+061F;
-}
-```
+- **Faruma** is used for Dhivehi body text (`--onu-font-thaana`).
+- **MV Faseyha** is used for Dhivehi headings and `<b>`/`<strong>` (`--onu-font-thaana-bold`). Both fonts have a single weight and Onu turns off faux bold for Dhivehi, so emphasis uses the second face instead.
+- Characters neither font covers fall back to Noto Sans Thaana.
 
-The `unicode-range` means the font only downloads when a page shows Thaana text. Without it, Thaana falls back to Faruma (if installed on the device) and then Noto Sans Thaana.
-
-MV Waheed has a single weight, so Onu turns off faux bold for Dhivehi text. To use a heavier face for bold Thaana, set `--onu-font-thaana-bold`.
+If you don't import `fonts.css`, the same names still apply to copies installed on the device.
 
 # Mixed Dhivehi and English
 
@@ -45,8 +39,9 @@ Font stacks list a Latin font and then a Thaana font. Because each font only cov
 
 ```css
 :root {
-    --onu-font-sans: "My Sans", "MV Waheed", sans-serif;
-    --onu-font-thaana: "Faruma", sans-serif;
+    --onu-font-sans: "My Sans", Faruma, sans-serif;
+    --onu-font-thaana: "My Thaana", Faruma, sans-serif;
+    --onu-font-thaana-bold: "My Thaana Bold", "MV Faseyha", sans-serif;
 }
 ```
 

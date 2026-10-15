@@ -49,7 +49,7 @@ Selection order: shadcn/ui component → reputable library (shadcn ecosystem fir
 | `@javaabu/onu/fonts.css`          | `@fontsource-variable/inter`, `@fontsource-variable/jetbrains-mono`, `@fontsource-variable/noto-sans-thaana` (fallback)                                                                                                                                      | OFL-1.1                                                         |
 | `@javaabu/onu/fonts-optional.css` | `@fontsource-variable/geist`, `@fontsource-variable/source-serif-4`                                                                                                                                                                                          | OFL-1.1                                                         |
 
-MV Waheed (the default Thaana font) is not bundled until redistribution rights are confirmed (R7.3).
+Faruma and MV Faseyha, the Thaana fonts, are bundled as subset `woff2` files in `src/styles/fonts/` (R7.3). They are free to use and redistribute.
 
 ## Tooling (dev only)
 

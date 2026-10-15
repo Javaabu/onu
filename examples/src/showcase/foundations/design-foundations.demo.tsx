@@ -76,9 +76,9 @@ export default function DesignFoundations() {
           <p className="text-sm text-muted-foreground">Supporting text, help and captions.</p>
         </div>
         <div className="space-y-1" lang="dv" dir="rtl">
-          <p className="text-xs text-muted-foreground">MV Waheed — ތާނަ</p>
-          <p className="text-4xl">ދިވެހިރާއްޖޭގެ ޖުމްހޫރިއްޔާ</p>
-          <p className="text-2xl">ޚިދުމަތްތަކާއި ހުއްދަތައް</p>
+          <p className="text-xs text-muted-foreground">MV Faseyha (headings) and Faruma (text) — ތާނަ</p>
+          <p className="text-4xl font-[family-name:var(--onu-font-thaana-bold)]">ދިވެހިރާއްޖޭގެ ޖުމްހޫރިއްޔާ</p>
+          <p className="text-2xl font-[family-name:var(--onu-font-thaana-bold)]">ޚިދުމަތްތަކާއި ހުއްދަތައް</p>
           <p className="text-base">ދިގު ލިޔުންތައް ކިޔުމަށް ފަސޭހަ ގޮތަށް ތައްޔާރުކޮށްފައިވާ ލިޔުމެވެ.</p>
         </div>
         <div className="space-y-1">

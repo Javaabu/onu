@@ -314,7 +314,7 @@ describe("PDF (print document)", () => {
     expect(doc.querySelector("h1")?.textContent).toBe("އެކްސްޕޯޓްކުރޭ")
     expect(doc.querySelector(".meta")?.textContent).toContain("ތައްޔާރުކުރީ")
     expect(doc.querySelector(".meta")?.textContent).toContain("1 ރޯ")
-    expect(html).toContain('font-family: "MV Waheed"')
+    expect(html).toContain("font-family: Faruma")
     expect(html).toContain("size: A4 portrait")
   })
 

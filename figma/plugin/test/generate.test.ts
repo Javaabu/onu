@@ -11,7 +11,7 @@ const FONTS: Array<[string, string]> = [
   ["Inter", "Medium"],
   ["Inter", "Semi Bold"],
   ["Inter", "Bold"],
-  // No MV Waheed or Faruma: the Thaana styles must fall back to Noto Sans Thaana.
+  // No Faruma or MV Faseyha: the Thaana styles must fall back to Noto Sans Thaana.
   ["Noto Sans Thaana", "Regular"],
   ["Noto Sans Thaana", "Bold"],
   ["JetBrains Mono", "Regular"],
@@ -117,7 +117,7 @@ describe("Onu kit generator", () => {
     expect(body.fontSize).toBe(14)
     expect(body.lineHeight).toEqual({ unit: "PIXELS", value: 22 })
     expect(api.styles.find((s) => s.name === "Thaana/sm/Regular").fontName.family).toBe("Noto Sans Thaana")
-    expect(first.notes.join(" ")).toMatch(/MV Waheed is not available, using Noto Sans Thaana/)
+    expect(first.notes.join(" ")).toMatch(/Faruma is not available, using Noto Sans Thaana/)
   })
 
   it("lays the kit out on a cover, per-category pages and a samples page", () => {

@@ -101,4 +101,4 @@ Charts have their own `useChartFormat` in `@javaabu/onu/charts`, with axis and p
 
 # Fonts
 
-Dhivehi text uses MV Waheed by default. See [Fonts](./fonts).
+Dhivehi text uses Faruma, with MV Faseyha for headings and bold, both bundled with `fonts.css`. See [Fonts](./fonts).

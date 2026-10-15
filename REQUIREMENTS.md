@@ -117,7 +117,7 @@ Onu is used mainly for admin panels, but the same system has to work for public 
 - **R3.12** **Tokens are defined once, in code**: a W3C Design Tokens (DTCG) `tokens.json` in the repo. It generates the CSS variables (§9) and is synced to **Figma Variables** (via Tokens Studio or the Figma Variables REST API). Neither side is edited by hand on its own.
   - Variable modes cover light/dark and the density modes, and the primary colour is a single variable, just as in code.
 - **R3.13** Every component in the build list (§22) has a Figma component whose properties and variants match the React props and `cva` variants (size, variant, state, density), using the same names.
-- **R3.14** The kit includes LTR and RTL versions of components where layout differs, Thaana typography styles, the default Lucide icon set, and text styles for Inter / MV Waheed / JetBrains Mono (§7).
+- **R3.14** The kit includes LTR and RTL versions of components where layout differs, Thaana typography styles, the default Lucide icon set, and text styles for Inter / Faruma / MV Faseyha / JetBrains Mono (§7).
 - **R3.15** **Figma Code Connect** links each Figma component to its React component and import, so Dev Mode shows real Onu code snippets.
 - **R3.16** The sample pages (§23) also exist as Figma frames, built only from kit components.
 - **R3.17** The kit may start from a community shadcn/ui Figma kit if its licence allows. It is versioned alongside the npm package: each release notes the matching kit version, and changes to tokens or components land in both in the same release.
@@ -201,7 +201,7 @@ Governance:
 | Primitives | Radix UI; React Aria where Radix has gaps |
 | Styling | Tailwind CSS v4, `class-variance-authority`, `tailwind-merge`, `clsx`, `tw-animate-css` |
 | Icons | Lucide (default), Iconify (wide set), FontAwesome Free/Pro adapter (see §6) |
-| Fonts | Inter and JetBrains Mono via Fontsource; MV Waheed for Thaana (see §7) |
+| Fonts | Inter and JetBrains Mono via Fontsource; Faruma and MV Faseyha for Thaana (see §7) |
 | Build | Vite library mode (or `tsup`) emitting ESM + `.d.ts` |
 | Forms | `react-hook-form` (components also work uncontrolled or plain controlled) |
 | Validation | Schema-agnostic; `zod` used in examples |
@@ -261,20 +261,20 @@ Recommended font pack. Latin and mono fonts are open-licensed (OFL) and **self-h
 | Role | Font | Why | Package |
 |---|---|---|---|
 | UI sans (default) | **Inter** (variable) | The de-facto modern UI typeface. Excellent legibility at small admin sizes, tabular figures, wide language coverage, optical-size axis for display headings | `@fontsource-variable/inter` |
-| Thaana | **MV Waheed** | The familiar, highly legible Thaana face used across Maldivian government and media sites, so Dhivehi text looks the way readers expect | Bundled `woff2` in `@javaabu/onu/fonts` (subject to redistribution rights, see R7.3) |
+| Thaana | **Faruma** (text) and **MV Faseyha** (headings, bold) | The familiar, highly legible Thaana face used across Maldivian government and media sites, so Dhivehi text looks the way readers expect | Bundled `woff2` in `@javaabu/onu/fonts` (subject to redistribution rights, see R7.3) |
 | Monospace | **JetBrains Mono** (variable) | Code blocks, API keys, IDs, keyboard keys | `@fontsource-variable/jetbrains-mono` |
 | Alternative UI sans | **Geist** (variable) | A slightly more geometric, contemporary option. Shipped as a preset for products that want a different feel | `@fontsource-variable/geist` |
 | Serif (optional) | **Source Serif 4** (variable) | Long-form reading: news articles, the laws and regulations reader, certificates | `@fontsource-variable/source-serif-4` |
 
 - **R7.1** Fonts are not bundled into the JS. They are an optional CSS entry, `@javaabu/onu/fonts.css`, which imports the recommended Fontsource packages (optional peer dependencies). Projects can skip it and set the `--onu-font-*` tokens to their own fonts.
 - **R7.2** Font stacks rely on per-script `unicode-range`, so mixed Dhivehi/English text automatically renders each script in the right font:
-  `--onu-font-sans: "Inter Variable", "MV Waheed", "Faruma", ui-sans-serif, system-ui, sans-serif;`
+  `--onu-font-sans: "Inter Variable", "Faruma", "MV Faseyha", ui-sans-serif, system-ui, sans-serif;`
   Under `lang="dv"`, Thaana-specific metrics (line-height, size-adjust) apply.
-- **R7.3** **MV Waheed is the default Thaana font.**
+- **R7.3** **Faruma is the default Thaana font, with MV Faseyha for headings and bold.** (Changed from MV Waheed in October 2026.)
   - It is self-hosted as `woff2`, subset to the Thaana Unicode range and served with `unicode-range`, so it only downloads when Thaana text appears.
-  - Before it is bundled, Javaabu must confirm the right to redistribute it. Until then, `fonts.css` declares the `@font-face` and projects supply the font file themselves.
-  - MV Waheed has a single weight. Bold Thaana uses a font-synthesis-safe approach: headings use size and colour for emphasis rather than faux bold. A heavier companion Thaana face can be configured via `--onu-font-thaana-bold`.
-  - Fallback chain: `"MV Waheed", "Faruma", "Noto Sans Thaana", sans-serif`. Other Thaana fonts can be swapped in via `--onu-font-thaana`.
+  - Both fonts are free to use and redistribute (confirmed by Javaabu) and are bundled in `fonts.css`.
+  - Both have a single weight. Bold Thaana avoids faux bold: headings and bold text use MV Faseyha via `--onu-font-thaana-bold`.
+  - Fallback chain: `"Faruma", "MV Faseyha", "Noto Sans Thaana", sans-serif` (headings: `"MV Faseyha", "Faruma", …`). Other Thaana fonts can be swapped in via `--onu-font-thaana`.
 - **R7.4** `font-display: swap`, metric-matched fallbacks (`size-adjust`, `ascent-override`) to minimise layout shift, and preload guidance in the docs.
 - **R7.5** Tabular figures (`font-variant-numeric: tabular-nums`) in tables, stat tiles, pagination, countdowns and any column of numbers.
 - **R7.6** Typography tokens: `--onu-font-sans`, `--onu-font-thaana`, `--onu-font-mono`, `--onu-font-serif`, plus a type-scale and line-height token per density mode.
@@ -324,7 +324,7 @@ Recommended font pack. Latin and mono fonts are open-licensed (OFL) and **self-h
 
 - **R12.1** Dhivehi (`dv`) and English (`en`) are built-in locales. All built-in strings (e.g. "Close", "Next", "No results", "Required", pagination labels, date picker labels, aria-labels) come from a locale dictionary — no hard-coded English.
 - **R12.2** `<OnuProvider locale="dv">` sets locale, direction (auto RTL for `dv`) and fonts in one place. Consumers can override or add locales and individual strings.
-- **R12.3** Thaana font stack configured via `--onu-font-thaana`. The default is MV Waheed; other Thaana fonts can be plugged in (see §7).
+- **R12.3** Thaana font stack configured via `--onu-font-thaana`. The default is Faruma (MV Faseyha for headings); other Thaana fonts can be plugged in (see §7).
 - **R12.4** Typography tuned for Thaana: adjusted line-height and letter-spacing, no faux italics, correct baseline alignment of Thaana next to Latin text and icons.
 - **R12.5** Dates in Dhivehi: Dhivehi month and weekday names, Dhivehi relative-time strings ("2 ދުވަސް ކުރިން"), and optional Hijri display (see Hijri date component).
 - **R12.6** Numbers use Western Arabic digits by default (as is standard in the Maldives), with formatting via `Intl` and the active locale.
@@ -893,7 +893,7 @@ To be resolved before (or while) building the affected components:
 
 1. **Licence** — MIT like other Javaabu packages, or private/internal?
 2. **Google Maps billing**: whose Google Cloud project/API key is used for the examples app and CI, and is a Map ID set up for vector maps?
-3. **MV Waheed licence**: can Onu redistribute the MV Waheed font files in the npm package, and who supplies the canonical files? Is there a preferred heavier Thaana face for bold text?
+3. ~~**Thaana font licence**~~: resolved. Faruma and MV Faseyha are free to redistribute; Javaabu supplied the files.
 4. **FontAwesome Pro**: which Pro licence/Kit should CI use (needs a `FONTAWESOME_NPM_AUTH_TOKEN` secret)?
 5. **Figma**: which Figma team/workspace hosts the library, and is a paid plan with Dev Mode available for Code Connect?
 6. **Default primary colour** — exact Javaabu/Onu brand colour value.

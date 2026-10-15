@@ -37,8 +37,8 @@ export interface ExportPdfOptions<T> extends PrintDocumentOptions {
 }
 
 const DEFAULT_FONT =
-  '"Inter Variable", "MV Waheed", Faruma, "Noto Sans Thaana Variable", ui-sans-serif, system-ui, sans-serif'
-const DEFAULT_THAANA_FONT = '"MV Waheed", Faruma, "Noto Sans Thaana Variable", "Inter Variable", sans-serif'
+  '"Inter Variable", Faruma, "MV Faseyha", "Noto Sans Thaana Variable", ui-sans-serif, system-ui, sans-serif'
+const DEFAULT_THAANA_FONT = 'Faruma, "MV Faseyha", "Noto Sans Thaana Variable", "Inter Variable", sans-serif'
 
 const HTML_ESCAPES: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }
 
@@ -59,7 +59,7 @@ function safeFontFamily(value: string) {
  * Builds a print-ready HTML document for a table of rows: title, scope line,
  * generated date, and a table whose header row repeats on every printed page.
  * Every value is HTML-escaped. Set `dir`/`locale` for Dhivehi; Thaana uses the
- * Onu font stack (MV Waheed, Faruma, Noto Sans Thaana).
+ * Onu font stack (Faruma, MV Faseyha, Noto Sans Thaana).
  */
 export function buildPrintDocument<T>(
   rows: readonly T[],
@@ -153,7 +153,7 @@ ${rows.length ? "" : `<p class="empty">${escapeHtml(t("common.noResults"))}</p>`
 
 /**
  * The page's `@font-face` rules, with relative URLs made absolute, so the print
- * document renders with the same fonts (MV Waheed for Thaana). Stylesheets the
+ * document renders with the same fonts (Faruma and MV Faseyha for Thaana). Stylesheets the
  * page cannot read (cross-origin) are skipped.
  */
 export function collectFontFaces(doc: Document = document) {

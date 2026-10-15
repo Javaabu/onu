@@ -16,7 +16,7 @@ import { input as en_input } from "../locales/en/input"
 registerEnglish({ input: en_input })
 
 /** Fonts tried, in order, for typed signatures. */
-export const TYPED_SIGNATURE_FONT = `"Segoe Script", "Brush Script MT", "Snell Roundhand", "MV Waheed", cursive`
+export const TYPED_SIGNATURE_FONT = `"Segoe Script", "Brush Script MT", "Snell Roundhand", "MV Faseyha", cursive`
 
 /**
  * Renders a typed name as a PNG data URL, so a typed signature has the same

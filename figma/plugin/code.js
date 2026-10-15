@@ -525,8 +525,8 @@
 				"$type": "fontFamily",
 				"$value": [
 					"Inter Variable",
-					"MV Waheed",
 					"Faruma",
+					"MV Faseyha",
 					"Noto Sans Thaana Variable",
 					"ui-sans-serif",
 					"system-ui",
@@ -536,7 +536,18 @@
 			"thaana": {
 				"$type": "fontFamily",
 				"$value": [
-					"MV Waheed",
+					"Faruma",
+					"MV Faseyha",
+					"Noto Sans Thaana Variable",
+					"Inter Variable",
+					"sans-serif"
+				]
+			},
+			"thaana-bold": {
+				"$type": "fontFamily",
+				"$description": "Dhivehi headings and bold text (font-synthesis is off for Thaana, so headings use a distinct face).",
+				"$value": [
+					"MV Faseyha",
 					"Faruma",
 					"Noto Sans Thaana Variable",
 					"Inter Variable",
@@ -557,7 +568,7 @@
 				"$type": "fontFamily",
 				"$value": [
 					"Source Serif 4 Variable",
-					"MV Waheed",
+					"MV Faseyha",
 					"Georgia",
 					"serif"
 				]
@@ -1060,8 +1071,10 @@
 	}
 	/**
 	* Picks the first available family from each list (Figma's font list plus a
-	* defensive figma.loadFontAsync), so a missing MV Waheed / Faruma falls back to
-	* Noto Sans Thaana and then Inter instead of failing.
+	* defensive figma.loadFontAsync), so a missing Faruma / MV Faseyha falls back to
+	* Noto Sans Thaana and then Inter instead of failing. As in Onu's CSS, Dhivehi
+	* text uses Faruma and semibold/bold Dhivehi (headings) uses MV Faseyha
+	* (`--onu-font-thaana-bold`), since both have a single weight.
 	*/
 	async function loadFonts() {
 		let available = [];
@@ -1103,14 +1116,25 @@
 			}
 			throw new Error(`${label}: none of ${families.join(", ")} could be loaded.`);
 		}
+		const ui = await pick(["Inter", "Roboto"], "UI font");
+		const text = await pick([
+			"Faruma",
+			"MV Faseyha",
+			"Noto Sans Thaana",
+			"Inter"
+		], "Thaana font");
+		const headings = await pick([
+			"MV Faseyha",
+			"Faruma",
+			"Noto Sans Thaana",
+			"Inter"
+		], "Thaana heading font");
 		return {
-			ui: await pick(["Inter", "Roboto"], "UI font"),
-			thaana: await pick([
-				"MV Waheed",
-				"Faruma",
-				"Noto Sans Thaana",
-				"Inter"
-			], "Thaana font"),
+			ui,
+			thaana: _objectSpread2(_objectSpread2({}, text), {}, {
+				Semibold: headings.Semibold,
+				Bold: headings.Bold
+			}),
 			mono: await pick([
 				"JetBrains Mono",
 				"Roboto Mono",
