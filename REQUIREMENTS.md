@@ -96,7 +96,11 @@ This document captures the requirements, constraints and full build list for Onu
 
 Onu is used mainly for admin panels, but the same system has to work for public portals, citizen portals, learning platforms, kiosks and print. The design must be modern, neutral and versatile, never "admin-only".
 
-- **R3.1** **Visual style**: clean and current, in line with shadcn/ui's *new-york* style. That means neutral surfaces, subtle 1px borders, shadows used sparingly, generous whitespace and restrained colour (primary marks emphasis and action, not decoration). Reference points: shadcn/ui, Linear, Vercel, the Stripe dashboard.
+- **R3.1** **Visual style: ProtonAnt, by default.** The primitives are vendored from shadcn/ui's Radix base in the *nova* style (`scripts/sync-shadcn.mjs --style nova`), and Onu's defaults then give them the ProtonAnt look (adopted in October 2026, replacing the earlier *new-york* target):
+  - **Proton** (Proton's design system) for colour and the app shell: Proton purple `#6d4aff` as the one brand colour (`--onu-primary`), a warm grey shell (sidebar, header and the frame around content) with the page on a white panel, grey hover and active states, and count pills.
+  - **Ant Design** for sizing and detail: 14px body text on a 22px line, 32px controls at the default density, 6px control corners and 8px cards, Ant's primary scale (`--primary-1` … `--primary-8`) and preset tag colours.
+  - Shadows are minimal: 1px borders and surface colour do the work; shadows are kept for overlays.
+  - This is the only built-in look. It lives entirely in tokens (`tokens.json` → `tokens.css`, `theme.css`) and a few shell classes, not in component logic, so apps re-theme it with `--onu-primary`, `--onu-radius`, the shell tokens (`--shell`, `--shell-foreground`, …) and density, without forking components.
 - **R3.2** **Density modes** via `data-density="compact | default | comfortable | touch"` on any container:
   - `compact`: data-heavy admin tables and grids
   - `default`: general admin forms and pages
@@ -197,7 +201,7 @@ Governance:
 | Concern | Choice |
 |---|---|
 | Language | TypeScript (strict) |
-| Base components | shadcn/ui (new-york style) |
+| Base components | shadcn/ui, Radix base, *nova* style, restyled to ProtonAnt by default (R3.1) |
 | Primitives | Radix UI; React Aria where Radix has gaps |
 | Styling | Tailwind CSS v4, `class-variance-authority`, `tailwind-merge`, `clsx`, `tw-animate-css` |
 | Icons | Lucide (default), Iconify (wide set), FontAwesome Free/Pro adapter (see §6) |
