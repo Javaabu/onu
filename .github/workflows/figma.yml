@@ -12,12 +12,16 @@ on:
         type: choice
         options: [probe, sync-variables]
         default: probe
+      file_key:
+        description: Figma file key (from the file URL)
+        type: string
+        default: koHmHh7QJWX8BPN6KusMg9
 
 permissions:
   contents: read
 
 env:
-  FIGMA_FILE_KEY: hilfEQCV33vZNet92CWRJp
+  FIGMA_FILE_KEY: ${{ inputs.file_key || 'koHmHh7QJWX8BPN6KusMg9' }}
 
 jobs:
   figma:

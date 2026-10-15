@@ -288,7 +288,7 @@ export class FakeFigma {
   constructor(fonts: Array<[string, string]>) {
     this.fonts = fonts.map(([family, style]) => ({ fontName: { family, style } }))
     this.root = new FakeNode("DOCUMENT", this)
-    this.root.name = "Claudius"
+    this.root.name = "Onu_Claude"
     const first = new FakeNode("PAGE", this)
     first.name = "Page 1"
     this.root.appendChild(first)

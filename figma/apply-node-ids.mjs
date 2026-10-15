@@ -15,9 +15,9 @@ import { readFileSync, writeFileSync } from "node:fs"
 import path from "node:path"
 import { pathToFileURL } from "node:url"
 
-/** The Onu Figma file ("Claudius"). */
-export const DEFAULT_FILE_KEY = "hilfEQCV33vZNet92CWRJp"
-const FILE_NAME = "Claudius"
+/** The Onu Figma file ("Onu_Claude"). */
+export const DEFAULT_FILE_KEY = "koHmHh7QJWX8BPN6KusMg9"
+const FILE_NAME = "Onu_Claude"
 
 export const nodeUrl = (fileKey, nodeId) =>
   `https://www.figma.com/design/${fileKey}/${FILE_NAME}?node-id=${String(nodeId).replace(/:/g, "-")}`

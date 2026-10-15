@@ -11,9 +11,9 @@ import { samples } from "./kit/samples"
 import { ensureTextStyles, loadFonts } from "./typography"
 import { ensureVariables } from "./variables"
 
-/** The Onu Figma file ("Claudius"). figma.fileKey is used when the plugin can read it. */
-export const DEFAULT_FILE_KEY = "hilfEQCV33vZNet92CWRJp"
-export const DEFAULT_FILE_NAME = "Claudius"
+/** The Onu Figma file ("Onu_Claude"). figma.fileKey is used when the plugin can read it. */
+export const DEFAULT_FILE_KEY = "koHmHh7QJWX8BPN6KusMg9"
+export const DEFAULT_FILE_NAME = "Onu_Claude"
 
 export const PAGES = ["Cover", "Foundations", "Inputs", "Display", "Navigation", "Overlays", "Data", "Samples"] as const
 

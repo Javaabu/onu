@@ -259,7 +259,7 @@ describe("Onu kit generator", () => {
     for (const def of KIT) if (def.key) expect(components[def.key], def.key).toBeDefined()
     expect(first.nodeIds["form-scaffolding/button"]).toBe(firstSnapshot.sets.Button)
     expect(first.figmaUrls["form-scaffolding/button"]).toMatch(
-      /^https:\/\/www\.figma\.com\/design\/hilfEQCV33vZNet92CWRJp\/Claudius\?node-id=\d+-\d+$/,
+      /^https:\/\/www\.figma\.com\/design\/koHmHh7QJWX8BPN6KusMg9\/Onu_Claude\?node-id=\d+-\d+$/,
     )
   })
 

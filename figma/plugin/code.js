@@ -4713,9 +4713,9 @@
 
 //#endregion
 //#region plugin/src/generate.ts
-/** The Onu Figma file ("Claudius"). figma.fileKey is used when the plugin can read it. */
-	const DEFAULT_FILE_KEY = "hilfEQCV33vZNet92CWRJp";
-	const DEFAULT_FILE_NAME = "Claudius";
+/** The Onu Figma file ("Onu_Claude"). figma.fileKey is used when the plugin can read it. */
+	const DEFAULT_FILE_KEY = "koHmHh7QJWX8BPN6KusMg9";
+	const DEFAULT_FILE_NAME = "Onu_Claude";
 	const PAGES = [
 		"Cover",
 		"Foundations",
@@ -4814,7 +4814,7 @@
 			components[def.name] = node.id;
 			if (def.key) {
 				nodeIds[def.key] = node.id;
-				figmaUrls[def.key] = nodeUrl(fileKey, node.id, figma.root.name || "Claudius");
+				figmaUrls[def.key] = nodeUrl(fileKey, node.id, figma.root.name || "Onu_Claude");
 			}
 		}
 		log("Done.");

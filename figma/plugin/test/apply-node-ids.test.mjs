@@ -15,7 +15,7 @@ describe("apply-node-ids", () => {
       nodeIds: { "form-scaffolding/button": "1:2" },
     })
     expect(result.components["form-scaffolding/button"].figmaUrl).toBe(
-      "https://www.figma.com/design/abc/Claudius?node-id=1-2",
+      "https://www.figma.com/design/abc/Onu_Claude?node-id=1-2",
     )
     expect(result.updated).toEqual(["form-scaffolding/button"])
     expect(result.unknown).toEqual(["not/a-component"])
@@ -26,7 +26,7 @@ describe("apply-node-ids", () => {
   it("builds URLs from bare node ids with the file key", () => {
     const result = applyNodeIds(components, { "display-and-feedback/tag": "10:20" }, { fileKey: "KEY" })
     expect(result.components["display-and-feedback/tag"].figmaUrl).toBe(
-      "https://www.figma.com/design/KEY/Claudius?node-id=10-20",
+      "https://www.figma.com/design/KEY/Onu_Claude?node-id=10-20",
     )
   })
 

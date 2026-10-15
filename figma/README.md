@@ -1,7 +1,7 @@
 # Figma kit
 
 The Onu Figma library mirrors the React components one-to-one (REQUIREMENTS §3, R3.11–R3.17). It lives in the Onu
-Figma file, [Claudius](https://www.figma.com/design/hilfEQCV33vZNet92CWRJp/Claudius).
+Figma file, [Onu_Claude](https://www.figma.com/design/koHmHh7QJWX8BPN6KusMg9/Onu_Claude).
 
 | Piece        | How                                                                                                                                                                                                                                                     |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -14,11 +14,11 @@ Figma file, [Claudius](https://www.figma.com/design/hilfEQCV33vZNet92CWRJp/Claud
 
 ## Generate the kit (designers)
 
-You need the Figma **desktop app** (development plugins do not run in the browser) and edit access to Claudius.
+You need the Figma **desktop app** (development plugins do not run in the browser) and edit access to Onu_Claude.
 
 1. Get this repository (or just the `figma/plugin` folder: `manifest.json`, `code.js` and `ui.html`). The built
    `code.js` is committed, so there is nothing to build.
-2. Open Claudius in the Figma desktop app.
+2. Open Onu_Claude in the Figma desktop app.
 3. Menu → **Plugins → Development → Import plugin from manifest…** and pick `figma/plugin/manifest.json`.
 4. Run it: **Plugins → Development → Onu kit**.
 5. Leave the brand colour as it is (it comes from `tokens.json`) unless you are trying a different brand, keep
@@ -69,7 +69,7 @@ overwritten on the next run; build your own components from instances instead.
 
 ## Publish the library
 
-1. In Claudius, open the **Assets** panel → **Libraries** (book icon) → **Publish…**. Publish the variables, text
+1. In Onu_Claude, open the **Assets** panel → **Libraries** (book icon) → **Publish…**. Publish the variables, text
    styles and components (the helper sets such as `Tabs / Tab` can stay published; they are needed by the others).
 2. In product files, enable the Onu library from **Assets → Libraries**, and accept updates after each re-run.
 
