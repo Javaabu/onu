@@ -36,12 +36,25 @@ if (meta.status === 200) {
   )
 } else console.log(`file meta: ${meta.status} ${JSON.stringify(meta.body)}`)
 
-const doc = await get(`/v1/files/${file}?depth=2`)
+const doc = await get(`/v1/files/${file}?depth=3`)
 if (doc.status === 200) {
-  const pages = doc.body.document.children.map((p) => `${p.name} (${p.children?.length ?? 0} top-level nodes)`)
-  console.log(`pages: ${pages.join(", ")}`)
+  console.log(`last modified: ${doc.body.lastModified}, version ${doc.body.version}`)
+  for (const page of doc.body.document.children) {
+    const nodes = page.children ?? []
+    console.log(`page "${page.name}": ${nodes.length} top-level nodes`)
+    for (const n of nodes.slice(0, 40)) {
+      const b = n.absoluteBoundingBox
+      const size = b ? ` ${Math.round(b.width)}x${Math.round(b.height)}` : ""
+      console.log(`  - ${n.type} "${n.name}"${size}${n.children ? ` (${n.children.length} children)` : ""}`)
+    }
+    if (nodes.length > 40) console.log(`  … ${nodes.length - 40} more`)
+  }
+  const components = Object.values(doc.body.components ?? {})
+  const sets = Object.values(doc.body.componentSets ?? {})
+  const styles = Object.values(doc.body.styles ?? {})
+  console.log(`component sets: ${sets.length}${sets.length ? ` (${sets.map((c) => c.name).join(", ")})` : ""}`)
   console.log(
-    `components: ${Object.keys(doc.body.components ?? {}).length}, styles: ${Object.keys(doc.body.styles ?? {}).length}`,
+    `components: ${components.length}, styles: ${styles.length}${styles.length ? ` (${[...new Set(styles.map((st) => st.styleType))].join(", ")})` : ""}`,
   )
 } else console.log(`file: ${doc.status} ${JSON.stringify(doc.body)}`)
 
