@@ -18,16 +18,16 @@ A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `
 
 ## Where things go
 
-| What                             | Where                                                                                                                 |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| shadcn/ui primitives (generated) | `packages/onu/src/ui`, via `node packages/onu/scripts/sync-shadcn.mjs`. Keep Onu patches marked with `onu:` comments. |
-| Onu components                   | `packages/onu/src/components/<group>/<name>.tsx` + `<name>.test.tsx`, exported from the group's `index.ts`            |
-| Heavy components                 | `packages/onu/src/{charts,maps,editor,calendar,media}` (separate entry points)                                        |
-| Built-in strings                 | `packages/onu/src/locales/{en,dv}/<namespace>.ts`; never hard-code English                                            |
-| Design tokens                    | `tokens.json`, then `pnpm --filter @javaabu/onu tokens`                                                               |
-| Showcase demos                   | `examples/src/showcase/<group>/<name>.demo.tsx` (auto-discovered)                                                     |
-| Sample pages                     | `examples/src/pages/<group>/<name>.page.tsx` (auto-discovered)                                                        |
-| Docs                             | `docs/<group>/<name>.md`                                                                                              |
+| What                 | Where                                                                                                             |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| shadcn/ui primitives | `packages/onu/src/ui`: Onu-owned code, started from shadcn/ui (see [shadcn/ui primitives](#shadcnui-primitives)). |
+| Onu components       | `packages/onu/src/components/<group>/<name>.tsx` + `<name>.test.tsx`, exported from the group's `index.ts`        |
+| Heavy components     | `packages/onu/src/{charts,maps,editor,calendar,media}` (separate entry points)                                    |
+| Built-in strings     | `packages/onu/src/locales/{en,dv}/<namespace>.ts`; never hard-code English                                        |
+| Design tokens        | `tokens.json`, then `pnpm --filter @javaabu/onu tokens`                                                           |
+| Showcase demos       | `examples/src/showcase/<group>/<name>.demo.tsx` (auto-discovered)                                                 |
+| Sample pages         | `examples/src/pages/<group>/<name>.page.tsx` (auto-discovered)                                                    |
+| Docs                 | `docs/<group>/<name>.md`                                                                                          |
 
 ## Rules of thumb
 
@@ -39,6 +39,15 @@ A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `
 - Every `package.json` export has a `size-limit` budget (`pnpm --filter @javaabu/onu size`, run in CI). When a change grows an entry on purpose, raise its budget in the same PR and say why; keep budgets a little above the measured size.
 - Prefer shadcn/ui or an approved library (REQUIREMENTS §4) before building from scratch. Record new dependencies in `DEPENDENCIES.md`.
 - Add a changeset: `pnpm changeset`.
+
+## shadcn/ui primitives
+
+The files in `packages/onu/src/ui` started as shadcn/ui's components (Radix base, nova style), but Onu owns them now. They carry Onu's RTL and Dhivehi support, translated labels, touch targets and the ProtonAnt look, and they are not re-synced with upstream as a matter of routine.
+
+- **Edit them like any other Onu code.** Mark changes to upstream code with a short `// onu:` comment saying why, so the file still shows where it differs from shadcn.
+- **Fixes come through dependencies, not syncs.** Behaviour and accessibility (keyboard, focus, ARIA, positioning) live in `radix-ui`, `cmdk`, `vaul` and the other packages these files import. Keep those up to date like any dependency.
+- **Check upstream now and then, by hand.** On a shadcn/ui release that matters, or a Tailwind major version, skim the shadcn/ui changelog. Port any real fix (a missing ARIA attribute, a markup bug) as a normal change. Don't re-sync whole files: that drops Onu's changes and the diff mixes them with upstream's.
+- **Use the sync script only to add a new primitive:** `node packages/onu/scripts/sync-shadcn.mjs <component>` vendors just that component (it clones shadcn/ui, or uses a local checkout with `--src`). Always name the component: run without one, it overwrites every file in `src/ui`. Then adapt it like the others (logical classes, `<Icon>`, translated strings, `onu:` comments) and add tests.
 
 ## Checks
 

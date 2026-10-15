@@ -12,8 +12,12 @@
  *   node scripts/sync-shadcn.mjs [--src <path to shadcn-ui/ui checkout>] [--style nova] [component …]
  *
  * Without --src the script sparse-clones github.com/shadcn-ui/ui into a temp
- * directory. Review the git diff after running: files in `src/ui` may carry
- * small Onu patches marked with `// onu:` comments that must be re-applied.
+ * directory.
+ *
+ * Use it to add a new primitive, naming the component. `src/ui` is Onu-owned
+ * code, not re-synced with upstream as a routine (see CONTRIBUTING, "shadcn/ui
+ * primitives"): running without component names overwrites every file and drops
+ * Onu's changes (marked with `// onu:` comments).
  */
 import { execFileSync } from "node:child_process"
 import { existsSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs"
