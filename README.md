@@ -57,16 +57,22 @@ Re-theme with one variable:
 }
 ```
 
+## AI assistants
+
+The package ships its docs for AI coding assistants: `node_modules/@javaabu/onu/llms.txt` (the rules for writing Onu code and an index of every component) and a Markdown page per component in `node_modules/@javaabu/onu/docs/`. There is also an MCP server, [`@javaabu/onu-mcp`](packages/onu-mcp), and a Claude Code plugin (`/plugin marketplace add Javaabu/onu`). See [AI assistants](docs/guides/ai-assistants.md).
+
 ## Repository
 
-| Path           | What                                                                   |
-| -------------- | ---------------------------------------------------------------------- |
-| `packages/onu` | The `@javaabu/onu` package                                             |
-| `web`          | Docs site: every component and the sample pages (`pnpm dev`)           |
-| `templates`    | Starter apps: Laravel + Inertia + React, and Next.js (App Router)      |
-| `docs`         | Developer documentation (Docusaurus format)                            |
-| `figma`        | Figma token sync and Code Connect mappings                             |
-| `tokens.json`  | Design tokens (DTCG), the source for CSS variables and Figma Variables |
+| Path               | What                                                                   |
+| ------------------ | ---------------------------------------------------------------------- |
+| `packages/onu`     | The `@javaabu/onu` package                                             |
+| `packages/onu-mcp` | `@javaabu/onu-mcp`: MCP server with Onu's docs for AI assistants       |
+| `plugins/onu`      | Claude Code plugin (skill + MCP server)                                |
+| `web`              | Docs site: every component and the sample pages (`pnpm dev`)           |
+| `templates`        | Starter apps: Laravel + Inertia + React, and Next.js (App Router)      |
+| `docs`             | Developer documentation (Docusaurus format)                            |
+| `figma`            | Figma token sync and Code Connect mappings                             |
+| `tokens.json`      | Design tokens (DTCG), the source for CSS variables and Figma Variables |
 
 ```bash
 pnpm install

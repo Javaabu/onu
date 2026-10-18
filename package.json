@@ -7,10 +7,10 @@
     "node": ">=20.19"
   },
   "scripts": {
-    "build": "pnpm --filter @javaabu/onu build",
+    "build": "pnpm --filter \"./packages/*\" build",
     "build:web": "pnpm --filter onu-web build",
     "dev": "pnpm --filter onu-web dev",
-    "test": "pnpm --filter @javaabu/onu test",
+    "test": "pnpm --filter \"./packages/*\" test",
     "test:coverage": "pnpm --filter @javaabu/onu test:coverage",
     "typecheck": "pnpm -r --filter \"!./templates/*\" typecheck",
     "build:templates": "pnpm --filter \"./templates/*\" build",

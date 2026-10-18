@@ -1,9 +1,10 @@
 import { readFileSync } from "node:fs"
-import { resolve } from "node:path"
+import path, { resolve } from "node:path"
 import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig, type Plugin } from "vite"
 
+import { buildLlms, collectDocs } from "../scripts/llms.mjs"
 import { sectionTitles } from "./src/components/section-source"
 
 const onuSrc = resolve(import.meta.dirname, "../packages/onu/src")
@@ -54,9 +55,47 @@ function registryMeta(): Plugin {
   }
 }
 
+/**
+ * The docs for AI assistants (scripts/llms.mjs): `llms.txt`, `llms-full.txt` and
+ * `docs/<path>.md` at the site root, served in dev and emitted on build.
+ * `virtual:onu-docs` lists the pages, so a demo can link to its Markdown.
+ */
+function llmsDocs(): Plugin {
+  const siteUrl = process.env.ONU_SITE_URL ?? "https://onu.on-forge.com"
+  const virtual = "\0virtual:onu-docs"
+  return {
+    name: "onu-web:llms",
+    resolveId: (id) => (id === "virtual:onu-docs" ? virtual : null),
+    load(id) {
+      if (id !== virtual) return null
+      const paths = collectDocs().flatMap((s) => s.pages.map((p) => p.path))
+      return `export const docPaths = ${JSON.stringify(paths)}`
+    },
+    configureServer(server) {
+      const docs = path.resolve(import.meta.dirname, "../docs")
+      server.watcher.add(docs)
+      server.middlewares.use((req, res, next) => {
+        const url = (req.url ?? "").split(/[?#]/)[0]!.slice(server.config.base.length)
+        if (!/^(llms(-full)?\.txt|docs\/.+\.(md|json))$/.test(url)) return next()
+        const content = buildLlms({ siteUrl: `http://localhost:${server.config.server.port}${server.config.base}` })[
+          url
+        ]
+        if (content === undefined) return next()
+        res.setHeader("Content-Type", `${url.endsWith(".json") ? "application/json" : "text/markdown"}; charset=utf-8`)
+        res.end(content)
+      })
+    },
+    generateBundle() {
+      for (const [fileName, source] of Object.entries(buildLlms({ siteUrl }))) {
+        this.emitFile({ type: "asset", fileName, source })
+      }
+    },
+  }
+}
+
 export default defineConfig({
   base: process.env.EXAMPLES_BASE ?? "/",
-  plugins: [registryMeta(), react(), tailwindcss()],
+  plugins: [registryMeta(), llmsDocs(), react(), tailwindcss()],
   build: {
     // Skip the gzip size report and source maps: faster builds that fit on small servers.
     reportCompressedSize: false,

@@ -1,0 +1,13 @@
+{
+  "name": "onu",
+  "description": "Build UI with Onu (@javaabu/onu): the rules for writing Onu code, and the component docs through the Onu MCP server.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Javaabu Pvt. Ltd.",
+    "url": "https://javaabu.com"
+  },
+  "homepage": "https://github.com/Javaabu/onu/blob/main/docs/guides/ai-assistants.md",
+  "repository": "https://github.com/Javaabu/onu",
+  "license": "MIT",
+  "keywords": ["react", "ui", "rtl", "dhivehi", "thaana", "laravel"]
+}

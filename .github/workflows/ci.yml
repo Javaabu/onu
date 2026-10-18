@@ -40,7 +40,9 @@ jobs:
           files: packages/onu/coverage/lcov.info
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
-      - name: Build package
+      - name: MCP server tests
+        run: pnpm --filter @javaabu/onu-mcp test
+      - name: Build packages
         run: pnpm build
       - name: Size budgets
         run: pnpm --filter @javaabu/onu size

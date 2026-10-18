@@ -18,16 +18,20 @@ import {
 
 import { locate, navSections, neighbours, type Entry, type NavSection } from "../registry"
 import { CodeFallback, DemoSourceContext, LazyCodeBlock } from "./demo"
+import { DocActions, docPathFor } from "./doc-actions"
 import { BareChrome, SiteLayout } from "./layout"
 
 export function PageHeader({
   crumbs,
   title,
   description,
+  actions,
 }: {
   crumbs: { label: string; href?: string }[]
   title: string
   description?: string
+  /** Shown beside the title, e.g. the "Copy page" menu. */
+  actions?: React.ReactNode
 }) {
   return (
     <div className="mb-10 space-y-3">
@@ -49,7 +53,10 @@ export function PageHeader({
           ))}
         </BreadcrumbList>
       </Breadcrumb>
-      <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl scroll-m-20">{title}</h1>
+      <div className="gap-3 flex flex-wrap items-start justify-between">
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl scroll-m-20">{title}</h1>
+        {actions}
+      </div>
       {description ? (
         <p className="text-base sm:text-lg text-pretty text-muted-foreground">
           <span dir="auto">{description}</span>
@@ -243,6 +250,7 @@ export function EntryView({ entries }: { entries: Entry[] }) {
     )
   }
 
+  const docPath = docPathFor(entry.slug)
   const here = locate(pathname)
   const crumbs = here
     ? [
@@ -253,7 +261,12 @@ export function EntryView({ entries }: { entries: Entry[] }) {
 
   return (
     <SiteLayout toc>
-      <PageHeader crumbs={crumbs} title={meta.title} description={meta.description} />
+      <PageHeader
+        crumbs={crumbs}
+        title={meta.title}
+        description={meta.description}
+        actions={docPath ? <DocActions docPath={docPath} title={meta.title} /> : null}
+      />
       <DemoSourceContext.Provider value={demoSource}>
         <LazyEntry entry={entry} />
       </DemoSourceContext.Provider>

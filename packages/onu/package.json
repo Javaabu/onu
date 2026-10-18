@@ -33,6 +33,9 @@
   "files": [
     "dist",
     "src/styles",
+    "docs",
+    "llms.txt",
+    "llms-full.txt",
     "README.md"
   ],
   "exports": {
@@ -95,7 +98,8 @@
     "./fonts-optional.css": "./src/styles/fonts-optional.css"
   },
   "scripts": {
-    "build": "vite build && node scripts/build-types.mjs",
+    "build": "vite build && node scripts/build-types.mjs && pnpm llms",
+    "llms": "node ../../scripts/llms.mjs --out .",
     "build:types": "node scripts/build-types.mjs",
     "test": "vitest run",
     "test:watch": "vitest",

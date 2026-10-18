@@ -1,0 +1,16 @@
+{
+  "name": "javaabu-onu",
+  "owner": {
+    "name": "Javaabu Pvt. Ltd."
+  },
+  "metadata": {
+    "description": "Claude Code plugins for Onu, Javaabu's React UI library."
+  },
+  "plugins": [
+    {
+      "name": "onu",
+      "source": "./plugins/onu",
+      "description": "Build UI with Onu (@javaabu/onu): the rules for writing Onu code, and the component docs through the Onu MCP server."
+    }
+  ]
+}
