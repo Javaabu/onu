@@ -77,6 +77,14 @@ Running `node scripts/build.mjs` in `web/` instead of `pnpm build:web` saves the
 
 ## Releasing
 
-Every change that affects the published package adds a changeset (`pnpm changeset`). To release, run the **Release** workflow from the Actions tab: it applies the pending changesets (version bump and CHANGELOG), commits them to `main`, publishes to npm and pushes the version tags. Untick "publish" to only bump versions. There is no standing release pull request or branch.
+Every change that affects a published package adds a changeset (`pnpm changeset`). Work happens on `dev`; pushes there run no workflows, so merge to `main` in batches.
 
-Publishing needs an `NPM_TOKEN` repository secret: an npm granular access token with read and write access to the `@javaabu` scope (packages `@javaabu/onu` and `@javaabu/onu-mcp`) and "bypass 2FA" allowed, from an account in the `javaabu` npm organisation. The workflow stops before bumping anything if the secret is missing or the build fails. Provenance is signed only once the repository is public. After the first release, you can switch to npm trusted publishing (each package's settings on npmjs.com, pointing at `release.yml`) and remove the token.
+To release:
+
+1. On `dev`, run `pnpm changeset version`. It bumps every package with pending changesets, writes their `CHANGELOG.md` and deletes the changesets. All packages share one version, so check that `packages/onu` and `packages/onu-mcp` match.
+2. Commit (`Release v0.1.0`) and merge `dev` into `main`. Wait for CI to pass on `main`.
+3. Tag that commit on `main` and push the tag: `git tag v0.1.0 && git push origin v0.1.0`.
+
+The **Release** workflow runs only for `v*` tags. It checks that the tagged commit is on `main` and that every package's version matches the tag, then builds and publishes to npm (versions already on npm are skipped). Tags with a pre-release suffix (`v1.0.0-beta.1`) publish under the `next` dist-tag.
+
+Publishing needs an `NPM_TOKEN` repository secret: an npm granular access token with read and write access to the `@javaabu` scope and "bypass 2FA" allowed, from an account that can publish to `@javaabu`. Write tokens expire after about 90 days. Provenance is signed only once the repository is public. After the first release, you can switch to npm trusted publishing (each package's settings on npmjs.com, pointing at `release.yml`) and remove the token.

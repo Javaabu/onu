@@ -1,5 +1,0 @@
----
-"@javaabu/onu": minor
----
-
-Charts: gradient fills, on by default. Areas (`LineChart` and `TimeSeriesChart` areas, stacked areas, `Sparkline`, `StatTile` sparklines) fade from the series colour to almost clear at the baseline, bars (`BarChart` vertical, horizontal and stacked, `TimeSeriesChart` bars, `PeriodComparisonChart` bars) run from a lighter base to the full colour (mirrored for negative values and for horizontal bars in RTL), and the `PeriodComparisonChart` line variant gets a soft wash under the current period. Gradients use the series colour, so they follow the theme and `--onu-primary`, have ids unique per chart instance, and fall back to solid in forced-colours mode. Turn them off with `gradient={false}` on a chart (`sparklineGradient` on `StatTile`) or for an area with the new `ChartStyleProvider gradient={false}`; `useChartGradient` is exported for custom charts. Pie and donut slices stay solid. Tooltip and legend swatches stay solid when a series is filled with a gradient.

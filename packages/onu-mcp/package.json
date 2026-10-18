@@ -1,6 +1,6 @@
 {
   "name": "@javaabu/onu-mcp",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "MCP server for Onu (@javaabu/onu): gives AI assistants the component docs and the rules for writing Onu code.",
   "license": "MIT",
   "author": {
