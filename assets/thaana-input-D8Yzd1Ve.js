@@ -1,0 +1,1 @@
+import{x as e}from"./button-DRXR2maZ.js";import{t}from"./textarea-B9B7e_LG.js";import{t as n}from"./text-input-Dr0jqPLS.js";var r=e();function i({thaana:e=!0,thaanaToggle:t=!0,...i}){return(0,r.jsx)(n,{thaana:e,thaanaToggle:t,...i})}function a({thaana:e=!0,thaanaToggle:n=!0,...i}){return(0,r.jsx)(t,{thaana:e,thaanaToggle:n,...i})}export{a as n,i as t};

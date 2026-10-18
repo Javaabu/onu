@@ -1,0 +1,1368 @@
+{
+  "name": "@javaabu/onu",
+  "version": "0.1.0",
+  "rules": "### Before writing code\n\n- Look up a component's page before using it: `node_modules/@javaabu/onu/docs/<group>/<name>.md`, `onu_get_doc` in the MCP server, or the site's `llms.txt`. Each page has a **Props** table and an **Accessibility** section. Use only the props listed there.\n- Prefer an Onu component over writing your own or using a shadcn/ui primitive directly. `llms.txt` lists every component with one line on what it is for. Only reach for `@javaabu/onu/primitives` (the shadcn/ui parts Onu is built on) to compose something Onu doesn't have.\n- Don't add other UI kits (MUI, Chakra, Ant Design, Headless UI, a separate shadcn/ui copy) next to Onu.\n\n### Setup\n\n- One CSS entry: `@import \"tailwindcss\"; @import \"@javaabu/onu/tailwind.css\";` and, for the font pack, `@import \"@javaabu/onu/fonts.css\";`, which needs `npm install @fontsource-variable/inter @fontsource-variable/jetbrains-mono @fontsource-variable/noto-sans-thaana` first.\n- Wrap the app once in `<ThemeProvider><OnuProvider>…</OnuProvider></ThemeProvider>`. `OnuProvider` sets `lang`, `dir` and density on `<html>`, so portals follow.\n- Dhivehi: `locale={dv}` with `import { dv } from \"@javaabu/onu/locales/dv\"`, or `locale=\"dv\"` to load it on demand. English needs no `locale`.\n- Inertia or Next.js: pass the router's `Link` as `linkComponent` on `OnuProvider`; Onu's links and `href` props then use it.\n\n### Imports\n\n- Components, hooks and helpers come from `@javaabu/onu`. Heavy features have their own entry: `@javaabu/onu/charts`, `/maps`, `/editor`, `/calendar`, `/media`, `/query-builder`, `/export`, `/thaana`, `/icons/iconify`, `/icons/fontawesome`. The docs page's first code block shows the import.\n- Never import from `@javaabu/onu/dist/...` or `@javaabu/onu/src/...`.\n\n### Forms (Laravel)\n\n- Put every control inside `FormField` with the field's `name` (bracket notation is fine, `items[0][name]`). `FormField` wires the label, help, errors and ARIA. Don't hand-write `<label>`, error text or `aria-describedby`.\n- Use `Form` with an `onSubmit` that returns the request promise (axios, fetch or Inertia). It shows Laravel 422 errors under the fields, focuses the first one and shows the error summary. With Inertia, pass `errors={form.errors}` and `processing={form.processing}`.\n- Submit with `SubmitButton` (spinner, no double submit), not a plain `Button type=\"submit\"`.\n- Pick the specific input: `EmailInput`, `PasswordInput`, `PhoneInput`, `NumberInput`, `DatePicker`, `ApiSelect` (Laravel paginated API), `InstantFileUpload`, and so on, rather than `TextInput type=\"…\"`.\n- Edit pages get `SaveBar`; index pages get `ListingPage` (or `DataTable` with `useListingState`).\n\n### Dhivehi, Thaana and RTL\n\n- Free-text fields that may hold Dhivehi take `thaana` (`<TextInput thaana />`, `<Textarea thaana />`), or use `ThaanaInput`. Never add `thaana` to email, password, URL, number, phone, OTP or code inputs; they stay LTR by design.\n- Use logical Tailwind utilities only: `ms-*`/`me-*`, `ps-*`/`pe-*`, `start-*`/`end-*`, `text-start`/`text-end`, `border-s`/`border-e`, `rounded-s-*`/`rounded-e-*`. Never `ml-*`, `mr-*`, `pl-*`, `pr-*`, `left-*`, `right-*`, `text-left` or `text-right`. Flip transforms with `rtl:`.\n- Sides are `side=\"start\" | \"end\"`, not left/right.\n- Format dates, numbers and money with `useFormatDate`, `useFormatNumber` and `useFormatCurrency` (MVR), not `toLocaleString` or hand-built strings. Numbers use Western digits in Dhivehi too.\n- Built-in strings come from the locale. For your own strings use `useTranslation()` or your app's i18n, and override Onu's strings with `OnuProvider messages`.\n\n### Styling and theming\n\n- Brand colour: set `--onu-primary` (one variable re-themes everything). Use the theme tokens (`bg-background`, `text-foreground`, `bg-primary`, `text-muted-foreground`, `border`, `bg-card`, …), never fixed colours like `bg-blue-600` or hex values, so dark mode and themes keep working.\n- Restyle with `className` (merged with tailwind-merge, yours wins) and `classNames={{ part: \"…\" }}` for parts. Reuse exported variants such as `buttonVariants`. Use `asChild` to render your own element. No `!important`, no inline styles for static values.\n- Density (`compact` to `touch`) and dark mode come from the providers; don't hard-code heights or `dark:` colours on Onu components.\n\n### Icons\n\n- Use `<Icon name=\"search\" />` and `startIcon=\"add\"` / `endIcon=\"…\"` props with semantic names, not imports from `lucide-react`. Give icons that carry meaning a `label`; icon-only buttons need an accessible name (`aria-label` or the component's `label` prop).\n- Directional icons mirror in RTL on their own; don't flip them yourself.\n\n### Accessibility (WCAG 2.2 AA)\n\n- Onu components already handle roles, focus and keyboard. Don't remove focus rings, add `tabIndex` to non-interactive elements, or replace buttons with clickable `div`s.\n- Announce async results with `toast()`, `announce()` or `LiveRegion`; hide text visually with `VisuallyHidden`, not `display: none`.\n- Confirm destructive actions with `confirm()` / `useConfirm()` or the item's `confirm` option, not `window.confirm`.\n\n### Bundle size\n\n- Import only what you use; every entry is tree-shaken. Keep charts, maps, the editor, the calendar and media in their own entries (and lazy routes when they are big).",
+  "sections": [
+    {
+      "id": "getting-started",
+      "title": "Getting started",
+      "pages": [
+        {
+          "path": "intro",
+          "title": "Introduction",
+          "description": "Onu is Javaabu's React UI component library."
+        },
+        {
+          "path": "installation-and-setup",
+          "title": "Installation & Setup",
+          "description": "First install the NPM package"
+        }
+      ]
+    },
+    {
+      "id": "guides",
+      "title": "Guides",
+      "description": "Theming, RTL, Dhivehi, Thaana input, icons, fonts and more",
+      "pages": [
+        {
+          "path": "guides/design-and-density",
+          "title": "Design & density",
+          "description": "Onu's default look pairs a Proton Mail-style app shell with Ant Design 5 content elements: 14px text, 32px controls, 6px control corners and 8px cards, hairline borders, plain greys, and colour used for emphasis."
+        },
+        {
+          "path": "guides/theming",
+          "title": "Theming",
+          "description": "Onu's default theme pairs a Proton Mail-style app shell with Ant Design 5 content elements"
+        },
+        {
+          "path": "guides/dark-mode",
+          "title": "Dark mode",
+          "description": "Every Onu component has a dark variant. Dark mode turns on when an ancestor has the `dark` class or `data-theme=\"dark\"`, so it works with any toggling approach."
+        },
+        {
+          "path": "guides/rtl",
+          "title": "RTL",
+          "description": "Every Onu component works right-to-left with no extra props."
+        },
+        {
+          "path": "guides/dhivehi-and-locales",
+          "title": "Dhivehi & locales",
+          "description": "Onu ships with English (`en`) and Dhivehi (`dv`)."
+        },
+        {
+          "path": "guides/thaana-input",
+          "title": "Thaana input",
+          "description": "Onu can type Thaana from a Latin keyboard, so users don't need a Dhivehi keyboard installed."
+        },
+        {
+          "path": "guides/icons",
+          "title": "Icons",
+          "description": "Onu uses Lucide icons by default, with no setup."
+        },
+        {
+          "path": "guides/fonts",
+          "title": "Fonts",
+          "description": "Onu's optional font pack. Install the three Latin and fallback fonts it loads from npm, then import it after `tailwind.css`"
+        },
+        {
+          "path": "guides/accessibility",
+          "title": "Accessibility",
+          "description": "Onu targets WCAG 2.2 Level AA for every component, in light and dark mode and in both directions."
+        },
+        {
+          "path": "guides/style-overrides",
+          "title": "Style overrides",
+          "description": "Every component can be restyled without forking it."
+        },
+        {
+          "path": "guides/forms-and-laravel",
+          "title": "Forms & Laravel validation",
+          "description": "Onu's form components are built around Laravel's conventions, so server validation errors show up under the right fields with no glue code."
+        },
+        {
+          "path": "guides/inertia-and-nextjs",
+          "title": "Inertia & Next.js",
+          "description": "Onu is plain React, so it works in Vite apps, Laravel + Inertia (React) and Next.js."
+        },
+        {
+          "path": "guides/ai-assistants",
+          "title": "AI assistants",
+          "description": "Onu's docs are written so AI coding assistants (Claude Code, Cursor, Copilot, ChatGPT and others) can use them: every page is plain Markdown with a Props table and an Accessibility section, and there is a short list o…"
+        },
+        {
+          "path": "guides/rules-for-ai",
+          "title": "Rules for AI assistants",
+          "description": "Short rules for AI coding assistants (and people) writing UI with Onu."
+        }
+      ]
+    },
+    {
+      "id": "accessibility",
+      "title": "Accessibility",
+      "description": "Screen-reader helpers: visually hidden text, live regions and announcements",
+      "pages": [
+        {
+          "path": "accessibility/visually-hidden",
+          "title": "VisuallyHidden",
+          "description": "Content for screen readers only. It is taken out of the visual layout with Tailwind's `sr-only` but is still read out, and focusable content inside it stays in the tab order."
+        },
+        {
+          "path": "accessibility/live-region",
+          "title": "LiveRegion",
+          "description": "An `aria-live` region: screen readers read its text whenever it changes, without moving focus."
+        },
+        {
+          "path": "accessibility/use-announcer",
+          "title": "useAnnouncer and announce",
+          "description": "Announces messages to screen-reader users: \"Row moved to position 3\", \"Settings saved\", \"4 results\"."
+        }
+      ]
+    },
+    {
+      "id": "form-scaffolding",
+      "title": "Form scaffolding",
+      "description": "Forms, fields, labels, errors and buttons",
+      "pages": [
+        {
+          "path": "form-scaffolding/form",
+          "title": "Form",
+          "description": "A `<form>` that handles the boring parts: label layout for every field, disabling fields while saving, server validation errors (Laravel 422) under each field, an error summary at the top, and moving focus to the firs…"
+        },
+        {
+          "path": "form-scaffolding/form-field",
+          "title": "FormField",
+          "description": "A label, a control, help text and error messages, laid out stacked (label above) or inline (label beside)."
+        },
+        {
+          "path": "form-scaffolding/form-context",
+          "title": "Form layout & errors",
+          "description": "Providers that configure every `FormField` inside them."
+        },
+        {
+          "path": "form-scaffolding/form-group",
+          "title": "FormGroup",
+          "description": "Lays out related fields in a responsive grid and sets their label layout."
+        },
+        {
+          "path": "form-scaffolding/fieldset",
+          "title": "Fieldset / FormSection",
+          "description": "A titled section of a form: a real `<fieldset>` with a `<legend>`, an optional description, and an optional collapse toggle."
+        },
+        {
+          "path": "form-scaffolding/label",
+          "title": "Label",
+          "description": "shadcn's `Label` with a required marker or an \"(optional)\" note."
+        },
+        {
+          "path": "form-scaffolding/required-marker",
+          "title": "RequiredMarker",
+          "description": "The `*` shown after a required field's label."
+        },
+        {
+          "path": "form-scaffolding/field-errors",
+          "title": "FieldErrors",
+          "description": "Error messages for one field, each with an error icon."
+        },
+        {
+          "path": "form-scaffolding/validation-summary",
+          "title": "ValidationSummary (AJAX validation errors)",
+          "description": "An error summary for the top of a form. It lists every error, and each one is a link that moves focus to its field."
+        },
+        {
+          "path": "form-scaffolding/help-text",
+          "title": "HelpText",
+          "description": "Supporting text under a control. `FormField` renders it from the `help` prop and links it with `aria-describedby`."
+        },
+        {
+          "path": "form-scaffolding/form-container",
+          "title": "FormContainer",
+          "description": "A card-style layout for a form: a header (title, description, actions), the body and a footer for the buttons."
+        },
+        {
+          "path": "form-scaffolding/repeating-group",
+          "title": "RepeatingGroup",
+          "description": "A list of repeated rows of fields (line items, family members, contact numbers) with Add, Remove and Move up / Move down."
+        },
+        {
+          "path": "form-scaffolding/inline-edit",
+          "title": "InlineEdit",
+          "description": "Text that turns into an input when clicked, for quick edits on detail pages and tables."
+        },
+        {
+          "path": "form-scaffolding/autosave-indicator",
+          "title": "AutosaveIndicator",
+          "description": "Shows whether changes are being saved automatically: idle, saving, saved (with relative time, \"Saved 2 minutes ago\") or error (with Retry)."
+        },
+        {
+          "path": "form-scaffolding/save-bar",
+          "title": "SaveBar",
+          "description": "The save bar for edit pages (REQUIREMENTS §25.9)."
+        },
+        {
+          "path": "form-scaffolding/unsaved-changes-guard",
+          "title": "useUnsavedChangesGuard",
+          "description": "Warns before leaving a page with unsaved changes (§25.9)."
+        },
+        {
+          "path": "form-scaffolding/floating-submit",
+          "title": "FloatingSubmit",
+          "description": "A submit button that floats at the bottom of the screen while the form's main submit button is scrolled out of view, so a long form can be submitted from anywhere."
+        },
+        {
+          "path": "form-scaffolding/submit-button",
+          "title": "SubmitButton",
+          "description": "A `type=\"submit\"` `Button` that shows a spinner while the form is processing and ignores clicks until it finishes, so a form can't be submitted twice."
+        },
+        {
+          "path": "form-scaffolding/button",
+          "title": "Button",
+          "description": "Onu's button: shadcn's `Button` with a `loading` state, `startIcon` / `endIcon`, and extra `success` and `warning` variants."
+        },
+        {
+          "path": "form-scaffolding/link-button",
+          "title": "LinkButton",
+          "description": "A link that looks like a `Button`. It renders through the `linkComponent` set on `OnuProvider`, so it navigates with Inertia, Next.js or your router (R16.2)."
+        },
+        {
+          "path": "form-scaffolding/button-group",
+          "title": "ButtonGroup",
+          "description": "Groups related buttons. By default the buttons are joined into one segmented control (shadcn's button group); `attached={false}` keeps them separate with a gap and lets them wrap."
+        },
+        {
+          "path": "form-scaffolding/auth-forms",
+          "title": "Auth forms",
+          "description": "Ready-made, presentational authentication forms: `SignInForm`, `RegisterForm`, `ForgotPasswordForm` and `ResetPasswordForm`."
+        },
+        {
+          "path": "form-scaffolding/efaas-button",
+          "title": "eFaas button",
+          "description": "The Sign in with eFaas button, styled after the eFaas brand guide (R16.7)."
+        },
+        {
+          "path": "form-scaffolding/efaas-logo",
+          "title": "eFaas logo",
+          "description": "The 22 official eFaas logos from eFaas's brand kit, unchanged, as one component."
+        }
+      ]
+    },
+    {
+      "id": "text-inputs",
+      "title": "Text inputs",
+      "description": "Text, Thaana, number, phone, OTP and other inputs",
+      "pages": [
+        {
+          "path": "text-inputs/text-input",
+          "title": "TextInput",
+          "description": "A single-line text input with optional addons and Thaana keyboard support."
+        },
+        {
+          "path": "text-inputs/email-input",
+          "title": "EmailInput",
+          "description": "An email address input. It sets `type=\"email\"`, `inputMode=\"email\"` (the email keyboard on phones) and `autocomplete=\"email\"`, turns off auto-capitalisation and spell check, and is always left-to-right, even on a Dhiv…"
+        },
+        {
+          "path": "text-inputs/password-input",
+          "title": "PasswordInput",
+          "description": "A password input with a show/hide button, a Caps Lock warning and an optional strength meter."
+        },
+        {
+          "path": "text-inputs/sensitive-input",
+          "title": "SensitiveInput",
+          "description": "A read-only display for a secret such as an API key or client secret."
+        },
+        {
+          "path": "text-inputs/copy-input",
+          "title": "CopyInput",
+          "description": "A read-only value with a copy button: share links, reference numbers, account numbers."
+        },
+        {
+          "path": "text-inputs/number-input",
+          "title": "NumberInput",
+          "description": "A numeric input with locale-aware formatting, `min` / `max` / `step`, and spinbutton keys."
+        },
+        {
+          "path": "text-inputs/quantity-stepper",
+          "title": "QuantityStepper",
+          "description": "A number with large − and + buttons, for cart quantities, tickets and guest counts."
+        },
+        {
+          "path": "text-inputs/unit-input",
+          "title": "UnitInput",
+          "description": "A number with a unit add-on: either fixed text (`kg`, `MVR`, `%`) or a unit select (`m` / `km`)."
+        },
+        {
+          "path": "text-inputs/phone-input",
+          "title": "PhoneInput",
+          "description": "An international phone number input built on `react-phone-number-input` (libphonenumber)."
+        },
+        {
+          "path": "text-inputs/url-input",
+          "title": "UrlInput",
+          "description": "A URL input. It sets `type=\"url\"`, `inputMode=\"url\"` and `autocomplete=\"url\"`, is always left-to-right, and adds `https://` when the user leaves the field without a scheme (`javaabu.com` → `https://javaabu.com`)."
+        },
+        {
+          "path": "text-inputs/hidden-input",
+          "title": "HiddenInput",
+          "description": "A hidden form value. Inside a `FormField` it takes the field's `id` and `name`, so server errors for that name show on the field like any other control."
+        },
+        {
+          "path": "text-inputs/textarea",
+          "title": "Textarea",
+          "description": "A multi-line text input that grows with its content, with Thaana support and an optional character counter."
+        },
+        {
+          "path": "text-inputs/thaana-input",
+          "title": "ThaanaInput",
+          "description": "`ThaanaInput` and `ThaanaTextarea` are `TextInput` and `Textarea` with Thaana typing on and the Thaana/Latin toggle shown by default."
+        },
+        {
+          "path": "text-inputs/thaana-toggle",
+          "title": "ThaanaToggle",
+          "description": "The button that switches a field between Thaana and Latin typing."
+        },
+        {
+          "path": "text-inputs/otp-input",
+          "title": "OtpInput",
+          "description": "A one-time code input built on shadcn's `input-otp`."
+        },
+        {
+          "path": "text-inputs/slug-input",
+          "title": "SlugInput",
+          "description": "A slug generator, like `slugInput` in `@javaabu/js-utilities`."
+        },
+        {
+          "path": "text-inputs/autocomplete",
+          "title": "Autocomplete",
+          "description": "A free-text input with suggestions. The typed text is the value; suggestions only help fill it in (for a fixed list of choices, use a select)."
+        },
+        {
+          "path": "text-inputs/color-picker",
+          "title": "ColorPicker",
+          "description": "A colour picker built on React Aria's colour components."
+        },
+        {
+          "path": "text-inputs/icon-picker",
+          "title": "IconPicker",
+          "description": "An icon picker with search and a virtualised grid (TanStack Virtual), so thousands of icons stay fast."
+        },
+        {
+          "path": "text-inputs/signature-pad",
+          "title": "SignaturePad",
+          "description": "A signature pad built on `signature_pad`."
+        },
+        {
+          "path": "text-inputs/tags-input",
+          "title": "TagsInput",
+          "description": "A chips input for keywords, topics and similar lists."
+        },
+        {
+          "path": "text-inputs/qr-code-scanner",
+          "title": "QrCodeScanner",
+          "description": "A QR code scanner. It opens the camera with `getUserMedia`, decodes frames with the browser's `BarcodeDetector`, and loads the `barcode-detector` polyfill (ZXing in WebAssembly) only where the native API is missing (R…"
+        }
+      ]
+    },
+    {
+      "id": "date-and-time",
+      "title": "Date and time",
+      "description": "Date, time and range pickers and calendars",
+      "pages": [
+        {
+          "path": "date-and-time/date-picker",
+          "title": "DatePicker",
+          "description": "A date field that opens a calendar. Built on shadcn's `Calendar` (react-day-picker) inside a `Popover`, or a bottom-sheet `Drawer` on phones (R3.28)."
+        },
+        {
+          "path": "date-and-time/time-picker",
+          "title": "TimePicker",
+          "description": "A time field that opens large hour and minute steppers with ▲/▼, an AM/PM switch, a clock-face hour grid and a minute grid (REQUIREMENTS §25.2)."
+        },
+        {
+          "path": "date-and-time/date-time-picker",
+          "title": "DateTimePicker",
+          "description": "A calendar with a time chip underneath (REQUIREMENTS §25.3)."
+        },
+        {
+          "path": "date-and-time/date-range-picker",
+          "title": "DateRangePicker",
+          "description": "Two fields side by side, From and To, each opening a DatePicker (or a DateTimePicker with `withTime`)."
+        },
+        {
+          "path": "date-and-time/month-picker",
+          "title": "MonthPicker and YearPicker",
+          "description": "Pick a month (or a year) from a grid of 12 that zooms out to years and ranges of years."
+        },
+        {
+          "path": "date-and-time/hijri-date",
+          "title": "HijriDate",
+          "description": "Shows a date in the Umm al-Qura Hijri calendar, e.g."
+        },
+        {
+          "path": "date-and-time/hijri-date-picker",
+          "title": "HijriDatePicker",
+          "description": "Picks a date on the Umm al-Qura Hijri calendar."
+        },
+        {
+          "path": "date-and-time/multiple-date-picker",
+          "title": "MultipleDatePicker",
+          "description": "Picks any number of days from one calendar."
+        },
+        {
+          "path": "date-and-time/week-picker",
+          "title": "WeekPicker",
+          "description": "Picks a whole week: clicking any day selects its week, hovering previews the week, and week numbers are shown."
+        },
+        {
+          "path": "date-and-time/reporting-period-picker",
+          "title": "ReportingPeriodPicker",
+          "description": "Picks a monthly, quarterly, yearly or custom reporting period, with a configurable financial-year start."
+        },
+        {
+          "path": "date-and-time/date-calendar",
+          "title": "DateCalendar",
+          "description": "The calendar inside every Onu date picker, for use inline."
+        },
+        {
+          "path": "date-and-time/time-panel",
+          "title": "TimePanel",
+          "description": "The steppers, clock-face hour grid and minute grid used inside TimePicker and DateTimePicker, for use inline (e.g."
+        },
+        {
+          "path": "date-and-time/full-calendar",
+          "title": "FullCalendar",
+          "description": "A full calendar with month, week, day and agenda views, built on FullCalendar v6 using only its MIT \"standard\" plugins (`daygrid`, `timegrid`, `list`, `interaction`; R4.3)."
+        }
+      ]
+    },
+    {
+      "id": "choice-inputs",
+      "title": "Choice inputs",
+      "description": "Selects, checkboxes, radios, switches and pickers",
+      "pages": [
+        {
+          "path": "choice-inputs/select",
+          "title": "Select",
+          "description": "A select for short lists, built on shadcn's select (Radix)."
+        },
+        {
+          "path": "choice-inputs/searchable-select",
+          "title": "Searchable select",
+          "description": "A select with a search field: a field that opens a searchable list (shadcn Popover + Command; a bottom sheet on phones)."
+        },
+        {
+          "path": "choice-inputs/dependent-select",
+          "title": "Dependent select",
+          "description": "A select whose options depend on another field (atoll → island)."
+        },
+        {
+          "path": "choice-inputs/api-select",
+          "title": "API select",
+          "description": "A searchable select that loads its options from any API (REQUIREMENTS R16.5)."
+        },
+        {
+          "path": "choice-inputs/editable-select",
+          "title": "Editable select",
+          "description": "A text field with a list of suggestions that also accepts anything the user types (a WAI-ARIA combobox with list autocomplete)."
+        },
+        {
+          "path": "choice-inputs/multi-select",
+          "title": "Multi-select",
+          "description": "Pick several options. Selected values show as chips in the field (each with a remove button), the list has a \"Select all\" row for the visible options, and `max` caps the number of values."
+        },
+        {
+          "path": "choice-inputs/dual-listbox",
+          "title": "Dual listbox",
+          "description": "Two lists, \"Available\" and \"Selected\", with buttons to move items between them."
+        },
+        {
+          "path": "choice-inputs/checkbox",
+          "title": "Checkbox",
+          "description": "shadcn's checkbox plus a label, description and an indeterminate (mixed) state."
+        },
+        {
+          "path": "choice-inputs/radio",
+          "title": "Radio",
+          "description": "One radio button with a label, description and, in the card variant, media and an aside."
+        },
+        {
+          "path": "choice-inputs/radio-group",
+          "title": "Radio group",
+          "description": "A set of radios where one can be chosen (shadcn radio group)."
+        },
+        {
+          "path": "choice-inputs/switch",
+          "title": "Switch",
+          "description": "shadcn's switch plus a label and description."
+        },
+        {
+          "path": "choice-inputs/segmented-control",
+          "title": "Segmented control",
+          "description": "Pick one of a few options shown side by side (shadcn toggle group, single mode)."
+        },
+        {
+          "path": "choice-inputs/range-slider",
+          "title": "Range slider",
+          "description": "A slider for one value or a range (shadcn slider), with marks, value labels and locale number formatting."
+        },
+        {
+          "path": "choice-inputs/rating",
+          "title": "Rating",
+          "description": "A star rating with optional half steps, a read-only display mode and full keyboard support."
+        },
+        {
+          "path": "choice-inputs/payment-method-selector",
+          "title": "Payment method selector",
+          "description": "Choose how to pay: BML Transfer (bank transfer to a Bank of Maldives account, usually followed by a slip upload) and/or BML Connect (BML's online card gateway), as a radio group of large cards with BML's official logo…"
+        },
+        {
+          "path": "choice-inputs/bml-logos",
+          "title": "BML logos",
+          "description": "Bank of Maldives' official logos, supplied by BML, as React components (R16.8)."
+        },
+        {
+          "path": "choice-inputs/account-switcher",
+          "title": "Account switcher",
+          "description": "Switch between your own account and accounts you act for: organisations and delegated individuals (e.g."
+        },
+        {
+          "path": "choice-inputs/image-select",
+          "title": "Image select",
+          "description": "A grid of image options: one choice (radio semantics) or several (`multiple`, checkbox semantics)."
+        },
+        {
+          "path": "choice-inputs/quick-create-select",
+          "title": "Select with quick-create",
+          "description": "A searchable select that can create the option the user is looking for."
+        }
+      ]
+    },
+    {
+      "id": "files-and-media",
+      "title": "Files and media",
+      "description": "Uploads, images, galleries and media",
+      "pages": [
+        {
+          "path": "files-and-media/file-input",
+          "title": "FileInput",
+          "description": "A styled native file input. The real `<input type=\"file\">` covers the trigger, so clicking, tapping, the keyboard (Enter/Space) and dropping a file onto it all work natively."
+        },
+        {
+          "path": "files-and-media/multiple-file-input",
+          "title": "MultipleFileInput",
+          "description": "A `FileInput` for several files: each pick adds to the list (duplicates are skipped), every file has a remove button, and an optional hint shows the limits with a live count (\"3 of 5\")."
+        },
+        {
+          "path": "files-and-media/instant-file-upload",
+          "title": "InstantFileUpload",
+          "description": "Uploads each file as soon as it is chosen, with a progress bar per file, cancel, retry and remove."
+        },
+        {
+          "path": "files-and-media/upload-progress",
+          "title": "UploadProgress",
+          "description": "A list of uploads, each with its name, size, progress bar, status (waiting, uploading, uploaded, failed, cancelled) and cancel / retry / remove buttons."
+        },
+        {
+          "path": "files-and-media/dropzone-uploader",
+          "title": "DropzoneUploader",
+          "description": "A drag-and-drop zone built on `react-dropzone`, with a \"Browse files\" button as the keyboard and touch alternative, paste from the clipboard, validation messages, and an upload progress list when given an uploader."
+        },
+        {
+          "path": "files-and-media/additional-files-upload",
+          "title": "AdditionalFilesUpload",
+          "description": "Manages a record's attachments on an edit page: existing files can be removed (and restored before saving), and new files can be added, each with an optional display name and description."
+        },
+        {
+          "path": "files-and-media/image-input",
+          "title": "ImageInput",
+          "description": "Picks one image with a preview, and Replace / Remove buttons."
+        },
+        {
+          "path": "files-and-media/avatar-upload",
+          "title": "AvatarUpload",
+          "description": "A circular avatar picker: shows the photo (or initials), opens a crop step after picking (using `ImageCropper`), and offers Change and Remove."
+        },
+        {
+          "path": "files-and-media/image-cropper",
+          "title": "ImageCropper",
+          "description": "Crops an image with `react-easy-crop`: drag or pinch to move and zoom, arrow keys to nudge, a zoom slider, rotation, aspect-ratio presets, and Blob/File output."
+        },
+        {
+          "path": "files-and-media/media-lister",
+          "title": "MediaLister",
+          "description": "A media library: grid or list view, search, single or multiple selection, type icons and lazy thumbnails, with infinite or paged loading driven by props (fetch the data however you like)."
+        },
+        {
+          "path": "files-and-media/gallery",
+          "title": "Gallery",
+          "description": "A responsive image grid or masonry layout."
+        },
+        {
+          "path": "files-and-media/lightbox",
+          "title": "Lightbox",
+          "description": "A full-screen image viewer built on yet-another-react-lightbox: keyboard, swipe, pinch/double-tap/wheel zoom, captions and a counter, with a focus trap, focus return, translated labels and mirrored arrows in RTL."
+        },
+        {
+          "path": "files-and-media/carousel",
+          "title": "Carousel",
+          "description": "shadcn's Carousel (Embla) extended with RTL direction, translated controls, dot navigation, autoplay with a pause button, and slide announcements."
+        },
+        {
+          "path": "files-and-media/attachment-preview",
+          "title": "AttachmentPreview",
+          "description": "A file attachment: thumbnail or type icon, name, type and size, with open, download and remove actions."
+        },
+        {
+          "path": "files-and-media/document-download",
+          "title": "DocumentDownload",
+          "description": "A downloadable document card with its type, size and a download link, optionally in several language versions (English and Dhivehi)."
+        },
+        {
+          "path": "files-and-media/media-player",
+          "title": "MediaPlayer",
+          "description": "An accessible audio and video player built on Media Chrome: play/pause, seek, time, mute and volume, captions, playback speed and full screen, with keyboard shortcuts, translated labels and Onu theming."
+        },
+        {
+          "path": "files-and-media/video-embed",
+          "title": "VideoEmbed",
+          "description": "A click-to-load YouTube or Vimeo embed (the \"lite embed\" pattern): it shows a thumbnail and a play button, and loads the privacy-enhanced player (`youtube-nocookie.com`, Vimeo with `dnt=1`) only when the user presses…"
+        },
+        {
+          "path": "files-and-media/file-icon",
+          "title": "FileIcon",
+          "description": "A coloured icon for a file's type (image, video, audio, PDF, document, spreadsheet, presentation, archive, text), detected from the MIME type or the file extension."
+        },
+        {
+          "path": "files-and-media/qr-code",
+          "title": "QrCode",
+          "description": "A QR code generator. The text is encoded with `uqr` (MIT, zero dependencies) and Onu renders the SVG itself, so the dark modules use `currentColor` and follow theme tokens."
+        }
+      ]
+    },
+    {
+      "id": "rich-content",
+      "title": "Rich content",
+      "description": "Editors and renderers",
+      "pages": [
+        {
+          "path": "rich-content/wysiwyg-editor",
+          "title": "WYSIWYG editor",
+          "description": "A rich text editor built on Tiptap (ProseMirror)."
+        },
+        {
+          "path": "rich-content/block-editor",
+          "title": "Block editor",
+          "description": "A block-based editor (page builder) on Tiptap."
+        },
+        {
+          "path": "rich-content/block-renderer",
+          "title": "Block renderer",
+          "description": "Renders block editor (or WYSIWYG) JSON to React without loading the editor."
+        },
+        {
+          "path": "rich-content/code-block",
+          "title": "Code block",
+          "description": "Read-only code with Shiki syntax highlighting, a language label, a copy button and optional line numbers."
+        },
+        {
+          "path": "rich-content/translations-editor",
+          "title": "Translations editor",
+          "description": "Edit translation keys side by side in English and Dhivehi (or any languages)."
+        },
+        {
+          "path": "rich-content/custom-attribute-fields",
+          "title": "Custom attribute fields",
+          "description": "Renders form fields from a schema, for custom attributes, settings or product specs, using Onu's inputs."
+        },
+        {
+          "path": "rich-content/thaana-keyboard",
+          "title": "ThaanaKeyboard (Tiptap)",
+          "description": "A Tiptap extension that types Thaana from a Latin keyboard through ProseMirror transactions rather than DOM edits (R13.2), so undo/redo, input rules and collaboration keep working."
+        }
+      ]
+    },
+    {
+      "id": "maps",
+      "title": "Maps",
+      "description": "Google Maps components",
+      "pages": [
+        {
+          "path": "maps/map-provider",
+          "title": "MapProvider",
+          "description": "Configures the map engine for every map inside it."
+        },
+        {
+          "path": "maps/map-view",
+          "title": "MapView",
+          "description": "The base map. Put markers, shapes and layers inside it."
+        },
+        {
+          "path": "maps/map-picker",
+          "title": "MapPicker",
+          "description": "Pick a point: click the map, drag the pin, search a place, use the device location, or type the latitude and longitude."
+        },
+        {
+          "path": "maps/map-radius",
+          "title": "MapRadius",
+          "description": "A centre and a radius in metres: click to place the centre, drag the handles, or type the numbers."
+        },
+        {
+          "path": "maps/map-polygon",
+          "title": "MapPolygon",
+          "description": "Draw and edit polygons (zones, plots, service areas)."
+        },
+        {
+          "path": "maps/map-route",
+          "title": "MapRoute",
+          "description": "Draw a route as a line (patrol path, ferry line, delivery route)."
+        },
+        {
+          "path": "maps/live-map",
+          "title": "LiveMap",
+          "description": "Markers that move as positions arrive, from props (polling) or a stream (WebSocket, SSE, Laravel Echo)."
+        },
+        {
+          "path": "maps/map-navigation",
+          "title": "MapNavigation",
+          "description": "Turn-by-turn style directions between stops: the route on the map, a summary, and a step list with Previous / Next."
+        },
+        {
+          "path": "maps/location-card",
+          "title": "LocationCard",
+          "description": "A place at a glance: a static map thumbnail, the address, coordinates and an Open in Google Maps link."
+        },
+        {
+          "path": "maps/address-input",
+          "title": "AddressInput",
+          "description": "Structured Maldivian address fields: atoll, island, road and house/building name, with an optional map pin."
+        },
+        {
+          "path": "maps/map-replay",
+          "title": "MapReplay",
+          "description": "Plays back a timestamped track (a vessel trip, a delivery run): play/pause, speed and a scrubber."
+        },
+        {
+          "path": "maps/map-info-panel",
+          "title": "MapInfoPanel",
+          "description": "Details of the selected marker: a side panel over the map on desktop and a bottom sheet on phones."
+        },
+        {
+          "path": "maps/route-stop-editor",
+          "title": "RouteStopEditor",
+          "description": "An ordered list of stops synced with numbered markers."
+        },
+        {
+          "path": "maps/heatmap-layer",
+          "title": "HeatmapLayer",
+          "description": "A density heatmap inside a `MapView`. On Google Maps it is deck.gl's `HeatmapLayer` through `GoogleMapsOverlay` (Google's own HeatmapLayer is deprecated and never used)."
+        },
+        {
+          "path": "maps/viewport-marker-map",
+          "title": "ViewportMarkerMap",
+          "description": "Loads markers for the visible area through your fetcher and clusters them (`@googlemaps/markerclusterer`)."
+        },
+        {
+          "path": "maps/map-legend-swatch",
+          "title": "MapLegendSwatch",
+          "description": "Colour and shape samples that match how layers are drawn, and `MapLegend`, a labelled list of them."
+        }
+      ]
+    },
+    {
+      "id": "charts",
+      "title": "Charts",
+      "description": "Charts and statistics",
+      "pages": [
+        {
+          "path": "charts/bar-chart",
+          "title": "BarChart",
+          "description": "A bar graph built on shadcn's chart (`ChartContainer` + Recharts)."
+        },
+        {
+          "path": "charts/line-chart",
+          "title": "LineChart",
+          "description": "A line graph on shadcn's chart (Recharts)."
+        },
+        {
+          "path": "charts/pie-chart",
+          "title": "PieChart",
+          "description": "A pie or donut chart on shadcn's chart (Recharts)."
+        },
+        {
+          "path": "charts/time-series-chart",
+          "title": "TimeSeriesChart",
+          "description": "A line, area or bar chart on a real time axis, optionally stacked."
+        },
+        {
+          "path": "charts/period-comparison-chart",
+          "title": "PeriodComparisonChart",
+          "description": "Compares the current period with the previous one: headline totals with a delta percentage and an up/down indicator, the two periods overlaid (previous dashed, or as muted bars), and a table with the change per step."
+        },
+        {
+          "path": "charts/sparkline",
+          "title": "Sparkline",
+          "description": "A tiny inline line or area chart with no axes, labels or tooltip, for trends in tables, stat tiles and text."
+        },
+        {
+          "path": "charts/stat-tile",
+          "title": "StatTile",
+          "description": "KPI tiles: a label, a formatted value, a delta (arrow + sign + semantic colour), an optional icon and sparkline, and a loading skeleton."
+        },
+        {
+          "path": "charts/delta-indicator",
+          "title": "DeltaIndicator",
+          "description": "A change indicator: an arrow icon, a signed percentage and a semantic colour."
+        },
+        {
+          "path": "charts/map-chart",
+          "title": "MapChart",
+          "description": "A choropleth map: regions shaded by value on Google Maps, drawn with a deck.gl `GeoJsonLayer` (`GoogleMapsOverlay`)."
+        }
+      ]
+    },
+    {
+      "id": "listing-pages",
+      "title": "Listing pages",
+      "description": "Tables, filters, pagination and listing tools",
+      "pages": [
+        {
+          "path": "listing-pages/listing-page",
+          "title": "ListingPage",
+          "description": "A complete index page, laid out as REQUIREMENTS §25.6 describes: a header with the title, the main action and secondary links (Trash, with a dot when it isn't empty), status tabs, a toolbar with the search box, Filter…"
+        },
+        {
+          "path": "listing-pages/use-listing-state",
+          "title": "useListingState",
+          "description": "State for an index page — search, sort, page, rows per page, filters, view, selection and column visibility — with the rules from REQUIREMENTS §25.6 built in"
+        },
+        {
+          "path": "listing-pages/data-table",
+          "title": "DataTable",
+          "description": "The listing table, built on TanStack Table v9 (column model, visibility and selection) and shadcn's `Table`."
+        },
+        {
+          "path": "listing-pages/filter-panel",
+          "title": "FilterPanel",
+          "description": "The Filters button and its panel (REQUIREMENTS §25.7): a dropdown on desktop and a bottom sheet on phones."
+        },
+        {
+          "path": "listing-pages/active-filter-chips",
+          "title": "ActiveFilterChips",
+          "description": "One pill per applied filter under the toolbar (REQUIREMENTS §25.7): \"Status: Active\", \"Created: 1 Mar → 31 Mar\", \"Created: from 1 Mar\"."
+        },
+        {
+          "path": "listing-pages/search-box",
+          "title": "SearchBox",
+          "description": "The search box of an index page. Typing does nothing until the user presses Enter or leaves the box after changing the text (REQUIREMENTS §25.6), so a request isn't sent for every keystroke."
+        },
+        {
+          "path": "listing-pages/pagination",
+          "title": "Pagination",
+          "description": "Pagination for listings, laid out like Ant Design's: \"Showing 26–50 of 312 users\" at the start, then numbered pages between the previous and next arrows, then a rows-per-page select (10 / 25 / 50 / 100)."
+        },
+        {
+          "path": "listing-pages/per-page",
+          "title": "PerPage",
+          "description": "A rows-per-page select (shadcn `Select`), used by `Pagination`."
+        },
+        {
+          "path": "listing-pages/bulk-actions",
+          "title": "BulkActionBar",
+          "description": "The bulk action bar (REQUIREMENTS §25.6)."
+        },
+        {
+          "path": "listing-pages/row-actions",
+          "title": "RowActions",
+          "description": "The ⋯ menu at the end of a row (REQUIREMENTS §25.6), on shadcn's `DropdownMenu`."
+        },
+        {
+          "path": "listing-pages/record-actions-menu",
+          "title": "RecordActionsMenu",
+          "description": "Actions in a record page header (e.g. Logs, Approve, Delete — REQUIREMENTS §25.8)."
+        },
+        {
+          "path": "listing-pages/empty-state",
+          "title": "EmptyState",
+          "description": "Empty states for listings (REQUIREMENTS §25.6), on shadcn's `Empty`"
+        },
+        {
+          "path": "listing-pages/view-switcher",
+          "title": "ViewSwitcher",
+          "description": "Switches a listing between table, list, grid and board views."
+        },
+        {
+          "path": "listing-pages/column-visibility",
+          "title": "ColumnVisibility",
+          "description": "A \"Columns\" menu with a checkbox per column, to show or hide table columns."
+        },
+        {
+          "path": "listing-pages/filter-tabs",
+          "title": "FilterTabs",
+          "description": "Status tabs above a listing, with counts: \"All 312 · Active 280 · Banned 32\"."
+        },
+        {
+          "path": "listing-pages/export-menu",
+          "title": "ExportMenu",
+          "description": "An Export button with a menu of formats (CSV, Excel, PDF)."
+        },
+        {
+          "path": "listing-pages/export-rows",
+          "title": "exportRows (client-side export)",
+          "description": "Builds a CSV, Excel or PDF file in the browser from the rows you already have, for apps without a server export."
+        },
+        {
+          "path": "listing-pages/filter-submit",
+          "title": "FilterSubmit",
+          "description": "Submit and Reset buttons for a classic filter form, e.g."
+        },
+        {
+          "path": "listing-pages/list-view",
+          "title": "ListView",
+          "description": "Records as a vertical list: media (avatar, icon), title, description and details, with optional checkboxes and a ⋯ menu per item."
+        },
+        {
+          "path": "listing-pages/grid-view",
+          "title": "GridView",
+          "description": "Records as a responsive grid of cards. Columns follow the space available (`repeat(auto-fill, minmax(…))`), not the viewport, so the grid also works in a sidebar or a narrow column."
+        },
+        {
+          "path": "listing-pages/kanban-board",
+          "title": "KanbanBoard",
+          "description": "A board of columns with cards that move between them, on `@dnd-kit/react`."
+        },
+        {
+          "path": "listing-pages/tree-view",
+          "title": "TreeView",
+          "description": "A tree of records (folders, categories, atolls and islands, org units) on React Aria's `Tree`, which implements the WAI-ARIA tree grid pattern."
+        },
+        {
+          "path": "listing-pages/sortable-list",
+          "title": "SortableList",
+          "description": "A list the user can put in order (menu items, steps, priorities), on `@dnd-kit/react`: drag the handle with a mouse or by touch (press and hold), use the keyboard on the handle, or use the Move up / Move down buttons."
+        },
+        {
+          "path": "listing-pages/reorderable-table",
+          "title": "ReorderableTable",
+          "description": "Drag-and-drop row reordering for tables (route stops, menu items, priorities), on `@dnd-kit/react` and shadcn's `Table`."
+        },
+        {
+          "path": "listing-pages/editable-data-grid",
+          "title": "EditableDataGrid",
+          "description": "A spreadsheet-like table for quick edits (order lines, stock counts, rates), following the WAI-ARIA grid pattern."
+        },
+        {
+          "path": "listing-pages/search-results",
+          "title": "SearchResults",
+          "description": "Search results grouped by type (Services, News, Pages), with a count per group and the search words highlighted."
+        },
+        {
+          "path": "listing-pages/load-more",
+          "title": "LoadMore",
+          "description": "A Load more button for lists and grids, with \"Showing 1–20 of 312\" and an announcement of how many items arrived."
+        },
+        {
+          "path": "listing-pages/filter-condition-builder",
+          "title": "FilterConditionBuilder",
+          "description": "Advanced filters as conditions — \"Status is Active and Island is one of Malé, Hulhumalé\" — on `react-querybuilder`, with Onu controls (native selects, inputs, buttons, checkbox), translations and an RTL-aware layout."
+        }
+      ]
+    },
+    {
+      "id": "overlays",
+      "title": "Overlays",
+      "description": "Dialogs, sheets, popovers and menus",
+      "pages": [
+        {
+          "path": "overlays/modal",
+          "title": "Modal",
+          "description": "A dialog with a simple `title` / `description` / `footer` API, built on shadcn's `Dialog` (Radix)."
+        },
+        {
+          "path": "overlays/confirm-dialog",
+          "title": "ConfirmDialog",
+          "description": "Asks the user to confirm an action, built on shadcn's `AlertDialog`."
+        },
+        {
+          "path": "overlays/slide-over",
+          "title": "SlideOver",
+          "description": "A panel that slides in from the side, for detail views, quick edits and filters."
+        },
+        {
+          "path": "overlays/bottom-sheet",
+          "title": "BottomSheet",
+          "description": "A pull-up panel anchored to the bottom of the screen."
+        },
+        {
+          "path": "overlays/popover-panel",
+          "title": "PopoverPanel",
+          "description": "A non-modal panel anchored to a trigger, for small forms, filters and extra details: Onu's simple-API popover."
+        },
+        {
+          "path": "overlays/tip",
+          "title": "Tip",
+          "description": "A tooltip that also works on touch screens."
+        },
+        {
+          "path": "overlays/action-menu",
+          "title": "ActionMenu",
+          "description": "A dropdown menu of actions built from an `items` array, on shadcn's `DropdownMenu` (Radix)."
+        },
+        {
+          "path": "overlays/context-action-menu",
+          "title": "ContextActionMenu",
+          "description": "A context menu (right-click menu) built from the same `items` as `ActionMenu`, on shadcn's `ContextMenu` (Radix)."
+        },
+        {
+          "path": "overlays/command-palette",
+          "title": "CommandPalette",
+          "description": "A ⌘K / Ctrl+K command palette for jumping to pages, records and commands from the keyboard."
+        }
+      ]
+    },
+    {
+      "id": "loading",
+      "title": "Loading",
+      "description": "Spinners, skeletons and progress",
+      "pages": [
+        {
+          "path": "loading/spinner",
+          "title": "Spinner",
+          "description": "A spinning loading indicator with a screen-reader label."
+        },
+        {
+          "path": "loading/skeleton",
+          "title": "Skeleton presets",
+          "description": "Ready-made skeletons for the most common shapes: `SkeletonText`, `SkeletonCard` and `SkeletonTable`."
+        },
+        {
+          "path": "loading/placeholder-input",
+          "title": "PlaceholderInput",
+          "description": "A skeleton shaped like a form field (label, control and optional help text), for forms whose values are still loading."
+        },
+        {
+          "path": "loading/loading-overlay",
+          "title": "LoadingOverlay",
+          "description": "Covers a container (a card, table or form) while it loads or saves."
+        },
+        {
+          "path": "loading/page-progress",
+          "title": "PageProgress",
+          "description": "A thin bar at the top of the page that shows a navigation or long request is in progress, like NProgress."
+        },
+        {
+          "path": "loading/progress-bar",
+          "title": "ProgressBar",
+          "description": "A determinate or indeterminate progress bar with an optional label and value text, in semantic colours."
+        }
+      ]
+    },
+    {
+      "id": "layout-and-navigation",
+      "title": "Layout and navigation",
+      "description": "App layout, navigation and structure",
+      "pages": [
+        {
+          "path": "layout-and-navigation/app-layout",
+          "title": "AppLayout",
+          "description": "The application shell: a Skip to content link, the sidebar, a header, the main content, an optional footer and an optional phone bottom navigation."
+        },
+        {
+          "path": "layout-and-navigation/app-header",
+          "title": "AppHeader",
+          "description": "The top bar of an app or portal: an optional sidebar toggle, a logo, the main content (page title, breadcrumbs, navigation or search) and actions at the inline end."
+        },
+        {
+          "path": "layout-and-navigation/top-nav",
+          "title": "TopNav",
+          "description": "Horizontal main navigation for headers, built on shadcn's `navigation-menu`."
+        },
+        {
+          "path": "layout-and-navigation/menu-bar",
+          "title": "MenuBar",
+          "description": "A desktop-style application menu bar (File, Edit, View …) described as data."
+        },
+        {
+          "path": "layout-and-navigation/mega-menu",
+          "title": "MegaMenu",
+          "description": "Header navigation whose items open wide panels with several columns of links (each with an optional icon and description) and an optional featured area."
+        },
+        {
+          "path": "layout-and-navigation/app-sidebar",
+          "title": "AppSidebar",
+          "description": "The app's main sidebar with a simple `items` / `groups` API: icons, badges, nested items and the active state from the current URL."
+        },
+        {
+          "path": "layout-and-navigation/app-switcher",
+          "title": "AppSwitcher",
+          "description": "The app switcher next to the logo, like Proton's grid button: a menu of the products in a suite, each on a brand-tinted tile."
+        },
+        {
+          "path": "layout-and-navigation/side-nav",
+          "title": "SideNav",
+          "description": "A vertical navigation list that works on its own (settings pages, documentation, account pages) and inside drawers: groups, icons, badges, descriptions and collapsible nested items."
+        },
+        {
+          "path": "layout-and-navigation/bottom-nav",
+          "title": "BottomNav",
+          "description": "Phone bottom navigation: three to five destinations with icons and short labels, badges and the active state."
+        },
+        {
+          "path": "layout-and-navigation/site-footer",
+          "title": "SiteFooter",
+          "description": "The footer for portals and public pages: brand and description, link columns, social links, a copyright line, legal links and a slot for a `LanguageSwitcher`."
+        },
+        {
+          "path": "layout-and-navigation/page-title",
+          "title": "PageTitle",
+          "description": "The page header of index, view and edit pages (§25.6, §25.8): the title, the main action button, and secondary links where a small dot marks e.g."
+        },
+        {
+          "path": "layout-and-navigation/breadcrumbs",
+          "title": "Breadcrumbs",
+          "description": "A breadcrumb trail built on shadcn's `breadcrumb` (§25.8): every part is a link except the last, which is the current page."
+        },
+        {
+          "path": "layout-and-navigation/section",
+          "title": "Section",
+          "description": "A page section with a heading, description and actions."
+        },
+        {
+          "path": "layout-and-navigation/card",
+          "title": "Card",
+          "description": "shadcn's `Card`, extended. Without the new props it renders exactly like the shadcn card, so `CardHeader`, `CardTitle`, `CardDescription`, `CardAction`, `CardContent` and `CardFooter` still compose as before."
+        },
+        {
+          "path": "layout-and-navigation/tabs",
+          "title": "Tabs",
+          "description": "shadcn's `Tabs` (Radix, WAI-ARIA tabs), extended with an `items` API, icons, counts and a tab list that scrolls sideways on phones."
+        },
+        {
+          "path": "layout-and-navigation/nav-tabs",
+          "title": "NavTabs",
+          "description": "Link-based tabs for record pages (§25.8): \"Profile\", \"Edit\", \"Activity (12)\"."
+        },
+        {
+          "path": "layout-and-navigation/stacked-tabs",
+          "title": "StackedTabs",
+          "description": "Vertical tabs for settings-style pages: the tab list sits at the inline start with the panel beside it."
+        },
+        {
+          "path": "layout-and-navigation/accordion",
+          "title": "Accordion",
+          "description": "shadcn's `Accordion` (Radix, WAI-ARIA accordion), extended with an `items` API and visual variants."
+        },
+        {
+          "path": "layout-and-navigation/wizard",
+          "title": "Wizard",
+          "description": "A multi-step flow (application wizards, onboarding): a step list with each step's status, Back / Next buttons with per-step validation, jumping back to completed steps, a compact \"Step 2 of 4\" header with a progress b…"
+        },
+        {
+          "path": "layout-and-navigation/timeline",
+          "title": "Timeline",
+          "description": "A vertical timeline for status trackers and activity histories."
+        },
+        {
+          "path": "layout-and-navigation/divider",
+          "title": "Divider",
+          "description": "A separator line built on shadcn's `Separator`, optionally with a label in the middle, at the start or at the end."
+        },
+        {
+          "path": "layout-and-navigation/language-switcher",
+          "title": "LanguageSwitcher",
+          "description": "Switches between languages using their native names (English, ދިވެހި)."
+        },
+        {
+          "path": "layout-and-navigation/theme-toggle",
+          "title": "ThemeToggle",
+          "description": "Light / dark / system switch using `useTheme()` from `ThemeProvider` (R10.3)."
+        },
+        {
+          "path": "layout-and-navigation/notification-center",
+          "title": "NotificationCenter",
+          "description": "A bell button with the unread count that opens the notification list: a popover on desktop and a bottom sheet (vaul drawer) on phones."
+        },
+        {
+          "path": "layout-and-navigation/user-profile",
+          "title": "UserProfile",
+          "description": "The signed-in user's avatar, name and role (or email), opening a menu with Profile, Settings, your own items and Sign out."
+        },
+        {
+          "path": "layout-and-navigation/logo",
+          "title": "Logo",
+          "description": "The product or organisation logo with separate light and dark images, an optional wordmark, linking home."
+        },
+        {
+          "path": "layout-and-navigation/usage-meter",
+          "title": "UsageMeter",
+          "description": "A quota meter for the bottom of the sidebar, like Proton's storage meter: a labelled bar with \"used / total\", an optional link (e.g."
+        },
+        {
+          "path": "layout-and-navigation/skip-link",
+          "title": "SkipLink",
+          "description": "A \"Skip to content\" link (R14.4). Render it as the first focusable element on the page: it is visually hidden until it receives keyboard focus, then moves focus to the main content."
+        },
+        {
+          "path": "layout-and-navigation/back-to-top",
+          "title": "BackToTop",
+          "description": "A floating \"Back to top\" button that appears after scrolling."
+        },
+        {
+          "path": "layout-and-navigation/masonry-grid",
+          "title": "MasonryGrid",
+          "description": "A masonry layout with CSS columns (no JavaScript layout): items of different heights pack into columns."
+        },
+        {
+          "path": "layout-and-navigation/overlay-menu",
+          "title": "OverlayMenu",
+          "description": "A full-screen overlay menu for portals, learning sites and kiosks."
+        },
+        {
+          "path": "layout-and-navigation/hero",
+          "title": "Hero",
+          "description": "The opening block of a portal or content page (R3.7): a heading, lead text, calls to action, an optional search field, and either media beside the text or a photo behind it."
+        },
+        {
+          "path": "layout-and-navigation/feature-grid",
+          "title": "FeatureGrid",
+          "description": "A responsive grid of features or services (R3.7): each item has an icon, a title, a description and an optional link."
+        }
+      ]
+    },
+    {
+      "id": "display-and-feedback",
+      "title": "Display and feedback",
+      "description": "Badges, alerts, toasts and display components",
+      "pages": [
+        {
+          "path": "display-and-feedback/description-list",
+          "title": "DescriptionList",
+          "description": "Label–value pairs for record views (\"Email: jane@example.com\")."
+        },
+        {
+          "path": "display-and-feedback/status-badge",
+          "title": "StatusBadge",
+          "description": "A status label that always pairs colour with an icon and text, so colour is never the only signal (R14.6)."
+        },
+        {
+          "path": "display-and-feedback/tag",
+          "title": "Tag",
+          "description": "A compact label (chip) for categories, keywords and filters."
+        },
+        {
+          "path": "display-and-feedback/user-avatar",
+          "title": "UserAvatar",
+          "description": "A person's picture with an initials fallback that handles English and Dhivehi names, sizes, shapes and a presence dot."
+        },
+        {
+          "path": "display-and-feedback/user-avatar-group",
+          "title": "UserAvatarGroup",
+          "description": "Overlapping avatars with a \"+N\" button that lists everyone else."
+        },
+        {
+          "path": "display-and-feedback/keyboard-key",
+          "title": "KeyboardKey",
+          "description": "Shows a key or keyboard shortcut using shadcn's `Kbd`."
+        },
+        {
+          "path": "display-and-feedback/callout",
+          "title": "Callout (Alert)",
+          "description": "An alert box for messages that need attention: info, success, warning or destructive, with a title, description, actions and an optional dismiss button."
+        },
+        {
+          "path": "display-and-feedback/notice",
+          "title": "Notice",
+          "description": "A subtle inline notice: a short line of supporting text with an icon, quieter than a Callout."
+        },
+        {
+          "path": "display-and-feedback/announcement-bar",
+          "title": "AnnouncementBar",
+          "description": "A full-width bar at the top of the page for site-wide news."
+        },
+        {
+          "path": "display-and-feedback/cookie-consent",
+          "title": "CookieConsent",
+          "description": "A cookie banner with a preferences dialog."
+        },
+        {
+          "path": "display-and-feedback/toast",
+          "title": "Toast",
+          "description": "Short notifications, using sonner (shadcn's toast)."
+        },
+        {
+          "path": "display-and-feedback/conditional-link",
+          "title": "ConditionalLink",
+          "description": "Renders a link only when there is somewhere to go and the user may go there; otherwise renders the same content as plain text."
+        },
+        {
+          "path": "display-and-feedback/conditional-display",
+          "title": "ConditionalDisplay",
+          "description": "Shows/hides or enables/disables part of a form depending on another field's value."
+        },
+        {
+          "path": "display-and-feedback/publish-box",
+          "title": "PublishBox",
+          "description": "The \"Publish\" panel of a content editor: status, visibility and publish date, with Preview, Save draft and Publish actions."
+        },
+        {
+          "path": "display-and-feedback/last-edited-by",
+          "title": "LastEditedBy",
+          "description": "\"Last edited by Aishath Shiuna · 5 minutes ago\", with a small avatar."
+        },
+        {
+          "path": "display-and-feedback/relative-date",
+          "title": "RelativeDate",
+          "description": "A date shown relative to now (\"just now\", \"5 minutes ago\", \"3 days ago\", \"in 2 hours\"), as specified in REQUIREMENTS §25.5."
+        },
+        {
+          "path": "display-and-feedback/countdown",
+          "title": "Countdown",
+          "description": "Counts down to a date in days, hours, minutes and seconds, with tabular numbers (R7.5)."
+        },
+        {
+          "path": "display-and-feedback/activity-feed",
+          "title": "ActivityFeed",
+          "description": "A log of who did what and when: grouped by day (Today, Yesterday, 3 October 2026), with actor avatars, relative timestamps and a \"Load more\" button."
+        },
+        {
+          "path": "display-and-feedback/comment-thread",
+          "title": "CommentThread",
+          "description": "A discussion with nested replies. People can edit and delete their own comments, and the composer can type Thaana (`thaana` prop, R13.3)."
+        },
+        {
+          "path": "display-and-feedback/notes",
+          "title": "Notes",
+          "description": "Internal notes on a record: who wrote what and when, with an add-note box that can type Thaana (`thaana` prop, R13.3) and delete with confirmation."
+        },
+        {
+          "path": "display-and-feedback/icon-text",
+          "title": "IconText",
+          "description": "An icon next to a short piece of text, aligned and sized together: meta rows such as location, date or phone number."
+        },
+        {
+          "path": "display-and-feedback/share-buttons",
+          "title": "ShareButtons",
+          "description": "Share a page. Where the device supports the Web Share API (most phones), one Share button opens the system share sheet."
+        },
+        {
+          "path": "display-and-feedback/print-back-buttons",
+          "title": "PrintButton and BackButton",
+          "description": "Two small helpers for detail pages, receipts and certificates."
+        },
+        {
+          "path": "display-and-feedback/mini-calendar",
+          "title": "MiniCalendar",
+          "description": "A compact, read-only month calendar with event dots, for portal sidebars and dashboards (\"Upcoming events\")."
+        },
+        {
+          "path": "display-and-feedback/content-card",
+          "title": "ContentCard",
+          "description": "A card for news articles, services and events: image, title, excerpt, date, category, extra meta and a link."
+        },
+        {
+          "path": "display-and-feedback/error-page",
+          "title": "Error pages",
+          "description": "Full-page error states with a code, title, message, illustration and actions (Go home, Go back, Try again), translated into English and Dhivehi."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+import{b as e,x as t}from"./button-DRXR2maZ.js";import{t as n}from"./lucide-map-Mb5i0z_S.js";var r=t();function i({fallback:t,...i}){return(0,r.jsx)(e,{...i,fallback:t??n[i.name]})}export{i as t};

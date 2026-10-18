@@ -1,0 +1,1 @@
+import{t as e}from"./use-media-query-CtHpIWcg.js";function t(){return e(`(max-width: 767px)`)}export{t};

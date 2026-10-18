@@ -1,0 +1,1 @@
+import{T as e,b as t,x as n}from"./button-DRXR2maZ.js";import{t as r}from"./loader-circle-CmRhs8je.js";var i=n();function a({className:n,...a}){return(0,i.jsx)(t,{name:`loading`,fallback:r,"data-slot":`spinner`,className:e(`size-4 animate-spin`,n),...a})}export{a as t};

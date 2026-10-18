@@ -1,0 +1,1 @@
+import{T as e,x as t}from"./button-DRXR2maZ.js";var n=t();function r({role:t,politeness:r=t===`alert`?`assertive`:`polite`,atomic:i=!0,as:a=`span`,visible:o=!1,className:s,...c}){return(0,n.jsx)(a,{"data-slot":`live-region`,role:t,"aria-live":r,"aria-atomic":i,className:e(!o&&`sr-only`,s),...c})}export{r as t};

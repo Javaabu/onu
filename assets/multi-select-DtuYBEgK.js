@@ -1,0 +1,1 @@
+import{x as e}from"./button-DRXR2maZ.js";import{t}from"./searchable-select-DsTtvoj_.js";var n=e();function r({selectAll:e=!0,clearable:r=!0,...i}){return(0,n.jsx)(t,{...i,multiple:!0,selectAll:e,clearable:r,dataSlot:`multi-select`})}export{r as t};
