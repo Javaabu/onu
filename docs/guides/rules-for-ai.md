@@ -13,7 +13,7 @@ Short rules for AI coding assistants (and people) writing UI with Onu. They sit 
 
 # Setup
 
-- One CSS entry: `@import "tailwindcss"; @import "@javaabu/onu/tailwind.css";` and, for the bundled Thaana fonts, `@import "@javaabu/onu/fonts.css";`.
+- One CSS entry: `@import "tailwindcss"; @import "@javaabu/onu/tailwind.css";` and, for the font pack, `@import "@javaabu/onu/fonts.css";`, which needs `npm install @fontsource-variable/inter @fontsource-variable/jetbrains-mono @fontsource-variable/noto-sans-thaana` first.
 - Wrap the app once in `<ThemeProvider><OnuProvider>…</OnuProvider></ThemeProvider>`. `OnuProvider` sets `lang`, `dir` and density on `<html>`, so portals follow.
 - Dhivehi: `locale={dv}` with `import { dv } from "@javaabu/onu/locales/dv"`, or `locale="dv"` to load it on demand. English needs no `locale`.
 - Inertia or Next.js: pass the router's `Link` as `linkComponent` on `OnuProvider`; Onu's links and `href` props then use it.

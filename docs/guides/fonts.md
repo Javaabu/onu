@@ -3,11 +3,17 @@ title: Fonts
 sidebar_position: 9
 ---
 
-Onu's optional font pack:
+Onu's optional font pack. Install the three Latin and fallback fonts it loads from npm, then import it after `tailwind.css`:
+
+```bash
+npm install @fontsource-variable/inter @fontsource-variable/jetbrains-mono @fontsource-variable/noto-sans-thaana
+```
 
 ```css
 @import "@javaabu/onu/fonts.css";
 ```
+
+`fonts.css` imports these packages, so without them the CSS build fails with "Can't resolve '@fontsource-variable/inter'". Faruma and MV Faseyha need nothing extra: they ship inside `@javaabu/onu`.
 
 | Role | Font | Source |
 |---|---|---|
@@ -17,7 +23,7 @@ Onu's optional font pack:
 | Thaana fallback | Noto Sans Thaana | `@fontsource-variable/noto-sans-thaana` |
 | Code, IDs, keys | JetBrains Mono | `@fontsource-variable/jetbrains-mono` |
 
-Optional presets in `@javaabu/onu/fonts-optional.css`: Geist (set `data-font="geist"` on an element) and Source Serif 4 for long-form reading (`font-serif`).
+Optional presets in `@javaabu/onu/fonts-optional.css`: Geist (set `data-font="geist"` on an element) and Source Serif 4 for long-form reading (`font-serif`). It needs `npm install @fontsource-variable/geist @fontsource-variable/source-serif-4`.
 
 All of these are self-hosted from npm, so no requests go to a font CDN.
 

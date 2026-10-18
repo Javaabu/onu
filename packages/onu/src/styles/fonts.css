@@ -3,6 +3,9 @@
  * optional peer dependencies.
  *
  *   @import "@javaabu/onu/fonts.css";
+ *
+ * It loads Inter, JetBrains Mono and Noto Sans Thaana from npm, so install them first:
+ *   npm install @fontsource-variable/inter @fontsource-variable/jetbrains-mono @fontsource-variable/noto-sans-thaana
  */
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/jetbrains-mono";

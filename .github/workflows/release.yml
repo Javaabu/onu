@@ -34,6 +34,19 @@ jobs:
           registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
 
+      # Fail before anything is committed: no npm token, or a build that breaks.
+      - name: Check the npm token
+        if: ${{ inputs.publish }}
+        run: |
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "::error::Add an NPM_TOKEN repository secret (an npm token that can publish to the @javaabu scope)."
+            exit 1
+          fi
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Check the build
+        run: pnpm build
+
       - name: Version packages
         id: version
         run: |
@@ -62,4 +75,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
+          # npm only signs provenance for public repositories.
+          NPM_CONFIG_PROVENANCE: ${{ !github.event.repository.private }}

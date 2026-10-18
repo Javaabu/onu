@@ -13,13 +13,19 @@ npm install @javaabu/onu --save
 
 # Styles
 
-Import Tailwind and Onu's stylesheet in your main CSS file. The font pack is optional.
+Import Tailwind and Onu's stylesheet in your main CSS file. The font pack is optional; to use it, first install the fonts it loads:
+
+```bash
+npm install @fontsource-variable/inter @fontsource-variable/jetbrains-mono @fontsource-variable/noto-sans-thaana
+```
 
 ```css
 @import "tailwindcss";
 @import "@javaabu/onu/tailwind.css";
-@import "@javaabu/onu/fonts.css";
+@import "@javaabu/onu/fonts.css"; /* optional: needs the font packages above */
 ```
+
+Without the font pack, leave out the last line. Faruma and MV Faseyha (Thaana) are inside `@javaabu/onu`; see [Fonts](./guides/fonts).
 
 `tailwind.css` adds Onu's design tokens, the dark mode variant, and tells Tailwind to scan Onu's components for classes.
 
