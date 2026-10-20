@@ -2,10 +2,20 @@ name: E2E
 
 # Runs only for a push to main whose (last) commit message starts with "e2e",
 # e.g. "e2e: check the new date picker", or by hand from the Actions tab.
+#
+# Chromium also compares a desktop screenshot of every component demo (light LTR and
+# dark RTL) with the baselines kept as the "visual-baselines" artifact (about 90 MB,
+# kept 90 days). With no stored baselines, or "Update the visual baselines" ticked, the
+# run takes new ones and stores them instead of comparing.
 on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      update_baselines:
+        description: Update the visual baselines (after an intended visual change, or a new component)
+        type: boolean
+        default: false
 
 concurrency:
   group: e2e-${{ github.ref }}
@@ -13,6 +23,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read # download the baselines from an earlier run
 
 jobs:
   playwright:
@@ -33,7 +44,37 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps
       - run: pnpm build:web
-      - run: pnpm exec playwright test --project=${{ matrix.project }}
+      - name: Get the visual baselines
+        id: baselines
+        if: matrix.project == 'chromium'
+        run: |
+          if [ "$UPDATE" = "true" ]; then
+            echo "Taking new visual baselines (requested)."
+            echo "mode=all" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          run_id=$(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?name=visual-baselines&per_page=1" \
+            --jq '[.artifacts[] | select(.expired | not)][0].workflow_run.id // empty')
+          if [ -z "$run_id" ]; then
+            echo "::notice::No stored visual baselines, so this run takes them instead of comparing."
+            echo "mode=all" >> "$GITHUB_OUTPUT"
+          else
+            gh run download "$run_id" --name visual-baselines --dir e2e/visual.spec.ts-snapshots
+            echo "Comparing with the baselines from run $run_id."
+            echo "mode=none" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPDATE: ${{ inputs.update_baselines }}
+      - run: pnpm exec playwright test --project=${{ matrix.project }} ${{ steps.baselines.outputs.mode && format('--update-snapshots={0}', steps.baselines.outputs.mode) || '' }}
+      # Store new baselines (only when this run took them, so there is one copy at a time).
+      - uses: actions/upload-artifact@v4
+        if: matrix.project == 'chromium' && success() && steps.baselines.outputs.mode == 'all'
+        with:
+          name: visual-baselines
+          path: e2e/visual.spec.ts-snapshots
+          retention-days: 90
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

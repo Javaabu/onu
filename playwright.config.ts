@@ -10,7 +10,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
-  // Baselines are created on first run and compared afterwards.
+  // Locally, missing baselines are created on the first run. In CI the workflow passes
+  // --update-snapshots: "none" to compare with the stored baselines, "all" to replace them.
   updateSnapshots: "missing",
   expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01, animations: "disabled" } },
   use: {

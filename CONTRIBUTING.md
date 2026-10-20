@@ -54,6 +54,8 @@ The files in `packages/onu/src/ui` started as shadcn/ui's components (Radix base
 
 E2E (Playwright: accessibility in five browsers, and Chromium screenshots) is slow, so CI runs it only when the last commit pushed to `main` starts with `e2e` (for example `e2e: new date picker`), or when you run the **E2E** workflow by hand from the Actions tab. Run it locally with `pnpm e2e:chromium`.
 
+The Chromium job compares a desktop screenshot of every component demo, in light LTR and dark RTL, with baselines stored as the `visual-baselines` Actions artifact (not in git). After an intended visual change, or when you add a component, run **E2E** by hand with **Update the visual baselines** ticked. Look at the screenshots in that run's `visual-baselines` artifact before relying on them. Baselines are kept for 90 days (about 90 MB). If none are stored (the first run, or 90 days after the last update), the run takes new ones instead of comparing.
+
 ```bash
 pnpm lint && pnpm format:check && pnpm typecheck && pnpm test:coverage && pnpm build
 ```
