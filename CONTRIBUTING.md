@@ -52,6 +52,8 @@ The files in `packages/onu/src/ui` started as shadcn/ui's components (Radix base
 
 ## Checks
 
+E2E (Playwright: accessibility in five browsers, and Chromium screenshots) is slow, so CI runs it only when the last commit pushed to `main` starts with `e2e` (for example `e2e: new date picker`), or when you run the **E2E** workflow by hand from the Actions tab. Run it locally with `pnpm e2e:chromium`.
+
 ```bash
 pnpm lint && pnpm format:check && pnpm typecheck && pnpm test:coverage && pnpm build
 ```

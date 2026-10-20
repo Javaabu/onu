@@ -1,9 +1,11 @@
 name: E2E
 
+# Runs only for a push to main whose (last) commit message starts with "e2e",
+# e.g. "e2e: check the new date picker", or by hand from the Actions tab.
 on:
   push:
     branches: [main]
-  pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: e2e-${{ github.ref }}
@@ -15,6 +17,7 @@ permissions:
 jobs:
   playwright:
     name: Playwright (${{ matrix.project }})
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, 'e2e')
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
