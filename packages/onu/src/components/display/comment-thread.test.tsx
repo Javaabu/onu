@@ -4,8 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
-import { CommentThread, type CommentData } from "./comment-thread"
-import { Notes, type NoteData } from "./notes"
+import { CommentThread, Notes, type CommentData, type NoteData } from "./comment-thread"
 
 const NOW = new Date("2026-03-12T10:00:00Z")
 const ago = (minutes: number) => new Date(NOW.getTime() - minutes * 60_000)
@@ -145,6 +144,62 @@ describe("CommentThread", () => {
     )
     await expectNoA11yViolations(container)
   })
+
+  it("renders a flat, bordered list with variant=list and replies off", async () => {
+    const user = userEvent.setup()
+    const onAdd = vi.fn()
+    const { container } = renderWithOnu(
+      <CommentThread
+        comments={comments.slice(0, 1).map((c) => ({ ...c, replies: undefined }))}
+        variant="list"
+        replies={false}
+        composerPosition="top"
+        onAdd={onAdd}
+        now={NOW}
+        classNames={{ comment: "item-x" }}
+      />,
+    )
+    expect(screen.queryByRole("article")).toBeNull()
+    expect(screen.queryByRole("button", { name: /^Reply/ })).toBeNull()
+    expect(container.querySelector("ul")).toHaveClass("divide-y", "border")
+    const item = container.querySelector("[data-slot=comment]")!
+    expect(item).toHaveClass("item-x", "p-3")
+    // The composer comes before the list.
+    const composer = container.querySelector("[data-slot=composer]")!
+    expect(composer.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    await user.type(screen.getByRole("textbox"), "Hi{Control>}{Enter}{/Control}")
+    expect(onAdd).toHaveBeenCalledWith("Hi", null)
+  })
+
+  it("takes custom labels", () => {
+    renderWithOnu(
+      <CommentThread
+        comments={[]}
+        onAdd={() => {}}
+        labels={{ title: "Remarks", empty: "No remarks", composer: "Add a remark", submit: "Send" }}
+      />,
+    )
+    expect(screen.getByRole("heading", { name: "Remarks" })).toBeInTheDocument()
+    expect(screen.getByText("No remarks")).toBeInTheDocument()
+    expect(screen.getByRole("textbox", { name: "Add a remark" })).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Send" })).toBeInTheDocument()
+  })
+
+  it.each(directions)("list variant is accessible in %s (dv)", async (dir) => {
+    const { container } = renderWithOnu(
+      <CommentThread
+        comments={comments.slice(0, 1)}
+        variant="list"
+        replies={false}
+        onAdd={() => {}}
+        onDelete={() => {}}
+        currentUserId="u1"
+        now={NOW}
+      />,
+      { dir, locale: "dv" },
+    )
+    await expectNoA11yViolations(container)
+  })
 })
 
 const notes: NoteData[] = [
@@ -154,8 +209,11 @@ const notes: NoteData[] = [
 
 describe("Notes", () => {
   it("lists notes with author and time", () => {
-    renderWithOnu(<Notes notes={notes} now={NOW} />)
+    const { container } = renderWithOnu(<Notes notes={notes} now={NOW} classNames={{ note: "note-x" }} />)
     expect(screen.getByRole("heading", { name: "Notes" })).toBeInTheDocument()
+    expect(screen.getByRole("region", { name: "Notes" })).toHaveAttribute("data-slot", "notes")
+    expect(container.querySelectorAll("[data-slot=note]")).toHaveLength(2)
+    expect(container.querySelector("[data-slot=note]")).toHaveClass("note-x")
     expect(screen.getByText("Called the applicant.")).toBeInTheDocument()
     expect(screen.getByText("3 minutes ago")).toBeInTheDocument()
   })

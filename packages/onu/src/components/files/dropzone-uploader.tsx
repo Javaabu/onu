@@ -9,11 +9,12 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { useFormField, useFormFieldControl } from "../form/form-field"
+import { useMergedRef } from "../inputs/text-input"
 import { FileRow } from "./_file-row"
 import { useControllable } from "./_use-controllable"
 import type { ExistingAttachment } from "./additional-files-upload"
+import { FileInput, type FileInputProps } from "./file-input"
 import { fileKey, validateFiles, type FileRejection, type FileValidationOptions } from "./file-utils"
-import { defaultUploadValue } from "./instant-file-upload"
 import { UploadProgress } from "./upload-progress"
 import { useRejectionMessage, useUploadQueue, type UploadItem, type UploadSource } from "./use-files"
 import { registerEnglish } from "../../i18n/english"
@@ -50,9 +51,53 @@ const isLocalFile = (entry: DropzoneFile<unknown>): entry is File =>
   typeof File !== "undefined" && entry instanceof File
 
 const NO_ENTRIES: DropzoneFile<never>[] = []
+const NO_FILES: File[] = []
+
+/** Reads an id from common response shapes: `{ id }`, `{ data: { id } }`, `{ uuid }`. */
+export function defaultUploadValue(response: unknown): string | undefined {
+  if (response === null || response === undefined) return undefined
+  if (typeof response === "string" || typeof response === "number") return String(response)
+  if (typeof response !== "object") return undefined
+  const r = response as { id?: unknown; uuid?: unknown; data?: unknown }
+  const id = r.id ?? r.uuid
+  if (typeof id === "string" || typeof id === "number") return String(id)
+  return r.data !== undefined ? defaultUploadValue(r.data) : undefined
+}
+
+/** `FileInput` props that `appearance="input"` passes to the trigger (`aria-label`, `buttonLabel`, …). */
+export type DropzoneInputProps = Omit<
+  FileInputProps,
+  | "value"
+  | "defaultValue"
+  | "onChange"
+  | "onReject"
+  | "accept"
+  | "maxSize"
+  | "minSize"
+  | "maxFiles"
+  | "multiple"
+  | "append"
+  | "showList"
+  | "summary"
+  | "name"
+  | "disabled"
+  | "size"
+  | "className"
+  | "classNames"
+  | "ref"
+>
 
 export interface DropzoneUploaderProps<R = unknown>
   extends UploadSource<R>, FileValidationOptions, VariantProps<typeof dropzoneVariants> {
+  /**
+   * `"dropzone"` (default): a drop area with a "Browse files" button. `"input"`: a compact
+   * `FileInput` trigger instead, with the same value, uploads, lists and hidden inputs.
+   */
+  appearance?: "dropzone" | "input"
+  /** With `appearance="input"`: props for the `FileInput` trigger, e.g. `aria-label`, `buttonLabel`, `placeholder`. */
+  inputProps?: DropzoneInputProps
+  /** Ref to the `<input type="file">`. */
+  inputRef?: React.Ref<HTMLInputElement>
   /** Allow several files. Default `true`. */
   multiple?: boolean
   disabled?: boolean
@@ -85,15 +130,24 @@ export interface DropzoneUploaderProps<R = unknown>
   icon?: React.ReactNode
   /** Show the file / progress list. Default `true`. */
   showList?: boolean
-  /** Hidden inputs for uploaded ids (see InstantFileUpload). Defaults to the FormField's name. */
+  /**
+   * Name for hidden inputs holding each stored file's id (existing files and finished uploads),
+   * so a plain form submit sends them (`name[]` when `multiple`). Defaults to the FormField's name.
+   */
   name?: string
+  /** Gets the id from an upload response. Default: `id`, `uuid` or `data.id`. */
   getValue?: (response: R) => string | number | null | undefined
   id?: string
   "aria-describedby"?: string
   "aria-invalid"?: boolean
   className?: string
   classNames?: {
+    /** The drop area, or the `FileInput` root with `appearance="input"`. */
     zone?: string
+    /** `appearance="input"`: the bordered trigger. */
+    trigger?: string
+    /** `appearance="input"`: the text next to the button. */
+    summary?: string
     icon?: string
     title?: string
     description?: string
@@ -107,9 +161,12 @@ export interface DropzoneUploaderProps<R = unknown>
 /**
  * A drop zone (react-dropzone) with a "Browse files" button for keyboard and touch users,
  * paste-from-clipboard, validation messages, and an upload progress list when given an
- * `upload` function or `url`.
+ * `upload` function or `url`. With `appearance="input"` the zone is a compact `FileInput`.
  */
 export function DropzoneUploader<R = unknown>({
+  appearance = "dropzone",
+  inputProps,
+  inputRef,
   upload,
   url,
   uploadOptions,
@@ -143,6 +200,7 @@ export function DropzoneUploader<R = unknown>({
 }: DropzoneUploaderProps<R>) {
   const { t } = useTranslation()
   const field = useFormField()
+  const compact = appearance === "input"
   // The visible "Browse" button carries the field wiring (not `name`/`required`, which a button can't use).
   const wired: Record<string, unknown> = useFormFieldControl<Record<string, unknown>>({
     ...aria,
@@ -168,6 +226,8 @@ export function DropzoneUploader<R = unknown>({
   // Upload queue id → value id of the entry it became.
   const [linked, setLinked] = React.useState<Record<string, string>>({})
   const browseRef = React.useRef<HTMLButtonElement>(null)
+  const pickerRef = React.useRef<HTMLInputElement>(null)
+  const pickerMerged = useMergedRef(pickerRef, inputRef)
   const [announcement, setAnnouncement] = React.useState("")
 
   const handleUploaded = (item: UploadItem<R>) => {
@@ -226,6 +286,14 @@ export function DropzoneUploader<R = unknown>({
     if (!uploads) onChange?.(next.filter(isLocalFile))
   }
 
+  /** Adds files that passed validation: uploads them, or adds them to the value. */
+  const addFiles = (accepted: File[]) => {
+    if (disabled || !accepted.length) return
+    onFilesAdded?.(accepted)
+    if (uploads) queue.add(accepted)
+    else setEntries(multiple ? [...entries, ...accepted] : accepted.slice(0, 1))
+  }
+
   const handleFiles = (incoming: readonly File[]) => {
     if (disabled || !incoming.length) return
     const list = multiple ? incoming : incoming.slice(0, 1)
@@ -234,20 +302,27 @@ export function DropzoneUploader<R = unknown>({
     const { accepted, rejected } = validateFiles(fresh, options, multiple ? count : 0)
     setRejections(rejected)
     if (rejected.length) onReject?.(rejected)
-    if (!accepted.length) return
-    onFilesAdded?.(accepted)
-    if (uploads) queue.add(accepted)
-    else setEntries(multiple ? [...entries, ...accepted] : accepted)
+    addFiles(accepted)
   }
 
-  const { getRootProps, getInputProps, isDragActive, open, rootRef } = useDropzone({
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    open,
+    rootRef,
+    inputRef: zoneInputRef,
+  } = useDropzone({
     onDrop: (accepted) => handleFiles(accepted),
     multiple,
     disabled,
     noKeyboard: true,
     noClick: false,
     useFsAccessApi: false,
+    // The compact input takes drops natively; react-dropzone would cancel them at the document.
+    preventDropOnDocument: !compact,
   })
+  const zoneInputMerged = useMergedRef(zoneInputRef, inputRef)
 
   // react-dropzone handles pastes inside the zone; this catches pastes anywhere else on the page.
   const onPasteEvent = React.useEffectEvent((event: ClipboardEvent) => {
@@ -266,10 +341,12 @@ export function DropzoneUploader<R = unknown>({
     return () => document.removeEventListener("paste", handler)
   }, [pasteFromDocument])
 
+  const refocus = () => (compact ? pickerRef : browseRef).current?.focus()
+
   const removeEntry = (entry: DropzoneFile<R>) => {
     setEntries(entries.filter((e) => e !== entry))
     setAnnouncement(t("file.removedFile", { name: entry.name }))
-    browseRef.current?.focus()
+    refocus()
   }
 
   const removeUpload = (queueId: string) => {
@@ -278,7 +355,7 @@ export function DropzoneUploader<R = unknown>({
     if (key !== undefined) setEntries(entriesRef.current.filter((e) => isLocalFile(e) || String(e.id) !== key))
     const item = queueItems.find((i) => i.id === queueId)
     if (item) setAnnouncement(t("file.removedFile", { name: item.file.name }))
-    browseRef.current?.focus()
+    refocus()
   }
 
   const entryRow = (entry: DropzoneFile<R>, index: number) => {
@@ -323,43 +400,103 @@ export function DropzoneUploader<R = unknown>({
     )
   }
 
+  // The text next to the compact trigger's button.
+  const compactSummary = () => {
+    if (!uploads) {
+      if (!entries.length) return undefined
+      return entries.length === 1 ? entries[0]!.name : t("file.filesSelected", { count: entries.length })
+    }
+    const uploading = queueItems.filter((i) => i.status === "uploading").length
+    const done = storedRows.length + queueItems.filter((i) => i.status === "success").length
+    if (uploading) return t("file.uploadingCount", { count: uploading })
+    return done ? t("file.uploadedCount", { count: done }) : undefined
+  }
+
   const describedBy = [control["aria-describedby"], rejections.length ? errorsId : null].filter(Boolean).join(" ")
 
-  return (
-    <div data-slot="dropzone-uploader" ref={ref} className={cn("gap-3 min-w-0 grid w-full grid-cols-1", className)}>
-      <div
-        {...getRootProps()}
-        data-slot="dropzone"
-        data-drag-active={isDragActive || undefined}
-        data-disabled={disabled || undefined}
-        data-invalid={control["aria-invalid"] || undefined}
-        className={cn(dropzoneVariants({ size }), !disabled && "cursor-pointer", classNames?.zone)}
+  const zone = compact ? (
+    <FileInput
+      {...inputProps}
+      {...aria}
+      ref={pickerMerged}
+      // Uploads are submitted as ids in hidden inputs, not as files.
+      name=""
+      aria-describedby={
+        [aria["aria-describedby"] ?? inputProps?.["aria-describedby"], rejections.length ? errorsId : null]
+          .filter(Boolean)
+          .join(" ") || undefined
+      }
+      disabled={disabledProp}
+      size={size}
+      accept={accept}
+      maxSize={maxSize}
+      minSize={minSize}
+      maxFiles={maxFiles}
+      multiple={multiple}
+      // Without an uploader the input holds the picked files, so each pick adds to them (duplicates skipped).
+      append={!uploads && multiple}
+      value={uploads ? NO_FILES : files}
+      countOffset={(inputProps?.countOffset ?? 0) + (multiple ? (uploads ? count : stored.length) : 0)}
+      onChange={(next) => addFiles(uploads ? next : next.filter((f) => !files.includes(f)))}
+      onReject={onReject}
+      // Single upload mode takes one file at a time: remove it (or let it fail) to pick another.
+      pickDisabled={
+        inputProps?.pickDisabled ||
+        (uploads && !multiple && queueItems.some((i) => i.status !== "cancelled" && i.status !== "error"))
+      }
+      showList={false}
+      summary={compactSummary()}
+      classNames={{
+        root: classNames?.zone,
+        trigger: classNames?.trigger,
+        button: classNames?.button,
+        summary: classNames?.summary,
+        errors: classNames?.errors,
+      }}
+    />
+  ) : (
+    <div
+      {...getRootProps()}
+      data-slot="dropzone"
+      data-drag-active={isDragActive || undefined}
+      data-disabled={disabled || undefined}
+      data-invalid={control["aria-invalid"] || undefined}
+      className={cn(dropzoneVariants({ size }), !disabled && "cursor-pointer", classNames?.zone)}
+    >
+      <input {...getInputProps()} ref={zoneInputMerged} accept={accept} />
+      <span className={cn("p-3 shadow-xs rounded-full bg-background text-foreground", classNames?.icon)}>
+        {icon ?? <Icon name="upload" size="lg" />}
+      </span>
+      <p className={cn("font-medium text-foreground", classNames?.title)}>
+        {isDragActive ? t("file.dropToUpload") : (title ?? t("file.dropzoneTitle"))}
+      </p>
+      <p className={cn("text-xs", classNames?.description)}>{description ?? t("file.dropzoneHint")}</p>
+      <Button
+        ref={browseRef}
+        type="button"
+        variant="outline"
+        size="sm"
+        className={cn("mt-1", classNames?.button)}
+        {...control}
+        aria-describedby={describedBy || undefined}
+        onClick={(e) => {
+          e.stopPropagation()
+          open()
+        }}
       >
-        <input {...getInputProps()} accept={accept} />
-        <span className={cn("p-3 shadow-xs rounded-full bg-background text-foreground", classNames?.icon)}>
-          {icon ?? <Icon name="upload" size="lg" />}
-        </span>
-        <p className={cn("font-medium text-foreground", classNames?.title)}>
-          {isDragActive ? t("file.dropToUpload") : (title ?? t("file.dropzoneTitle"))}
-        </p>
-        <p className={cn("text-xs", classNames?.description)}>{description ?? t("file.dropzoneHint")}</p>
-        <Button
-          ref={browseRef}
-          type="button"
-          variant="outline"
-          size="sm"
-          className={cn("mt-1", classNames?.button)}
-          {...control}
-          aria-describedby={describedBy || undefined}
-          onClick={(e) => {
-            e.stopPropagation()
-            open()
-          }}
-        >
-          <Icon name="folder" data-icon="inline-start" />
-          {multiple ? t("file.browseFiles") : t("file.browseFile")}
-        </Button>
-      </div>
+        <Icon name="folder" data-icon="inline-start" />
+        {multiple ? t("file.browseFiles") : t("file.browseFile")}
+      </Button>
+    </div>
+  )
+
+  return (
+    <div
+      data-slot={compact ? "instant-file-upload" : "dropzone-uploader"}
+      ref={ref}
+      className={cn(compact ? "gap-2" : "gap-3", "min-w-0 grid w-full grid-cols-1", className)}
+    >
+      {zone}
 
       <div id={errorsId} aria-live="polite" className={cn(!rejections.length && "sr-only")}>
         {rejections.length ? (
@@ -415,5 +552,100 @@ export function DropzoneUploader<R = unknown>({
           ))
         : null}
     </div>
+  )
+}
+
+export interface InstantFileUploadProps<R = unknown>
+  extends
+    UploadSource<R>,
+    Omit<
+      FileInputProps,
+      "value" | "defaultValue" | "onChange" | "onError" | "showList" | "append" | "summary" | "name"
+    > {
+  /** Called when a file finishes uploading, with the server response in `item.response`. */
+  onUploaded?: (item: UploadItem<R>) => void
+  /** Called when an upload fails. */
+  onError?: (item: UploadItem<R>, error: unknown) => void
+  /** Called whenever the upload list changes. */
+  onItemsChange?: (items: UploadItem<R>[]) => void
+  /** Stored files (controlled): existing ones, plus finished uploads as `{ id, name, …, response }`. */
+  value?: DropzoneFile<R>[]
+  /** Initial stored files (uncontrolled), e.g. on an edit page. */
+  defaultValue?: DropzoneFile<R>[]
+  /** Called with the new list when an upload finishes or a file is removed. */
+  onValueChange?: (value: DropzoneFile<R>[]) => void
+  /**
+   * Name for hidden inputs holding each uploaded file's id, so a plain form submit sends
+   * them (`name[]` when `multiple`). Defaults to the surrounding FormField's name.
+   */
+  name?: string
+  /** Gets the value to submit from a response. Default: `id`, `uuid` or `data.id`. */
+  getValue?: (response: R) => string | number | null | undefined
+  classNames?: FileInputProps["classNames"] & { progress?: string }
+}
+
+/**
+ * `DropzoneUploader` with `appearance="input"` and a single file by default: uploads each
+ * file as soon as it is chosen, with per-file progress, cancel and retry.
+ */
+export function InstantFileUpload<R = unknown>({
+  upload,
+  url,
+  uploadOptions,
+  onUploaded,
+  onError,
+  onItemsChange,
+  value,
+  defaultValue,
+  onValueChange,
+  name,
+  getValue,
+  multiple = false,
+  accept,
+  maxSize,
+  minSize,
+  maxFiles,
+  onReject,
+  disabled,
+  size,
+  className,
+  classNames,
+  ref,
+  ...inputProps
+}: InstantFileUploadProps<R>) {
+  return (
+    <DropzoneUploader<R>
+      appearance="input"
+      inputProps={inputProps}
+      inputRef={ref}
+      upload={upload}
+      url={url}
+      uploadOptions={uploadOptions}
+      onUploaded={onUploaded}
+      onError={onError}
+      onItemsChange={onItemsChange}
+      value={value}
+      defaultValue={defaultValue}
+      onValueChange={onValueChange}
+      name={name}
+      getValue={getValue}
+      multiple={multiple}
+      accept={accept}
+      maxSize={maxSize}
+      minSize={minSize}
+      maxFiles={maxFiles}
+      onReject={onReject}
+      disabled={disabled}
+      size={size}
+      className={className}
+      classNames={{
+        zone: classNames?.root,
+        trigger: classNames?.trigger,
+        button: classNames?.button,
+        summary: classNames?.summary,
+        errors: classNames?.errors,
+        list: classNames?.progress,
+      }}
+    />
   )
 }

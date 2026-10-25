@@ -3,8 +3,10 @@
 import * as React from "react"
 
 import { cn } from "../../lib/utils"
+import type { LabelLayout } from "../../providers/onu-provider"
 import { useTranslation } from "../../providers/onu-provider"
 import { Skeleton } from "../../ui/skeleton"
+import { INLINE_FIELD_GRID, useLabelLayout } from "../form/form-context"
 import { registerEnglish } from "../../i18n/english"
 import { overlay as en_overlay } from "../../locales/en/overlay"
 
@@ -175,4 +177,98 @@ export function SkeletonTable({
       ))}
     </SkeletonRoot>
   )
+}
+
+/* ------------------------------------------------------------------------ */
+
+export interface SkeletonFieldProps extends SkeletonRootProps {
+  /** Shape of the control. Default `input`. */
+  control?: "input" | "textarea" | "select" | "checkbox" | "switch"
+  /** Show a label placeholder. Default `true`. */
+  showLabel?: boolean
+  /** Show a help-text placeholder under the control. Default `false`. */
+  help?: boolean
+  /** Label layout, like `FormField`. Defaults to the form or `OnuProvider` setting. */
+  labelLayout?: LabelLayout
+  classNames?: { label?: string; control?: string; help?: string }
+}
+
+/**
+ * Placeholder shaped like a form field (label, control, help text), for forms
+ * whose values are still loading. Follows the stacked/inline label layout so
+ * the page doesn't jump when the real fields arrive.
+ */
+export function SkeletonField({
+  control = "input",
+  showLabel = true,
+  help = false,
+  labelLayout,
+  className,
+  classNames,
+  ...props
+}: SkeletonFieldProps) {
+  const layout = useLabelLayout(labelLayout)
+  const inline = layout === "inline"
+
+  if (control === "checkbox" || control === "switch") {
+    return (
+      <SkeletonRoot
+        slot="skeleton-field"
+        data-control={control}
+        className={cn("gap-2 flex items-center", className)}
+        {...props}
+      >
+        <Skeleton
+          className={cn(
+            control === "switch" ? "w-8 h-[1.15rem] rounded-full" : "size-4 rounded-sm",
+            classNames?.control,
+          )}
+        />
+        {showLabel ? <Skeleton className={cn("h-3.5 w-32", classNames?.label)} /> : null}
+      </SkeletonRoot>
+    )
+  }
+
+  return (
+    <SkeletonRoot
+      slot="skeleton-field"
+      data-control={control}
+      data-label-layout={layout}
+      className={cn("@container/form-field w-full", className)}
+      {...props}
+    >
+      <div className={cn("gap-2 grid", inline && INLINE_FIELD_GRID)}>
+        {showLabel ? (
+          <div className={cn("flex items-center", inline && "@md/form-field:h-8")}>
+            <Skeleton className={cn("h-3.5 w-24", classNames?.label)} />
+          </div>
+        ) : null}
+        <div className={cn("gap-1.5 min-w-0 grid", inline && showLabel && "@md/form-field:col-start-2")}>
+          <Skeleton
+            className={cn(
+              "touch:h-11 w-full rounded-lg",
+              control === "textarea" ? "h-16" : "h-8",
+              control === "select" && "gap-2 px-2.5 flex items-center justify-end",
+              classNames?.control,
+            )}
+          >
+            {control === "select" ? <span className="size-3 rounded-sm bg-muted-foreground/20" /> : null}
+          </Skeleton>
+          {help ? <Skeleton className={cn("h-3 w-2/3", classNames?.help)} /> : null}
+        </div>
+      </div>
+    </SkeletonRoot>
+  )
+}
+
+export interface PlaceholderInputProps extends Omit<SkeletonFieldProps, "label" | "showLabel"> {
+  /** Show a label placeholder. Default `true`. */
+  label?: boolean
+  /** Screen-reader text. Default "Loading…". */
+  srLabel?: string
+}
+
+/** `SkeletonField` under its older name: `label` toggles the label shape and `srLabel` is the screen-reader text. */
+export function PlaceholderInput({ label = true, srLabel, ...props }: PlaceholderInputProps) {
+  return <SkeletonField data-slot="placeholder-input" {...props} showLabel={label} label={srLabel} />
 }

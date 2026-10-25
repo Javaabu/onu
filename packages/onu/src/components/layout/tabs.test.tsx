@@ -1,10 +1,10 @@
-import { screen } from "@testing-library/react"
+import { fireEvent, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { TabsContent, TabsList, TabsTrigger } from "../../ui/tabs"
-import { Tabs, type TabItem } from "./tabs"
+import { StackedTabs, Tabs, type StackedTabItem, type TabItem } from "./tabs"
 
 // Overlays and axe are slow under parallel coverage runs.
 vi.setConfig({ testTimeout: 30_000 })
@@ -84,6 +84,132 @@ describe("Tabs", () => {
       { locale: "dv", dir },
     )
     expect(screen.getByRole("tablist")).toHaveAttribute("aria-orientation", "vertical")
+    await expectNoA11yViolations()
+  })
+})
+
+const stackedItems: StackedTabItem[] = [
+  { value: "general", label: "General", icon: "settings", description: "Name and logo", content: "General panel" },
+  { value: "members", label: "Members", badge: 3, content: "Members panel" },
+  { value: "billing", label: <b>Billing</b>, textLabel: "Billing", content: "Billing panel" },
+  { value: "danger", label: "Danger zone", disabled: true, content: "Danger panel" },
+]
+
+describe("StackedTabs", () => {
+  it("renders a vertical tablist and moves with Arrow Up/Down", async () => {
+    renderWithOnu(<StackedTabs items={stackedItems} className="extra" classNames={{ list: "lst", trigger: "trg" }} />)
+    const list = screen.getByRole("tablist", { hidden: true })
+    expect(list).toHaveAttribute("aria-orientation", "vertical")
+    expect(list).toHaveClass("lst")
+    const general = screen.getByRole("tab", { name: /General/, hidden: true })
+    expect(general).toHaveAttribute("aria-selected", "true")
+    expect(general).toHaveClass("trg")
+    general.focus()
+    await userEvent.keyboard("{ArrowDown}")
+    expect(screen.getByRole("tab", { name: /Members/, hidden: true })).toHaveFocus()
+    expect(screen.getByText("Members panel")).toBeInTheDocument()
+  })
+
+  it("becomes a labelled select in narrow containers that changes the tab", () => {
+    const onValueChange = vi.fn()
+    renderWithOnu(<StackedTabs items={stackedItems} onValueChange={onValueChange} classNames={{ select: "sel" }} />)
+    const select = screen.getByRole("combobox", { name: "Choose a section" })
+    expect(select.closest("[data-slot=native-select-wrapper]")).toHaveClass("sel")
+    expect(screen.getByRole("option", { name: "Billing" })).toBeInTheDocument()
+    expect(screen.getByRole("option", { name: "Danger zone" })).toBeDisabled()
+    fireEvent.change(select, { target: { value: "billing" } })
+    expect(onValueChange).toHaveBeenCalledWith("billing")
+    expect(screen.getByText("Billing panel")).toBeInTheDocument()
+  })
+
+  it("is controllable and offers a horizontal scroller instead of a select", () => {
+    const { rerender } = renderWithOnu(
+      <StackedTabs items={stackedItems} value="members" mobile="scroll" listLabel="Settings" />,
+    )
+    expect(screen.queryByRole("combobox")).toBeNull()
+    expect(screen.getByRole("tablist", { name: "Settings" })).toHaveClass("overflow-x-auto")
+    expect(screen.getByRole("tab", { name: /Members/ })).toHaveAttribute("aria-selected", "true")
+    rerender(<StackedTabs items={stackedItems} value="general" mobile="scroll" />)
+    expect(screen.getByRole("tab", { name: /General/ })).toHaveAttribute("aria-selected", "true")
+  })
+
+  it("falls back to the value for non-text labels and starts on the first enabled tab", () => {
+    renderWithOnu(
+      <StackedTabs
+        items={[
+          { value: "off", label: "Off", disabled: true },
+          { value: "icon-only", label: <span>★</span> },
+          { value: "num", label: 7 as unknown as string },
+        ]}
+      />,
+    )
+    expect(screen.getByRole("option", { name: "icon-only" })).toBeInTheDocument()
+    expect(screen.getByRole("option", { name: "7" })).toBeInTheDocument()
+    expect(screen.getByRole("combobox")).toHaveValue("icon-only")
+  })
+
+  it.each(directions)("works in %s with Dhivehi", async (dir) => {
+    renderWithOnu(
+      <StackedTabs
+        mobile="scroll"
+        items={[
+          { value: "a", label: "އާންމު", content: "a" },
+          { value: "b", label: "މެމްބަރުން", content: "b" },
+        ]}
+      />,
+      { locale: "dv", dir },
+    )
+    expect(screen.getByRole("tablist", { name: "ބައެއް ހޮވާ" })).toBeInTheDocument()
+    await expectNoA11yViolations()
+  })
+})
+
+describe("Tabs with narrow", () => {
+  it("lays out vertical tabs with a select fallback, descriptions, badges and counts", () => {
+    renderWithOnu(
+      <Tabs
+        orientation="vertical"
+        narrow="select"
+        items={[...stackedItems, { value: "logs", label: "Logs", count: 4, content: "Logs panel" }]}
+        classNames={{ count: "cnt" }}
+      />,
+    )
+    expect(document.querySelector("[data-slot=stacked-tabs]")).toBeInTheDocument()
+    const list = screen.getByRole("tablist", { hidden: true })
+    expect(list).toHaveAttribute("aria-orientation", "vertical")
+    expect(list).toHaveAccessibleName("Choose a section")
+    expect(screen.getByText("Name and logo")).toBeInTheDocument()
+    expect(screen.getByRole("tab", { name: /Members/, hidden: true })).toHaveTextContent("3 new")
+    expect(screen.getByText("(4)")).toHaveClass("cnt")
+    fireEvent.change(screen.getByRole("combobox", { name: "Choose a section" }), { target: { value: "billing" } })
+    expect(screen.getByRole("tab", { name: "Billing", hidden: true })).toHaveAttribute("aria-selected", "true")
+  })
+
+  it("keeps the plain vertical list without narrow, and ignores narrow when horizontal", () => {
+    const { rerender } = renderWithOnu(<Tabs orientation="vertical" items={stackedItems} />)
+    expect(screen.queryByRole("combobox")).toBeNull()
+    expect(document.querySelector("[data-slot=stacked-tabs]")).toBeNull()
+    expect(screen.getByText("Name and logo")).toBeInTheDocument()
+    expect(screen.getByRole("tab", { name: /Members/ })).toHaveTextContent("3 new")
+    rerender(<Tabs narrow="select" items={stackedItems} />)
+    expect(screen.queryByRole("combobox")).toBeNull()
+    expect(screen.getByRole("tablist")).toHaveAttribute("aria-orientation", "horizontal")
+    expect(screen.queryByText("Name and logo")).toBeNull()
+  })
+
+  it.each(directions)("works in %s with Dhivehi and a select", async (dir) => {
+    renderWithOnu(
+      <Tabs
+        orientation="vertical"
+        narrow="select"
+        items={[
+          { value: "a", label: "އާންމު", description: "ނަމާއި ލޯގޯ", content: "a" },
+          { value: "b", label: "މެމްބަރުން", badge: 2, content: "b" },
+        ]}
+      />,
+      { locale: "dv", dir },
+    )
+    expect(screen.getByRole("combobox", { name: "ބައެއް ހޮވާ" })).toHaveValue("a")
     await expectNoA11yViolations()
   })
 })

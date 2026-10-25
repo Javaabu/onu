@@ -32,13 +32,13 @@ const items: MenuItem[] = [
 ;<ActionMenu items={items} />
 ```
 
-Without a `trigger`, a ⋯ icon button labelled "More actions" opens the menu. Pass `label` to name it per row (e.g. "Actions for Aishath Ali").
+Without a `trigger`, a ⋯ icon button labelled "More actions" opens the menu. Pass `name` for a record's menu: the button becomes "Actions for Aishath Ali" and confirmations default to "Delete Aishath Ali?" (see [Row actions](#row-actions)), or `label` to name the button yourself.
 
 ## Item types
 
 | `type`           | Fields                                                                                      |
 | ---------------- | ------------------------------------------------------------------------------------------- |
-| `item` (default) | `label`, `icon`, `shortcut`, `variant`, `href`, `confirm`, `onSelect`, `disabled`, `hidden` |
+| `item` (default) | `label`, `icon`, `shortcut`, `variant`, `href`, `confirm`, `onSelect`, `disabled`, `hidden`, and the [`RecordAction`](#recordaction) fields `destructive`, `permitted`, `separator` |
 | `checkbox`       | `label`, `icon`, `shortcut`, `checked`, `onCheckedChange` (menu stays open)                 |
 | `radio`          | `label` (heading), `value`, `onValueChange`, `options: { value, label, icon, disabled }[]`  |
 | `sub`            | `label`, `icon`, `items`                                                                    |
@@ -46,7 +46,7 @@ Without a `trigger`, a ⋯ icon button labelled "More actions" opens the menu. P
 | `label`          | `label`                                                                                     |
 | `separator`      |                                                                                             |
 
-`hidden` items are left out (list only what the user can do, §25.6), and separators left dangling are dropped. `href` items render through the `OnuProvider` link component (Inertia, Next). `confirm` (options or a title string) closes the menu, asks with [`confirm()`](./confirm-dialog), and runs `onSelect` only when confirmed; mount a `ConfirmProvider` for the styled dialog.
+`hidden` items are left out (list only what the user can do, §25.6), and separators left dangling are dropped. `href` items render through the `OnuProvider` link component (Inertia, Next). `confirm` (options, a title string, or `true` for the default question) closes the menu, then asks in a [`ConfirmDialog`](./confirm-dialog), and runs `onSelect` only when confirmed. If `onSelect` returns a promise, the dialog shows a spinner until it settles. The mounted `ConfirmProvider` asks (with its `defaults`); without one, the menu shows its own dialog.
 
 ## Props
 
@@ -55,6 +55,7 @@ Without a `trigger`, a ⋯ icon button labelled "More actions" opens the menu. P
 | `items`                                        | `MenuItem[]`                   |                | Menu entries (required)                   |
 | `trigger`                                      | `ReactNode`                    | ⋯ button       | Element that opens the menu               |
 | `label`                                        | `string`                       | "More actions" | Accessible name of the default trigger    |
+| `name`                                         | `string`                       |                | Record name: trigger label, confirmations |
 | `align`                                        | `'start' \| 'center' \| 'end'` | `'end'`        | Alignment to the trigger                  |
 | `open`, `defaultOpen`, `onOpenChange`, `modal` |                                |                | Menu state                                |
 | `className`                                    | `string`                       |                | Classes for the menu                      |
@@ -62,9 +63,58 @@ Without a `trigger`, a ⋯ icon button labelled "More actions" opens the menu. P
 
 Other props go to Radix `DropdownMenu.Content` (`side`, `sideOffset`, …).
 
+## Row actions
+
+The ⋯ menu at the end of a table row or list item (REQUIREMENTS §25.6). Give the menu the record's `name` and listing-style [`RecordAction`](#recordaction) items: only permitted actions are listed, and destructive ones close the menu and then ask "Delete Jane Doe?". `RowActions` is a preset with a ⋯ button sized for a row (44px on touch screens); `DataTable` and `ListView` use it.
+
+```tsx
+import { ActionMenu, RowActions, trashActions } from "@javaabu/onu"
+
+<ActionMenu
+  name={user.name}
+  items={[
+    { id: "view", label: "View", icon: "eye", href: `/users/${user.id}` },
+    { id: "edit", label: "Edit", icon: "edit", href: `/users/${user.id}/edit`, permitted: user.can.update },
+    { id: "delete", label: "Delete", icon: "trash", destructive: true, separator: true, onSelect: () => api.delete(user.id) },
+  ]}
+/>
+
+// Trash view: Restore, and Delete permanently (confirms first)
+const { t } = useTranslation()
+<RowActions name={user.name} actions={trashActions(t, { onRestore, onForceDelete })} />
+```
+
+A destructive action (or `confirm: true`) asks "Delete Jane Doe?" for `id: "delete"`, "Permanently delete Jane Doe?" for `id: "force-delete"`, and "{label} Jane Doe?" otherwise, with "This can't be undone." below; `confirm` options replace any part of that. The dialog is styled even without a `ConfirmProvider`.
+
+### `RecordAction`
+
+| Field                   | Type                                                           | Description                                          |
+| ----------------------- | -------------------------------------------------------------- | ---------------------------------------------------- |
+| `id`                    | `string`                                                       | `delete` / `force-delete` get the built-in questions |
+| `label`                 | `ReactNode`                                                    |                                                      |
+| `icon`                  | `string`                                                       | Semantic icon name                                   |
+| `href`                  | `string`                                                       | Link (provider's link component)                     |
+| `onSelect`              | `() => void \| Promise`                                        | The confirmation shows a spinner until it settles    |
+| `destructive`           | `boolean`                                                      | Red; confirms unless `confirm: false`                |
+| `confirm`               | `boolean \| { title, description, confirmLabel, destructive }` | Ask first                                            |
+| `permitted`             | `boolean`                                                      | `false` leaves it out                                |
+| `disabled`, `separator` | `boolean`                                                      | `separator` draws a line above the item              |
+
+### `RowActions` props
+
+| Prop         | Type                           | Default | Description                                                   |
+| ------------ | ------------------------------ | ------- | ------------------------------------------------------------- |
+| `name`       | `string`                       |         | The record's name: "Actions for Jane Doe", "Delete Jane Doe?" |
+| `actions`    | `RecordAction[]`               |         | See above                                                     |
+| `align`      | `"start" \| "center" \| "end"` | `"end"` | Menu alignment                                                |
+| `classNames` | `{ trigger, content }`         |         | Classes for the ⋯ button and the menu                         |
+| `ref`        | `Ref<HTMLButtonElement>`       |         | The ⋯ button                                                  |
+
+Other button props are passed to the ⋯ button. `RowActions` renders nothing when no action is permitted. The button is named "Actions for Jane Doe" ("ޖަމީލާ އާ ގުޅޭ ކަންކަން" in Dhivehi); after a confirmation closes, focus returns to ⋯.
+
 ## Accessibility
 
-Follows the WAI-ARIA menu button pattern. Focus returns to the trigger when the menu closes. Items are at least 44px tall on touch screens.
+Follows the WAI-ARIA menu button pattern. Focus returns to the trigger when the menu closes, and again when a confirmation closes. Items are at least 44px tall on touch screens.
 
 | Key                                                | Action                              |
 | -------------------------------------------------- | ----------------------------------- |

@@ -11,50 +11,9 @@ import { FilterSubmit } from "./filter-submit"
 import { FilterTabs } from "./filter-tabs"
 import { LoadMore } from "./load-more"
 import { Highlight, SearchResults } from "./search-results"
-import { ViewSwitcher } from "./view-switcher"
 
 // Interaction-heavy tests: allow for slow CI machines and coverage instrumentation.
 vi.setConfig({ testTimeout: 30_000 })
-
-describe("ViewSwitcher", () => {
-  it("switches views with buttons and arrow keys", async () => {
-    const onValueChange = vi.fn()
-    renderWithOnu(<ViewSwitcher onValueChange={onValueChange} />)
-    const group = screen.getByRole("radiogroup", { name: "View" })
-    const table = within(group).getByRole("radio", { name: "Table" })
-    expect(table).toBeChecked()
-    await userEvent.click(within(group).getByRole("radio", { name: "Grid" }))
-    expect(onValueChange).toHaveBeenCalledWith("grid")
-    expect(within(group).getByRole("radio", { name: "Grid" })).toBeChecked()
-    // Clicking the active view keeps it on.
-    await userEvent.click(within(group).getByRole("radio", { name: "Grid" }))
-    expect(within(group).getByRole("radio", { name: "Grid" })).toBeChecked()
-    await userEvent.keyboard("{ArrowRight}")
-    expect(within(group).getByRole("radio", { name: "Board" })).toHaveFocus()
-    await expectNoA11yViolations()
-  })
-
-  it("supports custom views, labels and controlled value", () => {
-    renderWithOnu(
-      <ViewSwitcher
-        value="map"
-        showLabels
-        views={["list", { value: "map", label: "Map", icon: "map-pin" }, "custom"]}
-      />,
-    )
-    expect(screen.getByRole("radio", { name: "Map" })).toBeChecked()
-    expect(screen.getByText("List")).toBeInTheDocument()
-    expect(screen.getByRole("radio", { name: "custom" })).toBeInTheDocument()
-  })
-
-  it.each(directions)("follows visual order in %s", async (dir) => {
-    renderWithOnu(<ViewSwitcher />, { dir, locale: "dv" })
-    const first = screen.getByRole("radio", { name: "ޓޭބަލް" })
-    first.focus()
-    await userEvent.keyboard(dir === "rtl" ? "{ArrowLeft}" : "{ArrowRight}")
-    expect(screen.getByRole("radio", { name: "ލިސްޓު" })).toHaveFocus()
-  })
-})
 
 describe("ColumnVisibility", () => {
   it("toggles hideable columns and keeps the menu open", async () => {

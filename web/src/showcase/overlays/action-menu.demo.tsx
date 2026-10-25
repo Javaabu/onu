@@ -2,12 +2,14 @@ import * as React from "react"
 import { ActionMenu, Button, ConfirmProvider, Icon, type MenuItem } from "@javaabu/onu"
 
 import { DemoPage, DemoSection } from "../../components/demo"
+import { wait } from "../listing-pages/_data"
 
 export const meta = {
   title: "Dropdown menu",
   group: "Overlays",
   order: 7,
-  description: "ActionMenu: items with icons, shortcuts, checkbox/radio items, submenus and confirmations.",
+  description:
+    "ActionMenu: items with icons, shortcuts, checkbox/radio items, submenus and confirmations, and a record's ⋯ row menu (RowActions).",
 }
 
 export default function ActionMenuDemo() {
@@ -81,6 +83,34 @@ export default function ActionMenuDemo() {
           <span role="status" className="text-sm self-center text-muted-foreground">
             {last}
           </span>
+        </DemoSection>
+        <DemoSection
+          title="Record actions"
+          description="With a name: only permitted actions are listed, and Delete asks 'Delete Aishath Hassan?'."
+        >
+          <ActionMenu
+            name="Aishath Hassan"
+            items={[
+              { id: "view", label: "View", icon: "eye", href: "#/components/overlays/action-menu" },
+              { id: "edit", label: "Edit", icon: "edit" },
+              { id: "ban", label: "Ban", permitted: false },
+              {
+                id: "delete",
+                label: "Delete",
+                icon: "trash",
+                destructive: true,
+                separator: true,
+                onSelect: () => wait(),
+              },
+            ]}
+          />
+          <ActionMenu
+            name="ޢަލީ ޙަސަން"
+            items={[
+              { id: "view", label: "ބައްލަވާ", icon: "eye" },
+              { id: "delete", label: "ފޮހެލާ", icon: "trash", destructive: true, onSelect: () => wait() },
+            ]}
+          />
         </DemoSection>
         <DemoSection title="Checkbox and radio items">
           <ActionMenu

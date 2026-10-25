@@ -47,7 +47,7 @@ The child element becomes the tile and the tile content is placed inside it.
 | ------------------ | -------------------------------------------------- | -------------------- | ------------------------------------------ |
 | `label`            | `ReactNode`                                        | required             | What the figure is                         |
 | `value`            | `number \| string \| null`                         | required             | Numbers are formatted with `valueFormat`   |
-| `valueFormat`      | `ValueFormat`                                      | `"number"`           | See [BarChart](./bar-chart#number-formats) |
+| `valueFormat`      | `ValueFormat`                                      | `"number"`           | See [CategoryChart](./category-chart#number-formats) |
 | `previousValue`    | `number`                                           |                      | Compute the delta from it                  |
 | `delta`            | `number \| null`                                   |                      | Change as a ratio, when you have it        |
 | `deltaContext`     | `ReactNode`                                        | "vs previous period" | Text after the delta                       |

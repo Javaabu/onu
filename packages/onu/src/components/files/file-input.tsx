@@ -12,7 +12,7 @@ import { useMergedRef } from "../inputs/text-input"
 import { FileRow } from "./_file-row"
 import { useControllable } from "./_use-controllable"
 import { fileKey, syncInputFiles, validateFiles, type FileRejection, type FileValidationOptions } from "./file-utils"
-import { useRejectionMessage } from "./use-files"
+import { useFormatFileSize, useRejectionMessage } from "./use-files"
 import { registerEnglish } from "../../i18n/english"
 import { file as en_file } from "../../locales/en/file"
 
@@ -50,8 +50,13 @@ export interface FileInputProps
   minSize?: number
   /** Most files allowed in total. */
   maxFiles?: number
-  /** Add picked files to the selection instead of replacing it. Implies `multiple`. */
+  /**
+   * Add picked files to the selection instead of replacing it (duplicates are
+   * skipped). Implies `multiple`. Picking stops once `maxFiles` is reached.
+   */
   append?: boolean
+  /** Show the limits under the input (`Up to 5 files · 10 MB each`) and, with `maxFiles`, a live count. */
+  showLimits?: boolean
   /** Show the selected files with remove buttons. Default `true`. */
   showList?: boolean
   /** Button text. Defaults to "Choose file" / "Choose files". */
@@ -72,6 +77,7 @@ export interface FileInputProps
     list?: string
     item?: string
     errors?: string
+    limits?: string
   }
 }
 
@@ -92,6 +98,7 @@ export function FileInput({
   maxFiles,
   multiple: multipleProp,
   append = false,
+  showLimits = false,
   showList = true,
   buttonLabel,
   placeholder,
@@ -105,11 +112,13 @@ export function FileInput({
   ...props
 }: FileInputProps) {
   const { t } = useTranslation()
+  const format = useFormatFileSize()
   const local = React.useRef<HTMLInputElement>(null)
   const merged = useMergedRef(local, ref)
   const multiple = multipleProp || append
   const [files, setFiles] = useControllable<File[]>(value, defaultValue ?? [], onChange)
   const [rejections, setRejections] = React.useState<FileRejection[]>([])
+  const full = append && maxFiles !== undefined && files.length + countOffset >= maxFiles
   const options: FileValidationOptions = { accept, maxSize, minSize, maxFiles }
   const message = useRejectionMessage(options)
   const statusId = React.useId()
@@ -156,6 +165,13 @@ export function FileInput({
         ? files[0]!.name
         : t("file.filesSelected", { count: files.length }))
 
+  const limits = [
+    maxFiles !== undefined ? t("file.limitFiles", { count: maxFiles }) : null,
+    maxSize !== undefined ? t("file.limitSize", { size: format(maxSize) }) : null,
+  ]
+    .filter(Boolean)
+    .join(" · ")
+
   return (
     <div data-slot="file-input" className={cn("gap-2 flex w-full flex-col", classNames?.root, className)}>
       <div className={cn(fileInputVariants({ size }), classNames?.trigger)}>
@@ -167,7 +183,7 @@ export function FileInput({
           onChange={handleChange}
           className="inset-0 absolute z-10 size-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
           {...control}
-          disabled={control.disabled || pickDisabled || undefined}
+          disabled={control.disabled || pickDisabled || full || undefined}
         />
         <span
           aria-hidden
@@ -226,6 +242,27 @@ export function FileInput({
           ))}
         </ul>
       ) : null}
+
+      {showLimits && (limits || maxFiles !== undefined) ? (
+        <p className={cn("gap-2 text-xs flex flex-wrap justify-between text-muted-foreground", classNames?.limits)}>
+          <span>{limits}</span>
+          {maxFiles !== undefined ? (
+            <span aria-live="polite" className="tabular-nums">
+              {t("file.countOfMax", { count: files.length + countOffset, max: maxFiles })}
+            </span>
+          ) : null}
+        </p>
+      ) : null}
     </div>
   )
+}
+
+export interface MultipleFileInputProps extends Omit<FileInputProps, "multiple" | "append" | "showLimits"> {
+  /** Show a hint with the limits (`Up to 5 files, 10 MB each`). Default `true`. */
+  showLimits?: boolean
+}
+
+/** `FileInput` with `append` and `showLimits`: picks several files, adding to the selection each time. */
+export function MultipleFileInput({ showLimits = true, ...props }: MultipleFileInputProps) {
+  return <FileInput {...props} append showLimits={showLimits} />
 }

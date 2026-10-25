@@ -6,8 +6,7 @@ import { describe, expect, it, vi } from "vitest"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { FormField } from "../form/form-field"
 import { FileIcon } from "./file-icon"
-import { FileInput } from "./file-input"
-import { MultipleFileInput } from "./multiple-file-input"
+import { FileInput, MultipleFileInput } from "./file-input"
 
 // axe and user-event are slow on a busy machine.
 vi.setConfig({ testTimeout: 20_000 })
@@ -153,6 +152,14 @@ describe("MultipleFileInput", () => {
     await userEvent.click(screen.getByRole("button", { name: "Remove a.pdf" }))
     expect(input(container)).not.toBeDisabled()
     await expectNoA11yViolations()
+  })
+
+  it("is FileInput with append and showLimits", async () => {
+    const { container } = renderWithOnu(<FileInput aria-label="Documents" append showLimits maxFiles={1} />)
+    expect(screen.getByText("0 of 1")).toBeInTheDocument()
+    await user().upload(input(container), file("a.pdf"))
+    expect(screen.getByText("1 of 1")).toBeInTheDocument()
+    expect(input(container)).toBeDisabled()
   })
 
   it("can hide the limits", () => {

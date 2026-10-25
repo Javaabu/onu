@@ -6,7 +6,7 @@ import { cn } from "../../lib/utils"
 import type { LabelLayout } from "../../providers/onu-provider"
 import { Label } from "../../ui/label"
 import { FieldErrors } from "./field-errors"
-import { toArray, useFieldErrors, useFormDisabled, useLabelLayout } from "./form-context"
+import { INLINE_FIELD_GRID, toArray, useFieldErrors, useFormDisabled, useLabelLayout } from "./form-context"
 import { HelpText } from "./help-text"
 import { RequiredMarker } from "./required-marker"
 
@@ -120,12 +120,7 @@ export function FormField({
         className={cn("min-w-0 @container/form-field w-full", className)}
         {...props}
       >
-        <div
-          className={cn(
-            "gap-2 grid",
-            inline && "@md/form-field:grid-cols-[var(--onu-label-width)_minmax(0,1fr)] @md/form-field:gap-x-4",
-          )}
-        >
+        <div className={cn("gap-2 grid", inline && INLINE_FIELD_GRID)}>
           {label ? (
             <div
               className={cn(

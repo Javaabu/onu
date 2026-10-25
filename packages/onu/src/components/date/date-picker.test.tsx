@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { FormField } from "../form/form-field"
-import { DatePicker } from "./date-picker"
+import { DatePicker, MonthPicker, MultipleDatePicker, WeekPicker, YearPicker } from "./date-picker"
 
 // Calendars render many buttons; user-event runs slowly when the whole suite runs in parallel.
 vi.setConfig({ testTimeout: 30_000 })
@@ -526,5 +526,243 @@ describe("DatePicker — integration", () => {
     await user.click(trigger())
     expect(dialog()).toHaveAttribute("data-slot", "drawer-content")
     fireEvent.keyDown(dialog(), { key: "Escape" })
+  })
+})
+
+describe("MultipleDatePicker", () => {
+  it("toggles days, keeps them sorted and stays open", async () => {
+    const onChange = vi.fn()
+    const { user, container } = setup(
+      <MultipleDatePicker aria-label="Training days" name="days" today={TODAY} onChange={onChange} />,
+    )
+    expect(screen.getByRole("combobox")).toHaveTextContent("Select dates")
+    expect(container.querySelector('input[name="days"]')).toHaveValue("")
+    await user.click(screen.getByRole("combobox"))
+    await user.click(day(/March 20th/))
+    await user.click(day(/March 5th/))
+    expect(onChange).toHaveBeenLastCalledWith([new Date(2026, 2, 5), new Date(2026, 2, 20)])
+    expect(dialog()).toBeInTheDocument()
+    expect(screen.getByRole("combobox")).toHaveTextContent("5 Mar 2026, 20 Mar 2026")
+    await user.click(day(/March 5th/))
+    expect(onChange).toHaveBeenLastCalledWith([new Date(2026, 2, 20)])
+    expect(
+      Array.from(container.querySelectorAll<HTMLInputElement>('input[name="days[]"]')).map((i) => i.value),
+    ).toEqual(["2026-03-20"])
+  })
+
+  it("summarises many dates and announces the count", () => {
+    renderWithOnu(
+      <MultipleDatePicker
+        aria-label="Days"
+        defaultValue={[new Date(2026, 2, 1), new Date(2026, 2, 2), new Date(2026, 2, 3)]}
+      />,
+    )
+    expect(screen.getByRole("combobox")).toHaveTextContent("3 dates selected")
+    expect(screen.getAllByText("3 dates selected")[1]).toHaveAttribute("aria-live", "polite")
+  })
+
+  it("limits the number of dates and clears them", async () => {
+    const onChange = vi.fn()
+    const { user } = setup(
+      <MultipleDatePicker
+        aria-label="Days"
+        today={TODAY}
+        maxSelected={1}
+        defaultValue={[new Date(2026, 2, 2)]}
+        format="dd/MM"
+        onChange={onChange}
+      />,
+    )
+    expect(screen.getByRole("combobox")).toHaveTextContent("02/03")
+    await user.click(screen.getByRole("combobox"))
+    expect(day(/March 9th/)).toBeDisabled()
+    await user.click(day(/March 2nd/))
+    expect(onChange).toHaveBeenLastCalledWith([])
+    expect(day(/March 9th/)).not.toBeDisabled()
+    await user.click(within(dialog()).getByRole("button", { name: "Clear" }))
+    expect(onChange).toHaveBeenLastCalledWith([])
+  })
+
+  it.each(directions)("passes axe and speaks Dhivehi in %s", async (dir) => {
+    const { user } = setup(
+      <MultipleDatePicker aria-label="ދުވަސްތައް" defaultValue={[new Date(2026, 2, 1), new Date(2026, 2, 2), TODAY]} />,
+      { locale: "dv", dir },
+    )
+    expect(screen.getByRole("combobox")).toHaveTextContent("3 ތާރީޚު ހޮވިފައި")
+    await user.click(screen.getByRole("combobox"))
+    await expectNoA11yViolations()
+  })
+})
+
+describe("WeekPicker", () => {
+  it("selects the whole week of the clicked day", async () => {
+    const onChange = vi.fn()
+    const { user, container } = setup(<WeekPicker aria-label="Week" name="week" today={TODAY} onChange={onChange} />)
+    expect(screen.getByRole("combobox")).toHaveTextContent("Select a week")
+    await user.click(screen.getByRole("combobox"))
+    expect(within(dialog()).getByLabelText("Week 12")).toHaveTextContent("12")
+    await user.click(day(/Wednesday, March 18th/))
+    expect(onChange).toHaveBeenCalledWith(new Date(2026, 2, 15))
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+    expect(screen.getByRole("combobox")).toHaveTextContent("Week 12, 2026 (15 Mar – 21 Mar)")
+    expect(container.querySelector('input[name="week"]')).toHaveValue("2026-03-15")
+  })
+
+  it("highlights the selected week and previews the hovered week", async () => {
+    const { user } = setup(<WeekPicker aria-label="Week" defaultValue={new Date(2026, 2, 17)} today={TODAY} />)
+    await user.click(screen.getByRole("combobox"))
+    expect(day(/Sunday, March 15th/)).toHaveAttribute("data-range-start", "true")
+    expect(day(/Tuesday, March 17th/)).toHaveAttribute("data-range-middle", "true")
+    expect(day(/Saturday, March 21st/)).toHaveAttribute("data-range-end", "true")
+    expect(day(/Tuesday, March 17th/).closest("td")).toHaveAttribute("aria-selected", "true")
+    expect(within(dialog()).getByRole("grid").closest("[data-slot=calendar]")?.className).toContain(
+      "[&_.rdp-week:hover_.rdp-day:not([data-outside])]:bg-muted/60",
+    )
+  })
+
+  it("follows weekStartsOn and a custom label", async () => {
+    const { user } = setup(
+      <WeekPicker
+        aria-label="Week"
+        weekStartsOn={1}
+        defaultValue={new Date(2026, 2, 12)}
+        formatWeek={(s, e) => `${s.getDate()}–${e.getDate()}`}
+        min={new Date(2026, 2, 3)}
+        today={TODAY}
+      />,
+    )
+    expect(screen.getByRole("combobox")).toHaveTextContent("9–15")
+    await user.click(screen.getByRole("combobox"))
+    const before = day(/Monday, March 2nd/)
+    expect(before).toBeDisabled()
+    await user.click(within(dialog()).getByRole("button", { name: "Clear" }))
+    expect(screen.getByRole("combobox")).toHaveTextContent("Select a week")
+  })
+
+  it.each(directions)("passes axe and speaks Dhivehi in %s", async (dir) => {
+    const { user } = setup(<WeekPicker aria-label="ހަފްތާ" defaultValue={TODAY} today={TODAY} />, { locale: "dv", dir })
+    expect(screen.getByRole("combobox")).toHaveTextContent("2026 ގެ 11 ވަނަ ހަފްތާ")
+    await user.click(screen.getByRole("combobox"))
+    await expectNoA11yViolations()
+  })
+})
+
+describe("MonthPicker", () => {
+  it("opens on the 12 months of the year and picks one", async () => {
+    const onChange = vi.fn()
+    const { user, container } = setup(
+      <MonthPicker aria-label="Payroll month" name="month" today={TODAY} onChange={onChange} />,
+    )
+    expect(screen.getByRole("combobox")).toHaveTextContent("Select a month")
+    await user.click(screen.getByRole("combobox"))
+    const grid = within(dialog()).getByRole("grid", { name: "Months" })
+    expect(within(grid).getAllByRole("gridcell")).toHaveLength(12)
+    expect(within(grid).getByRole("button", { name: "March 2026" })).toHaveFocus()
+    await user.click(within(grid).getByRole("button", { name: "July 2026" }))
+    expect(onChange).toHaveBeenCalledWith(new Date(2026, 6, 1))
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+    expect(screen.getByRole("combobox")).toHaveTextContent("July 2026")
+    expect(container.querySelector('input[name="month"]')).toHaveValue("2026-07")
+  })
+
+  it("zooms out to years and back to months", async () => {
+    const { user } = setup(<MonthPicker aria-label="Month" defaultValue={new Date(2024, 0, 1)} today={TODAY} />)
+    await user.click(screen.getByRole("combobox"))
+    expect(within(dialog()).getByRole("button", { name: "January 2024" })).toHaveAttribute("data-selected")
+    await user.click(within(dialog()).getByRole("button", { name: "2024: choose a year" }))
+    await user.click(within(dialog()).getByRole("button", { name: "2025" }))
+    expect(within(dialog()).getByRole("button", { name: "May 2025" })).toBeInTheDocument()
+  })
+
+  it("respects min and max and a custom format", async () => {
+    const { user } = setup(
+      <MonthPicker
+        aria-label="Month"
+        today={TODAY}
+        min={new Date(2026, 1, 1)}
+        max={new Date(2026, 9, 31)}
+        format="MM/yyyy"
+        defaultValue={new Date(2026, 4, 1)}
+      />,
+    )
+    expect(screen.getByRole("combobox")).toHaveTextContent("05/2026")
+    await user.click(screen.getByRole("combobox"))
+    expect(within(dialog()).getByRole("button", { name: "January 2026" })).toHaveAttribute("aria-disabled", "true")
+    expect(within(dialog()).getByRole("button", { name: "November 2026" })).toHaveAttribute("aria-disabled", "true")
+    expect(within(dialog()).getByRole("button", { name: "Next year" })).toBeDisabled()
+  })
+
+  it("clears on optional fields", async () => {
+    const onChange = vi.fn()
+    const { user } = setup(<MonthPicker aria-label="Month" defaultValue={TODAY} onChange={onChange} />)
+    await user.click(screen.getByRole("combobox"))
+    await user.click(within(dialog()).getByRole("button", { name: "Clear" }))
+    expect(onChange).toHaveBeenCalledWith(null)
+  })
+
+  it.each(directions)("passes axe with Dhivehi month names in %s", async (dir) => {
+    const { user } = setup(<MonthPicker aria-label="މަސް" defaultValue={new Date(2026, 2, 1)} />, {
+      locale: "dv",
+      dir,
+    })
+    expect(screen.getByRole("combobox")).toHaveTextContent("މާޗު 2026")
+    await user.click(screen.getByRole("combobox"))
+    expect(within(dialog()).getByRole("button", { name: "ޖުލައި 2026" })).toBeInTheDocument()
+    await expectNoA11yViolations()
+  })
+})
+
+describe("YearPicker", () => {
+  it("picks a year from a 12-year grid", async () => {
+    const onChange = vi.fn()
+    const { user, container } = renderWithOnu(
+      <FormField label="Financial year" name="year">
+        <YearPicker today={TODAY} onChange={onChange} />
+      </FormField>,
+    ) as ReturnType<typeof renderWithOnu> & { user?: never }
+    const u = userEvent.setup()
+    expect(screen.getByRole("combobox")).toHaveTextContent("Select a year")
+    await u.click(screen.getByRole("combobox"))
+    expect(within(dialog()).getByRole("grid", { name: "Years" })).toBeInTheDocument()
+    await u.click(within(dialog()).getByRole("button", { name: "Next 12 years" }))
+    await u.click(within(dialog()).getByRole("button", { name: "2030" }))
+    expect(onChange).toHaveBeenCalledWith(new Date(2030, 0, 1))
+    expect(screen.getByRole("combobox")).toHaveAccessibleName("Financial year 2030")
+    expect(container.querySelector('input[name="year"]')).toHaveValue("2030")
+    void user
+  })
+})
+
+describe("DatePicker mode", () => {
+  it('picks several dates with mode="multiple"', async () => {
+    const onChange = vi.fn()
+    const { user } = setup(<DatePicker mode="multiple" aria-label="Dates" today={TODAY} onChange={onChange} />)
+    await user.click(screen.getByRole("combobox"))
+    await user.click(day(/March 20th/))
+    await user.click(day(/March 5th/))
+    expect(onChange).toHaveBeenLastCalledWith([new Date(2026, 2, 5), new Date(2026, 2, 20)])
+    expect(dialog()).toBeInTheDocument()
+  })
+
+  it('picks a week with mode="week" and honours disabledDates', async () => {
+    const onChange = vi.fn()
+    const { user } = setup(
+      <DatePicker mode="week" aria-label="Week" today={TODAY} disabledDates={{ dayOfWeek: [5] }} onChange={onChange} />,
+    )
+    await user.click(screen.getByRole("combobox"))
+    expect(day(/Friday, March 20th/)).toBeDisabled()
+    await user.click(day(/Wednesday, March 18th/))
+    expect(onChange).toHaveBeenCalledWith(new Date(2026, 2, 15))
+  })
+
+  it('holds a month or a year with mode="month" and mode="year"', () => {
+    const { container } = renderWithOnu(
+      <>
+        <DatePicker mode="month" aria-label="Month" name="month" today={TODAY} defaultValue={new Date(2026, 4, 1)} />
+        <DatePicker mode="year" aria-label="Year" name="year" today={TODAY} defaultValue={new Date(2024, 0, 1)} />
+      </>,
+    )
+    expect(container.querySelector('input[name="month"]')).toHaveValue("2026-05")
+    expect(container.querySelector('input[name="year"]')).toHaveValue("2024")
   })
 })

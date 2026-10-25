@@ -3,7 +3,7 @@ title: DataTable
 sidebar_position: 3
 ---
 
-The listing table, built on [TanStack Table](https://tanstack.com/table) v9 (column model, visibility and selection) and shadcn's `Table`. It implements the table parts of REQUIREMENTS §25.6: sortable headers, row checkboxes with a select-all-on-this-page box, the [bulk action bar](bulk-actions), [⋯ row menus](row-actions), [empty states](empty-state), the trash view, labelled cards on phones and the [pagination](pagination) footer.
+The listing table, built on [TanStack Table](https://tanstack.com/table) v9 (column model, visibility and selection) and shadcn's `Table`. It implements the table parts of REQUIREMENTS §25.6: sortable headers, row checkboxes with a select-all-on-this-page box, the [bulk action bar](bulk-actions), [⋯ row menus](../overlays/action-menu#row-actions), [empty states](empty-state), the trash view, labelled cards on phones and the [pagination](pagination) footer.
 
 ```tsx
 import { DataTable, useListingState, type DataTableColumn } from "@javaabu/onu"

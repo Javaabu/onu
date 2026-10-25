@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { FormField } from "../form/form-field"
-import { maskSecret, SensitiveInput } from "./sensitive-input"
+import { CopyInput, maskSecret, SensitiveInput } from "./sensitive-input"
 
 // userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
 vi.setConfig({ testTimeout: 30_000 })
@@ -102,5 +102,81 @@ describe("SensitiveInput", () => {
     expect(screen.getByRole("button", { name: "އަގު ދައްކާ" })).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "ކޮޕީކުރޭ" })).toBeInTheDocument()
     await expectNoA11yViolations()
+  })
+
+  it("shows the value as is with masked={false}", () => {
+    renderWithOnu(<SensitiveInput aria-label="Reference" value="REF-2026-00451" masked={false} mono={false} />, {
+      dir: "rtl",
+    })
+    const input = screen.getByRole("textbox", { name: "Reference" })
+    expect(input).toHaveValue("REF-2026-00451")
+    expect(input).toHaveAttribute("readonly")
+    expect(input).not.toHaveAttribute("dir")
+    expect(input).not.toHaveAttribute("data-revealed")
+    expect(input).not.toHaveClass("font-mono")
+    expect(screen.queryByRole("button", { name: "Show value" })).not.toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Copy" })).toBeInTheDocument()
+  })
+
+  it.each(directions)("passes axe unmasked in Dhivehi in %s", async (dir) => {
+    renderWithOnu(<SensitiveInput aria-label="ލިންކް" value="https://portal.gov.mv" masked={false} />, {
+      dir,
+      locale: "dv",
+    })
+    expect(screen.queryByRole("button", { name: "އަގު ދައްކާ" })).not.toBeInTheDocument()
+    await expectNoA11yViolations()
+  })
+})
+
+const LINK = "https://portal.gov.mv/apply/REF-2026-00451"
+
+describe("CopyInput", () => {
+  let writeText: ReturnType<typeof vi.fn>
+  beforeEach(() => {
+    writeText = vi.fn().mockResolvedValue(undefined)
+    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true })
+  })
+
+  it("shows a read-only value and copies it", async () => {
+    const onCopy = vi.fn()
+    renderWithOnu(<CopyInput aria-label="Share link" value={LINK} onCopy={onCopy} />)
+    const input = screen.getByRole("textbox", { name: "Share link" })
+    expect(input).toHaveValue(LINK)
+    expect(input).toHaveAttribute("readonly")
+    expect(input).toHaveAttribute("data-copy-input")
+    expect(screen.queryByRole("button", { name: "Show value" })).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole("button", { name: "Copy" }))
+    expect(writeText).toHaveBeenCalledWith(LINK)
+    expect(onCopy).toHaveBeenCalledWith(LINK)
+    expect(await screen.findByText("Copied")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Copy" })).toHaveAttribute("data-copied", "true")
+    await expectNoA11yViolations()
+  })
+
+  it("selects everything on focus", async () => {
+    renderWithOnu(<CopyInput aria-label="Reference" value="REF-2026-00451" mono />)
+    const input = screen.getByRole("textbox") as HTMLInputElement
+    expect(input).toHaveClass("font-mono")
+    await userEvent.click(input)
+    expect(input.selectionEnd).toBe(input.value.length)
+  })
+
+  it("is not monospace by default and keeps a passed dir", () => {
+    renderWithOnu(<CopyInput aria-label="Link" value={LINK} dir="ltr" />)
+    const input = screen.getByRole("textbox")
+    expect(input).not.toHaveClass("font-mono")
+    expect(input).toHaveAttribute("dir", "ltr")
+  })
+
+  it("does not copy when disabled and keeps extra addons", () => {
+    renderWithOnu(<CopyInput aria-label="Reference" value="x" disabled endAddon={<span>MV</span>} />)
+    expect(screen.getByRole("button", { name: "Copy" })).toBeDisabled()
+    expect(screen.getByText("MV")).toBeInTheDocument()
+  })
+
+  it.each(directions)("announces in Dhivehi in %s", async (dir) => {
+    renderWithOnu(<CopyInput aria-label="ލިންކް" value={LINK} />, { dir, locale: "dv" })
+    await userEvent.click(screen.getByRole("button", { name: "ކޮޕީކުރޭ" }))
+    expect(await screen.findByText("ކޮޕީކުރެވިއްޖެ")).toBeInTheDocument()
   })
 })

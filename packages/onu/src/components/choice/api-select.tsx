@@ -7,7 +7,7 @@ import { useTranslation } from "../../providers/onu-provider"
 import { useFormFieldControl } from "../form/form-field"
 import { ComboboxCore, type ComboboxPresentationProps } from "./_combobox"
 import { useQuickCreate, type QuickCreateProps } from "./_create"
-import { useDebouncedValue, useOnChange } from "./_hooks"
+import { useDebouncedValue, useOnChange, useParentField, type ParentFieldProps } from "./_hooks"
 import { useChoiceSelection, useOpenState, type SelectionProps } from "./_selection"
 import {
   apiOptionsQueryKey,
@@ -17,8 +17,10 @@ import {
   useOnuQueryClient,
   valueUrlFor,
   type ApiOptionsSource,
+  type ApiParams,
 } from "./api-options"
 import { normalizeOptions, type ChoiceOption, type ChoiceOptionInput } from "./options"
+import { SearchableSelect, type SearchableSelectOptions, type SearchableSelectProps } from "./searchable-select"
 import { registerEnglish } from "../../i18n/english"
 import { choice as en_choice } from "../../locales/en/choice"
 import { common as en_common } from "../../locales/en/common"
@@ -34,6 +36,7 @@ export type ApiSelectProps<TItem = unknown> = SelectionProps &
   ComboboxPresentationProps &
   TriggerProps &
   QuickCreateProps &
+  ParentFieldProps &
   ApiOptionsSource<TItem> & {
     ref?: React.Ref<HTMLButtonElement>
     required?: boolean
@@ -55,8 +58,10 @@ export type ApiSelectProps<TItem = unknown> = SelectionProps &
     gcTime?: number
     /** Cache key when using a `fetcher` (defaults to the `url`, or one per instance). */
     cacheKey?: string
-    /** When this value changes (e.g. a parent field), the value clears and options refetch. */
+    /** When this value changes, the value clears and options refetch. For a parent field, use `parentValue`. */
     dependsOn?: unknown
+    /** With `parentValue`: the request param that carries the parent value. Default `parent_id`. */
+    parentParam?: string
     /** Use this QueryClient instead of the app's (or Onu's fallback) client. */
     queryClient?: QueryClient
     selectAll?: boolean
@@ -104,6 +109,9 @@ export function ApiSelect<TItem = unknown>(props: ApiSelectProps<TItem>) {
     gcTime = 10 * MINUTE,
     cacheKey,
     dependsOn,
+    parentValue: _parentValue,
+    parentLabel: _parentLabel,
+    parentParam = "parent_id",
     queryClient,
     selectAll,
     max,
@@ -112,7 +120,7 @@ export function ApiSelect<TItem = unknown>(props: ApiSelectProps<TItem>) {
     renderCreateDialog,
     onCreated,
     // presentation
-    placeholder,
+    placeholder: placeholderProp,
     searchPlaceholder,
     thaana,
     clearable,
@@ -136,19 +144,26 @@ export function ApiSelect<TItem = unknown>(props: ApiSelectProps<TItem>) {
     required?: boolean
     disabled?: boolean
   }
-  const { name, required, disabled, ...triggerProps } = control
+  const { name, required, disabled: disabledProp, ...triggerProps } = control
+  const { parent, waiting, placeholder } = useParentField(props, placeholderProp)
+  const disabled = disabledProp || waiting
   const [open, setOpen] = useOpenState(openProp, defaultOpen, onOpenChange)
   const [query, setQuery] = React.useState("")
   const debounced = useDebouncedValue(query.trim(), debounce)
   const instanceKey = React.useId()
 
+  // A dependent field sends the parent value with every request (and caches per parent).
+  const withParent = (q: string): ApiParams => {
+    const own = typeof params === "function" ? params(q) : params
+    return parent === null ? (own ?? {}) : { ...own, [parentParam]: parent }
+  }
   const source: ApiOptionsSource<TItem> = {
     url,
     fetcher,
     method,
     headers,
     credentials,
-    params,
+    params: withParent,
     searchParam,
     pageParam,
     perPageParam,
@@ -159,7 +174,7 @@ export function ApiSelect<TItem = unknown>(props: ApiSelectProps<TItem>) {
     descriptionKey,
     mapOption,
   }
-  const resolvedParams = typeof params === "function" ? params(debounced) : params
+  const resolvedParams = withParent(debounced)
   const endpoint = cacheKey ?? url ?? instanceKey
   const tooShort = debounced.length > 0 ? debounced.length < minChars : minChars > 0 && !preload
   const enabled = (open || preload) && !disabled && !tooShort
@@ -256,7 +271,7 @@ export function ApiSelect<TItem = unknown>(props: ApiSelectProps<TItem>) {
   })
 
   // A new parent value: clear the child (R16.5 dependent use).
-  useOnChange(dependsOn, () => {
+  useOnChange([dependsOn, parent], () => {
     if (selection.values.length) selection.clear()
     setQuery("")
   })
@@ -316,4 +331,33 @@ export function ApiSelect<TItem = unknown>(props: ApiSelectProps<TItem>) {
       {create.dialog}
     </>
   )
+}
+
+type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never
+
+export type DependentSelectProps = DistributiveOmit<ApiSelectProps, "dependsOn" | "url" | "fetcher" | "parentValue"> & {
+  /** The value of the field this one depends on (e.g. the selected atoll). */
+  parentValue: string | number | null | undefined
+  /** Options per parent value (a map), a function of it, or a list. */
+  options?: SearchableSelectOptions
+  /** Load options for a parent value (cached per parent and search, like ApiSelect). */
+  loadOptions?: (parentValue: string, context: { query: string; page: number; signal: AbortSignal }) => Promise<unknown>
+  /** Load options from an API; the parent value is sent as `parentParam`. */
+  url?: string
+}
+
+/**
+ * A select whose options depend on another field (atoll → island): a
+ * `SearchableSelect` with `parentValue`, or an `ApiSelect` with `parentValue`
+ * when options come from `loadOptions` or a `url`.
+ */
+export function DependentSelect({ options, loadOptions, ...props }: DependentSelectProps) {
+  if (props.url || loadOptions) {
+    const fetcher = loadOptions
+      ? (query: string, ctx: { page: number; signal: AbortSignal }) =>
+          loadOptions(String(props.parentValue ?? ""), { query, page: ctx.page, signal: ctx.signal })
+      : undefined
+    return <ApiSelect {...(props as ApiSelectProps)} fetcher={fetcher} />
+  }
+  return <SearchableSelect {...(props as unknown as SearchableSelectProps)} options={options ?? []} />
 }

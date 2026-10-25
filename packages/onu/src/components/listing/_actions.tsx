@@ -3,15 +3,13 @@
 import * as React from "react"
 
 import { Icon } from "../../icons/icon"
-import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
+import { useLinkComponent } from "../../providers/onu-provider"
 import { DropdownMenuItem, DropdownMenuSeparator } from "../../ui/dropdown-menu"
-import { ConfirmDialog, type ConfirmOptions } from "./_shared"
-import { registerEnglish } from "../../i18n/english"
-import { listing as en_listing } from "../../locales/en/listing"
+import { needsConfirm, useConfirmQuestion } from "../overlays/_menu-items"
+import { ConfirmDialog } from "../overlays/confirm-dialog"
+import type { ConfirmOptions } from "./_shared"
 
-registerEnglish({ listing: en_listing })
-
-/** An action on one record: a row's ⋯ menu or a record page header. */
+/** An action on one record: a row's ⋯ menu or a record page header. It is also an `ActionMenu` item. */
 export interface RecordAction {
   id: string
   label: React.ReactNode
@@ -38,45 +36,9 @@ export function visibleActions(actions: RecordAction[]) {
   return actions.filter((a) => a.permitted !== false)
 }
 
-export function needsConfirm(action: RecordAction) {
-  return action.confirm === undefined ? !!action.destructive : action.confirm !== false
-}
-
-/** Default confirmation for an action on a record called `name`. */
-export function useConfirmOptions() {
-  const { t } = useTranslation()
-  return React.useCallback(
-    (action: RecordAction, name: string): ConfirmOptions => {
-      const custom = typeof action.confirm === "object" ? action.confirm : {}
-      if (action.id === "force-delete")
-        return {
-          title: t("listing.deletePermanentlyTitle", { name }),
-          description: t("listing.deletePermanentlyDescription"),
-          confirmLabel: t("listing.deletePermanently"),
-          destructive: true,
-          ...custom,
-        }
-      const isDelete = action.id === "delete"
-      return {
-        title: isDelete ? t("listing.deleteRecordTitle", { name }) : `${textOf(action.label)} ${name}?`,
-        description: t("listing.deleteRecordDescription"),
-        confirmLabel: action.label,
-        destructive: !!action.destructive,
-        ...custom,
-      }
-    },
-    [t],
-  )
-}
-
-function textOf(node: React.ReactNode): string {
-  if (typeof node === "string" || typeof node === "number") return String(node)
-  return ""
-}
-
 /** Runs actions, asking for confirmation first where needed. */
 export function useActionRunner(name: string) {
-  const confirmOptions = useConfirmOptions()
+  const question = useConfirmQuestion(name)
   const [pending, setPending] = React.useState<RecordAction | null>(null)
   const [open, setOpen] = React.useState(false)
   const queued = React.useRef<RecordAction | null>(null)
@@ -108,12 +70,7 @@ export function useActionRunner(name: string) {
   }
 
   const dialog = pending ? (
-    <ConfirmDialog
-      open={open}
-      onOpenChange={setOpen}
-      onConfirm={() => pending.onSelect?.()}
-      {...confirmOptions(pending, name)}
-    />
+    <ConfirmDialog {...question(pending)} open={open} onOpenChange={setOpen} onConfirm={() => pending.onSelect?.()} />
   ) : null
 
   return { queue, flush, run, dialog }

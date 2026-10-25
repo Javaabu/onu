@@ -32,6 +32,18 @@ export default function FileInputDemo() {
         </FormField>
       </DemoSection>
       <DemoSection
+        title="Several files"
+        description="append adds each pick to the list; duplicates are skipped. showLimits shows the limits and a count."
+        className="max-w-md gap-4 grid"
+      >
+        <FormField label="Tender documents">
+          <FileInput append showLimits accept=".pdf,.xlsx,.docx" maxFiles={5} maxSize={10 * 1024 * 1024} />
+        </FormField>
+        <FormField label="Site photos">
+          <FileInput append accept="image/*" />
+        </FormField>
+      </DemoSection>
+      <DemoSection
         title="ދިވެހި"
         className="max-w-md gap-4 grid"
         description="Switch the locale to Dhivehi in the toolbar."

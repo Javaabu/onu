@@ -23,7 +23,7 @@ import { RecordActionsMenu } from "@javaabu/onu"
 | Prop         | Type                           | Default     | Description                   |
 | ------------ | ------------------------------ | ----------- | ----------------------------- |
 | `name`       | `string`                       |             | Used in confirmations         |
-| `actions`    | `RecordAction[]`               |             | See [RowActions](row-actions) |
+| `actions`    | `RecordAction[]`               |             | See [`RecordAction`](../overlays/action-menu#recordaction) |
 | `maxVisible` | `number`                       | `2`         | Buttons before the menu       |
 | `size`       | `"sm" \| "default"`            | `"default"` |                               |
 | `classNames` | `{ button, trigger, content }` |             |                               |

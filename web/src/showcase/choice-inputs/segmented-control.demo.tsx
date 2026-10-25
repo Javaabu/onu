@@ -7,11 +7,13 @@ export const meta = {
   title: "Segmented control",
   group: "Choice inputs",
   order: 12,
-  description: "One of a few options, side by side. Arrow keys follow the visual order (RTL too).",
+  description:
+    "One of a few options, side by side, or icon-only (a listing's view switcher). Arrow keys follow the visual order (RTL too).",
 }
 
 export default function SegmentedControlDemo() {
   const [period, setPeriod] = React.useState("month")
+  const [view, setView] = React.useState("table")
   return (
     <DemoPage>
       <DemoSection title="Basic" className="max-w-md gap-4 grid">
@@ -35,6 +37,42 @@ export default function SegmentedControlDemo() {
             { value: "list", label: "List", icon: <Icon name="list" /> },
             { value: "grid", label: "Grid", icon: <Icon name="grid" /> },
             { value: "kanban", label: "Kanban", icon: <Icon name="kanban" />, disabled: true },
+          ]}
+        />
+      </DemoSection>
+      <DemoSection title="View switcher" description="Icon-only segments named by their labels (ViewSwitcher).">
+        <SegmentedControl
+          aria-label="View"
+          size="sm"
+          iconOnly
+          value={view}
+          onValueChange={setView}
+          options={[
+            { value: "table", label: "Table", icon: <Icon name="table" /> },
+            { value: "list", label: "List", icon: <Icon name="list" /> },
+            { value: "grid", label: "Grid", icon: <Icon name="grid" /> },
+            { value: "kanban", label: "Board", icon: <Icon name="kanban" /> },
+          ]}
+        />
+        <span className="text-sm text-muted-foreground">Current: {view}</span>
+      </DemoSection>
+      <DemoSection title="Icons with labels, fewer views">
+        <SegmentedControl
+          aria-label="View"
+          size="sm"
+          defaultValue="list"
+          options={[
+            { value: "list", label: "List", icon: <Icon name="list" /> },
+            { value: "grid", label: "Grid", icon: <Icon name="grid" /> },
+          ]}
+        />
+        <SegmentedControl
+          aria-label="View"
+          size="sm"
+          defaultValue="map"
+          options={[
+            { value: "table", label: "Table", icon: <Icon name="table" /> },
+            { value: "map", label: "Map", icon: <Icon name="map-pin" /> },
           ]}
         />
       </DemoSection>

@@ -3,17 +3,7 @@
 import * as React from "react"
 
 import { useTranslation } from "../../providers/onu-provider"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../../ui/alert-dialog"
-import { Spinner } from "../../ui/spinner"
+import { ConfirmDialog as BaseConfirmDialog } from "../overlays/confirm-dialog"
 import type { ListingNoun } from "./listing-types"
 import { registerEnglish } from "../../i18n/english"
 import { common as en_common } from "../../locales/en/common"
@@ -64,66 +54,17 @@ export interface ConfirmDialogProps extends ConfirmOptions {
   onConfirm: () => void | Promise<unknown>
 }
 
-/** Confirmation built on shadcn's AlertDialog. Escape or Cancel closes it without doing anything. */
-export function ConfirmDialog({
-  open,
-  onOpenChange,
-  onConfirm,
-  title,
-  description,
-  confirmLabel,
-  cancelLabel,
-  destructive = true,
-}: ConfirmDialogProps) {
+/**
+ * The overlays `ConfirmDialog`, destructive unless told otherwise (bulk
+ * actions). Escape or Cancel closes it without doing anything.
+ */
+export function ConfirmDialog({ destructive = true, confirmLabel, ...props }: ConfirmDialogProps) {
   const { t } = useTranslation()
-  const [busy, setBusy] = React.useState(false)
-  // Radix only returns focus to an AlertDialogTrigger; these dialogs open from
-  // menus and buttons, so remember what had focus and go back to it (§25.10).
-  const returnTo = React.useRef<HTMLElement | null>(null)
-  React.useLayoutEffect(() => {
-    if (open) returnTo.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
-  }, [open])
-
-  const confirm = async (event: React.MouseEvent) => {
-    event.preventDefault()
-    setBusy(true)
-    try {
-      await onConfirm()
-      onOpenChange(false)
-    } finally {
-      setBusy(false)
-    }
-  }
-
   return (
-    <AlertDialog open={open} onOpenChange={(next) => !busy && onOpenChange(next)}>
-      <AlertDialogContent
-        data-slot="listing-confirm"
-        onCloseAutoFocus={(event) => {
-          if (!returnTo.current?.isConnected) return
-          event.preventDefault()
-          returnTo.current.focus()
-        }}
-      >
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription className={description ? undefined : "sr-only"}>
-            {description ?? title}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={busy}>{cancelLabel ?? t("common.cancel")}</AlertDialogCancel>
-          <AlertDialogAction
-            variant={destructive ? "destructive" : "default"}
-            disabled={busy}
-            aria-busy={busy || undefined}
-            onClick={confirm}
-          >
-            {busy ? <Spinner /> : null}
-            {confirmLabel ?? t("common.delete")}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <BaseConfirmDialog
+      {...props}
+      variant={destructive ? "destructive" : "default"}
+      confirmLabel={confirmLabel ?? t("common.delete")}
+    />
   )
 }

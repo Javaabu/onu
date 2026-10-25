@@ -6,7 +6,8 @@ export const meta = {
   title: "Autocomplete",
   group: "Text inputs",
   order: 16,
-  description: "Free text with suggestions from a list or an API (WAI-ARIA combobox).",
+  description:
+    "Free text with suggestions from a list or an API (WAI-ARIA combobox), optionally with a toggle button and a “Use …” row (editable select).",
 }
 
 const ISLANDS = [
@@ -47,6 +48,15 @@ async function searchJobs(query: string, { signal }: { signal: AbortSignal }) {
   return JOBS.filter((j) => j.value.toLowerCase().includes(query.toLowerCase()))
 }
 
+const TITLES = [
+  "Director",
+  "Deputy Director",
+  "Assistant Director",
+  "Senior Project Officer",
+  "Project Officer",
+  "Intern",
+]
+
 export default function AutocompleteDemo() {
   return (
     <DemoPage>
@@ -69,6 +79,38 @@ export default function AutocompleteDemo() {
       >
         <FormField label="Job title">
           <Autocomplete suggestions={searchJobs} placeholder="e.g. engineer" />
+        </FormField>
+      </DemoSection>
+      <DemoSection
+        title="Editable select"
+        description="showToggleButton opens the full list; showCustomOption offers “Use …” for typed text; autoHighlight lets Enter pick the first row."
+        className="max-w-md gap-4 grid"
+      >
+        <FormField label="Job title" help="Pick a suggestion or type your own.">
+          <Autocomplete
+            suggestions={TITLES}
+            showToggleButton
+            showCustomOption
+            autoHighlight
+            emptyMessage="No options"
+            placeholder="e.g. Director"
+          />
+        </FormField>
+        <FormField label="Disabled" disabled>
+          <Autocomplete suggestions={TITLES} showToggleButton defaultValue="Director" />
+        </FormField>
+        <FormField label="With error" error="Job title is required">
+          <Autocomplete suggestions={TITLES} showToggleButton showCustomOption autoHighlight />
+        </FormField>
+        <FormField label="މަޤާމު">
+          <Autocomplete
+            suggestions={["ޑިރެކްޓަރ", "ޑެޕިއުޓީ ޑިރެކްޓަރ", "ޕްރޮޖެކްޓް އޮފިސަރ"]}
+            thaana
+            thaanaToggle
+            showToggleButton
+            showCustomOption
+            autoHighlight
+          />
         </FormField>
       </DemoSection>
       <DemoSection title="States" className="max-w-md gap-4 grid">

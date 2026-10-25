@@ -27,6 +27,18 @@ const [files, setFiles] = React.useState<File[]>([])
 <FileInput multiple value={files} onChange={setFiles} onReject={(rejections) => console.log(rejections)} />
 ```
 
+## Several files
+
+With `append`, each pick adds to the list (duplicates are skipped) instead of replacing it, and every file has a remove button. `showLimits` adds a hint with the limits and a live count ("3 of 5"). When `maxFiles` is reached the picker is disabled until a file is removed; extra files from one pick are rejected with "x.pdf was not added: only 5 files are allowed." The count is announced politely as it changes, and the hint uses plural rules for both locales.
+
+`MultipleFileInput` is `FileInput` with `append` and `showLimits` on (pass `showLimits={false}` to hide the hint).
+
+```tsx
+<FormField label="Tender documents">
+  <FileInput append showLimits accept=".pdf,.xlsx,.docx" maxFiles={5} maxSize={10 * 1024 * 1024} />
+</FormField>
+```
+
 ## Validation
 
 Picked files are checked against `accept`, `maxSize`, `minSize` and `maxFiles`. Rejected files are listed under the input in a polite live region ("photo.png is larger than 2 MB."), and passed to `onReject` as `{ file, code }` with `code` one of `file-too-large`, `file-too-small`, `file-invalid-type`, `too-many-files`. Sizes use the active locale (`1.5 MB`).
@@ -35,26 +47,27 @@ The helpers are exported too: `validateFile`, `validateFiles`, `matchesAccept`, 
 
 ## Props
 
-| Prop           | Type                                                     | Default     | Description                                                             |
-| -------------- | -------------------------------------------------------- | ----------- | ----------------------------------------------------------------------- |
-| `value`        | `File[]`                                                 |             | Selected files (controlled)                                             |
-| `defaultValue` | `File[]`                                                 | `[]`        | Initial files (uncontrolled)                                            |
-| `onChange`     | `(files: File[]) => void`                                |             | Called with the full selection after a pick or a removal                |
-| `onReject`     | `(rejections: FileRejection[]) => void`                  |             | Files that failed validation                                            |
-| `accept`       | `string`                                                 |             | Accepted types, as for `<input accept>`                                 |
-| `maxSize`      | `number`                                                 |             | Largest size in bytes                                                   |
-| `minSize`      | `number`                                                 |             | Smallest size in bytes                                                  |
-| `maxFiles`     | `number`                                                 |             | Most files in total                                                     |
-| `multiple`     | `boolean`                                                | `false`     | Allow several files                                                     |
-| `append`       | `boolean`                                                | `false`     | Add picks to the selection instead of replacing it (implies `multiple`) |
-| `showList`     | `boolean`                                                | `true`      | Show the selected files with remove buttons                             |
-| `size`         | `"sm" \| "default" \| "lg"`                              | `"default"` | Trigger size (`fileInputVariants`)                                      |
-| `buttonLabel`  | `ReactNode`                                              |             | Button text (default "Choose file(s)")                                  |
-| `placeholder`  | `string`                                                 |             | Text when nothing is selected                                           |
-| `summary`      | `ReactNode`                                              |             | Replace the summary next to the button                                  |
-| `pickDisabled` | `boolean`                                                | `false`     | Stop picking more files but keep removal working                        |
-| `countOffset`  | `number`                                                 | `0`         | Files already counted towards `maxFiles` elsewhere                      |
-| `classNames`   | `{ root, trigger, button, summary, list, item, errors }` |             | Classes for each part                                                   |
+| Prop           | Type                                                             | Default     | Description                                                             |
+| -------------- | ---------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------- |
+| `value`        | `File[]`                                                         |             | Selected files (controlled)                                             |
+| `defaultValue` | `File[]`                                                         | `[]`        | Initial files (uncontrolled)                                            |
+| `onChange`     | `(files: File[]) => void`                                        |             | Called with the full selection after a pick or a removal                |
+| `onReject`     | `(rejections: FileRejection[]) => void`                          |             | Files that failed validation                                            |
+| `accept`       | `string`                                                         |             | Accepted types, as for `<input accept>`                                 |
+| `maxSize`      | `number`                                                         |             | Largest size in bytes                                                   |
+| `minSize`      | `number`                                                         |             | Smallest size in bytes                                                  |
+| `maxFiles`     | `number`                                                         |             | Most files in total                                                     |
+| `multiple`     | `boolean`                                                        | `false`     | Allow several files                                                     |
+| `append`       | `boolean`                                                        | `false`     | Add picks to the selection instead of replacing it (implies `multiple`) |
+| `showLimits`   | `boolean`                                                        | `false`     | Show "Up to 5 files · 10 MB max each" and a live count                  |
+| `showList`     | `boolean`                                                        | `true`      | Show the selected files with remove buttons                             |
+| `size`         | `"sm" \| "default" \| "lg"`                                      | `"default"` | Trigger size (`fileInputVariants`)                                      |
+| `buttonLabel`  | `ReactNode`                                                      |             | Button text (default "Choose file(s)")                                  |
+| `placeholder`  | `string`                                                         |             | Text when nothing is selected                                           |
+| `summary`      | `ReactNode`                                                      |             | Replace the summary next to the button                                  |
+| `pickDisabled` | `boolean`                                                        | `false`     | Stop picking more files but keep removal working                        |
+| `countOffset`  | `number`                                                         | `0`         | Files already counted towards `maxFiles` elsewhere                      |
+| `classNames`   | `{ root, trigger, button, summary, list, item, errors, limits }` |             | Classes for each part                                                   |
 
 All other `<input>` props are passed to the input, and `ref` points at the `<input>`.
 

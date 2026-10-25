@@ -2,13 +2,27 @@ import * as React from "react"
 import { Avatar, AvatarFallback, Badge, EmptyState, ListView, LoadMore } from "@javaabu/onu"
 
 import { DemoPage, DemoSection } from "../../components/demo"
-import { mvr, people, statusLabel, wait } from "./_data"
+import { ISLANDS, mvr, people, statusLabel, wait } from "./_data"
 
-export const meta = { title: "List view", group: "Listing pages", order: 18 }
+export const meta = {
+  title: "List view",
+  group: "Listing pages",
+  order: 18,
+  description: 'Records as a list or, with layout="grid", a grid of cards that follows the space available.',
+}
+
+const services = ISLANDS.map((island, i) => ({
+  id: String(i),
+  title: `${island} council office`,
+  description: "Permits, registrations and certificates for residents.",
+  open: i % 3 !== 0,
+  hue: (i * 40) % 360,
+}))
 
 export default function ListViewDemo() {
   const [count, setCount] = React.useState(5)
   const [selection, setSelection] = React.useState<string[]>([])
+  const [gridSelection, setGridSelection] = React.useState<string[]>(["1"])
   return (
     <DemoPage>
       <DemoSection title="Divided list with selection and load more" className="block">
@@ -56,6 +70,33 @@ export default function ListViewDemo() {
       <DemoSection title="Loading and empty" className="gap-3 grid">
         <ListView items={[]} title={() => ""} loading />
         <ListView items={[]} title={() => ""} empty={<EmptyState bordered />} />
+      </DemoSection>
+      <DemoSection title="Grid: cards follow the space available" className="block">
+        <ListView
+          layout="grid"
+          aria-label="Council offices"
+          items={services}
+          title={(s) => s.title}
+          description={(s) => s.description}
+          media={(s) => (
+            <div className="p-3 text-xs flex size-full items-end bg-linear-to-br from-primary/20 to-chart-2/30 text-muted-foreground">
+              {s.hue}°
+            </div>
+          )}
+          meta={(s) => <Badge variant={s.open ? "secondary" : "outline"}>{s.open ? "Open" : "Closed"}</Badge>}
+          selection={gridSelection}
+          onSelectionChange={setGridSelection}
+          itemActions={() => [{ id: "edit", label: "Edit", icon: "edit" }]}
+          onItemClick={() => undefined}
+        />
+      </DemoSection>
+      <DemoSection title="Grid in a narrow column" className="block">
+        <div className="max-w-xs">
+          <ListView layout="grid" minItemWidth="10rem" items={services.slice(0, 4)} title={(s) => s.title} />
+        </div>
+      </DemoSection>
+      <DemoSection title="Grid loading" className="block">
+        <ListView layout="grid" items={[]} title={() => ""} loading />
       </DemoSection>
     </DemoPage>
   )

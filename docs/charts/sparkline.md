@@ -33,7 +33,7 @@ Other `<div>` props are passed to the wrapper.
 
 ## Gradient fills
 
-The `"area"` variant fades from the line colour to almost clear at the bottom. `gradient={false}` gives the flat 20% fill. `<ChartStyleProvider gradient={false}>` changes the default for every chart inside; see [BarChart](./bar-chart#gradient-fills).
+The `"area"` variant fades from the line colour to almost clear at the bottom. `gradient={false}` gives the flat 20% fill. `<ChartStyleProvider gradient={false}>` changes the default for every chart inside; see [CategoryChart](./category-chart#gradient-fills).
 
 ## RTL
 
@@ -43,4 +43,4 @@ The line runs right to left in RTL, so the latest value is on the left, matching
 
 A sparkline is too small for a data table toggle. Instead the wrapper is `role="img"` with a full summary as its name, e.g. "Daily sign-ups: 8 values, from 12 to 24. Lowest 12, highest 24." It is not focusable. When a sparkline is the only place a figure appears, show the figure as text next to it too.
 
-Animation follows the same rules as the other charts: never under `prefers-reduced-motion`, and not inside `<ChartAnimationProvider animate={false}>` (see [BarChart](./bar-chart#animation)).
+Animation follows the same rules as the other charts: never under `prefers-reduced-motion`, and not inside `<ChartAnimationProvider animate={false}>` (see [CategoryChart](./category-chart#animation)).

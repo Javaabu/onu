@@ -27,7 +27,37 @@ export const calloutVariants = cva("", {
   defaultVariants: { variant: "default" },
 })
 
+/** Classes for the inline appearances (`plain`, `subtle`, `bordered`). Notice's `neutral` tone is Callout's `default`. */
+export const noticeVariants = cva(
+  "gap-2 text-sm [&>svg]:mt-0.5 [&>svg]:size-4 flex items-start text-pretty [&>svg]:shrink-0",
+  {
+    variants: {
+      tone: {
+        neutral: "text-muted-foreground",
+        info: "text-muted-foreground [&>svg]:text-info",
+        success: "text-muted-foreground [&>svg]:text-success",
+        warning: "text-foreground [&>svg]:text-warning",
+        destructive: "text-destructive",
+      },
+      variant: {
+        plain: "",
+        subtle: "px-3 py-2 rounded-md bg-muted/60",
+        bordered: "px-3 py-2 rounded-md border-s-2 bg-muted/40",
+      },
+    },
+    compoundVariants: [
+      { variant: "bordered", tone: "info", className: "border-info" },
+      { variant: "bordered", tone: "success", className: "border-success" },
+      { variant: "bordered", tone: "warning", className: "border-warning" },
+      { variant: "bordered", tone: "destructive", className: "border-destructive" },
+      { variant: "bordered", tone: "neutral", className: "border-border" },
+    ],
+    defaultVariants: { tone: "neutral", variant: "plain" },
+  },
+)
+
 type CalloutVariant = NonNullable<VariantProps<typeof calloutVariants>["variant"]>
+type InlineAppearance = NonNullable<VariantProps<typeof noticeVariants>["variant"]>
 
 const ICONS: Record<CalloutVariant, string> = {
   default: "info",
@@ -38,6 +68,12 @@ const ICONS: Record<CalloutVariant, string> = {
 }
 
 export interface CalloutProps extends Omit<React.ComponentProps<"div">, "title">, VariantProps<typeof calloutVariants> {
+  /**
+   * `box` (default): an alert box with title, actions and dismiss. `plain`,
+   * `subtle` and `bordered`: a quiet inline line of text with an icon
+   * (`role="note"`, not announced); title, actions and dismiss are box-only.
+   */
+  appearance?: "box" | InlineAppearance
   title?: React.ReactNode
   /** Description (also accepted as `children`). */
   description?: React.ReactNode
@@ -58,13 +94,16 @@ export interface CalloutProps extends Omit<React.ComponentProps<"div">, "title">
 /**
  * An alert box for messages that need attention: info, success, warning or
  * destructive, with a title, description, actions and an optional dismiss
- * button. Extends shadcn's `Alert`.
+ * button. Extends shadcn's `Alert`. With `appearance` set to `plain`,
+ * `subtle` or `bordered` it is a quiet inline hint instead (see `Notice`).
  *
  * Warning and destructive callouts use `role="alert"`; the others use
- * `role="status"` so they are announced politely. Pass `role` to override.
+ * `role="status"` so they are announced politely, and the inline appearances
+ * use `role="note"`. Pass `role` to override.
  */
 export function Callout({
   variant,
+  appearance = "box",
   title,
   description,
   children,
@@ -92,7 +131,29 @@ export function Callout({
   }
 
   const iconValue = icon === undefined ? ICONS[v] : icon
+  const iconNode =
+    iconValue === false || iconValue === null ? null : typeof iconValue === "string" ? (
+      <Icon name={iconValue} className={classNames?.icon} />
+    ) : (
+      iconValue
+    )
   const body = description ?? children
+
+  if (appearance !== "box") {
+    return (
+      <div
+        role={role ?? "note"}
+        data-slot="callout"
+        data-variant={v}
+        data-appearance={appearance}
+        className={cn(noticeVariants({ tone: v === "default" ? "neutral" : v, variant: appearance }), className)}
+        {...props}
+      >
+        {iconNode}
+        <div className={cn("min-w-0", classNames?.description)}>{body}</div>
+      </div>
+    )
+  }
 
   return (
     <Alert
@@ -102,11 +163,7 @@ export function Callout({
       className={cn(calloutVariants({ variant }), dismissible && "pe-10", className)}
       {...props}
     >
-      {iconValue === false || iconValue === null ? null : typeof iconValue === "string" ? (
-        <Icon name={iconValue} className={classNames?.icon} />
-      ) : (
-        iconValue
-      )}
+      {iconNode}
       {title ? <AlertTitle className={classNames?.title}>{title}</AlertTitle> : null}
       {body ? <AlertDescription className={cn("text-pretty", classNames?.description)}>{body}</AlertDescription> : null}
       {actions ? (
@@ -134,5 +191,27 @@ export function Callout({
         </Button>
       ) : null}
     </Alert>
+  )
+}
+
+export interface NoticeProps extends Omit<React.ComponentProps<"div">, "title">, VariantProps<typeof noticeVariants> {
+  /** Semantic icon name, a node, or `false` for none. */
+  icon?: string | React.ReactNode | false
+}
+
+/**
+ * `Callout` with an inline `appearance` (`variant` here, default `plain`) and
+ * `tone` for its colour: a subtle line of supporting text with an icon, for
+ * hints such as "Changes apply from the next billing period". Uses `role="note"`.
+ */
+export function Notice({ tone, variant, ...props }: NoticeProps) {
+  return (
+    <Callout
+      data-slot="notice"
+      data-tone={tone ?? "neutral"}
+      variant={!tone || tone === "neutral" ? "default" : tone}
+      appearance={variant ?? "plain"}
+      {...props}
+    />
   )
 }

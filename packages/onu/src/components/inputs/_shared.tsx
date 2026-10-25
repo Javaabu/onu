@@ -16,11 +16,11 @@ registerEnglish({ input: en_input })
  * Controlled/uncontrolled state in one hook: uses `value` when it is not
  * `undefined`, otherwise internal state seeded from `defaultValue`.
  */
-export function useControllableState<T>(
+export function useControllableState<T, A extends unknown[] = []>(
   value: T | undefined,
   defaultValue: T,
-  onChange?: (value: T) => void,
-): [T, (next: T) => void] {
+  onChange?: (value: T, ...args: A) => void,
+): [T, (next: T, ...args: A) => void] {
   const [inner, setInner] = React.useState<T>(defaultValue)
   const controlled = value !== undefined
   const current = controlled ? value : inner
@@ -29,9 +29,9 @@ export function useControllableState<T>(
     onChangeRef.current = onChange
   })
   const set = React.useCallback(
-    (next: T) => {
+    (next: T, ...args: A) => {
       if (!controlled) setInner(next)
-      onChangeRef.current?.(next)
+      onChangeRef.current?.(next, ...args)
     },
     [controlled],
   )

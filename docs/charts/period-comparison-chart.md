@@ -31,11 +31,11 @@ For costs, wait times or complaints, set `positiveIsGood={false}` so a fall is s
 
 ## Gradient fills
 
-With the default `gradient`, the line variant washes the area under the current period's line with a soft gradient (it is not a separate series: no legend entry or tooltip row), and the bar variant fills bars from a lighter base to the full colour. `gradient={false}` draws plain lines and flat bars; see [BarChart](./bar-chart#gradient-fills).
+With the default `gradient`, the line variant washes the area under the current period's line with a soft gradient (it is not a separate series: no legend entry or tooltip row), and the bar variant fills bars from a lighter base to the full colour. `gradient={false}` draws plain lines and flat bars; see [CategoryChart](./category-chart#gradient-fills).
 
 ## Props
 
-Also takes the common chart props (`title`, `description`, `valueFormat`, `categoryFormat`, `categoryLabel`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [BarChart](./bar-chart).
+Also takes the common chart props (`title`, `description`, `valueFormat`, `categoryFormat`, `categoryLabel`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [CategoryChart](./category-chart).
 
 | Prop             | Type                           | Default           | Description                      |
 | ---------------- | ------------------------------ | ----------------- | -------------------------------- |

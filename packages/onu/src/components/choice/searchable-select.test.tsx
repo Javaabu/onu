@@ -5,9 +5,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { FormField } from "../form/form-field"
-import { MultiSelect } from "./multi-select"
-import { QuickCreateSelect } from "./quick-create-select"
-import { SearchableSelect } from "./searchable-select"
+import { MultiSelect, QuickCreateSelect, SearchableSelect } from "./searchable-select"
 import type { ChoiceOption } from "./options"
 
 // Interaction-heavy tests: allow for slow, shared CI machines.
@@ -206,6 +204,39 @@ describe("MultiSelect", () => {
     await userEvent.keyboard("{Escape}")
     await userEvent.click(screen.getByRole("button", { name: "Remove Malé" }))
     expect(onValueChange).toHaveBeenLastCalledWith(["addu"], expect.any(Array))
+  })
+
+  it("is SearchableSelect with multiple: select all and clear are on by default", async () => {
+    const onValueChange = vi.fn()
+    renderWithOnu(
+      <SearchableSelect
+        aria-label="Islands"
+        options={islands}
+        multiple
+        defaultValue={["male"]}
+        onValueChange={onValueChange}
+      />,
+    )
+    expect(screen.getByRole("button", { name: "Clear selection" })).toBeInTheDocument()
+    await userEvent.click(screen.getByRole("combobox"))
+    await userEvent.click(screen.getByRole("option", { name: "Select all" }))
+    expect(onValueChange).toHaveBeenLastCalledWith(["male", "hulhumale", "addu"], expect.any(Array))
+  })
+
+  it("creates options without the QuickCreateSelect preset", async () => {
+    const onValueChange = vi.fn()
+    renderWithOnu(
+      <SearchableSelect
+        aria-label="Island"
+        options={islands}
+        onValueChange={onValueChange}
+        onCreate={(label) => ({ value: "new", label })}
+      />,
+    )
+    await userEvent.click(screen.getByRole("combobox"))
+    await userEvent.type(screen.getByRole("combobox", { name: "Search…" }), "Thinadhoo")
+    await userEvent.click(screen.getByRole("option", { name: /Create/ }))
+    expect(onValueChange).toHaveBeenLastCalledWith("new", { value: "new", label: "Thinadhoo" })
   })
 
   it("selects and deselects all visible options", async () => {

@@ -34,8 +34,27 @@ import { layout as en_layout } from "../../locales/en/layout"
 
 registerEnglish({ layout: en_layout })
 
+export interface MegaMenuLink extends Pick<
+  NavItem,
+  "id" | "label" | "description" | "icon" | "badge" | "isActive" | "external" | "onSelect"
+> {
+  href: string
+}
+
+export interface MegaMenuColumn {
+  title?: React.ReactNode
+  links: MegaMenuLink[]
+}
+
+export interface TopNavItem extends NavItem {
+  /** Columns of links shown in a wide panel (a mega menu). Used instead of `items`. */
+  columns?: MegaMenuColumn[]
+  /** Highlighted content at the end of a `columns` panel (promo card, image), from `lg`. */
+  featured?: React.ReactNode
+}
+
 export interface TopNavProps extends Omit<React.ComponentProps<"div">, "children"> {
-  items: NavItem[]
+  items: TopNavItem[]
   currentHref?: string
   match?: NavMatch
   /** Shown at the top of the phone menu. */
@@ -46,16 +65,74 @@ export interface TopNavProps extends Omit<React.ComponentProps<"div">, "children
   mobileSide?: "start" | "end"
   /** Accessible name of the navigation landmark. */
   navLabel?: string
-  classNames?: { list?: string; link?: string; content?: string; trigger?: string; sheet?: string }
+  classNames?: {
+    list?: string
+    /** Top-level links. */
+    link?: string
+    content?: string
+    trigger?: string
+    sheet?: string
+    /** A `columns` panel, and each of its columns. */
+    panel?: string
+    column?: string
+    /** Links inside dropdowns and panels. */
+    panelLink?: string
+  }
 }
 
 const badgeClass =
   "h-5 min-w-5 rounded-full bg-primary px-1.5 text-xs text-primary-foreground inline-flex items-center justify-center tabular-nums"
 
+const GRID = ["", "grid-cols-1", "md:grid-cols-2", "md:grid-cols-3", "md:grid-cols-4"] as const
+
 /**
- * Horizontal main navigation for a header. Items with `items` open a dropdown
- * panel. Below the `md` breakpoint it collapses to a menu button that opens a
- * drawer with the same items (R3.20).
+ * A `columns` item as plain nested items, for the phone menu and the active
+ * state: a titled column becomes a sub-section, an untitled one's links sit
+ * directly under the item.
+ */
+function toNavItem(item: TopNavItem): NavItem {
+  const { columns, featured: _featured, ...rest } = item
+  if (!columns?.length) return rest
+  return {
+    ...rest,
+    items: columns.flatMap<NavItem>((column, i) =>
+      column.title ? [{ id: `column-${i}`, label: column.title, items: column.links }] : column.links,
+    ),
+  }
+}
+
+function PanelLink({ link, active, className }: { link: MegaMenuLink; active: boolean; className?: string }) {
+  return (
+    <NavigationMenuLink asChild active={active}>
+      <NavLink
+        href={link.href}
+        external={link.external}
+        aria-current={active ? "page" : undefined}
+        onClick={link.onSelect}
+        className={cn("gap-3 flex-row items-start", className)}
+      >
+        {link.icon ? (
+          <span className="mt-0.5 size-8 [&_svg]:size-4 flex shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
+            <NavIcon icon={link.icon} />
+          </span>
+        ) : null}
+        <span className="gap-0.5 min-w-0 flex flex-1 flex-col">
+          <span className="font-medium">{link.label}</span>
+          {link.description ? (
+            <span className="text-xs line-clamp-2 text-muted-foreground">{link.description}</span>
+          ) : null}
+        </span>
+        <NavBadge badge={link.badge} className={badgeClass} />
+      </NavLink>
+    </NavigationMenuLink>
+  )
+}
+
+/**
+ * Horizontal main navigation for a header. Items with `items` open a dropdown;
+ * items with `columns` open a wide panel with several columns of links and an
+ * optional featured area. Below the `md` breakpoint it collapses to a menu
+ * button that opens a drawer with the same items (R3.20).
  */
 export function TopNav({
   items,
@@ -71,16 +148,20 @@ export function TopNav({
 }: TopNavProps) {
   const { t, dir } = useOnu()
   const [open, setOpen] = React.useState(false)
-  const activeHref = React.useMemo(() => resolveActiveHref(items, currentHref, match), [items, currentHref, match])
+  const tree = React.useMemo(() => items.map(toNavItem), [items])
+  const activeHref = React.useMemo(() => resolveActiveHref(tree, currentHref, match), [tree, currentHref, match])
   const label = navLabel ?? t("layout.mainNavigation")
+  // Wide panels open in the shared viewport under the whole bar, so they stay on screen.
+  const mega = items.some((item) => item.columns?.length)
 
   return (
     <div data-slot="top-nav" className={cn("flex items-center", className)} {...props}>
-      <NavigationMenu viewport={false} aria-label={label} className="md:flex hidden">
+      <NavigationMenu viewport={mega} aria-label={label} className="md:flex hidden">
         <NavigationMenuList className={cn("gap-1", classNames?.list)}>
           {items.map((item, i) => {
-            const active = isItemActive(item, activeHref)
-            if (item.items?.length) {
+            const active = isItemActive(tree[i]!, activeHref)
+            const { columns } = item
+            if (columns?.length || item.items?.length) {
               return (
                 <NavigationMenuItem key={itemKey(item, i)}>
                   <NavigationMenuTrigger
@@ -94,32 +175,71 @@ export function TopNav({
                     {item.label}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className={cn("z-50", classNames?.content)}>
-                    <ul className="gap-1 p-1 w-64 grid">
-                      {item.items.map((child, ci) => {
-                        const childActive = isSelfActive(child, activeHref)
-                        return (
-                          <li key={itemKey(child, ci)}>
-                            <NavigationMenuLink asChild active={childActive}>
-                              <NavLink
-                                href={child.href ?? "#"}
-                                external={child.external}
-                                aria-current={childActive ? "page" : undefined}
-                                onClick={child.onSelect}
-                                className="gap-0.5 flex-col items-start"
-                              >
-                                <span className="gap-2 font-medium flex items-center">
-                                  <NavIcon icon={child.icon} />
-                                  {child.label}
-                                </span>
-                                {child.description ? (
-                                  <span className="text-xs text-muted-foreground">{child.description}</span>
-                                ) : null}
-                              </NavLink>
-                            </NavigationMenuLink>
-                          </li>
-                        )
-                      })}
-                    </ul>
+                    {columns?.length ? (
+                      <div
+                        data-slot="mega-menu-panel"
+                        className={cn(
+                          "gap-6 p-4 grid w-[min(90vw,48rem)]",
+                          item.featured && "lg:grid-cols-[minmax(0,1fr)_14rem]",
+                          classNames?.panel,
+                        )}
+                      >
+                        <div className={cn("gap-6 grid", GRID[Math.min(columns.length, 4)])}>
+                          {columns.map((column, ci) => (
+                            <div
+                              key={ci}
+                              data-slot="mega-menu-column"
+                              className={cn("gap-2 flex flex-col", classNames?.column)}
+                            >
+                              {column.title ? (
+                                <p className="px-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                                  {column.title}
+                                </p>
+                              ) : null}
+                              <ul className="gap-0.5 grid">
+                                {column.links.map((link, li) => (
+                                  <li key={link.id ?? link.href ?? li}>
+                                    <PanelLink
+                                      link={link}
+                                      active={isSelfActive(link, activeHref)}
+                                      className={classNames?.panelLink}
+                                    />
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                        {item.featured ? <div className="lg:block hidden">{item.featured}</div> : null}
+                      </div>
+                    ) : (
+                      <ul className="gap-1 p-1 w-64 grid">
+                        {item.items!.map((child, ci) => {
+                          const childActive = isSelfActive(child, activeHref)
+                          return (
+                            <li key={itemKey(child, ci)}>
+                              <NavigationMenuLink asChild active={childActive}>
+                                <NavLink
+                                  href={child.href ?? "#"}
+                                  external={child.external}
+                                  aria-current={childActive ? "page" : undefined}
+                                  onClick={child.onSelect}
+                                  className={cn("gap-0.5 flex-col items-start", classNames?.panelLink)}
+                                >
+                                  <span className="gap-2 font-medium flex items-center">
+                                    <NavIcon icon={child.icon} />
+                                    {child.label}
+                                  </span>
+                                  {child.description ? (
+                                    <span className="text-xs text-muted-foreground">{child.description}</span>
+                                  ) : null}
+                                </NavLink>
+                              </NavigationMenuLink>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    )}
                   </NavigationMenuContent>
                 </NavigationMenuItem>
               )
@@ -159,7 +279,11 @@ export function TopNav({
         <SheetContent
           side={physicalSide(mobileSide, dir)}
           showCloseButton={false}
-          className={cn("gap-0 w-[min(20rem,85vw)] pb-[env(safe-area-inset-bottom)]", classNames?.sheet)}
+          className={cn(
+            "gap-0 pb-[env(safe-area-inset-bottom)]",
+            mega ? "w-[min(22rem,90vw)]" : "w-[min(20rem,85vw)]",
+            classNames?.sheet,
+          )}
         >
           <SheetHeader className="gap-2 p-4 flex-row items-center justify-between border-b">
             <div className="min-w-0">{logo}</div>
@@ -177,7 +301,7 @@ export function TopNav({
           </SheetHeader>
           <div className="p-3 flex-1 overflow-y-auto">
             <SideNav
-              items={items}
+              items={tree}
               currentHref={currentHref}
               match={match}
               aria-label={label}
@@ -189,4 +313,19 @@ export function TopNav({
       </Sheet>
     </div>
   )
+}
+
+/** A top-level item of `MegaMenu`: a `TopNavItem`, usually with `columns`. */
+export type MegaMenuItem = TopNavItem
+
+export interface MegaMenuProps extends Omit<TopNavProps, "classNames"> {
+  items: MegaMenuItem[]
+  /** `link` styles the panel links. */
+  classNames?: { trigger?: string; panel?: string; column?: string; link?: string; sheet?: string }
+}
+
+/** `TopNav` whose items carry `columns`: header navigation with wide multi-column panels. */
+export function MegaMenu({ classNames, ...props }: MegaMenuProps) {
+  const { link, ...rest } = classNames ?? {}
+  return <TopNav data-slot="mega-menu" {...props} classNames={{ ...rest, panelLink: link }} />
 }

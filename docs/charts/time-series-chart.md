@@ -44,7 +44,7 @@ Rows may come in any order; they are sorted oldest first. Dates can be `Date` ob
 
 ## Gradient fills
 
-Areas fade from the series colour to almost clear at the baseline (stacked bands fade less), and bars run from a lighter base to the full colour at the top. Plain lines have no fill. Pass `gradient={false}` for flat fills, or set it for an area with `ChartStyleProvider`; see [BarChart](./bar-chart#gradient-fills).
+Areas fade from the series colour to almost clear at the baseline (stacked bands fade less), and bars run from a lighter base to the full colour at the top. Plain lines have no fill. Pass `gradient={false}` for flat fills, or set it for an area with `ChartStyleProvider`; see [CategoryChart](./category-chart#gradient-fills).
 
 ## Zoom
 
@@ -52,7 +52,7 @@ Areas fade from the series colour to almost clear at the baseline (stacked bands
 
 ## Props
 
-Also takes the common chart props (`title`, `description`, `config`, `series`, `valueFormat`, `showLegend`, `showGrid`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [BarChart](./bar-chart).
+Also takes the common chart props (`title`, `description`, `config`, `series`, `valueFormat`, `showLegend`, `showGrid`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [CategoryChart](./category-chart).
 
 | Prop                | Type                                   | Default     | Description                             |
 | ------------------- | -------------------------------------- | ----------- | --------------------------------------- |

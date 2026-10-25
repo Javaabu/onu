@@ -1,3 +1,4 @@
+import * as React from "react"
 import { FormField, SensitiveInput } from "@javaabu/onu"
 
 import { DemoPage, DemoSection } from "../../components/demo"
@@ -6,10 +7,11 @@ export const meta = {
   title: "Sensitive input",
   group: "Text inputs",
   order: 4,
-  description: "A masked secret such as an API key, with reveal and copy.",
+  description: "A read-only value with a copy button, masked with reveal for secrets such as API keys.",
 }
 
 export default function SensitiveInputDemo() {
+  const [copies, setCopies] = React.useState(0)
   return (
     <DemoPage>
       <DemoSection title="API keys" className="max-w-lg gap-4 grid">
@@ -32,6 +34,24 @@ export default function SensitiveInputDemo() {
         </FormField>
         <FormField label="Disabled">
           <SensitiveInput value="sk_live_revoked_key_0000" disabled />
+        </FormField>
+      </DemoSection>
+      <DemoSection
+        title="Unmasked (copy input)"
+        description="masked={false} shows the value as is, with only the copy button."
+        className="max-w-lg gap-4 grid"
+      >
+        <FormField label="Share link" help="Anyone with the link can view the application status.">
+          <SensitiveInput masked={false} mono={false} value="https://portal.gov.mv/track/REF-2026-00451" />
+        </FormField>
+        <FormField label="Reference number" help={`Copied ${copies} time(s)`}>
+          <SensitiveInput masked={false} value="REF-2026-00451" onCopy={() => setCopies((n) => n + 1)} />
+        </FormField>
+        <FormField label="ބޭންކް އެކައުންޓް ނަންބަރު">
+          <SensitiveInput masked={false} value="7730000123456" />
+        </FormField>
+        <FormField label="Invite link (expired)">
+          <SensitiveInput masked={false} mono={false} value="https://example.mv/invite/expired" disabled />
         </FormField>
       </DemoSection>
     </DemoPage>

@@ -65,7 +65,7 @@ With a server, call your API with `state.toSearchParams()` (Laravel / spatie-que
 
 ## Other views
 
-Pass `children` to replace the table, e.g. with a [`ListView`](list-view) or [`GridView`](grid-view) chosen by a [`ViewSwitcher`](view-switcher) in `toolbarEnd`. The page keeps the pagination footer (from `total`, `pagination`, `perPageOptions` and `noun`) below your view, and adds a **Sort by** menu to the toolbar for the `columns` marked `sortable`, since a list or grid has no sortable headers:
+Pass `children` to replace the table, e.g. with a [`ListView`](list-view) (as a list or a [grid](list-view#grid-layout)) chosen by a [`ViewSwitcher`](../choice-inputs/segmented-control#view-switcher) in `toolbarEnd`. The page keeps the pagination footer (from `total`, `pagination`, `perPageOptions` and `noun`) below your view, and adds a **Sort by** menu to the toolbar for the `columns` marked `sortable`, since a list or grid has no sortable headers:
 
 ```tsx
 <ListingPage {...props} toolbarEnd={<ViewSwitcher value={state.view ?? "table"} onValueChange={state.setView} />}>

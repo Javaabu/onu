@@ -1,19 +1,7 @@
 {
-  "charts/bar-chart": {
-    "title": "BarChart",
-    "component": "BarChart",
-    "import": "@javaabu/onu/charts",
-    "figmaUrl": null
-  },
   "charts/delta-indicator": {
     "title": "DeltaIndicator",
     "component": "DeltaIndicator",
-    "import": "@javaabu/onu/charts",
-    "figmaUrl": null
-  },
-  "charts/line-chart": {
-    "title": "LineChart",
-    "component": "LineChart",
     "import": "@javaabu/onu/charts",
     "figmaUrl": null
   },
@@ -71,21 +59,9 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "choice-inputs/dependent-select": {
-    "title": "Dependent select",
-    "component": "DependentSelect",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "choice-inputs/dual-listbox": {
     "title": "Dual listbox",
     "component": "DualListbox",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "choice-inputs/editable-select": {
-    "title": "Editable select",
-    "component": "EditableSelect",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -95,21 +71,9 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "choice-inputs/multi-select": {
-    "title": "Multi-select",
-    "component": "MultiSelect",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "choice-inputs/payment-method-selector": {
     "title": "Payment method selector",
     "component": "PaymentMethodSelector",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "choice-inputs/quick-create-select": {
-    "title": "Select with quick-create",
-    "component": "QuickCreateSelect",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -203,18 +167,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "date-and-time/month-picker": {
-    "title": "MonthPicker and YearPicker",
-    "component": "MonthPicker",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "date-and-time/multiple-date-picker": {
-    "title": "MultipleDatePicker",
-    "component": "MultipleDatePicker",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "date-and-time/reporting-period-picker": {
     "title": "ReportingPeriodPicker",
     "component": "ReportingPeriodPicker",
@@ -230,12 +182,6 @@
   "date-and-time/time-picker": {
     "title": "TimePicker",
     "component": "TimePicker",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "date-and-time/week-picker": {
-    "title": "WeekPicker",
-    "component": "WeekPicker",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -326,18 +272,6 @@
   "display-and-feedback/mini-calendar": {
     "title": "MiniCalendar",
     "component": "MiniCalendar",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "display-and-feedback/notes": {
-    "title": "Notes",
-    "component": "Notes",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "display-and-feedback/notice": {
-    "title": "Notice",
-    "component": "Notice",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -461,12 +395,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "files-and-media/instant-file-upload": {
-    "title": "InstantFileUpload",
-    "component": "InstantFileUpload",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "files-and-media/lightbox": {
     "title": "Lightbox",
     "component": "Lightbox",
@@ -483,12 +411,6 @@
     "title": "MediaPlayer",
     "component": "MediaPlayer",
     "import": "@javaabu/onu/media",
-    "figmaUrl": null
-  },
-  "files-and-media/multiple-file-input": {
-    "title": "MultipleFileInput",
-    "component": "MultipleFileInput",
-    "import": "@javaabu/onu",
     "figmaUrl": null
   },
   "files-and-media/qr-code": {
@@ -731,12 +653,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "layout-and-navigation/mega-menu": {
-    "title": "MegaMenu",
-    "component": "MegaMenu",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "layout-and-navigation/menu-bar": {
     "title": "MenuBar",
     "component": "MenuBar",
@@ -788,12 +704,6 @@
   "layout-and-navigation/skip-link": {
     "title": "SkipLink",
     "component": "SkipLink",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "layout-and-navigation/stacked-tabs": {
-    "title": "StackedTabs",
-    "component": "StackedTabs",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -899,12 +809,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "listing-pages/grid-view": {
-    "title": "GridView",
-    "component": "GridView",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "listing-pages/kanban-board": {
     "title": "KanbanBoard",
     "component": "KanbanBoard",
@@ -953,12 +857,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "listing-pages/row-actions": {
-    "title": "RowActions",
-    "component": "RowActions",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "listing-pages/search-box": {
     "title": "SearchBox",
     "component": "SearchBox",
@@ -989,12 +887,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "listing-pages/view-switcher": {
-    "title": "ViewSwitcher",
-    "component": "ViewSwitcher",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "loading/loading-overlay": {
     "title": "LoadingOverlay",
     "component": "LoadingOverlay",
@@ -1004,12 +896,6 @@
   "loading/page-progress": {
     "title": "PageProgress",
     "component": "PageProgress",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "loading/placeholder-input": {
-    "title": "PlaceholderInput",
-    "component": "PlaceholderInput",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -1238,12 +1124,6 @@
   "text-inputs/color-picker": {
     "title": "ColorPicker",
     "component": "ColorPicker",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "text-inputs/copy-input": {
-    "title": "CopyInput",
-    "component": "CopyInput",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },

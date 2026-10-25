@@ -23,6 +23,7 @@ import { TextInput } from "../inputs/text-input"
 import { Spinner } from "../loading/spinner"
 import { useControllableState } from "./_use-controllable-state"
 import { useRestoreFocus } from "./_use-restore-focus"
+import { activeConfirm, ConfirmContext } from "./_confirm-context"
 import { registerEnglish } from "../../i18n/english"
 import { common as en_common } from "../../locales/en/common"
 import { overlay as en_overlay } from "../../locales/en/overlay"
@@ -262,9 +263,6 @@ function messageOf(e: unknown): string | undefined {
 /** Ask for confirmation; resolves `true` when confirmed, `false` when cancelled. */
 export type ConfirmFunction = (options?: ConfirmOptions | string) => Promise<boolean>
 
-const ConfirmContext = React.createContext<ConfirmFunction | null>(null)
-let activeConfirm: ConfirmFunction | null = null
-
 interface Request {
   options: ConfirmOptions
   resolve: (value: boolean) => void
@@ -304,9 +302,9 @@ export function ConfirmProvider({ children, defaults }: ConfirmProviderProps) {
   }, [])
 
   React.useEffect(() => {
-    activeConfirm = confirmFn
+    activeConfirm.set(confirmFn)
     return () => {
-      if (activeConfirm === confirmFn) activeConfirm = null
+      if (activeConfirm.get() === confirmFn) activeConfirm.set(null)
     }
   }, [confirmFn])
 
@@ -369,4 +367,4 @@ export function useConfirm(): ConfirmFunction {
  * Opens a confirmation dialog from anywhere (event handlers, stores, router
  * guards). Needs a mounted `ConfirmProvider`; without one it uses `window.confirm`.
  */
-export const confirm: ConfirmFunction = (options) => (activeConfirm ?? fallbackConfirm)(options)
+export const confirm: ConfirmFunction = (options) => (activeConfirm.get() ?? fallbackConfirm)(options)

@@ -1,12 +1,11 @@
 import { act, fireEvent, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { afterEach, describe, expect, it, vi } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { FormField } from "../form/form-field"
 import { DropzoneUploader } from "./dropzone-uploader"
-import { UploadError, type UploadContext } from "./file-utils"
-import { defaultUploadValue, InstantFileUpload } from "./instant-file-upload"
+import type { UploadContext } from "./file-utils"
 import { UploadProgress, UploadProgressItem } from "./upload-progress"
 import type { UploadItem } from "./use-files"
 
@@ -94,152 +93,6 @@ describe("UploadProgressItem", () => {
     await expectNoA11yViolations()
     rerender(<UploadProgress items={[]} />)
     expect(container).toBeEmptyDOMElement()
-  })
-})
-
-describe("InstantFileUpload", () => {
-  afterEach(() => vi.unstubAllGlobals())
-
-  it("uploads as soon as a file is chosen, shows progress and announces the result", async () => {
-    const { upload, calls } = controllableUploader()
-    const onUploaded = vi.fn()
-    const onItemsChange = vi.fn()
-    const { container } = renderWithOnu(
-      <form aria-label="f">
-        <InstantFileUpload
-          aria-label="Transfer slip"
-          name="slip"
-          upload={upload}
-          onUploaded={onUploaded}
-          onItemsChange={onItemsChange}
-        />
-      </form>,
-    )
-    await user().upload(fileInput(container), file("slip.pdf"))
-    expect(upload).toHaveBeenCalledTimes(1)
-    expect(fileInput(container)).toHaveAttribute("name", "")
-    expect(screen.getByText("Uploading 1 file…")).toBeInTheDocument()
-    act(() => calls[0]!.ctx.onProgress(55))
-    expect(screen.getByText("Uploading… 55%")).toBeInTheDocument()
-    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "55")
-    await act(async () => calls[0]!.resolve({ data: { id: 42 } }))
-    expect(screen.getByText("Uploaded")).toBeInTheDocument()
-    expect(screen.getByText("1 file uploaded")).toBeInTheDocument()
-    expect(screen.getByRole("status")).toHaveTextContent("slip.pdf uploaded")
-    expect(onUploaded).toHaveBeenCalledWith(
-      expect.objectContaining({ status: "success", response: { data: { id: 42 } } }),
-    )
-    expect(onItemsChange).toHaveBeenCalled()
-    expect(container.querySelector<HTMLInputElement>("input[type=hidden][name=slip]")?.value).toBe("42")
-    // Single mode: one file at a time.
-    expect(fileInput(container)).toBeDisabled()
-    await expectNoA11yViolations()
-  })
-
-  it("cancels, retries and removes uploads", async () => {
-    const { upload, calls } = controllableUploader()
-    const { container } = renderWithOnu(<InstantFileUpload aria-label="Docs" multiple upload={upload} />)
-    await user().upload(fileInput(container), [file("a.pdf"), file("b.pdf")])
-    expect(upload).toHaveBeenCalledTimes(2)
-    await userEvent.click(screen.getByRole("button", { name: "Cancel upload of a.pdf" }))
-    expect(await screen.findByText("Cancelled")).toBeInTheDocument()
-    expect(screen.getByRole("status")).toHaveTextContent("Upload of a.pdf cancelled")
-    await userEvent.click(screen.getByRole("button", { name: "Retry upload of a.pdf" }))
-    expect(upload).toHaveBeenCalledTimes(3)
-    await act(async () => calls[2]!.resolve("ok"))
-    await userEvent.click(screen.getByRole("button", { name: "Remove a.pdf" }))
-    expect(screen.queryByText("a.pdf")).not.toBeInTheDocument()
-    expect(fileInput(container)).toHaveFocus()
-  })
-
-  it("shows Laravel errors and calls onError", async () => {
-    const { upload, calls } = controllableUploader()
-    const onError = vi.fn()
-    const { container } = renderWithOnu(<InstantFileUpload aria-label="Doc" upload={upload} onError={onError} />)
-    await user().upload(fileInput(container), file("a.pdf"))
-    await act(async () => calls[0]!.reject(new UploadError("The file must be a PDF.", 422)))
-    expect(screen.getByText("The file must be a PDF.")).toBeInTheDocument()
-    expect(onError).toHaveBeenCalledWith(expect.objectContaining({ status: "error" }), expect.any(UploadError))
-    // A failed upload frees the slot again.
-    expect(fileInput(container)).not.toBeDisabled()
-    await user().upload(fileInput(container), file("b.pdf"))
-    await act(async () => calls[1]!.reject("weird"))
-    expect(screen.getAllByText("Upload failed").length).toBe(1)
-  })
-
-  it("uses the built-in XHR uploader for a url", async () => {
-    const sent: { url: string; headers: Record<string, string> }[] = []
-    class Xhr {
-      upload = {}
-      headers: Record<string, string> = {}
-      url = ""
-      status = 200
-      responseText = '{"id":"abc"}'
-      onload?: () => void
-      open(_m: string, url: string) {
-        this.url = url
-      }
-      setRequestHeader(k: string, v: string) {
-        this.headers[k] = v
-      }
-      send() {
-        sent.push({ url: this.url, headers: this.headers })
-        setTimeout(() => this.onload?.(), 0)
-      }
-      abort() {}
-    }
-    vi.stubGlobal("XMLHttpRequest", Xhr)
-    const { container } = renderWithOnu(
-      <FormField label="Photo" name="photo_id">
-        <InstantFileUpload url="/api/uploads" uploadOptions={{ headers: { "X-CSRF-TOKEN": "t" } }} />
-      </FormField>,
-    )
-    await user().upload(fileInput(container), file("p.pdf"))
-    await waitFor(() => expect(screen.getByText("Uploaded")).toBeInTheDocument())
-    expect(sent[0]).toMatchObject({ url: "/api/uploads", headers: { "X-CSRF-TOKEN": "t" } })
-    expect(container.querySelector<HTMLInputElement>("input[name=photo_id]")?.value).toBe("abc")
-  })
-
-  it("uses getValue and multiple hidden inputs", async () => {
-    const { upload, calls } = controllableUploader()
-    const { container } = renderWithOnu(
-      <InstantFileUpload
-        aria-label="Docs"
-        multiple
-        name="docs"
-        upload={upload}
-        getValue={(r) => (r as { key: string }).key}
-      />,
-    )
-    await user().upload(fileInput(container), [file("a.pdf"), file("b.pdf")])
-    await act(async () => {
-      calls[0]!.resolve({ key: "k1" })
-      calls[1]!.resolve({})
-    })
-    const hidden = container.querySelectorAll<HTMLInputElement>("input[type=hidden]")
-    expect(hidden).toHaveLength(1)
-    expect(hidden[0]).toHaveAttribute("name", "docs[]")
-  })
-
-  it("reads ids from common response shapes", () => {
-    expect(defaultUploadValue({ id: 1 })).toBe("1")
-    expect(defaultUploadValue({ uuid: "u" })).toBe("u")
-    expect(defaultUploadValue({ data: { id: 5 } })).toBe("5")
-    expect(defaultUploadValue("x")).toBe("x")
-    expect(defaultUploadValue(null)).toBeUndefined()
-    expect(defaultUploadValue(true)).toBeUndefined()
-    expect(defaultUploadValue({})).toBeUndefined()
-  })
-
-  it.each(directions)("works in Dhivehi (%s)", async (dir) => {
-    const { upload } = controllableUploader()
-    const { container } = renderWithOnu(<InstantFileUpload aria-label="ފައިލް" upload={upload} />, {
-      locale: "dv",
-      dir,
-    })
-    await user().upload(fileInput(container), file("a.pdf"))
-    expect(screen.getByText("1 ފައިލް އަޕްލޯޑުކުރަނީ…")).toBeInTheDocument()
-    await expectNoA11yViolations()
   })
 })
 
@@ -356,26 +209,5 @@ describe("DropzoneUploader", () => {
     renderWithOnu(<DropzoneUploader />, { locale: "dv", dir })
     expect(screen.getByRole("button", { name: "ފައިލުތައް ހޯދާ" })).toBeInTheDocument()
     await expectNoA11yViolations()
-  })
-})
-
-describe("useUploadQueue (through InstantFileUpload)", () => {
-  it("aborts in-flight uploads on unmount", async () => {
-    const { upload, calls } = controllableUploader()
-    const { container, unmount } = renderWithOnu(<InstantFileUpload aria-label="Doc" upload={upload} />)
-    await user().upload(fileInput(container), file("a.pdf"))
-    unmount()
-    expect(calls[0]!.ctx.signal.aborted).toBe(true)
-  })
-
-  it("clamps progress and keeps items queued without an uploader", async () => {
-    const { upload, calls } = controllableUploader()
-    const { container } = renderWithOnu(<InstantFileUpload aria-label="Doc" upload={upload} />)
-    await user().upload(fileInput(container), file("a.pdf"))
-    act(() => calls[0]!.ctx.onProgress(150))
-    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "100")
-    const second = renderWithOnu(<InstantFileUpload aria-label="Doc2" />)
-    await user().upload(fileInput(second.container), file("b.pdf"))
-    expect(screen.getByText("Waiting…")).toBeInTheDocument()
   })
 })

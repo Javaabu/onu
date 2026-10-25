@@ -36,6 +36,10 @@ export function useLabelLayout(explicit?: LabelLayout): LabelLayout {
   return explicit ?? labelLayout ?? global
 }
 
+/** Grid classes for inline labels (label column beside the control from `@md` up), shared with `SkeletonField`. */
+export const INLINE_FIELD_GRID =
+  "@md/form-field:grid-cols-[var(--onu-label-width)_minmax(0,1fr)] @md/form-field:gap-x-4"
+
 export function useFormDisabled() {
   return React.useContext(FormLayoutContext).disabled ?? false
 }

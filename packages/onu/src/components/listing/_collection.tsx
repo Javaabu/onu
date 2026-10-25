@@ -5,13 +5,14 @@ import * as React from "react"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
 import { isInteractiveTarget } from "./_shared"
 import { SelectionCheckbox } from "./_selection-checkbox"
-import { RowActions, type RecordAction } from "./row-actions"
+import { RowActions } from "../overlays/action-menu"
+import type { RecordAction } from "./_actions"
 import { registerEnglish } from "../../i18n/english"
 import { listing as en_listing } from "../../locales/en/listing"
 
 registerEnglish({ listing: en_listing })
 
-/** Props shared by `ListView` and `GridView`. */
+/** Item props of `ListView` (and its `GridView` preset). */
 export interface CollectionProps<T> {
   items: T[]
   /** Stable id. Defaults to `item.id`. */

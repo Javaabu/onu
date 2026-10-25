@@ -6,8 +6,7 @@ import { describe, expect, it, vi } from "vitest"
 import { makeUsers, type User } from "../../../test/listing-fixtures"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { EmptyState } from "./empty-state"
-import { GridView } from "./grid-view"
-import { ListView } from "./list-view"
+import { GridView, ListView } from "./list-view"
 import { propagateTreeSelection, TreeView, type TreeNode } from "./tree-view"
 
 // Interaction-heavy tests: allow for slow CI machines and coverage instrumentation.
@@ -103,6 +102,50 @@ describe.each([
       },
     )
     expect(screen.getByRole("checkbox", { name: "ޖަމީލާ ޚިޔާރުކުރޭ" })).toBeInTheDocument()
+    await expectNoA11yViolations()
+  })
+})
+
+describe("ListView layout", () => {
+  it("lays items out as a list by default and as a grid of cards with layout=grid", () => {
+    const { rerender } = renderWithOnu(<ListView aria-label="Users" items={users} title={(u: User) => u.name} />)
+    const list = screen.getByRole("list", { name: "Users" })
+    expect(list).toHaveAttribute("data-slot", "list-view")
+    expect(list).toHaveClass("divide-y")
+    rerender(<ListView aria-label="Users" variant="cards" items={users} title={(u: User) => u.name} />)
+    expect(screen.getByRole("list")).toHaveClass("gap-2")
+    expect(screen.getAllByRole("listitem")[0]).toHaveClass("rounded-lg", "border")
+    rerender(
+      <ListView aria-label="Users" layout="grid" minItemWidth="10rem" items={users} title={(u: User) => u.name} />,
+    )
+    const grid = screen.getByRole("list", { name: "Users" })
+    expect(grid).toHaveAttribute("data-slot", "grid-view")
+    expect(grid.style.getPropertyValue("--onu-grid-min")).toBe("10rem")
+    expect(screen.getAllByRole("listitem")[0]).toHaveClass("rounded-xl")
+  })
+
+  it("shows row skeletons for a list and card skeletons for a grid", () => {
+    const { rerender } = renderWithOnu(<ListView items={[]} title={(u: User) => u.name} loading />)
+    expect(screen.getAllByRole("listitem")).toHaveLength(4)
+    rerender(<ListView layout="grid" items={[]} title={(u: User) => u.name} loading />)
+    expect(screen.getAllByRole("listitem")).toHaveLength(6)
+    expect(screen.getByRole("list")).toHaveAttribute("aria-busy", "true")
+  })
+
+  it.each(directions)("passes axe as a grid in %s with Dhivehi", async (dir) => {
+    renderWithOnu(
+      <ListView
+        layout="grid"
+        aria-label="ބޭނުންވެރިން"
+        items={users.slice(0, 2)}
+        title={() => "ޖަމީލާ"}
+        media={() => <span aria-hidden="true">ޖ</span>}
+        itemActions={() => [{ id: "edit", label: "ބަދަލުކުރޭ" }]}
+        onSelectionChange={vi.fn()}
+      />,
+      { dir, locale: "dv" },
+    )
+    expect(screen.getByRole("list", { name: "ބޭނުންވެރިން" })).toHaveAttribute("data-slot", "grid-view")
     await expectNoA11yViolations()
   })
 })

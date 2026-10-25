@@ -64,6 +64,46 @@ export default function DropzoneUploaderDemo() {
       >
         <EditPageDemo />
       </DemoSection>
+      <DemoSection
+        title="Compact input: uploads on pick"
+        description='appearance="input" swaps the drop area for a file input. Name a file with “fail” to see an error and retry.'
+        className="max-w-md gap-4 grid"
+      >
+        <FormField
+          label="BML transfer slip"
+          name="slip_id"
+          help="Uploaded straight away; the form submits the file id."
+        >
+          <DropzoneUploader
+            appearance="input"
+            multiple={false}
+            upload={fakeUpload}
+            accept="image/*,.pdf"
+            maxSize={5 * 1024 * 1024}
+          />
+        </FormField>
+        <FormField label="Supporting documents" name="supporting_documents">
+          <DropzoneUploader appearance="input" upload={fakeUpload} />
+        </FormField>
+      </DemoSection>
+      <DemoSection title="Built-in XHR uploader" className="max-w-md gap-4 grid">
+        <pre
+          dir="ltr"
+          role="region"
+          aria-label="Example code"
+          // Focusable so the scrollable region can be scrolled by keyboard.
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          tabIndex={0}
+          className="text-xs p-3 overflow-x-auto rounded-lg bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+        >
+          {`<DropzoneUploader
+  appearance="input"
+  multiple={false}
+  url="/api/uploads"
+  uploadOptions={{ headers: { "X-CSRF-TOKEN": token } }}
+/>`}
+        </pre>
+      </DemoSection>
       <DemoSection title="Collect only, single file, paste anywhere" className="max-w-xl gap-4 grid">
         <DropzoneUploader multiple={false} size="sm" pasteFromDocument description="Paste anywhere on the page" />
       </DemoSection>

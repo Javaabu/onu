@@ -10,7 +10,6 @@ export * from "./export-menu"
 export * from "./filter-panel"
 export * from "./filter-submit"
 export * from "./filter-tabs"
-export * from "./grid-view"
 export * from "./kanban-board"
 export * from "./list-view"
 export * from "./listing-page"
@@ -31,12 +30,15 @@ export {
 export * from "./per-page"
 export * from "./record-actions-menu"
 export * from "./reorderable-table"
-export * from "./row-actions"
+// The row ⋯ menu is an ActionMenu preset, defined with it.
+export { RowActions, trashActions, type RowActionsProps } from "../overlays/action-menu"
+export type { RecordAction } from "./_actions"
 export * from "./search-box"
 export * from "./search-results"
 export * from "./sortable-list"
 export * from "./tree-view"
-export * from "./view-switcher"
+// The view switcher is a SegmentedControl preset, defined with it.
+export { ViewSwitcher, type ListingView, type ViewOption, type ViewSwitcherProps } from "../choice/segmented-control"
 export type { CollectionProps } from "./_collection"
 // The filter condition builder needs the optional `react-querybuilder` peer, so it
 // has its own entry point: `@javaabu/onu/query-builder`.

@@ -27,6 +27,11 @@ export interface SensitiveInputProps extends Omit<
 > {
   /** The secret, e.g. an API key or token. */
   value: string
+  /**
+   * Mask the value except for its last characters. Default `true`. `false`
+   * shows the value as is, with no reveal button (`CopyInput`).
+   */
+  masked?: boolean
   /** How many trailing characters stay visible while masked. Default `4`. */
   visibleChars?: number
   /** Number of mask characters shown. Default `8`. */
@@ -40,15 +45,19 @@ export interface SensitiveInputProps extends Omit<
   /** Show the copy button. Default `true`. The full secret is copied even while masked. */
   copyable?: boolean
   onCopy?: (value: string) => void
+  /** Use the monospace font. Default `true`. */
+  mono?: boolean
 }
 
 /**
  * Read-only display of a secret such as an API key: masked except for the
  * last characters, with reveal and copy buttons. The full value is never in
- * the DOM while masked.
+ * the DOM while masked. With `masked={false}` it is a plain read-only value
+ * with a copy button.
  */
 export function SensitiveInput({
   value,
+  masked = true,
   visibleChars = 4,
   maskLength = 8,
   revealed: revealedProp,
@@ -57,7 +66,9 @@ export function SensitiveInput({
   revealable = true,
   copyable = true,
   onCopy,
+  mono = true,
   endAddon,
+  dir,
   className,
   classNames,
   ...props
@@ -65,19 +76,20 @@ export function SensitiveInput({
   const { t } = useTranslation()
   const [revealed, setRevealed] = useControllableState(revealedProp, defaultRevealed, onRevealedChange)
   const [announced, setAnnounced] = React.useState<string | null>(null)
+  const shown = !masked || revealed
 
   return (
     <>
       <TextInput
         readOnly
-        value={revealed ? value : maskSecret(value, visibleChars, maskLength)}
-        className={cn("font-mono", className)}
-        classNames={{ ...classNames, input: cn("tracking-wide font-mono", classNames?.input) }}
+        value={shown ? value : maskSecret(value, visibleChars, maskLength)}
+        className={cn(masked && mono && "font-mono", className)}
+        classNames={{ ...classNames, input: cn(masked && "tracking-wide", mono && "font-mono", classNames?.input) }}
         onFocus={(e) => e.currentTarget.select()}
         endAddon={
           <>
             {endAddon}
-            {revealable ? (
+            {masked && revealable ? (
               <InputGroupButton
                 size="icon-xs"
                 data-slot="sensitive-reveal"
@@ -98,12 +110,33 @@ export function SensitiveInput({
           </>
         }
         {...props}
-        data-revealed={revealed || undefined}
+        data-revealed={(masked && revealed) || undefined}
         autoComplete="off"
         spellCheck={false}
-        dir="ltr"
+        // A secret is a Latin token; a plain value keeps the page direction unless `dir` is passed.
+        dir={masked ? "ltr" : dir}
       />
-      <LiveRegion>{announced}</LiveRegion>
+      {masked ? <LiveRegion>{announced}</LiveRegion> : null}
     </>
   )
+}
+
+export interface CopyInputProps extends Omit<
+  TextInputProps,
+  "thaana" | "thaanaToggle" | "value" | "defaultValue" | "onChange" | "onCopy"
+> {
+  /** The value to show and copy. */
+  value: string
+  /** Called after the value is copied. */
+  onCopy?: (value: string) => void
+  /** Use the monospace font (IDs, keys, codes). */
+  mono?: boolean
+}
+
+/**
+ * `SensitiveInput` with `masked={false}`: a read-only value with a copy
+ * button, e.g. a share link or a reference number.
+ */
+export function CopyInput({ mono = false, ...props }: CopyInputProps) {
+  return <SensitiveInput {...props} masked={false} mono={mono} data-copy-input="" />
 }

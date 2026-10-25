@@ -22,8 +22,11 @@ import { ApiSelect } from '@javaabu/onu';
 // Your own loader
 <ApiSelect fetcher={(query, { page, signal }) => client.get('/people', { query, page, signal })} cacheKey="people" />
 
-// Dependent params: refetches and clears when the atoll changes
-<ApiSelect url="/api/islands" params={{ atoll_id: atoll }} dependsOn={atoll} />
+// Dependent field: disabled until an atoll is picked, sends ?parent_id=K, clears when the atoll changes
+<ApiSelect url="/api/islands" parentValue={atoll} parentLabel="an atoll" />
+
+// Refetch and clear when anything else changes
+<ApiSelect url="/api/islands" params={{ type: kind }} dependsOn={kind} />
 ```
 
 ## How it behaves
@@ -37,7 +40,7 @@ import { ApiSelect } from '@javaabu/onu';
 
 ## Props
 
-All [Searchable select](./searchable-select) props (including `multiple`, `thaana`, `clearable`, `selectAll`, `max`) and [quick-create](./quick-create-select) props, plus:
+All [Searchable select](./searchable-select) props (including `multiple`, `thaana`, `clearable`, `selectAll`, `max`, [quick-create](./searchable-select#creating-options) and [dependent-field](./searchable-select#dependent-fields) props), plus:
 
 | Prop                                         | Type                                                    | Default                                  | Description                                                 |
 | -------------------------------------------- | ------------------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------- |
@@ -60,6 +63,7 @@ All [Searchable select](./searchable-select) props (including `multiple`, `thaan
 | `staleTime` / `gcTime`                       | `number`                                                | 5 / 10 minutes                           | Cache lifetime                                              |
 | `cacheKey`                                   | `string`                                                | `url`                                    | Cache key for `fetcher`s                                    |
 | `dependsOn`                                  | `unknown`                                               |                                          | When it changes the value clears                            |
+| `parentParam`                                | `string`                                                | `"parent_id"`                            | With `parentValue`: param that carries the parent value     |
 | `queryClient`                                | `QueryClient`                                           | app or Onu client                        |                                                             |
 
 Values are strings (`id: 12` becomes `"12"`), so they round-trip through forms unchanged.

@@ -4,8 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
-import { Callout } from "./callout"
-import { Notice } from "./notice"
+import { Callout, Notice } from "./callout"
 
 describe("Callout", () => {
   it.each([
@@ -75,6 +74,55 @@ describe("Callout", () => {
   })
 })
 
+describe("Callout appearance", () => {
+  it.each([
+    ["default", "info", "text-muted-foreground"],
+    ["warning", "warning", "border-warning"],
+    ["destructive", "error", "border-destructive"],
+  ] as const)("inline %s callouts are notes with the %s icon", (variant, icon, cls) => {
+    const { container } = renderWithOnu(
+      <Callout variant={variant} appearance="bordered">
+        Changes apply next month.
+      </Callout>,
+    )
+    const el = screen.getByRole("note")
+    expect(el).toHaveAttribute("data-slot", "callout")
+    expect(el).toHaveAttribute("data-appearance", "bordered")
+    expect(el).toHaveClass("border-s-2", cls)
+    expect(el).not.toHaveAttribute("data-slot", "alert")
+    expect(container.querySelector(`[data-icon-name=${icon}]`)).toBeInTheDocument()
+  })
+
+  it("leaves out title, actions and dismiss (box-only) when inline", () => {
+    renderWithOnu(
+      <Callout
+        appearance="subtle"
+        title="Ignored"
+        description="Last synced 5 minutes ago."
+        actions={<button type="button">Sync</button>}
+        dismissible
+        classNames={{ description: "desc-x" }}
+      />,
+    )
+    const el = screen.getByRole("note")
+    expect(el).toHaveClass("bg-muted/60")
+    expect(screen.getByText("Last synced 5 minutes ago.")).toHaveClass("desc-x")
+    expect(screen.queryByText("Ignored")).toBeNull()
+    expect(screen.queryByRole("button")).toBeNull()
+  })
+
+  it.each(directions)("is accessible in %s (dv)", async (dir) => {
+    const { container } = renderWithOnu(
+      <Callout variant="info" appearance="bordered">
+        ފޯމު ފުރިހަމަކުރުމަށް 10 މިނެޓު ހޭދަވާނެ.
+      </Callout>,
+      { dir, locale: "dv" },
+    )
+    expect(screen.getByRole("note")).toBeInTheDocument()
+    await expectNoA11yViolations(container)
+  })
+})
+
 describe("Notice", () => {
   it.each(["neutral", "info", "success", "warning", "destructive"] as const)("renders the %s tone", (tone) => {
     renderWithOnu(
@@ -82,7 +130,19 @@ describe("Notice", () => {
         Changes apply next month.
       </Notice>,
     )
-    expect(screen.getByRole("note")).toHaveAttribute("data-tone", tone)
+    const el = screen.getByRole("note")
+    expect(el).toHaveAttribute("data-slot", "notice")
+    expect(el).toHaveAttribute("data-tone", tone)
+    expect(el).toHaveClass(tone === "neutral" ? "border-border" : `border-${tone}`)
+  })
+
+  it("is plain and neutral by default", () => {
+    const { container } = renderWithOnu(<Notice className="n-x">Hint</Notice>)
+    const el = screen.getByRole("note")
+    expect(el).toHaveAttribute("data-tone", "neutral")
+    expect(el).toHaveClass("n-x", "text-muted-foreground")
+    expect(el).not.toHaveClass("rounded-md")
+    expect(container.querySelector("[data-icon-name=info]")).toBeInTheDocument()
   })
 
   it("supports custom and hidden icons", () => {

@@ -7,15 +7,27 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Popover, PopoverAnchor, PopoverContent } from "../../ui/popover"
+import { matchesQuery } from "../choice/options"
+import { useControllableState } from "./_shared"
 import { registerEnglish } from "../../i18n/english"
 import { common as en_common } from "../../locales/en/common"
 import { input as en_input } from "../../locales/en/input"
 
 registerEnglish({ common: en_common, input: en_input })
 
-/** A suggestion: a plain string, or a value with a label and description. */
+/**
+ * A suggestion: a plain string, or a value with a label and description.
+ * `ChoiceOption`s fit too; their `keywords` are matched as well.
+ */
 export type SuggestionOption =
-  string | { value: string; label?: React.ReactNode; description?: React.ReactNode; disabled?: boolean }
+  | string
+  | {
+      value: string
+      label?: React.ReactNode
+      description?: React.ReactNode
+      disabled?: boolean
+      keywords?: readonly string[]
+    }
 
 /** A static list, or an async function called with the query and an `AbortSignal`. */
 export type SuggestionSource =
@@ -27,18 +39,22 @@ export interface NormalizedOption {
   label: React.ReactNode
   description?: React.ReactNode
   disabled?: boolean
+  keywords?: readonly string[]
+}
+
+/** A listbox row: a suggestion, or the "Use “x”" row for the typed text. */
+export interface SuggestionRow extends NormalizedOption {
+  custom?: boolean
 }
 
 export function normalizeOption(option: SuggestionOption): NormalizedOption {
   return typeof option === "string" ? { value: option, label: option } : { label: option.value, ...option }
 }
 
-/** Case-insensitive "contains" match that works for Thaana and Latin. */
-export function matchesQuery(option: NormalizedOption, query: string) {
-  const q = query.trim().toLocaleLowerCase()
-  if (!q) return true
-  const label = typeof option.label === "string" ? option.label : ""
-  return option.value.toLocaleLowerCase().includes(q) || label.toLocaleLowerCase().includes(q)
+/** Whether the value, a text label or a keyword contains the query (`matchesQuery`, with `Intl.Collator`). */
+export function optionMatches(option: NormalizedOption, query: string, locale = "en") {
+  const texts = [option.value, typeof option.label === "string" ? option.label : "", ...(option.keywords ?? [])]
+  return texts.some((text) => text && matchesQuery(text, query, locale))
 }
 
 interface UseSuggestionsOptions {
@@ -62,6 +78,7 @@ export function useSuggestions({
   max = 50,
   exclude,
 }: UseSuggestionsOptions) {
+  const { locale } = useTranslation()
   const isAsync = typeof source === "function"
   const [remote, setRemote] = React.useState<{ query: string; items: NormalizedOption[] } | null>(null)
   const [status, setStatus] = React.useState<"idle" | "loading" | "error">("idle")
@@ -93,9 +110,9 @@ export function useSuggestions({
   const items = React.useMemo(() => {
     if (tooShort || !source) return []
     const all = isAsync ? (remote?.items ?? []) : (source as readonly SuggestionOption[]).map(normalizeOption)
-    const filtered = isAsync ? all : all.filter((o) => matchesQuery(o, query))
+    const filtered = isAsync ? all : all.filter((o) => !query.trim() || optionMatches(o, query, locale.code))
     return filtered.filter((o) => !exclude?.includes(o.value)).slice(0, max)
-  }, [tooShort, source, isAsync, remote, query, exclude, max])
+  }, [tooShort, source, isAsync, remote, query, exclude, max, locale.code])
 
   return {
     items,
@@ -105,12 +122,21 @@ export function useSuggestions({
   }
 }
 
+interface UseComboboxStateOptions {
+  open?: boolean
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
 /**
  * Keyboard and state for an APG combobox with a listbox popup
- * (`aria-activedescendant` keeps focus in the input).
+ * (`aria-activedescendant` keeps focus in the input). `open` may be controlled.
  */
-export function useComboboxState(itemCount: number) {
-  const [open, setOpen] = React.useState(false)
+export function useComboboxState(itemCount: number, options: UseComboboxStateOptions = {}) {
+  const [open, setOpenState] = useControllableState(options.open, options.defaultOpen ?? false, options.onOpenChange)
+  const setOpen = (next: boolean) => {
+    if (next !== open) setOpenState(next)
+  }
   const [active, setActive] = React.useState(-1)
   const listId = React.useId()
   const optionId = (i: number) => `${listId}-option-${i}`
@@ -188,7 +214,7 @@ export interface SuggestionListProps {
   anchorRef: React.RefObject<HTMLElement | null>
   open: boolean
   onOpenChange: (open: boolean) => void
-  items: NormalizedOption[]
+  items: SuggestionRow[]
   loading?: boolean
   error?: boolean
   onRetry?: () => void
@@ -199,7 +225,9 @@ export interface SuggestionListProps {
   optionId: (index: number) => string
   /** Content rendered when there are no items (and not loading). Nothing by default. */
   empty?: React.ReactNode
-  renderOption?: (option: NormalizedOption, state: { active: boolean }) => React.ReactNode
+  /** The current text; `renderOption` gets `selected` for the suggestion with this value. */
+  value?: string
+  renderOption?: (option: NormalizedOption, state: { active: boolean; selected: boolean }) => React.ReactNode
   dir?: "ltr" | "rtl" | "auto"
   lang?: string
   classNames?: { list?: string; option?: string }
@@ -221,6 +249,7 @@ export function SuggestionList({
   listId,
   optionId,
   empty,
+  value,
   renderOption,
   dir,
   lang,
@@ -272,6 +301,7 @@ export function SuggestionList({
               aria-selected={i === active}
               aria-disabled={option.disabled || undefined}
               data-active={i === active || undefined}
+              data-custom={option.custom || undefined}
               data-slot="suggestion"
               onPointerDown={(e) => e.preventDefault()}
               onPointerMove={() => i !== active && onActiveChange(i)}
@@ -283,8 +313,13 @@ export function SuggestionList({
                 classNames?.option,
               )}
             >
-              {renderOption ? (
-                renderOption(option, { active: i === active })
+              {option.custom ? (
+                <span className="gap-2 flex items-center">
+                  <Icon name="plus" className="size-4 text-muted-foreground" />
+                  <span className="truncate">{option.label}</span>
+                </span>
+              ) : renderOption ? (
+                renderOption(option, { active: i === active, selected: option.value === value })
               ) : (
                 <>
                   <span>{option.label}</span>

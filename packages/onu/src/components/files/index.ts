@@ -10,20 +10,28 @@ export {
   type UseUploadQueueOptions,
 } from "./use-files"
 export { FileIcon, fileIconVariants, type FileIconProps } from "./file-icon"
-export { FileInput, fileInputVariants, type FileInputProps } from "./file-input"
-export { MultipleFileInput, type MultipleFileInputProps } from "./multiple-file-input"
+export {
+  FileInput,
+  MultipleFileInput,
+  fileInputVariants,
+  type FileInputProps,
+  type MultipleFileInputProps,
+} from "./file-input"
 export {
   UploadProgress,
   UploadProgressItem,
   type UploadProgressProps,
   type UploadProgressItemProps,
 } from "./upload-progress"
-export { InstantFileUpload, defaultUploadValue, type InstantFileUploadProps } from "./instant-file-upload"
 export {
   DropzoneUploader,
+  InstantFileUpload,
+  defaultUploadValue,
   dropzoneVariants,
   type DropzoneFile,
+  type DropzoneInputProps,
   type DropzoneUploaderProps,
+  type InstantFileUploadProps,
   type UploadedFile,
 } from "./dropzone-uploader"
 export {

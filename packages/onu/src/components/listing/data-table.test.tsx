@@ -15,7 +15,7 @@ import {
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import type { BulkAction } from "./bulk-actions"
 import { DataTable, type DataTableProps } from "./data-table"
-import { trashActions } from "./row-actions"
+import { trashActions } from "../overlays/action-menu"
 import { applyListingState, useListingState, type ListingController } from "./use-listing-state"
 
 // Interaction-heavy tests: allow for slow CI machines and coverage instrumentation.

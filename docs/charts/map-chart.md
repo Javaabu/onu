@@ -30,7 +30,7 @@ import { MapChart } from "@javaabu/onu/charts"
 
 ## Props
 
-Also takes the common chart props (`title`, `description`, `valueFormat`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `actions`, `className`, `classNames`); see [BarChart](./bar-chart).
+Also takes the common chart props (`title`, `description`, `valueFormat`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `actions`, `className`, `classNames`); see [CategoryChart](./category-chart).
 
 | Prop             | Type                        | Default          | Description                                |
 | ---------------- | --------------------------- | ---------------- | ------------------------------------------ |

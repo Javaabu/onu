@@ -8,7 +8,7 @@ export const meta = {
   title: "Date picker",
   group: "Date and time",
   order: 1,
-  description: "A date field that opens a calendar with month, year and year-range views (§25.1).",
+  description: "A date field that opens a calendar (§25.1), or picks several dates, a week, a month or a year.",
 }
 
 export default function DatePickerDemo() {
@@ -80,14 +80,71 @@ export default function DatePickerDemo() {
       </DemoSection>
 
       <DemoSection
+        title="Several dates"
+        description={'mode="multiple": click days to toggle them; the panel stays open until Done.'}
+        className="max-w-md gap-4 grid"
+      >
+        <FormField label="Training days" name="training_days" help="Posts training_days[]">
+          <DatePicker mode="multiple" defaultValue={[new Date(2026, 2, 3), new Date(2026, 2, 10)]} />
+        </FormField>
+        <FormField label="Up to three interview slots">
+          <DatePicker mode="multiple" maxSelected={3} disabledDates={{ dayOfWeek: [5, 6] }} />
+        </FormField>
+        <FormField label="Required" required error="Pick at least one day.">
+          <DatePicker mode="multiple" />
+        </FormField>
+      </DemoSection>
+
+      <DemoSection
+        title="Weeks"
+        description={'mode="week": click any day to pick its whole week; hovering previews the week.'}
+        className="max-w-md gap-4 grid"
+      >
+        <FormField label="Roster week" name="roster_week" help="Posts the first day of the week">
+          <DatePicker mode="week" defaultValue={new Date(2026, 2, 8)} />
+        </FormField>
+        <FormField label="Week starting Monday">
+          <DatePicker mode="week" weekStartsOn={1} />
+        </FormField>
+      </DemoSection>
+
+      <DemoSection
+        title="Months and years"
+        description={'mode="month" and mode="year": a grid of 12 that zooms out to years.'}
+        className="max-w-md gap-4 grid"
+      >
+        <FormField label="Payroll month" name="payroll_month" help="Posts yyyy-MM">
+          <DatePicker mode="month" defaultValue={new Date(2026, 2, 1)} />
+        </FormField>
+        <FormField label="Card expiry" help="Limited to the next five years">
+          <DatePicker mode="month" format="MM/yy" min={today} max={new Date(today.getFullYear() + 5, 11, 31)} />
+        </FormField>
+        <FormField label="Year of graduation">
+          <DatePicker mode="year" />
+        </FormField>
+      </DemoSection>
+
+      <DemoSection
         title="ދިވެހި"
         description="Dhivehi month and day names, right to left."
         className="max-w-md gap-4 grid"
       >
         <OnuProvider locale={dv} syncDocument={false}>
-          <div dir="rtl" lang="dv">
+          <div dir="rtl" lang="dv" className="gap-4 grid">
             <FormField label="އުފަން ތާރީޚު">
               <DatePicker />
+            </FormField>
+            <FormField label="ތަމްރީނު ދުވަސްތައް">
+              <DatePicker
+                mode="multiple"
+                defaultValue={[new Date(2026, 2, 3), new Date(2026, 2, 10), new Date(2026, 2, 17)]}
+              />
+            </FormField>
+            <FormField label="ހަފްތާ">
+              <DatePicker mode="week" defaultValue={new Date(2026, 2, 8)} />
+            </FormField>
+            <FormField label="މަސް">
+              <DatePicker mode="month" defaultValue={new Date(2026, 6, 1)} />
             </FormField>
           </div>
         </OnuProvider>
