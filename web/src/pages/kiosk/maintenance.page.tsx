@@ -1,13 +1,13 @@
 import * as React from "react"
 import {
   Button,
+  Callout,
   Card,
   ConfirmDialog,
   DescriptionList,
   DynamicIcon,
   FormField,
   LinkButton,
-  Notice,
   OtpInput,
   ProgressBar,
   StatusBadge,
@@ -268,9 +268,9 @@ export default function KioskMaintenancePage() {
                 )}
               />
               {offline ? (
-                <Notice tone="warning">
+                <Callout appearance="plain" variant="warning">
                   {tr("Customers can't pay at this kiosk.", "މި ކިއޮސްކުން ފައިސާ ނުދެއްކޭނެ.")}
-                </Notice>
+                </Callout>
               ) : null}
               <div className="gap-3 sm:grid-cols-2 grid">
                 <ConfirmDialog

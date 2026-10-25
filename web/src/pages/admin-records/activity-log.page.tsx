@@ -4,12 +4,15 @@ import {
   applyListingState,
   Card,
   ConditionalLink,
+  Icon,
   ListingPage,
   RelativeDate,
+  SegmentedControl,
   StatusBadge,
   useListingState,
+  useListingViewOptions,
   UserAvatar,
-  ViewSwitcher,
+  useTranslation,
   type ApplyListingOptions,
   type DataTableColumn,
   type FilterDefinition,
@@ -98,9 +101,14 @@ function buildLog(apps: Application[], labels: Labels, tr: Tr): LogEntry[] {
 
 export default function ActivityLogPage() {
   const tr = useTr()
+  const { t } = useTranslation()
   const labels = useLabels()
   const apps = useAllApplications()
   const [view, setView] = React.useState("table")
+  const views = [
+    ...useListingViewOptions(["table"]),
+    { value: "feed", label: tr("Feed", "ފީޑް"), icon: <Icon name="list" /> },
+  ]
   const log = React.useMemo(() => buildLog(apps, labels, tr), [apps, labels, tr])
   const state = useListingState({ paramPrefix: "log_", defaultState: { perPage: 25, sort: { id: "at", desc: true } } })
 
@@ -224,8 +232,11 @@ export default function ActivityLogPage() {
         }
         exportOptions={["csv", "excel"]}
         toolbarEnd={
-          <ViewSwitcher
-            views={["table", { value: "feed", label: tr("Feed", "ފީޑް"), icon: "list" }]}
+          <SegmentedControl
+            iconOnly
+            size="sm"
+            aria-label={t("listing.view")}
+            options={views}
             value={view}
             onValueChange={setView}
           />

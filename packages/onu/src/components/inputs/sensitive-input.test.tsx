@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { FormField } from "../form/form-field"
-import { CopyInput, maskSecret, SensitiveInput } from "./sensitive-input"
+import { maskSecret, SensitiveInput } from "./sensitive-input"
 
 // userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
 vi.setConfig({ testTimeout: 30_000 })
@@ -130,7 +130,7 @@ describe("SensitiveInput", () => {
 
 const LINK = "https://portal.gov.mv/apply/REF-2026-00451"
 
-describe("CopyInput", () => {
+describe("SensitiveInput masked={false}", () => {
   let writeText: ReturnType<typeof vi.fn>
   beforeEach(() => {
     writeText = vi.fn().mockResolvedValue(undefined)
@@ -139,11 +139,10 @@ describe("CopyInput", () => {
 
   it("shows a read-only value and copies it", async () => {
     const onCopy = vi.fn()
-    renderWithOnu(<CopyInput aria-label="Share link" value={LINK} onCopy={onCopy} />)
+    renderWithOnu(<SensitiveInput masked={false} aria-label="Share link" value={LINK} onCopy={onCopy} />)
     const input = screen.getByRole("textbox", { name: "Share link" })
     expect(input).toHaveValue(LINK)
     expect(input).toHaveAttribute("readonly")
-    expect(input).toHaveAttribute("data-copy-input")
     expect(screen.queryByRole("button", { name: "Show value" })).not.toBeInTheDocument()
     await userEvent.click(screen.getByRole("button", { name: "Copy" }))
     expect(writeText).toHaveBeenCalledWith(LINK)
@@ -154,28 +153,30 @@ describe("CopyInput", () => {
   })
 
   it("selects everything on focus", async () => {
-    renderWithOnu(<CopyInput aria-label="Reference" value="REF-2026-00451" mono />)
+    renderWithOnu(<SensitiveInput masked={false} aria-label="Reference" value="REF-2026-00451" />)
     const input = screen.getByRole("textbox") as HTMLInputElement
     expect(input).toHaveClass("font-mono")
     await userEvent.click(input)
     expect(input.selectionEnd).toBe(input.value.length)
   })
 
-  it("is not monospace by default and keeps a passed dir", () => {
-    renderWithOnu(<CopyInput aria-label="Link" value={LINK} dir="ltr" />)
+  it("is not monospace with mono={false} and keeps a passed dir", () => {
+    renderWithOnu(<SensitiveInput masked={false} mono={false} aria-label="Link" value={LINK} dir="ltr" />)
     const input = screen.getByRole("textbox")
     expect(input).not.toHaveClass("font-mono")
     expect(input).toHaveAttribute("dir", "ltr")
   })
 
   it("does not copy when disabled and keeps extra addons", () => {
-    renderWithOnu(<CopyInput aria-label="Reference" value="x" disabled endAddon={<span>MV</span>} />)
+    renderWithOnu(
+      <SensitiveInput masked={false} aria-label="Reference" value="x" disabled endAddon={<span>MV</span>} />,
+    )
     expect(screen.getByRole("button", { name: "Copy" })).toBeDisabled()
     expect(screen.getByText("MV")).toBeInTheDocument()
   })
 
   it.each(directions)("announces in Dhivehi in %s", async (dir) => {
-    renderWithOnu(<CopyInput aria-label="ލިންކް" value={LINK} />, { dir, locale: "dv" })
+    renderWithOnu(<SensitiveInput masked={false} aria-label="ލިންކް" value={LINK} />, { dir, locale: "dv" })
     await userEvent.click(screen.getByRole("button", { name: "ކޮޕީކުރޭ" }))
     expect(await screen.findByText("ކޮޕީކުރެވިއްޖެ")).toBeInTheDocument()
   })

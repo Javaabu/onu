@@ -8,7 +8,6 @@ import { FormField } from "../form/form-field"
 import {
   defaultUploadValue,
   DropzoneUploader,
-  InstantFileUpload,
   type DropzoneFile,
   type DropzoneUploaderProps,
 } from "./dropzone-uploader"
@@ -331,7 +330,7 @@ describe("DropzoneUploader appearance=input", () => {
   })
 })
 
-describe("InstantFileUpload", () => {
+describe("DropzoneUploader appearance=input, single file", () => {
   afterEach(() => vi.unstubAllGlobals())
 
   it("uploads as soon as a file is chosen, shows progress and announces the result", async () => {
@@ -340,8 +339,10 @@ describe("InstantFileUpload", () => {
     const onItemsChange = vi.fn()
     const { container } = renderWithOnu(
       <form aria-label="f">
-        <InstantFileUpload
-          aria-label="Transfer slip"
+        <DropzoneUploader
+          appearance="input"
+          multiple={false}
+          inputProps={{ "aria-label": "Transfer slip" }}
           name="slip"
           upload={upload}
           onUploaded={onUploaded}
@@ -373,7 +374,9 @@ describe("InstantFileUpload", () => {
 
   it("cancels, retries and removes uploads", async () => {
     const { upload, calls } = controllableUploader()
-    const { container } = renderWithOnu(<InstantFileUpload aria-label="Docs" multiple upload={upload} />)
+    const { container } = renderWithOnu(
+      <DropzoneUploader appearance="input" inputProps={{ "aria-label": "Docs" }} upload={upload} />,
+    )
     await user().upload(fileInput(container), [file("a.pdf"), file("b.pdf")])
     expect(upload).toHaveBeenCalledTimes(2)
     await userEvent.click(screen.getByRole("button", { name: "Cancel upload of a.pdf" }))
@@ -390,7 +393,15 @@ describe("InstantFileUpload", () => {
   it("shows Laravel errors and calls onError", async () => {
     const { upload, calls } = controllableUploader()
     const onError = vi.fn()
-    const { container } = renderWithOnu(<InstantFileUpload aria-label="Doc" upload={upload} onError={onError} />)
+    const { container } = renderWithOnu(
+      <DropzoneUploader
+        appearance="input"
+        multiple={false}
+        inputProps={{ "aria-label": "Doc" }}
+        upload={upload}
+        onError={onError}
+      />,
+    )
     await user().upload(fileInput(container), file("a.pdf"))
     await act(async () => calls[0]!.reject(new UploadError("The file must be a PDF.", 422)))
     expect(screen.getByText("The file must be a PDF.")).toBeInTheDocument()
@@ -426,7 +437,12 @@ describe("InstantFileUpload", () => {
     vi.stubGlobal("XMLHttpRequest", Xhr)
     const { container } = renderWithOnu(
       <FormField label="Photo" name="photo_id">
-        <InstantFileUpload url="/api/uploads" uploadOptions={{ headers: { "X-CSRF-TOKEN": "t" } }} />
+        <DropzoneUploader
+          appearance="input"
+          multiple={false}
+          url="/api/uploads"
+          uploadOptions={{ headers: { "X-CSRF-TOKEN": "t" } }}
+        />
       </FormField>,
     )
     await user().upload(fileInput(container), file("p.pdf"))
@@ -438,9 +454,9 @@ describe("InstantFileUpload", () => {
   it("uses getValue and multiple hidden inputs", async () => {
     const { upload, calls } = controllableUploader()
     const { container } = renderWithOnu(
-      <InstantFileUpload
-        aria-label="Docs"
-        multiple
+      <DropzoneUploader
+        appearance="input"
+        inputProps={{ "aria-label": "Docs" }}
         name="docs"
         upload={upload}
         getValue={(r) => (r as { key: string }).key}
@@ -460,13 +476,15 @@ describe("InstantFileUpload", () => {
     const { upload, calls } = controllableUploader()
     const onValueChange = vi.fn()
     const { container } = renderWithOnu(
-      <InstantFileUpload
-        aria-label="Permit"
+      <DropzoneUploader
+        appearance="input"
+        multiple={false}
+        inputProps={{ "aria-label": "Permit" }}
         name="permit"
         upload={upload}
         value={[permit]}
         onValueChange={onValueChange}
-        classNames={{ progress: "uploads" }}
+        classNames={{ list: "uploads" }}
       />,
     )
     expect(screen.getByText("permit-hulhumale.pdf")).toBeInTheDocument()
@@ -490,7 +508,9 @@ describe("InstantFileUpload", () => {
 
   it("takes files dropped on the input", async () => {
     const { upload } = controllableUploader()
-    const { container } = renderWithOnu(<InstantFileUpload aria-label="Doc" upload={upload} />)
+    const { container } = renderWithOnu(
+      <DropzoneUploader appearance="input" multiple={false} inputProps={{ "aria-label": "Doc" }} upload={upload} />,
+    )
     const event = fireEvent.drop(fileInput(container), { dataTransfer: { files: [file("x.pdf")], types: ["Files"] } })
     // react-dropzone must not cancel drops outside a drop zone; the native input handles them.
     expect(event).toBe(true)
@@ -498,10 +518,13 @@ describe("InstantFileUpload", () => {
 
   it.each(directions)("works in Dhivehi (%s)", async (dir) => {
     const { upload } = controllableUploader()
-    const { container } = renderWithOnu(<InstantFileUpload aria-label="ފައިލް" upload={upload} />, {
-      locale: "dv",
-      dir,
-    })
+    const { container } = renderWithOnu(
+      <DropzoneUploader appearance="input" multiple={false} inputProps={{ "aria-label": "ފައިލް" }} upload={upload} />,
+      {
+        locale: "dv",
+        dir,
+      },
+    )
     await user().upload(fileInput(container), file("a.pdf"))
     expect(screen.getByText("1 ފައިލް އަޕްލޯޑުކުރަނީ…")).toBeInTheDocument()
     await expectNoA11yViolations()
@@ -520,10 +543,12 @@ function QueueOnly() {
   )
 }
 
-describe("useUploadQueue (through InstantFileUpload)", () => {
+describe("useUploadQueue (through DropzoneUploader)", () => {
   it("aborts in-flight uploads on unmount", async () => {
     const { upload, calls } = controllableUploader()
-    const { container, unmount } = renderWithOnu(<InstantFileUpload aria-label="Doc" upload={upload} />)
+    const { container, unmount } = renderWithOnu(
+      <DropzoneUploader appearance="input" multiple={false} inputProps={{ "aria-label": "Doc" }} upload={upload} />,
+    )
     await user().upload(fileInput(container), file("a.pdf"))
     unmount()
     expect(calls[0]!.ctx.signal.aborted).toBe(true)
@@ -531,7 +556,9 @@ describe("useUploadQueue (through InstantFileUpload)", () => {
 
   it("clamps progress and keeps items queued without an uploader", async () => {
     const { upload, calls } = controllableUploader()
-    const { container } = renderWithOnu(<InstantFileUpload aria-label="Doc" upload={upload} />)
+    const { container } = renderWithOnu(
+      <DropzoneUploader appearance="input" multiple={false} inputProps={{ "aria-label": "Doc" }} upload={upload} />,
+    )
     await user().upload(fileInput(container), file("a.pdf"))
     act(() => calls[0]!.ctx.onProgress(150))
     expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "100")

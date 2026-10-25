@@ -3,7 +3,7 @@ title: CategoryChart
 sidebar_position: 1
 ---
 
-A line, area or bar graph over categories (months, islands, councils), built on shadcn's [chart](https://ui.shadcn.com/docs/components/chart) (`ChartContainer` + Recharts). `variant` picks how series are drawn: lines with optional dashed series, filled (and stacked) areas, or columns and horizontal bars, grouped or stacked. Every variant has a "View as table" toggle, keyboard navigation, locale-aware numbers, gaps for missing values and axes that mirror in RTL. `LineChart`, `AreaChart` and `BarChart` are presets of it.
+A line, area or bar graph over categories (months, islands, councils), built on shadcn's [chart](https://ui.shadcn.com/docs/components/chart) (`ChartContainer` + Recharts). `variant` picks how series are drawn: lines with optional dashed series, filled (and stacked) areas, or columns and horizontal bars, grouped or stacked. Every variant has a "View as table" toggle, keyboard navigation, locale-aware numbers, gaps for missing values and axes that mirror in RTL.
 
 :::info
 Charts live in the `@javaabu/onu/charts` entry and need the optional peer dependency `recharts` (v3): `pnpm add recharts`.
@@ -41,24 +41,22 @@ const config = {
 <CategoryChart variant="bar" … />    // columns or bars
 ```
 
-| Variant  | Preset      | Summary says | `data-slot`  |
-| -------- | ----------- | ------------ | ------------ |
-| `"line"` | `LineChart` | "Line chart" | `line-chart` |
-| `"area"` | `AreaChart` | "Area chart" | `area-chart` |
-| `"bar"`  | `BarChart`  | "Bar chart"  | `bar-chart`  |
+| Variant  | Summary says | `data-slot`  |
+| -------- | ------------ | ------------ |
+| `"line"` | "Line chart" | `line-chart` |
+| `"area"` | "Area chart" | `area-chart` |
+| `"bar"`  | "Bar chart"  | `bar-chart`  |
 
-The presets are `CategoryChart` with the variant set, so `<BarChart … />` is `<CategoryChart variant="bar" … />`. `LineChart` still takes `area` (deprecated: use `variant="area"` or `AreaChart`); on `CategoryChart`, `variant` wins over `area`.
-
-`CategoryChartProps` is a union on `variant`: the line and area options below are type errors on `variant="bar"`, and the bar options on lines and areas.
+`CategoryChartProps` is a union on `variant` (`CategoryChartLineProps` for lines and areas, `CategoryChartBarProps` for bars): the line and area options below are type errors on `variant="bar"`, and the bar options on lines and areas.
 
 ## Lines and areas
 
-`LineChart` (`variant="line"`) and `AreaChart` (`variant="area"`): multiple series, dashed series for targets or forecasts, and gaps where values are missing.
+`variant="line"` and `variant="area"`: multiple series, dashed series for targets or forecasts, and gaps where values are missing.
 
 ```tsx
-import { LineChart } from "@javaabu/onu/charts"
+import { CategoryChart } from "@javaabu/onu/charts"
 
-;<LineChart
+;<CategoryChart
   title="Tourist arrivals against target"
   data={[
     { month: "Jan", arrivals: 212400, target: 200000 },
@@ -88,11 +86,10 @@ Line and area only:
 | `dots`         | `boolean`                                       | up to 31 points | Dot on each point                                 |
 | `connectNulls` | `boolean`                                       | `false`         | Bridge missing values                             |
 | `dashedSeries` | `string[]`                                      |                 | Series drawn dashed (differs by more than colour) |
-| `area`         | `boolean`                                       | `false`         | Deprecated: same as `variant="area"`              |
 
 ## Bars
 
-`BarChart` (`variant="bar"`): columns or horizontal bars, grouped or stacked.
+`variant="bar"`: columns or horizontal bars, grouped or stacked.
 
 ```tsx
 <CategoryChart variant="bar" orientation="horizontal" … />   // categories down the side
@@ -156,7 +153,7 @@ The variant-specific props are listed under [Lines and areas](#lines-and-areas) 
 | `className`            | `string`                                                     |                      | Classes for the `<figure>`                            |
 | `classNames`           | `{ root, header, title, description, toggle, chart, table }` |                      | Classes per part                                      |
 
-`ref` points at the `<figure>`. `LineChartProps`, `AreaChartProps` and `BarChartProps` are the presets' props (without `variant`). Every Onu chart (`PieChart`, `TimeSeriesChart`, `PeriodComparisonChart`, `MapChart`) shares the props from `title` to `classNames` that are not specific to categories.
+`ref` points at the `<figure>`. Every Onu chart (`PieChart`, `TimeSeriesChart`, `PeriodComparisonChart`, `MapChart`) shares the props from `title` to `classNames` that are not specific to categories.
 
 ## Gradient fills
 

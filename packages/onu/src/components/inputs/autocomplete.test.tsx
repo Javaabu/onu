@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { FormField } from "../form/form-field"
 import { normalizeOption, optionMatches } from "./_suggestions"
-import { Autocomplete, EditableSelect } from "./autocomplete"
+import { Autocomplete } from "./autocomplete"
 
 // userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
 vi.setConfig({ testTimeout: 30_000 })
@@ -293,11 +293,15 @@ describe("Autocomplete", () => {
 })
 
 const titles = ["Director", "Deputy Director", "Assistant Director", { value: "x", label: "Intern", disabled: true }]
+// Pick from a list or type your own.
+const editable = { showToggleButton: true, showCustomOption: true, autoHighlight: true } as const
 
-describe("EditableSelect", () => {
+describe("Autocomplete as an editable select", () => {
   it("suggests while typing and keeps custom text", async () => {
     const onValueChange = vi.fn()
-    renderWithOnu(<EditableSelect aria-label="Job title" options={titles} onValueChange={onValueChange} />)
+    renderWithOnu(
+      <Autocomplete aria-label="Job title" suggestions={titles} {...editable} onValueChange={onValueChange} />,
+    )
     const input = screen.getByRole("combobox", { name: "Job title" })
     expect(input).toHaveAttribute("aria-expanded", "false")
     await userEvent.type(input, "dep")
@@ -311,7 +315,9 @@ describe("EditableSelect", () => {
 
   it("picks a suggestion with arrow keys and moves the active descendant", async () => {
     const onValueChange = vi.fn()
-    renderWithOnu(<EditableSelect aria-label="Job title" options={titles} onValueChange={onValueChange} />)
+    renderWithOnu(
+      <Autocomplete aria-label="Job title" suggestions={titles} {...editable} onValueChange={onValueChange} />,
+    )
     const input = screen.getByRole("combobox")
     input.focus()
     await userEvent.keyboard("{ArrowDown}")
@@ -325,18 +331,24 @@ describe("EditableSelect", () => {
     expect(input).toHaveValue("Deputy Director")
   })
 
-  it("sets the label and passes the original option", async () => {
+  it("writes the label of ChoiceOptions mapped to it", async () => {
     const onValueChange = vi.fn()
+    const atolls = [{ value: "K", label: "Kaafu" }]
     renderWithOnu(
-      <EditableSelect aria-label="Atoll" options={[{ value: "K", label: "Kaafu" }]} onValueChange={onValueChange} />,
+      <Autocomplete
+        aria-label="Atoll"
+        suggestions={atolls.map((o) => ({ ...o, value: o.label }))}
+        {...editable}
+        onValueChange={onValueChange}
+      />,
     )
     await userEvent.type(screen.getByRole("combobox"), "kaa{ArrowDown}{Enter}")
     expect(screen.getByRole("combobox")).toHaveValue("Kaafu")
-    expect(onValueChange).toHaveBeenLastCalledWith("Kaafu", { value: "K", label: "Kaafu" })
+    expect(onValueChange).toHaveBeenLastCalledWith("Kaafu", { value: "Kaafu", label: "Kaafu" })
   })
 
   it("opens with the button, selects by click and closes with Escape", async () => {
-    renderWithOnu(<EditableSelect aria-label="Job title" options={titles} defaultValue="Director" />)
+    renderWithOnu(<Autocomplete aria-label="Job title" suggestions={titles} {...editable} defaultValue="Director" />)
     await userEvent.click(screen.getByRole("button", { name: "Show options" }))
     expect(screen.getByRole("option", { name: "Director" })).toBeInTheDocument()
     await userEvent.click(screen.getByRole("option", { name: "Intern" }))
@@ -351,7 +363,15 @@ describe("EditableSelect", () => {
   })
 
   it("shows an empty message and closes on Tab", async () => {
-    renderWithOnu(<EditableSelect aria-label="Job title" options={titles} showCustomOption={false} />)
+    renderWithOnu(
+      <Autocomplete
+        aria-label="Job title"
+        suggestions={titles}
+        {...editable}
+        showCustomOption={false}
+        emptyMessage={(q) => `No results for “${q}”`}
+      />,
+    )
     await userEvent.type(screen.getByRole("combobox"), "zzz")
     expect(screen.getByText("No results for “zzz”")).toBeInTheDocument()
     await userEvent.tab()
@@ -363,7 +383,7 @@ describe("EditableSelect", () => {
       const [value, setValue] = React.useState("Hello")
       return (
         <>
-          <EditableSelect aria-label="t" options={titles} value={value} onValueChange={setValue} />
+          <Autocomplete aria-label="t" suggestions={titles} {...editable} value={value} onValueChange={setValue} />
           <output>{value}</output>
         </>
       )
@@ -374,7 +394,9 @@ describe("EditableSelect", () => {
   })
 
   it("types Thaana and shows a toggle", async () => {
-    renderWithOnu(<EditableSelect aria-label="މަޤާމު" options={["ޑިރެކްޓަރ"]} thaana thaanaToggle />, { locale: "dv" })
+    renderWithOnu(<Autocomplete aria-label="މަޤާމު" suggestions={["ޑިރެކްޓަރ"]} {...editable} thaana thaanaToggle />, {
+      locale: "dv",
+    })
     const input = screen.getByRole("combobox")
     expect(input).toHaveAttribute("lang", "dv")
     expect(screen.getByRole("button", { name: "ތާނައާއި ލަތީނުގެ ދެމެދު ބަދަލުކުރޭ" })).toBeInTheDocument()
@@ -384,7 +406,13 @@ describe("EditableSelect", () => {
     const ref = React.createRef<HTMLInputElement>()
     renderWithOnu(
       <FormField label="Title" name="title" required>
-        <EditableSelect options={titles} ref={ref} className="root-x" classNames={{ input: "input-x" }} />
+        <Autocomplete
+          suggestions={titles}
+          {...editable}
+          ref={ref}
+          className="root-x"
+          classNames={{ input: "input-x" }}
+        />
       </FormField>,
     )
     const input = screen.getByRole("combobox", { name: /Title/ })
@@ -392,21 +420,21 @@ describe("EditableSelect", () => {
     expect(input).toHaveAttribute("name", "title")
     expect(input).toBeRequired()
     expect(input).toHaveClass("input-x")
-    expect(input.closest("[data-slot=editable-select]")).toBeInTheDocument()
+    expect(input.closest("[data-slot=autocomplete]")).toBeInTheDocument()
     expect(input.closest("[data-slot=input-group]")).toHaveClass("root-x")
   })
 
   it("disables the button inside a disabled FormField", () => {
     renderWithOnu(
       <FormField label="Title" disabled>
-        <EditableSelect options={titles} />
+        <Autocomplete suggestions={titles} {...editable} />
       </FormField>,
     )
     expect(screen.getByRole("button", { name: "Show options" })).toBeDisabled()
   })
 
   it.each(directions)("passes axe in %s, open and closed", async (dir) => {
-    renderWithOnu(<EditableSelect aria-label="Job title" options={titles} />, { dir })
+    renderWithOnu(<Autocomplete aria-label="Job title" suggestions={titles} {...editable} />, { dir })
     await expectNoA11yViolations()
     await userEvent.click(screen.getByRole("button", { name: "Show options" }))
     await expectNoA11yViolations()

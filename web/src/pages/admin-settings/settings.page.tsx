@@ -14,9 +14,9 @@ import {
   RadioGroup,
   SearchableSelect,
   Select,
-  StackedTabs,
   SubmitButton,
   Switch,
+  Tabs,
   TagsInput,
   TextInput,
   Textarea,
@@ -503,7 +503,12 @@ export default function SettingsPage() {
             { label: tr("Roles", "ރޯލްތައް"), href: routes.adminSettings.roles, icon: "lock" },
           ]}
         />
-        <StackedTabs items={items} listLabel={tr("Settings sections", "ސެޓިންގްސްގެ ބައިތައް")} />
+        <Tabs
+          orientation="vertical"
+          narrow="select"
+          items={items}
+          listLabel={tr("Settings sections", "ސެޓިންގްސްގެ ބައިތައް")}
+        />
       </div>
     </AdminShell>
   )

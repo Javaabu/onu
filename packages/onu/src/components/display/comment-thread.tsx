@@ -38,7 +38,7 @@ export interface CommentData {
 }
 
 export interface CommentThreadLabels {
-  /** Heading, and the region's name when `title` is `null`. Default "Comments". */
+  /** Heading, and the region's name when `title` is `null`. Default "Comments" ("Notes" for `variant="list"`). */
   title?: string
   /** Shown when there are no comments. */
   empty?: string
@@ -63,11 +63,15 @@ export interface CommentThreadProps extends Omit<React.ComponentProps<"section">
   /** Override who may edit / delete. Defaults to the comment's author. */
   canEdit?: (comment: CommentData) => boolean
   canDelete?: (comment: CommentData) => boolean
-  /** Show Reply buttons (with `onAdd`). Default `true`. */
+  /** Show Reply buttons (with `onAdd`). Default `true`, `false` for `variant="list"`. */
   replies?: boolean
-  /** `thread` (default): comments as articles with nested replies. `list`: a bordered, divided list, as in `Notes`. */
+  /**
+   * `thread` (default): comments as articles with nested replies. `list`: internal
+   * notes on a record, a bordered, divided list with the note strings, no Reply
+   * buttons and the composer on top.
+   */
   variant?: "thread" | "list"
-  /** Put the composer below the comments (default) or above them. */
+  /** Put the composer below the comments or above them. Default `bottom`, `top` for `variant="list"`. */
   composerPosition?: "top" | "bottom"
   /** How many levels are indented. Deeper replies line up with their parent. Default 3. */
   maxDepth?: number
@@ -84,37 +88,27 @@ export interface CommentThreadProps extends Omit<React.ComponentProps<"section">
 
 interface ThreadContextValue extends Pick<
   CommentThreadProps,
-  | "currentUserId"
-  | "onAdd"
-  | "onEdit"
-  | "onDelete"
-  | "canEdit"
-  | "canDelete"
-  | "thaana"
-  | "now"
-  | "classNames"
-  | "labels"
+  "currentUserId" | "onAdd" | "onEdit" | "onDelete" | "canEdit" | "canDelete" | "thaana" | "now" | "classNames"
 > {
   maxDepth: number
   replies: boolean
   list: boolean
-  itemSlot: string
+  deleteLabel: string
+  deleteConfirm: string
 }
 
 const ThreadContext = React.createContext<ThreadContextValue>({
   maxDepth: 3,
   replies: true,
   list: false,
-  itemSlot: "comment",
+  deleteLabel: "",
+  deleteConfirm: "",
 })
-
-/** Lets `Notes` keep `data-slot="note"` on its items without a public prop. */
-const ItemSlotContext = React.createContext("comment")
 
 /**
  * A discussion: comments with nested replies, edit and delete for your own
  * comments, and a composer that can type Thaana. Mentions are not built in.
- * With `variant="list"` and `replies={false}` it is a flat list of notes (see `Notes`).
+ * With `variant="list"` it is a flat list of internal notes on a record.
  */
 export function CommentThread({
   comments,
@@ -124,9 +118,9 @@ export function CommentThread({
   onDelete,
   canEdit,
   canDelete,
-  replies = true,
+  replies: repliesProp,
   variant = "thread",
-  composerPosition = "bottom",
+  composerPosition: composerPositionProp,
   maxDepth = 3,
   thaana,
   title,
@@ -138,8 +132,11 @@ export function CommentThread({
 }: CommentThreadProps) {
   const { t } = useTranslation()
   const headingId = React.useId()
-  const itemSlot = React.useContext(ItemSlotContext)
   const list = variant === "list"
+  const replies = repliesProp ?? !list
+  const composerPosition = composerPositionProp ?? (list ? "top" : "bottom")
+  const deleteLabel = labels?.delete ?? t(list ? "display.deleteNote" : "display.deleteComment")
+  const deleteConfirm = labels?.deleteConfirm ?? t(list ? "display.deleteNoteConfirm" : "display.deleteCommentConfirm")
   const value = React.useMemo<ThreadContextValue>(
     () => ({
       currentUserId,
@@ -151,11 +148,11 @@ export function CommentThread({
       thaana,
       now,
       classNames,
-      labels,
       maxDepth,
       replies,
       list,
-      itemSlot,
+      deleteLabel,
+      deleteConfirm,
     }),
     [
       currentUserId,
@@ -167,19 +164,20 @@ export function CommentThread({
       thaana,
       now,
       classNames,
-      labels,
       maxDepth,
       replies,
       list,
-      itemSlot,
+      deleteLabel,
+      deleteConfirm,
     ],
   )
-  const name = labels?.title ?? t("display.comments")
+  const name = labels?.title ?? t(list ? "display.notes" : "display.comments")
+  const composerLabel = labels?.composer ?? t(list ? "display.writeNote" : "display.writeComment")
   const composer = onAdd ? (
     <Composer
-      label={labels?.composer ?? t("display.writeComment")}
-      placeholder={labels?.composer ?? t("display.writeComment")}
-      submitLabel={labels?.submit ?? t("display.postComment")}
+      label={composerLabel}
+      placeholder={composerLabel}
+      submitLabel={labels?.submit ?? t(list ? "display.addNote" : "display.postComment")}
       thaana={thaana}
       onSubmit={(body) => onAdd(body, null)}
       className={classNames?.composer}
@@ -204,7 +202,9 @@ export function CommentThread({
         {comments.length ? (
           <CommentList comments={comments} depth={1} className={classNames?.list} />
         ) : (
-          <p className="text-sm text-muted-foreground">{labels?.empty ?? t("display.noComments")}</p>
+          <p className="text-sm text-muted-foreground">
+            {labels?.empty ?? t(list ? "display.noNotes" : "display.noComments")}
+          </p>
         )}
       </ThreadContext.Provider>
       {composerPosition === "bottom" ? composer : null}
@@ -280,8 +280,8 @@ function CommentItem({ comment, depth }: { comment: CommentData; depth: number }
         ) : null}
         {deletable ? (
           <ConfirmDeleteButton
-            label={ctx.labels?.delete ?? t("display.deleteComment")}
-            title={ctx.labels?.deleteConfirm ?? t("display.deleteCommentConfirm")}
+            label={ctx.deleteLabel}
+            title={ctx.deleteConfirm}
             onConfirm={() => ctx.onDelete?.(comment.id)}
           />
         ) : null}
@@ -343,88 +343,20 @@ function CommentItem({ comment, depth }: { comment: CommentData; depth: number }
     </>
   )
 
-  // The list variant (Notes) is a plain list item; the thread names each comment as an article.
+  // The list variant is a plain list item; the thread names each comment as an article.
   return ctx.list ? (
     <li
-      data-slot={ctx.itemSlot}
+      data-slot="comment"
       data-comment-id={comment.id}
       className={cn("gap-3 p-3 flex items-start bg-card", ctx.classNames?.comment)}
     >
       {content}
     </li>
   ) : (
-    <li data-slot={ctx.itemSlot} data-comment-id={comment.id}>
+    <li data-slot="comment" data-comment-id={comment.id}>
       <article className={cn("gap-3 flex items-start", ctx.classNames?.comment)} aria-label={comment.author.name}>
         {content}
       </article>
     </li>
-  )
-}
-
-/* ------------------------------------------------------------------------ */
-
-export interface NoteData {
-  id: string | number
-  author: { id?: string | number; name: string; avatar?: string | null }
-  body: React.ReactNode
-  createdAt: DateInput
-}
-
-export interface NotesProps extends Omit<React.ComponentProps<"section">, "onSubmit" | "title"> {
-  notes: NoteData[]
-  /** Add a note. Return a promise to show a spinner until it resolves. */
-  onAdd?: (body: string) => void | Promise<unknown>
-  onDelete?: (id: NoteData["id"]) => void | Promise<unknown>
-  /** Who may delete a note. Default: everyone when `onDelete` is set, or only the author when `currentUserId` is set. */
-  canDelete?: (note: NoteData) => boolean
-  currentUserId?: string | number
-  /** Type Thaana in the note box (R13.3). */
-  thaana?: ThaanaProp
-  /** Put the add-note box above the list (default) or below it. */
-  composerPosition?: "top" | "bottom"
-  /** Heading; pass `null` to hide it. */
-  title?: React.ReactNode
-  now?: DateInput
-  classNames?: { list?: string; note?: string; composer?: string }
-}
-
-/**
- * `CommentThread` with `variant="list"`, `replies={false}`, the composer on
- * top and note strings: internal notes on a record, with add and delete.
- */
-export function Notes({
-  notes,
-  onAdd,
-  canDelete,
-  currentUserId,
-  composerPosition = "top",
-  classNames,
-  ...props
-}: NotesProps) {
-  const { t } = useTranslation()
-  return (
-    <ItemSlotContext.Provider value="note">
-      <CommentThread
-        data-slot="notes"
-        {...props}
-        // A note's author id is optional; the thread only compares it with `currentUserId`.
-        comments={notes as CommentData[]}
-        onAdd={onAdd && ((body) => onAdd(body))}
-        currentUserId={currentUserId}
-        canDelete={canDelete ?? ((note) => currentUserId === undefined || note.author.id === currentUserId)}
-        variant="list"
-        replies={false}
-        composerPosition={composerPosition}
-        classNames={{ list: classNames?.list, comment: classNames?.note, composer: classNames?.composer }}
-        labels={{
-          title: t("display.notes"),
-          empty: t("display.noNotes"),
-          composer: t("display.writeNote"),
-          submit: t("display.addNote"),
-          delete: t("display.deleteNote"),
-          deleteConfirm: t("display.deleteNoteConfirm"),
-        }}
-      />
-    </ItemSlotContext.Provider>
   )
 }

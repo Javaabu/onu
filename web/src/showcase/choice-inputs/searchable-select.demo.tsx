@@ -1,7 +1,7 @@
 import * as React from "react"
 import {
+  ApiSelect,
   Button,
-  DependentSelect,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -76,7 +76,7 @@ export default function SearchableSelectDemo() {
       </DemoSection>
       <DemoSection
         title="Several values"
-        description="Chips, select all, a maximum and Backspace to remove the last chip. MultiSelect is the same with multiple fixed on."
+        description="Chips, select all, a maximum and Backspace to remove the last chip."
         className="max-w-md gap-4 grid"
       >
         <FormField label="Service islands" help="Submits islands[] for Laravel.">
@@ -144,18 +144,18 @@ export default function SearchableSelectDemo() {
       </DemoSection>
       <DemoSection
         title="Loaded per parent"
-        description="DependentSelect with loadOptions runs through the same cached data layer as API select."
+        description="ApiSelect with parentValue and a fetcher: results are cached per atoll and search."
         className="max-w-md gap-4 grid"
       >
         <FormField label="Atoll">
           <Select options={atolls} value={atoll2} onValueChange={setAtoll2} />
         </FormField>
         <FormField label="Islands">
-          <DependentSelect
+          <ApiSelect
             parentValue={atoll2}
             parentLabel="an atoll"
             multiple
-            loadOptions={(parent) => delay({ data: islandsByAtoll[parent] ?? [] })}
+            fetcher={() => delay({ data: islandsByAtoll[atoll2] ?? [] })}
           />
         </FormField>
       </DemoSection>

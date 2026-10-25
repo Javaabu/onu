@@ -12,12 +12,12 @@ import {
   ExportMenu,
   FilterPanel,
   FilterTabs,
-  GridView,
   Icon,
   Label,
   LinkButton,
   ListView,
   Pagination,
+  SegmentedControl,
   Select,
   StatusBadge,
   Tag,
@@ -25,8 +25,9 @@ import {
   TextInput,
   toast,
   useListingState,
+  useListingViewOptions,
   UserAvatar,
-  ViewSwitcher,
+  useTranslation,
   type BulkAction,
   type DataTableColumn,
   type FilterValues,
@@ -307,9 +308,11 @@ function QueryFilter({
 
 export default function ProtonAntIndexPage() {
   const tr = useTr()
+  const { t } = useTranslation()
   const labels = useLabels()
   const all = useAllApplications()
   const [view, setView] = React.useState<ListingView>("table")
+  const viewOptions = useListingViewOptions(["table", "list", "grid"])
   const state = useListingState({
     paramPrefix: PA_PARAM,
     defaultState: { perPage: 10, sort: { id: "submitted", desc: true } },
@@ -531,8 +534,12 @@ export default function ProtonAntIndexPage() {
                 />
               ) : null}
               <span className="pa-divider-v" aria-hidden />
-              <ViewSwitcher
-                views={["table", "list", "grid"]}
+              <SegmentedControl
+                iconOnly
+                size="sm"
+                aria-label={t("listing.view")}
+                options={viewOptions}
+                className="pa-view-switcher"
                 value={view}
                 onValueChange={(v) => {
                   setView(v)
@@ -602,7 +609,8 @@ export default function ProtonAntIndexPage() {
                     )}
                   />
                 ) : (
-                  <GridView
+                  <ListView
+                    layout="grid"
                     {...shared}
                     minItemWidth="15rem"
                     description={(a) => <span>{a.reference}</span>}

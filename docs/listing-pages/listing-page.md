@@ -65,11 +65,26 @@ With a server, call your API with `state.toSearchParams()` (Laravel / spatie-que
 
 ## Other views
 
-Pass `children` to replace the table, e.g. with a [`ListView`](list-view) (as a list or a [grid](list-view#grid-layout)) chosen by a [`ViewSwitcher`](../choice-inputs/segmented-control#view-switcher) in `toolbarEnd`. The page keeps the pagination footer (from `total`, `pagination`, `perPageOptions` and `noun`) below your view, and adds a **Sort by** menu to the toolbar for the `columns` marked `sortable`, since a list or grid has no sortable headers:
+Pass `children` to replace the table, e.g. with a [`ListView`](list-view) (as a list or a [grid](list-view#grid-layout)) chosen by a [view switcher](../choice-inputs/segmented-control#view-switcher) (a `SegmentedControl` of `useListingViewOptions()`) in `toolbarEnd`. The page keeps the pagination footer (from `total`, `pagination`, `perPageOptions` and `noun`) below your view, and adds a **Sort by** menu to the toolbar for the `columns` marked `sortable`, since a list or grid has no sortable headers:
 
 ```tsx
-<ListingPage {...props} toolbarEnd={<ViewSwitcher value={state.view ?? "table"} onValueChange={state.setView} />}>
-  {state.view === "grid" ? <GridView items={rows} title={(u) => u.name} /> : undefined}
+const { t } = useTranslation()
+const views = useListingViewOptions(["table", "list", "grid"])
+
+<ListingPage
+  {...props}
+  toolbarEnd={
+    <SegmentedControl
+      iconOnly
+      size="sm"
+      aria-label={t("listing.view")}
+      options={views}
+      value={state.view ?? "table"}
+      onValueChange={state.setView}
+    />
+  }
+>
+  {state.view === "grid" ? <ListView layout="grid" items={rows} title={(u) => u.name} /> : undefined}
 </ListingPage>
 ```
 

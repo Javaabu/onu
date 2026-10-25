@@ -9,7 +9,7 @@ import { layout as en_layout } from "../../locales/en/layout"
 
 registerEnglish({ layout: en_layout })
 
-/** A navigation entry shared by AppSidebar, SideNav, TopNav, OverlayMenu, BottomNav and MegaMenu. */
+/** A navigation entry shared by AppSidebar, SideNav, TopNav, OverlayMenu and BottomNav. */
 export interface NavItem {
   /** Stable key. Defaults to `href`, then the index. */
   id?: string

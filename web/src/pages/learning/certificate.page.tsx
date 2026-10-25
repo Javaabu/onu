@@ -1,4 +1,4 @@
-import { BackButton, Button, Card, CopyInput, DescriptionList, Logo, PrintButton, toast } from "@javaabu/onu"
+import { BackButton, Button, Card, DescriptionList, Logo, PrintButton, SensitiveInput, toast } from "@javaabu/onu"
 
 import { useDv, useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -147,7 +147,7 @@ export default function CertificatePage() {
               <span id="verify-label" className="text-sm font-medium">
                 {tr("Verification link", "ޔަގީންކުރާ ލިންކް")}
               </span>
-              <CopyInput value={VERIFY_URL} aria-labelledby="verify-label" dir="ltr" />
+              <SensitiveInput masked={false} mono={false} value={VERIFY_URL} aria-labelledby="verify-label" dir="ltr" />
               <p className="text-sm text-muted-foreground">
                 {tr(
                   "Employers can check this certificate online with the link.",

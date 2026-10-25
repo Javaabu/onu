@@ -241,20 +241,3 @@ export function Tabs({
     </TabsPrimitive.Root>
   )
 }
-
-/** A tab of `StackedTabs`: the same shape as `TabItem`. */
-export type StackedTabItem = TabItem
-
-export interface StackedTabsProps extends Omit<
-  TabsProps,
-  "items" | "orientation" | "narrow" | "variant" | "scrollable"
-> {
-  items: StackedTabItem[]
-  /** What the tab list becomes in narrow containers: a `select` (default) or a horizontal `scroll`er. */
-  mobile?: "select" | "scroll"
-}
-
-/** `Tabs` with `orientation="vertical"` and `narrow` (default `"select"`): settings-style vertical tabs. */
-export function StackedTabs({ mobile = "select", ...props }: StackedTabsProps) {
-  return <Tabs {...props} orientation="vertical" narrow={mobile} />
-}

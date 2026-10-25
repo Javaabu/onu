@@ -5,17 +5,16 @@ import {
   Callout,
   Card,
   Checkbox,
-  DependentSelect,
   DescriptionList,
   FileInput,
   FormErrorsProvider,
   FormField,
   FormGroup,
   LinkButton,
-  Notice,
   PageTitle,
   PhoneInput,
   RadioGroup,
+  SearchableSelect,
   Select,
   TextInput,
   ThaanaInput,
@@ -216,12 +215,12 @@ export default function ApplicationWizardPage() {
             <Select options={atollOptions} value={values.atoll} onValueChange={(v) => set("atoll", v)} />
           </FormField>
           <FormField label={tr("Island", "ރަށް")} name="island" required>
-            <DependentSelect
+            <SearchableSelect
               parentValue={values.atoll}
               parentLabel={tr("an atoll", "އަތޮޅެއް")}
               options={islandOptions}
               value={values.island}
-              onValueChange={(v: unknown) => set("island", (v as string | null) ?? null)}
+              onValueChange={(v) => set("island", v)}
             />
           </FormField>
           <FormField label={tr("House and street", "ގޭގެ ނަމާއި މަގު")} name="house" required className="col-span-full">
@@ -297,10 +296,10 @@ export default function ApplicationWizardPage() {
               />
             </div>
           </FormGroup>
-          <Notice tone="info">
+          <Callout appearance="plain" variant="info">
             {tr("Fee for this application:", "މި އެޕްލިކޭޝަންގެ ފީ:")}{" "}
             <strong className="tabular-nums">{money(fee)}</strong>
-          </Notice>
+          </Callout>
         </div>
       ),
     },

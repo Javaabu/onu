@@ -5,8 +5,7 @@ import * as React from "react"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
-import type { ThaanaProp } from "../../thaana/use-thaana-field"
-import { normalizeOptions, hasExactMatch, type ChoiceOption, type ChoiceOptionInput } from "../choice/options"
+import { hasExactMatch } from "../choice/options"
 import { useFormFieldControl } from "../form/form-field"
 import {
   SuggestionList,
@@ -64,8 +63,6 @@ export interface AutocompleteProps extends Omit<
   /** Custom option rendering. `selected` is true for the suggestion whose value is the current text. */
   renderOption?: (option: NormalizedOption, state: { active: boolean; selected: boolean }) => React.ReactNode
   classNames?: TextInputProps["classNames"] & { list?: string; option?: string }
-  /** @internal Root `data-slot`, for presets. */
-  "data-slot"?: string
 }
 
 /**
@@ -99,7 +96,6 @@ export function Autocomplete({
   onFocus,
   onBlur,
   ref,
-  "data-slot": slot = "autocomplete",
   ...props
 }: AutocompleteProps) {
   const { t, locale } = useTranslation()
@@ -183,7 +179,7 @@ export function Autocomplete({
     <SuggestionList
       anchorRef={anchorRef}
       anchor={
-        <div ref={anchorRef} data-slot={slot} className={cn("w-full", classNames?.root)}>
+        <div ref={anchorRef} data-slot="autocomplete" className={cn("w-full", classNames?.root)}>
           <TextInput
             ref={merged}
             autoComplete="off"
@@ -247,72 +243,6 @@ export function Autocomplete({
       dir={props.thaana ? "rtl" : undefined}
       lang={props.thaana ? "dv" : undefined}
       classNames={{ list: classNames?.list, option: classNames?.option }}
-    />
-  )
-}
-
-export interface EditableSelectProps extends Omit<
-  React.ComponentProps<"input">,
-  "value" | "defaultValue" | "onChange" | "onSelect" | "size" | "type" | "role" | "list"
-> {
-  /** Suggestions. The user may also type anything else. */
-  options: ReadonlyArray<ChoiceOptionInput>
-  /** The text in the field. */
-  value?: string
-  defaultValue?: string
-  /** Called as the user types or picks a suggestion (`option` is the suggestion, or `null` for custom text). */
-  onValueChange?: (value: string, option: ChoiceOption | null) => void
-  /** Type Thaana from a Latin keyboard (R13.3). */
-  thaana?: ThaanaProp
-  /** Show a Thaana/Latin toggle when `thaana` is on. */
-  thaanaToggle?: boolean
-  /** Offer "Use “x”" for text that matches no suggestion. Default `true`. */
-  showCustomOption?: boolean
-  open?: boolean
-  defaultOpen?: boolean
-  onOpenChange?: (open: boolean) => void
-  classNames?: { root?: string; input?: string; content?: string; list?: string; item?: string }
-}
-
-/**
- * `Autocomplete` with `showToggleButton`, `showCustomOption` and `autoHighlight`,
- * taking `ChoiceOption`s: a combobox that accepts custom values. Picking an
- * option sets the text to its label.
- */
-export function EditableSelect({
-  options,
-  onValueChange,
-  showCustomOption = true,
-  className,
-  classNames,
-  ...props
-}: EditableSelectProps) {
-  const { t } = useTranslation()
-  const normalized = React.useMemo(() => normalizeOptions(options), [options])
-  const byLabel = React.useMemo(() => new Map(normalized.map((o) => [o.label, o])), [normalized])
-  const suggestions = React.useMemo(() => normalized.map((o) => ({ ...o, value: o.label })), [normalized])
-  return (
-    <Autocomplete
-      {...props}
-      data-slot="editable-select"
-      suggestions={suggestions}
-      onValueChange={(value, option) => onValueChange?.(value, option ? (byLabel.get(option.value) ?? null) : null)}
-      showToggleButton
-      showCustomOption={showCustomOption}
-      autoHighlight
-      emptyMessage={(query) => (query ? t("common.noResultsFor", { query }) : t("choice.noOptions"))}
-      renderOption={(option, { selected }) => (
-        <span className="gap-2 flex items-center">
-          <span className="truncate">{option.label}</span>
-          {selected ? <Icon name="check" className="size-4 ms-auto" /> : null}
-        </span>
-      )}
-      className={cn("touch:min-h-11", classNames?.root, className)}
-      classNames={{
-        input: classNames?.input,
-        list: cn(classNames?.content, classNames?.list),
-        option: classNames?.item,
-      }}
     />
   )
 }

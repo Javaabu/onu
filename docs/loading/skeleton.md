@@ -41,8 +41,6 @@ function ProfileForm({ user, loading }: Props) {
 
 Checkboxes and switches keep their label-beside-control shape in both layouts (R3.34). Inline layout falls back to stacked in narrow containers, like `FormField`. Controls are 44px tall on touch screens, matching the real inputs.
 
-`PlaceholderInput` is the same component under its older name, with `data-slot="placeholder-input"`. Its `label` is a boolean (show the label shape, like `showLabel`) and its screen-reader text is `srLabel`.
-
 ## Props
 
 ### SkeletonText
@@ -86,16 +84,7 @@ The table is a container (`@container/skeleton-table`): in narrow containers onl
 | `labelLayout` | `'stacked' \| 'inline'`                                       | form / provider | Label layout, like `FormField` |
 | `classNames`  | `{ label, control, help }`                                    |                 | Classes for each part          |
 
-### PlaceholderInput
-
-Takes the `SkeletonField` props, with these in place of `showLabel` and `label`:
-
-| Prop      | Type      | Default    | Description              |
-| --------- | --------- | ---------- | ------------------------ |
-| `label`   | `boolean` | `true`     | Show a label placeholder |
-| `srLabel` | `string`  | "Loading…" | Screen-reader text       |
-
-All the presets accept `label` (screen-reader text, default "Loading…"; `srLabel` on `PlaceholderInput`), `className` and other `<div>` props.
+All the presets accept `label` (screen-reader text, default "Loading…"), `className` and other `<div>` props.
 
 ## Accessibility
 

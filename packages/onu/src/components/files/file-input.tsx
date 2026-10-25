@@ -256,13 +256,3 @@ export function FileInput({
     </div>
   )
 }
-
-export interface MultipleFileInputProps extends Omit<FileInputProps, "multiple" | "append" | "showLimits"> {
-  /** Show a hint with the limits (`Up to 5 files, 10 MB each`). Default `true`. */
-  showLimits?: boolean
-}
-
-/** `FileInput` with `append` and `showLimits`: picks several files, adding to the selection each time. */
-export function MultipleFileInput({ showLimits = true, ...props }: MultipleFileInputProps) {
-  return <FileInput {...props} append showLimits={showLimits} />
-}

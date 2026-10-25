@@ -34,31 +34,17 @@ Options are strings or `{ value, label?, description?, disabled?, keywords? }`, 
 
 `showToggleButton` adds a chevron button that opens the full list (not just the matches for the current text). `showCustomOption` puts "Use “…”" first when the typed text matches no suggestion exactly, and `autoHighlight` highlights the first row as the list opens or filters, so Enter picks it (or keeps the typed text). `emptyMessage` is shown when nothing matches, instead of closing the list.
 
-`EditableSelect` is `Autocomplete` with `showToggleButton`, `showCustomOption` and `autoHighlight` on, taking `options` (`ChoiceOption`s or strings). Picking an option sets the text to its **label**, and `onValueChange(value, option)` gets the original option, or `null` for typed text. The picked option has a check mark; an empty list says "No results for “…”" (or "No options").
+Together they make a field where people pick from a list or type their own value. Picking an option writes its `value`; to write the label of `ChoiceOption`s instead, map it into `value`.
 
 ```tsx
-import { EditableSelect } from "@javaabu/onu"
+<Autocomplete suggestions={["Director", "Deputy Director"]} showToggleButton showCustomOption autoHighlight placeholder="Job title" />
+<Autocomplete suggestions={dhivehiTitles} showToggleButton showCustomOption autoHighlight thaana thaanaToggle />
 
-<EditableSelect options={["Director", "Deputy Director"]} placeholder="Job title" />
-<EditableSelect options={dhivehiTitles} thaana thaanaToggle />
-
-// The same with Autocomplete
-<Autocomplete suggestions={["Director", "Deputy Director"]} showToggleButton showCustomOption autoHighlight />
+// ChoiceOptions: write the label
+<Autocomplete suggestions={titles.map((o) => ({ ...o, value: o.label }))} showToggleButton showCustomOption autoHighlight />
 ```
 
-`EditableSelect` props:
-
-| Prop                                    | Type                                   | Default | Description                                              |
-| --------------------------------------- | -------------------------------------- | ------- | -------------------------------------------------------- |
-| `options`                               | `(ChoiceOption \| string)[]`           |         | Suggestions                                              |
-| `value` / `defaultValue`                | `string`                               | `""`    | The text in the field                                    |
-| `onValueChange`                         | `(value, option \| null) => void`      |         | `option` is the picked suggestion, `null` for typed text |
-| `thaana` / `thaanaToggle`               | `ThaanaProp` / `boolean`               |         | Thaana keyboard and toggle                               |
-| `showCustomOption`                      | `boolean`                              | `true`  | Offer "Use “…”"                                          |
-| `open` / `defaultOpen` / `onOpenChange` |                                        |         | Controlled list state                                    |
-| `classNames`                            | `{ root, input, content, list, item }` |         | `root` and `className` go on the input group             |
-
-Other `<input>` props and `ref` go to the input. The toggle button is named "Show options", is skipped by Tab (`tabIndex={-1}`) and does not take focus, so focus stays in the input.
+The toggle button is named "Show options", is skipped by Tab (`tabIndex={-1}`) and does not take focus, so focus stays in the input.
 
 ## Props
 

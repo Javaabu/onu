@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from "vitest"
 import { makeUsers, type User } from "../../../test/listing-fixtures"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { EmptyState } from "./empty-state"
-import { GridView, ListView } from "./list-view"
+import { ListView } from "./list-view"
 import { propagateTreeSelection, TreeView, type TreeNode } from "./tree-view"
 
 // Interaction-heavy tests: allow for slow CI machines and coverage instrumentation.
@@ -14,13 +14,11 @@ vi.setConfig({ testTimeout: 30_000 })
 
 const users = makeUsers(3)
 
-describe.each([
-  ["ListView", ListView],
-  ["GridView", GridView],
-] as const)("%s", (_, View) => {
+describe.each(["list", "grid"] as const)("ListView layout=%s", (layout) => {
   it("renders items with title, description, meta, media and actions", async () => {
     renderWithOnu(
-      <View
+      <ListView
+        layout={layout}
         aria-label="Users"
         items={users}
         title={(u: User) => u.name}
@@ -44,7 +42,8 @@ describe.each([
     const onSelectionChange = vi.fn()
     const onItemClick = vi.fn()
     renderWithOnu(
-      <View
+      <ListView
+        layout={layout}
         items={users}
         title={(u: User) => u.name}
         selection={["2"]}
@@ -65,7 +64,8 @@ describe.each([
   it("follows the link when the item is clicked", async () => {
     const clicked = vi.fn((e: Event) => e.preventDefault())
     renderWithOnu(
-      <View
+      <ListView
+        layout={layout}
         items={users.slice(0, 1)}
         title={(u: User) => u.name}
         description={(u: User) => u.email}
@@ -78,12 +78,13 @@ describe.each([
   })
 
   it("shows loading skeletons, the empty state and custom items", () => {
-    const { rerender } = renderWithOnu(<View items={[]} title={(u: User) => u.name} loading />)
+    const { rerender } = renderWithOnu(<ListView layout={layout} items={[]} title={(u: User) => u.name} loading />)
     expect(screen.getByRole("list")).toHaveAttribute("aria-busy", "true")
-    rerender(<View items={[]} title={(u: User) => u.name} empty={<EmptyState />} />)
+    rerender(<ListView layout={layout} items={[]} title={(u: User) => u.name} empty={<EmptyState />} />)
     expect(screen.getByText("No records yet")).toBeInTheDocument()
     rerender(
-      <View
+      <ListView
+        layout={layout}
         items={[{ id: "x", label: 7 }]}
         title={(i: { label: number }) => i.label}
         renderItem={(i, parts) => <div data-testid="custom">{parts.title}</div>}
@@ -95,7 +96,13 @@ describe.each([
 
   it.each(directions)("works in %s with Dhivehi", async (dir) => {
     renderWithOnu(
-      <View items={users.slice(0, 1)} title={() => "ޖަމީލާ"} onSelectionChange={vi.fn()} getName={() => "ޖަމީލާ"} />,
+      <ListView
+        layout={layout}
+        items={users.slice(0, 1)}
+        title={() => "ޖަމީލާ"}
+        onSelectionChange={vi.fn()}
+        getName={() => "ޖަމީލާ"}
+      />,
       {
         dir,
         locale: "dv",

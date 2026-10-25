@@ -1,5 +1,5 @@
 import * as React from "react"
-import { CopyInput, FormField, ServerErrorPage, toast } from "@javaabu/onu"
+import { FormField, SensitiveInput, ServerErrorPage, toast } from "@javaabu/onu"
 
 import { useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -39,7 +39,7 @@ export default function ServerErrorSamplePage() {
           label={tr("Error reference", "މައްސަލައިގެ ރެފަރެންސް")}
           help={tr("Quote this when you call 1500.", "1500 އަށް ގުޅުއްވާއިރު މި ނަންބަރު ދެއްވާ.")}
         >
-          <CopyInput value={REFERENCE} dir="ltr" mono />
+          <SensitiveInput masked={false} value={REFERENCE} dir="ltr" />
         </FormField>
       </div>
     </SystemShell>

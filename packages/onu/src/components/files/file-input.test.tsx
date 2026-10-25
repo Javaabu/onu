@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from "vitest"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { FormField } from "../form/form-field"
 import { FileIcon } from "./file-icon"
-import { FileInput, MultipleFileInput } from "./file-input"
+import { FileInput } from "./file-input"
 
 // axe and user-event are slow on a busy machine.
 vi.setConfig({ testTimeout: 20_000 })
@@ -131,11 +131,11 @@ describe("FileInput", () => {
   })
 })
 
-describe("MultipleFileInput", () => {
+describe("FileInput append and showLimits", () => {
   it("adds to the selection, skips duplicates and enforces maxFiles", async () => {
     const onChange = vi.fn()
     const { container } = renderWithOnu(
-      <MultipleFileInput aria-label="Documents" maxFiles={2} maxSize={1024 * 1024} onChange={onChange} />,
+      <FileInput append showLimits aria-label="Documents" maxFiles={2} maxSize={1024 * 1024} onChange={onChange} />,
     )
     expect(screen.getByText("Up to 2 files · 1 MB max each")).toBeInTheDocument()
     expect(screen.getByText("0 of 2")).toBeInTheDocument()
@@ -154,7 +154,7 @@ describe("MultipleFileInput", () => {
     await expectNoA11yViolations()
   })
 
-  it("is FileInput with append and showLimits", async () => {
+  it("stops picking once maxFiles is reached", async () => {
     const { container } = renderWithOnu(<FileInput aria-label="Documents" append showLimits maxFiles={1} />)
     expect(screen.getByText("0 of 1")).toBeInTheDocument()
     await user().upload(input(container), file("a.pdf"))
@@ -162,8 +162,8 @@ describe("MultipleFileInput", () => {
     expect(input(container)).toBeDisabled()
   })
 
-  it("can hide the limits", () => {
-    renderWithOnu(<MultipleFileInput aria-label="Documents" showLimits={false} maxFiles={3} />)
+  it("hides the limits without showLimits", () => {
+    renderWithOnu(<FileInput append aria-label="Documents" maxFiles={3} />)
     expect(screen.queryByText("0 of 3")).not.toBeInTheDocument()
   })
 })

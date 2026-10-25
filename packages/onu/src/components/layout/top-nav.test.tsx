@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
-import { MegaMenu, TopNav, type MegaMenuItem, type TopNavItem } from "./top-nav"
+import { TopNav, type TopNavItem } from "./top-nav"
 import type { NavItem } from "./_nav"
 
 // Overlays and axe are slow under parallel coverage runs.
@@ -76,7 +76,7 @@ describe("TopNav", () => {
   })
 })
 
-const megaItems: MegaMenuItem[] = [
+const megaItems: TopNavItem[] = [
   {
     label: "Services",
     columns: [
@@ -95,12 +95,12 @@ const megaItems: MegaMenuItem[] = [
   { label: "News", href: "/news" },
 ]
 
-describe("MegaMenu", () => {
+describe("TopNav mega menu", () => {
   it("opens a multi-column panel on desktop", async () => {
     renderWithOnu(
-      <MegaMenu items={megaItems} className="extra" classNames={{ panel: "pnl", column: "col", link: "lnk" }} />,
+      <TopNav items={megaItems} className="extra" classNames={{ panel: "pnl", column: "col", panelLink: "lnk" }} />,
     )
-    expect(document.querySelector("[data-slot=mega-menu]")).toHaveClass("extra")
+    expect(document.querySelector("[data-slot=top-nav]")).toHaveClass("extra")
     expect(screen.getByRole("navigation", { name: "Main" })).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "News" })).toHaveAttribute("href", "/news")
     const trigger = screen.getByRole("button", { name: "Services" })
@@ -118,7 +118,7 @@ describe("MegaMenu", () => {
   })
 
   it("collapses to a drawer with a section per item and per titled column on phones", async () => {
-    renderWithOnu(<MegaMenu items={megaItems} logo={<span>gov.mv</span>} />)
+    renderWithOnu(<TopNav items={megaItems} logo={<span>gov.mv</span>} />)
     await userEvent.click(screen.getByRole("button", { name: "Open menu" }))
     const dialog = await screen.findByRole("dialog", { name: "Menu" })
     expect(within(dialog).getByText("gov.mv")).toBeInTheDocument()
@@ -134,7 +134,7 @@ describe("MegaMenu", () => {
   })
 
   it("closes the drawer with the close button and from plain links", async () => {
-    renderWithOnu(<MegaMenu items={megaItems} mobileSide="start" />)
+    renderWithOnu(<TopNav items={megaItems} mobileSide="start" />)
     const open = screen.getByRole("button", { name: "Open menu" })
     await userEvent.click(open)
     await userEvent.click(within(await screen.findByRole("dialog")).getByRole("button", { name: "Close menu" }))
@@ -147,7 +147,7 @@ describe("MegaMenu", () => {
 
   it.each(directions)("translates in %s", async (dir) => {
     renderWithOnu(
-      <MegaMenu items={[{ label: "ޚިދުމަތްތައް", columns: [{ links: [{ label: "ކާޑު", href: "/c" }] }] }]} />,
+      <TopNav items={[{ label: "ޚިދުމަތްތައް", columns: [{ links: [{ label: "ކާޑު", href: "/c" }] }] }]} />,
       {
         locale: "dv",
         dir,

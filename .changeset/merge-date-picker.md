@@ -2,4 +2,4 @@
 "@javaabu/onu": minor
 ---
 
-`DatePicker` takes a `mode`: `"single"` (default), `"multiple"`, `"week"`, `"month"` or `"year"`, with `value` and `onChange` typed for each. `MultipleDatePicker`, `WeekPicker`, `MonthPicker` and `YearPicker` remain as presets; their docs and demos are now part of DatePicker. Week mode now accepts `disabledDates`. `DatePickerProps` is now a union; the single-date props are `SingleDatePickerProps`.
+`DatePicker` takes a `mode`: `"single"` (default), `"multiple"`, `"week"`, `"month"` or `"year"`, with `value` and `onChange` typed for each. `MultipleDatePicker`, `WeekPicker`, `MonthPicker` and `YearPicker` are removed: use `<DatePicker mode="multiple">`, `mode="week"`, `mode="month"` or `mode="year"`. Week mode now accepts `disabledDates`. `DatePickerProps` is now a union of `DatePickerSingleProps`, `DatePickerMultipleProps`, `DatePickerWeekProps` and `DatePickerPeriodProps` (month and year).

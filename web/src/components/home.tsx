@@ -29,7 +29,7 @@ import {
   cn,
   type FeatureItem,
 } from "@javaabu/onu"
-import { BarChart, StatTile, StatTiles } from "@javaabu/onu/charts"
+import { CategoryChart, StatTile, StatTiles } from "@javaabu/onu/charts"
 
 import { arrivalsByMonth, trend } from "../showcase/charts/_data"
 import { introduction, navItems, navSections } from "../registry"
@@ -213,7 +213,8 @@ function ChartCard() {
   return (
     <Card>
       <CardContent>
-        <BarChart
+        <CategoryChart
+          variant="bar"
           title="Tourist arrivals, 2025"
           description="Monthly arrivals against target."
           data={arrivalsByMonth}

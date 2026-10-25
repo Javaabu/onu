@@ -4,7 +4,6 @@ import {
   Callout,
   Card,
   Checkbox,
-  CopyInput,
   DescriptionList,
   EmailInput,
   FileInput,
@@ -15,6 +14,7 @@ import {
   Icon,
   PhoneInput,
   Select,
+  SensitiveInput,
   ShareButtons,
   SubmitButton,
   Tag,
@@ -134,7 +134,9 @@ export default function JobDetailPage() {
                         "14 ދުވަހުގެ ތެރޭގައި ޝޯޓްލިސްޓްވާ ފަރާތްތަކާ ގުޅާނެ. ރެފަރެންސް ނަންބަރު ރައްކާކުރައްވާ.",
                       )}
                     </p>
-                    <CopyInput
+                    <SensitiveInput
+                      masked={false}
+                      mono={false}
                       value={reference}
                       aria-label={tr("Reference number", "ރެފަރެންސް ނަންބަރު")}
                       className="max-w-xs"

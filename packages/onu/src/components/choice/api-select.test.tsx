@@ -15,8 +15,8 @@ import {
   parseApiResponse,
   valueUrlFor,
 } from "./api-options"
-import { ApiSelect, DependentSelect, type DependentSelectProps } from "./api-select"
-import { SearchableSelect } from "./searchable-select"
+import { ApiSelect, type ApiSelectProps } from "./api-select"
+import { SearchableSelect, type SearchableSelectProps } from "./searchable-select"
 import { Select } from "./select"
 
 // Interaction-heavy tests: allow for slow, shared CI machines.
@@ -462,8 +462,14 @@ const islandsByAtoll = {
   ],
 }
 
-function Form(props: Partial<DependentSelectProps> & { initialAtoll?: string }) {
-  const { initialAtoll = "", ...rest } = props
+/** An atoll select and a dependent island field: `SearchableSelect`, or `ApiSelect` with the props `api` returns. */
+function Form(
+  props: Partial<SearchableSelectProps> & {
+    initialAtoll?: string
+    api?: (atoll: string) => Partial<ApiSelectProps>
+  },
+) {
+  const { initialAtoll = "", api, ...rest } = props
   const [atoll, setAtoll] = React.useState(initialAtoll)
   return (
     <>
@@ -479,18 +485,22 @@ function Form(props: Partial<DependentSelectProps> & { initialAtoll?: string }) 
       <button type="button" onClick={() => setAtoll("S")}>
         Pick Seenu
       </button>
-      <DependentSelect
-        aria-label="Island"
-        parentValue={atoll}
-        parentLabel="atoll"
-        options={islandsByAtoll}
-        {...(rest as object)}
-      />
+      {api ? (
+        <ApiSelect aria-label="Island" parentValue={atoll} parentLabel="atoll" {...(api(atoll) as object)} />
+      ) : (
+        <SearchableSelect
+          aria-label="Island"
+          parentValue={atoll}
+          parentLabel="atoll"
+          options={islandsByAtoll}
+          {...(rest as object)}
+        />
+      )}
     </>
   )
 }
 
-describe("DependentSelect", () => {
+describe("parentValue", () => {
   it("is disabled with a hint until the parent has a value", () => {
     renderWithOnu(<Form />)
     const island = screen.getByRole("combobox", { name: "Island" })
@@ -523,7 +533,7 @@ describe("DependentSelect", () => {
           <button type="button" onClick={() => setAtoll("S")}>
             Change
           </button>
-          <DependentSelect
+          <SearchableSelect
             aria-label="Islands"
             parentValue={atoll}
             options={(a) => islandsByAtoll[a as "K" | "S"]}
@@ -544,34 +554,40 @@ describe("DependentSelect", () => {
     expect(screen.queryByRole("button", { name: "Remove Malé" })).not.toBeInTheDocument()
   })
 
-  it("loads options with loadOptions per parent (shared data layer)", async () => {
-    const loadOptions = vi.fn(async (atoll: string) => islandsByAtoll[atoll as "K" | "S"])
+  it("loads options per parent with an ApiSelect fetcher (shared data layer)", async () => {
+    const loadIslands = vi.fn(async (atoll: string, _query: string, _ctx: { page: number }) => ({
+      data: islandsByAtoll[atoll as "K" | "S"],
+    }))
+    const client = new QueryClient()
     renderWithOnu(
       <Form
         initialAtoll="K"
-        options={undefined}
-        loadOptions={loadOptions}
-        debounce={0}
-        queryClient={new QueryClient()}
+        api={(atoll) => ({
+          fetcher: (query, ctx) => loadIslands(atoll, query, ctx),
+          debounce: 0,
+          queryClient: client,
+        })}
       />,
     )
     await userEvent.click(screen.getByRole("combobox", { name: "Island" }))
     expect(await screen.findByRole("option", { name: "Malé" })).toBeInTheDocument()
-    expect(loadOptions).toHaveBeenCalledWith("K", expect.objectContaining({ query: "", page: 1 }))
+    expect(loadIslands).toHaveBeenCalledWith("K", "", expect.objectContaining({ page: 1 }))
   })
 
   it("loads options from a url with the parent param", async () => {
     const fetchMock = vi.fn(async () => new Response(JSON.stringify({ data: [{ id: 9, name: "Thinadhoo" }] })))
     vi.stubGlobal("fetch", fetchMock)
+    const client = new QueryClient()
     renderWithOnu(
       <Form
         initialAtoll="S"
-        options={undefined}
-        url="/api/islands"
-        parentParam="atoll"
-        params={{ active: 1 }}
-        debounce={0}
-        queryClient={new QueryClient()}
+        api={() => ({
+          url: "/api/islands",
+          parentParam: "atoll",
+          params: { active: 1 },
+          debounce: 0,
+          queryClient: client,
+        })}
       />,
     )
     await userEvent.click(screen.getByRole("combobox", { name: "Island" }))
@@ -581,14 +597,18 @@ describe("DependentSelect", () => {
   })
 
   it.each(directions)("passes axe in %s with Dhivehi strings", async (dir) => {
-    renderWithOnu(<DependentSelect aria-label="ރަށް" parentValue={null} parentLabel="އަތޮޅު" />, { locale: "dv", dir })
+    renderWithOnu(
+      <SearchableSelect aria-label="ރަށް" parentValue={null} parentLabel="އަތޮޅު" options={islandsByAtoll} />,
+      {
+        locale: "dv",
+        dir,
+      },
+    )
     expect(screen.getByRole("combobox")).toHaveTextContent("ފުރަތަމަ އަތޮޅު އިޚްތިޔާރު ކުރައްވާ")
     await expectNoA11yViolations()
   })
-})
 
-describe("parentValue", () => {
-  it("makes SearchableSelect a dependent field without the DependentSelect preset", async () => {
+  it("enables SearchableSelect once the parent has a value", async () => {
     const onValueChange = vi.fn()
     const { rerender } = renderWithOnu(
       <SearchableSelect

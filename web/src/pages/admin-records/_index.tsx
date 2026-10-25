@@ -4,17 +4,18 @@ import {
   applyListingState,
   BulkActionBar,
   EmptyState,
-  GridView,
   Icon,
   LinkButton,
   ListingPage,
   ListView,
+  SegmentedControl,
   Select,
   StatusBadge,
   toast,
   useListingState,
+  useListingViewOptions,
   UserAvatar,
-  ViewSwitcher,
+  useTranslation,
   type BulkAction,
   type ListingView,
   type RecordAction,
@@ -49,9 +50,14 @@ const VIEW_ROUTES: Record<string, string> = {
 /** Switches between the four index pages. */
 export function ViewNav({ value }: { value: ListingView }) {
   const navigate = useNavigate()
+  const { t } = useTranslation()
+  const views = useListingViewOptions()
   return (
-    <ViewSwitcher
-      views={["table", "list", "grid", "kanban"]}
+    <SegmentedControl
+      iconOnly
+      size="sm"
+      aria-label={t("listing.view")}
+      options={views}
       value={value}
       onValueChange={(view) => {
         const to = VIEW_ROUTES[view]
@@ -248,7 +254,8 @@ export function CollectionIndex({ view }: { view: "list" | "grid" }) {
               )}
             />
           ) : (
-            <GridView
+            <ListView
+              layout="grid"
               {...shared}
               minItemWidth="15rem"
               description={(a) => <span className="text-xs font-mono">{a.reference}</span>}

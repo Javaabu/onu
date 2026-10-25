@@ -1,6 +1,6 @@
 import * as React from "react"
 import { ActivityFeed, Card, Checkbox, ConditionalLink, LinkButton, PageTitle, StatusBadge, toast } from "@javaabu/onu"
-import { BarChart, PieChart, StatTile, StatTiles, TimeSeriesChart } from "@javaabu/onu/charts"
+import { CategoryChart, PieChart, StatTile, StatTiles, TimeSeriesChart } from "@javaabu/onu/charts"
 
 import { useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -147,7 +147,8 @@ export default function DashboardPage() {
 
         <div className="gap-6 xl:grid-cols-3 grid">
           <div className="min-w-0 p-4 rounded-xl border bg-card">
-            <BarChart
+            <CategoryChart
+              variant="bar"
               title={tr("Fees by service", "ޚިދުމަތުން ލިބުނު ފީ")}
               description={tr("Last 30 days", "ފަހުގެ 30 ދުވަސް")}
               data={byService}

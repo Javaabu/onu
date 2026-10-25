@@ -2,4 +2,4 @@
 "@javaabu/onu": minor
 ---
 
-`CommentThread` takes `variant` (`"thread"` or a flat, bordered `"list"`), `replies` (show Reply buttons, default on), `composerPosition` (`"bottom"` or `"top"`) and `labels` to change its strings. `Notes` remains as a preset (list, no replies, box on top, note strings, and anyone may delete when `currentUserId` is unset); its docs and demo are now part of CommentThread. `NoteData` and `NotesProps` are still exported.
+`CommentThread` takes `variant` (`"thread"` or `"list"`), `replies` (show Reply buttons), `composerPosition` (`"bottom"` or `"top"`) and `labels` to change its strings. `variant="list"` is a flat, bordered list of internal notes: note strings, no Reply buttons and the box on top by default. `Notes`, `NotesProps` and `NoteData` are removed: use `<CommentThread variant="list" comments={…}>` with `CommentData` (author `id` is required). `onAdd` gets `(body, null)`, and as in the thread only the author may delete unless you pass `canDelete`. The `notes` and `note` data-slots are now `comment-thread` and `comment`.

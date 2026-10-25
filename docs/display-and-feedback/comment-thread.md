@@ -3,7 +3,7 @@ title: CommentThread
 sidebar_position: 19
 ---
 
-A discussion with nested replies. People can edit and delete their own comments, and the composer can type Thaana (`thaana` prop, R13.3). Mentions are not built in. The same component makes a flat list of internal notes (`Notes`, below).
+A discussion with nested replies. People can edit and delete their own comments, and the composer can type Thaana (`thaana` prop, R13.3). Mentions are not built in. The same component makes a flat list of internal notes (`variant="list"`, below).
 
 ```tsx
 import { CommentThread } from "@javaabu/onu"
@@ -21,14 +21,13 @@ import { CommentThread } from "@javaabu/onu"
 
 ## Notes
 
-With `variant="list"` and `replies={false}` the thread is a flat, bordered list: internal notes on a record, who wrote what and when, with add and delete. `composerPosition="top"` puts the box above the list, and `labels` changes the strings.
-
-`Notes` is that preset, with the note strings ("Notes", "Add note", "No notes yet") and the box on top. It takes `notes` instead of `comments`, and `onAdd(body)` gets no parent id. Unlike the thread, anyone may delete a note when `currentUserId` is unset; with `currentUserId`, only the author.
+With `variant="list"` the thread is a flat, bordered list: internal notes on a record, who wrote what and when, with add and delete. It uses the note strings ("Notes", "Add note", "No notes yet"), hides Reply (`replies` defaults to `false`) and puts the box above the list (`composerPosition` defaults to `"top"`). `labels` changes the strings.
 
 ```tsx
-import { Notes } from "@javaabu/onu"
-;<Notes
-  notes={record.notes}
+import { CommentThread } from "@javaabu/onu"
+;<CommentThread
+  variant="list"
+  comments={record.notes}
   currentUserId={user.id}
   thaana
   onAdd={(body) => api.post(`/records/${id}/notes`, { body })}
@@ -36,7 +35,7 @@ import { Notes } from "@javaabu/onu"
 />
 ```
 
-`NoteData`: `{ id, author: { id?, name, avatar? }, body, createdAt }`.
+As in the thread, only the author may delete a note; pass `canDelete={() => true}` to let anyone delete.
 
 ## Props
 
@@ -49,37 +48,22 @@ import { Notes } from "@javaabu/onu"
 | `onDelete`         | `(id) => void \| Promise`                                   |            | Enables Delete (asks for confirmation)           |
 | `canEdit`          | `(comment) => boolean`                                      | own        | Who may edit                                     |
 | `canDelete`        | `(comment) => boolean`                                      | own        | Who may delete                                   |
-| `replies`          | `boolean`                                                   | `true`     | Show Reply buttons (with `onAdd`)                |
-| `variant`          | `'thread' \| 'list'`                                        | `'thread'` | Articles with nested replies, or a bordered list |
-| `composerPosition` | `'top' \| 'bottom'`                                         | `'bottom'` | Where the composer sits                          |
+| `replies`          | `boolean`                                                   | `true`     | Show Reply buttons; `false` for `list`           |
+| `variant`          | `'thread' \| 'list'`                                        | `'thread'` | Articles with nested replies, or a list of notes |
+| `composerPosition` | `'top' \| 'bottom'`                                         | `'bottom'` | Where the composer sits; `'top'` for `list`      |
 | `maxDepth`         | `number`                                                    | `3`        | Indented levels; deeper replies line up          |
 | `thaana`           | `boolean \| ThaanaOptions`                                  |            | Thaana typing in the composer (with a toggle)    |
-| `title`            | `ReactNode \| null`                                         | "Comments" | Heading; `null` hides it                         |
+| `title`            | `ReactNode \| null`                                         | "Comments" | Heading ("Notes" for `list`); `null` hides it    |
 | `labels`           | `{ title, empty, composer, submit, delete, deleteConfirm }` |            | Override the built-in strings                    |
 | `now`              | `Date`                                                      | live       | Reference time for relative dates                |
 | `classNames`       | `{ list, comment, body, composer }`                         |            | Classes for each part                            |
-
-### Notes
-
-| Prop               | Type                        | Default | Description                                                          |
-| ------------------ | --------------------------- | ------- | -------------------------------------------------------------------- |
-| `notes`            | `NoteData[]`                |         | Notes, newest first                                                  |
-| `onAdd`            | `(body) => void \| Promise` |         | Shows the add-note box                                               |
-| `onDelete`         | `(id) => void \| Promise`   |         | Delete (after confirmation)                                          |
-| `canDelete`        | `(note) => boolean`         |         | Who may delete; default everyone, or the author with `currentUserId` |
-| `currentUserId`    | `string \| number`          |         | Restricts delete to the author                                       |
-| `thaana`           | `boolean \| ThaanaOptions`  |         | Thaana typing in the note box                                        |
-| `composerPosition` | `'top' \| 'bottom'`         | `'top'` | Where the box sits                                                   |
-| `title`            | `ReactNode \| null`         | "Notes" | Heading; `null` hides it                                             |
-| `now`              | `Date`                      | live    | Reference time                                                       |
-| `classNames`       | `{ list, note, composer }`  |         | Classes for each part                                                |
 
 ## Accessibility
 
 - Each comment is an `<article>` named after its author; replies are nested lists.
 - Reply opens a composer and moves focus into it; <kbd>Escape</kbd> or Cancel returns focus to the Reply button. Edit works the same way.
 - Delete asks for confirmation in an alert dialog; focus returns to the delete button.
-- The list variant (and `Notes`) is a plain list in a labelled `<section>`; its items are not articles.
+- The list variant is a plain list in a labelled `<section>`; its items are not articles.
 
 | Key                                           | Action                              |
 | --------------------------------------------- | ----------------------------------- |

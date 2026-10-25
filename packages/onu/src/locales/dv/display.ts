@@ -117,7 +117,7 @@ export const display = {
   deleteCannotUndo: "މިކަން އަނބުރާ ނުގެނެވޭނެ.",
   noComments: "އަދި އެއްވެސް ކޮމެންޓެއް ނެތް",
   submitHint: "ފޮނުވުމަށް Ctrl+Enter ފިއްތަވާ",
-  // Notes
+  // Comment thread, variant="list"
   notes: "ނޯޓުތައް",
   addNote: "ނޯޓު އިތުރުކުރޭ",
   writeNote: "އިންޓަރނަލް ނޯޓެއް ލިޔުއްވާ…",

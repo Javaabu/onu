@@ -115,7 +115,7 @@ export const display = {
   deleteCannotUndo: "This can't be undone.",
   noComments: "No comments yet",
   submitHint: "Press Ctrl+Enter to send",
-  // Notes
+  // Comment thread, variant="list"
   notes: "Notes",
   addNote: "Add note",
   writeNote: "Add an internal note…",

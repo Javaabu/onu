@@ -3,13 +3,13 @@ import {
   applyListingState,
   Badge,
   Button,
-  GridView,
   Icon,
   ListingPage,
   ListView,
+  SegmentedControl,
   useListingState,
+  useListingViewOptions,
   useTranslation,
-  ViewSwitcher,
   type BulkAction,
 } from "@javaabu/onu"
 
@@ -35,12 +35,13 @@ export const meta = {
 }
 
 function UsersIndex() {
-  const { locale } = useTranslation()
+  const { locale, t } = useTranslation()
   const dv = locale.code === "dv"
   const [data, setData] = React.useState(people)
   const state = useListingState({ paramPrefix: "users_" })
   const { rows, total } = applyListingState(data, state, { filterFns: personFilterFns, locale: locale.code })
   const view = state.view ?? "table"
+  const viewOptions = useListingViewOptions(["table", "list", "grid"])
 
   const bulkActions: BulkAction<string>[] = [
     {
@@ -127,7 +128,16 @@ function UsersIndex() {
           },
         },
       ]}
-      toolbarEnd={<ViewSwitcher views={["table", "list", "grid"]} value={view} onValueChange={state.setView} />}
+      toolbarEnd={
+        <SegmentedControl
+          iconOnly
+          size="sm"
+          aria-label={t("listing.view")}
+          options={viewOptions}
+          value={view}
+          onValueChange={state.setView}
+        />
+      }
     >
       {view === "list" ? (
         <ListView
@@ -145,7 +155,8 @@ function UsersIndex() {
           onSelectionChange={state.setSelection}
         />
       ) : view === "grid" ? (
-        <GridView
+        <ListView
+          layout="grid"
           aria-label="Users"
           items={rows}
           title={name}

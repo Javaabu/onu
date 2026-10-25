@@ -36,7 +36,8 @@ interface DayGridProps {
   weekendDays?: number[]
 }
 
-export interface SingleDatePickerProps extends PickerFieldProps, DayGridProps {
+/** `DatePicker` props for `mode="single"` (the default). */
+export interface DatePickerSingleProps extends PickerFieldProps, DayGridProps {
   mode?: "single"
   /** Selected date (controlled). `null` is empty. */
   value?: Date | null
@@ -47,7 +48,9 @@ export interface SingleDatePickerProps extends PickerFieldProps, DayGridProps {
   showWeekNumber?: boolean
 }
 
-export interface MultipleDatePickerProps extends PickerFieldProps, DayGridProps {
+/** `DatePicker` props for `mode="multiple"`. */
+export interface DatePickerMultipleProps extends PickerFieldProps, DayGridProps {
+  mode: "multiple"
   /** Selected dates (controlled), kept in ascending order. */
   value?: Date[]
   defaultValue?: Date[]
@@ -60,7 +63,9 @@ export interface MultipleDatePickerProps extends PickerFieldProps, DayGridProps 
   maxSelected?: number
 }
 
-export interface WeekPickerProps extends PickerFieldProps, DayGridProps {
+/** `DatePicker` props for `mode="week"`. */
+export interface DatePickerWeekProps extends PickerFieldProps, DayGridProps {
+  mode: "week"
   /** First day of the selected week (controlled). `null` is empty. */
   value?: Date | null
   defaultValue?: Date | null
@@ -70,7 +75,9 @@ export interface WeekPickerProps extends PickerFieldProps, DayGridProps {
   formatWeek?: (start: Date, end: Date) => string
 }
 
-export interface MonthPickerProps extends PickerFieldProps {
+/** `DatePicker` props for `mode="month"` and `mode="year"`. */
+export interface DatePickerPeriodProps extends PickerFieldProps {
+  mode: "month" | "year"
   /** First day of the selected month (or year) (controlled). `null` is empty. */
   value?: Date | null
   defaultValue?: Date | null
@@ -82,14 +89,9 @@ export interface MonthPickerProps extends PickerFieldProps {
   max?: Date
 }
 
-export type YearPickerProps = MonthPickerProps
-
 /** `mode` picks what the field holds; `value` and `onChange` follow it. */
 export type DatePickerProps =
-  | SingleDatePickerProps
-  | (MultipleDatePickerProps & { mode: "multiple" })
-  | (WeekPickerProps & { mode: "week" })
-  | (MonthPickerProps & { mode: "month" | "year" })
+  DatePickerSingleProps | DatePickerMultipleProps | DatePickerWeekProps | DatePickerPeriodProps
 
 /**
  * A date field that opens a calendar (§25.1, §22). Popover on desktop, bottom
@@ -118,26 +120,6 @@ export function DatePicker(props: DatePickerProps) {
   }
 }
 
-/** `DatePicker` with `mode="multiple"`. */
-export function MultipleDatePicker(props: MultipleDatePickerProps) {
-  return <DatePicker {...props} mode="multiple" />
-}
-
-/** `DatePicker` with `mode="week"`. */
-export function WeekPicker(props: WeekPickerProps) {
-  return <DatePicker {...props} mode="week" />
-}
-
-/** `DatePicker` with `mode="month"`. */
-export function MonthPicker(props: MonthPickerProps) {
-  return <DatePicker {...props} mode="month" />
-}
-
-/** `DatePicker` with `mode="year"`. */
-export function YearPicker(props: YearPickerProps) {
-  return <DatePicker {...props} mode="year" />
-}
-
 function SingleDate({
   mode: _mode,
   value: valueProp,
@@ -153,7 +135,7 @@ function SingleDate({
   placeholder,
   today,
   ...props
-}: SingleDatePickerProps) {
+}: DatePickerSingleProps) {
   const { locale, t } = useOnu()
   const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
   const display = value ? formatDate(value, format ?? DEFAULT_DATE_FORMAT, locale.dateFns) : null
@@ -209,7 +191,7 @@ function MultipleDates({
   placeholder,
   today,
   ...props
-}: MultipleDatePickerProps & { mode: "multiple" }) {
+}: DatePickerMultipleProps) {
   const { locale, t } = useOnu()
   const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
   const count = value.length
@@ -266,7 +248,7 @@ function WeekDates({
   placeholder,
   today,
   ...props
-}: WeekPickerProps & { mode: "week" }) {
+}: DatePickerWeekProps) {
   const { locale, t } = useOnu()
   const weekStartsOn = weekStartsOnProp ?? locale.weekStartsOn
   const options = { weekStartsOn, locale: locale.dateFns }
@@ -339,7 +321,7 @@ function PeriodDates({
   placeholder,
   today,
   ...props
-}: MonthPickerProps & { mode: "month" | "year"; granularity: "month" | "year" }) {
+}: DatePickerPeriodProps & { granularity: "month" | "year" }) {
   const { locale, t } = useOnu()
   const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
   const month = granularity === "month"

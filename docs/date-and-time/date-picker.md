@@ -11,7 +11,7 @@ import { DatePicker } from "@javaabu/onu"
 ;<DatePicker aria-label="Date of birth" />
 ```
 
-`mode` sets what the field holds: one date (the default), [several dates](#several-dates), a [week](#weeks), or a [month or year](#months-and-years). `MultipleDatePicker`, `WeekPicker`, `MonthPicker` and `YearPicker` are presets with the mode fixed.
+`mode` sets what the field holds: one date (the default), [several dates](#several-dates), a [week](#weeks), or a [month or year](#months-and-years).
 
 ```tsx
 <DatePicker mode="multiple" maxSelected={5} />

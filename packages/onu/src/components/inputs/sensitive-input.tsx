@@ -29,7 +29,7 @@ export interface SensitiveInputProps extends Omit<
   value: string
   /**
    * Mask the value except for its last characters. Default `true`. `false`
-   * shows the value as is, with no reveal button (`CopyInput`).
+   * shows the value as is, with no reveal button: a share link, a reference.
    */
   masked?: boolean
   /** How many trailing characters stay visible while masked. Default `4`. */
@@ -119,24 +119,4 @@ export function SensitiveInput({
       {masked ? <LiveRegion>{announced}</LiveRegion> : null}
     </>
   )
-}
-
-export interface CopyInputProps extends Omit<
-  TextInputProps,
-  "thaana" | "thaanaToggle" | "value" | "defaultValue" | "onChange" | "onCopy"
-> {
-  /** The value to show and copy. */
-  value: string
-  /** Called after the value is copied. */
-  onCopy?: (value: string) => void
-  /** Use the monospace font (IDs, keys, codes). */
-  mono?: boolean
-}
-
-/**
- * `SensitiveInput` with `masked={false}`: a read-only value with a copy
- * button, e.g. a share link or a reference number.
- */
-export function CopyInput({ mono = false, ...props }: CopyInputProps) {
-  return <SensitiveInput {...props} masked={false} mono={mono} data-copy-input="" />
 }

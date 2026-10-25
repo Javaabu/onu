@@ -9,10 +9,10 @@ import {
   FormField,
   FormGroup,
   Icon,
-  MultiSelect,
   PageTitle,
   ProgressBar,
   RadioGroup,
+  SearchableSelect,
   toast,
   type DateRangeValue,
 } from "@javaabu/onu"
@@ -207,7 +207,8 @@ export default function ExportPage() {
               name="status"
               help={tr("Leave empty for all", "ހުރިހާ އެއްޗަކަށް ހުސްކޮށް ބާއްވާ")}
             >
-              <MultiSelect
+              <SearchableSelect
+                multiple
                 options={labels.options.statuses}
                 value={statuses}
                 onValueChange={(v) => setStatuses(v)}
@@ -219,7 +220,8 @@ export default function ExportPage() {
               name="island"
               help={tr("Leave empty for all", "ހުރިހާ އެއްޗަކަށް ހުސްކޮށް ބާއްވާ")}
             >
-              <MultiSelect
+              <SearchableSelect
+                multiple
                 options={labels.options.islands}
                 value={islands}
                 onValueChange={(v) => setIslands(v)}

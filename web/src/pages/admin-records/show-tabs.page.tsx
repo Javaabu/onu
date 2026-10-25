@@ -3,14 +3,14 @@ import { useSearchParams } from "react-router"
 import {
   ActivityFeed,
   Card,
+  CommentThread,
   DocumentDownload,
   DropzoneUploader,
   FormField,
   LinkButton,
-  Notes,
   Timeline,
   toast,
-  type NoteData,
+  type CommentData,
 } from "@javaabu/onu"
 
 import { useTr } from "../_shared/i18n"
@@ -45,7 +45,7 @@ function documentsOf(record: Application, tr: Tr) {
   return all.slice(0, record.documents)
 }
 
-function initialNotes(record: Application, tr: Tr): NoteData[] {
+function initialNotes(record: Application, tr: Tr): CommentData[] {
   const staff = STAFF.find((s) => s.value === record.assignee) ?? STAFF[1]!
   return [
     {
@@ -74,7 +74,7 @@ export default function ShowTabsPage() {
   const tab: Tab = (TABS as readonly string[]).includes(params.get("tab") ?? "")
     ? (params.get("tab") as Tab)
     : "details"
-  const [notes, setNotes] = React.useState<NoteData[] | null>(null)
+  const [notes, setNotes] = React.useState<CommentData[] | null>(null)
   if (!record) return <RecordNotFound />
 
   const noteList = notes ?? initialNotes(record, tr)
@@ -189,9 +189,10 @@ export default function ShowTabsPage() {
 
         {tab === "notes" ? (
           <Card>
-            <Notes
+            <CommentThread
+              variant="list"
               title={tr("Internal notes", "އެތެރޭގެ ނޯޓުތައް")}
-              notes={noteList}
+              comments={noteList}
               currentUserId="shifa"
               thaana={labels.dv}
               onAdd={async (body) => {

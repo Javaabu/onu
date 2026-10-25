@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useNavigate } from "react-router"
-import { EfaasButton, Notice, SignInForm, toast } from "@javaabu/onu"
+import { Callout, EfaasButton, SignInForm, toast } from "@javaabu/onu"
 
 import { useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -71,7 +71,7 @@ export default function SignInPage() {
             />
           }
         />
-        <Notice tone="info" variant="bordered" icon="info">
+        <Callout appearance="bordered" variant="info" icon="info">
           {tr("Demo account:", "ޑެމޯ އެކައުންޓް:")}{" "}
           <bdi dir="ltr" className="font-mono">
             {DEMO_EMAIL} / {DEMO_PASSWORD}
@@ -81,7 +81,7 @@ export default function SignInPage() {
             `${MAX_ATTEMPTS} wrong passwords lock the account.`,
             `${MAX_ATTEMPTS} ފަހަރު ޕާސްވޯޑު ނުބައިވެއްޖެނަމަ އެކައުންޓް ބަންދުވާނެ.`,
           )}
-        </Notice>
+        </Callout>
       </div>
     </AuthShell>
   )

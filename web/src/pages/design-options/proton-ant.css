@@ -843,7 +843,7 @@ body.design-proton-ant-body [data-slot="dialog-content"] {
 }
 
 /* View switcher: the selected view in the brand tint (Proton's selected state). */
-.design-proton-ant [data-slot="view-switcher"] [data-state="on"] {
+.design-proton-ant .pa-view-switcher [data-state="on"] {
   background-color: var(--pa-1);
   color: var(--pa-link);
 }

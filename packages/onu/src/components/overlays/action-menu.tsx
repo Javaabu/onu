@@ -70,7 +70,7 @@ export interface ActionMenuProps extends Omit<React.ComponentProps<typeof Dropdo
   items: MenuItem[]
   /**
    * Element that opens the menu (rendered with `asChild`). Defaults to a ⋯ icon
-   * button labelled `label`.
+   * button labelled `label`, sized for a table row (44px on touch screens).
    */
   trigger?: React.ReactNode
   /** Accessible name of the default trigger. Default "More actions", or "Actions for {name}". */
@@ -92,7 +92,8 @@ export interface ActionMenuProps extends Omit<React.ComponentProps<typeof Dropdo
  * `DropdownMenu`. Items take semantic icons, shortcut hints, destructive
  * styling, links and an optional confirmation step, which opens once the menu
  * has closed and returns focus to the trigger. Submenus open towards the
- * inline end (left in RTL), and arrow keys follow the visual order.
+ * inline end (left in RTL), and arrow keys follow the visual order. Renders
+ * nothing when no item is visible (e.g. none is `permitted`).
  */
 export function ActionMenu({
   items,
@@ -141,6 +142,12 @@ export function ActionMenu({
     }
   }
 
+  const dialog = asking ? (
+    <ConfirmDialog key={asking.key} {...asking.options} open={dialogOpen} onOpenChange={setDialogOpen} />
+  ) : null
+  // Nothing to offer (e.g. no item is `permitted`): no ⋯ button, but a question already asked stays open.
+  if (visibleItems(items).length === 0) return dialog
+
   return (
     <>
       <DropdownMenu open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange} modal={modal}>
@@ -151,7 +158,7 @@ export function ActionMenu({
               size="icon-sm"
               data-slot="action-menu-trigger"
               aria-label={triggerLabel}
-              className={classNames?.trigger}
+              className={cn("touch:size-11", classNames?.trigger)}
             >
               <Icon name="more" />
             </Button>
@@ -178,48 +185,8 @@ export function ActionMenu({
           />
         </DropdownMenuContent>
       </DropdownMenu>
-      {asking ? (
-        <ConfirmDialog key={asking.key} {...asking.options} open={dialogOpen} onOpenChange={setDialogOpen} />
-      ) : null}
+      {dialog}
     </>
-  )
-}
-
-export interface RowActionsProps extends Omit<React.ComponentProps<"button">, "children"> {
-  /** The record's display name, used in "Actions for Jane Doe" and "Delete Jane Doe?". */
-  name: string
-  actions: RecordAction[]
-  /** Menu alignment. Default `end`. */
-  align?: "start" | "center" | "end"
-  classNames?: { trigger?: string; content?: string }
-}
-
-/**
- * `ActionMenu` with a `name` and a ⋯ button sized for a table row (§25.6).
- * Other props go to the ⋯ button. Renders nothing when no action is permitted.
- */
-export function RowActions({ name, actions, align = "end", className, classNames, ...props }: RowActionsProps) {
-  const { t } = useTranslation()
-  if (visibleItems(actions).length === 0) return null
-  return (
-    <ActionMenu
-      name={name}
-      items={actions}
-      align={align}
-      className={cn("min-w-40", classNames?.content)}
-      trigger={
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          data-slot="row-actions"
-          aria-label={t("listing.actionsFor", { name })}
-          className={cn("touch:size-11", classNames?.trigger, className)}
-          {...props}
-        >
-          <Icon name="more" />
-        </Button>
-      }
-    />
   )
 }
 

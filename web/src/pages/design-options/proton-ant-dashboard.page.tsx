@@ -19,7 +19,7 @@ import {
   UserAvatar,
   cn,
 } from "@javaabu/onu"
-import { BarChart, PieChart, Sparkline, StatTile } from "@javaabu/onu/charts"
+import { CategoryChart, PieChart, Sparkline, StatTile } from "@javaabu/onu/charts"
 
 import { useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -328,7 +328,8 @@ export default function ProtonAntDashboardPage() {
                 label: tr("Applications", "އެޕްލިކޭޝަން"),
                 content: (
                   <div className="pa-sales">
-                    <BarChart
+                    <CategoryChart
+                      variant="bar"
                       title={tr("Applications per week", "ހަފްތާއަކަށް އެޕްލިކޭޝަން")}
                       data={perWeek}
                       categoryKey="week"
@@ -351,7 +352,8 @@ export default function ProtonAntDashboardPage() {
                 label: tr("Fees", "ފީ"),
                 content: (
                   <div className="pa-sales">
-                    <BarChart
+                    <CategoryChart
+                      variant="bar"
                       title={tr("Approved fees per week", "ހަފްތާއަކަށް ފާސްވި ފީ")}
                       data={perWeek}
                       categoryKey="week"

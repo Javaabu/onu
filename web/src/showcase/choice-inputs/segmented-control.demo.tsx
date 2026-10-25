@@ -1,5 +1,5 @@
 import * as React from "react"
-import { FormField, Icon, SegmentedControl } from "@javaabu/onu"
+import { FormField, Icon, SegmentedControl, useListingViewOptions, useTranslation } from "@javaabu/onu"
 
 import { DemoPage, DemoSection } from "../../components/demo"
 
@@ -14,6 +14,8 @@ export const meta = {
 export default function SegmentedControlDemo() {
   const [period, setPeriod] = React.useState("month")
   const [view, setView] = React.useState("table")
+  const { t } = useTranslation()
+  const viewOptions = useListingViewOptions()
   return (
     <DemoPage>
       <DemoSection title="Basic" className="max-w-md gap-4 grid">
@@ -40,19 +42,17 @@ export default function SegmentedControlDemo() {
           ]}
         />
       </DemoSection>
-      <DemoSection title="View switcher" description="Icon-only segments named by their labels (ViewSwitcher).">
+      <DemoSection
+        title="View switcher"
+        description="A listing's built-in views (useListingViewOptions): icon-only segments named by their translated labels."
+      >
         <SegmentedControl
-          aria-label="View"
+          aria-label={t("listing.view")}
           size="sm"
           iconOnly
           value={view}
           onValueChange={setView}
-          options={[
-            { value: "table", label: "Table", icon: <Icon name="table" /> },
-            { value: "list", label: "List", icon: <Icon name="list" /> },
-            { value: "grid", label: "Grid", icon: <Icon name="grid" /> },
-            { value: "kanban", label: "Board", icon: <Icon name="kanban" /> },
-          ]}
+          options={viewOptions}
         />
         <span className="text-sm text-muted-foreground">Current: {view}</span>
       </DemoSection>

@@ -9,7 +9,8 @@ import { useCollectionItem, type CollectionProps } from "./_collection"
 export interface ListViewProps<T> extends CollectionProps<T> {
   /**
    * `list` (default): rows with media at the start. `grid`: a responsive grid
-   * of cards with media on top. The values match `ViewSwitcher`'s views.
+   * of cards with media on top. Both are `ListingView` values, so a listing's
+   * current view can be passed straight through.
    */
   layout?: "list" | "grid"
   /** List layout: lines between items (default) or separate cards. */
@@ -154,11 +155,4 @@ export function ListView<T>(props: ListViewProps<T>) {
           })}
     </ul>
   )
-}
-
-export type GridViewProps<T> = Omit<ListViewProps<T>, "layout" | "variant">
-
-/** `ListView` with `layout="grid"`: records as a responsive grid of cards. */
-export function GridView<T>(props: GridViewProps<T>) {
-  return <ListView {...props} layout="grid" />
 }

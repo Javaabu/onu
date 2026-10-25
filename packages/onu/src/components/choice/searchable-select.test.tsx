@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { FormField } from "../form/form-field"
-import { MultiSelect, QuickCreateSelect, SearchableSelect } from "./searchable-select"
+import { SearchableSelect } from "./searchable-select"
 import type { ChoiceOption } from "./options"
 
 // Interaction-heavy tests: allow for slow, shared CI machines.
@@ -191,10 +191,12 @@ describe("on phones", () => {
   })
 })
 
-describe("MultiSelect", () => {
+describe("multiple", () => {
   it("selects several values as chips and removes them", async () => {
     const onValueChange = vi.fn()
-    renderWithOnu(<MultiSelect aria-label="Islands" options={islands} onValueChange={onValueChange} name="islands" />)
+    renderWithOnu(
+      <SearchableSelect multiple aria-label="Islands" options={islands} onValueChange={onValueChange} name="islands" />,
+    )
     await userEvent.click(screen.getByRole("combobox", { name: "Islands" }))
     await userEvent.click(screen.getByRole("option", { name: "Malé" }))
     await userEvent.click(screen.getByRole("option", { name: /Addu/ }))
@@ -206,7 +208,7 @@ describe("MultiSelect", () => {
     expect(onValueChange).toHaveBeenLastCalledWith(["addu"], expect.any(Array))
   })
 
-  it("is SearchableSelect with multiple: select all and clear are on by default", async () => {
+  it("turns select all and clear on by default", async () => {
     const onValueChange = vi.fn()
     renderWithOnu(
       <SearchableSelect
@@ -223,25 +225,9 @@ describe("MultiSelect", () => {
     expect(onValueChange).toHaveBeenLastCalledWith(["male", "hulhumale", "addu"], expect.any(Array))
   })
 
-  it("creates options without the QuickCreateSelect preset", async () => {
-    const onValueChange = vi.fn()
-    renderWithOnu(
-      <SearchableSelect
-        aria-label="Island"
-        options={islands}
-        onValueChange={onValueChange}
-        onCreate={(label) => ({ value: "new", label })}
-      />,
-    )
-    await userEvent.click(screen.getByRole("combobox"))
-    await userEvent.type(screen.getByRole("combobox", { name: "Search…" }), "Thinadhoo")
-    await userEvent.click(screen.getByRole("option", { name: /Create/ }))
-    expect(onValueChange).toHaveBeenLastCalledWith("new", { value: "new", label: "Thinadhoo" })
-  })
-
   it("selects and deselects all visible options", async () => {
     const onValueChange = vi.fn()
-    renderWithOnu(<MultiSelect aria-label="Islands" options={islands} onValueChange={onValueChange} />)
+    renderWithOnu(<SearchableSelect multiple aria-label="Islands" options={islands} onValueChange={onValueChange} />)
     await userEvent.click(screen.getByRole("combobox"))
     await userEvent.click(screen.getByRole("option", { name: "Select all" }))
     expect(onValueChange).toHaveBeenLastCalledWith(["male", "hulhumale", "addu"], expect.any(Array))
@@ -251,7 +237,8 @@ describe("MultiSelect", () => {
 
   it("respects max and shows +N more", async () => {
     renderWithOnu(
-      <MultiSelect
+      <SearchableSelect
+        multiple
         aria-label="Islands"
         options={islands}
         max={2}
@@ -268,7 +255,7 @@ describe("MultiSelect", () => {
 
   it("removes the last chip with Backspace in the empty search and clears all", async () => {
     const user = userEvent.setup()
-    renderWithOnu(<MultiSelect aria-label="Islands" options={islands} defaultValue={["male", "addu"]} />)
+    renderWithOnu(<SearchableSelect multiple aria-label="Islands" options={islands} defaultValue={["male", "addu"]} />)
     await user.click(screen.getByRole("combobox", { name: "Islands" }))
     await user.keyboard("{Backspace}")
     expect(screen.queryByRole("button", { name: "Remove Addu City" })).not.toBeInTheDocument()
@@ -278,17 +265,17 @@ describe("MultiSelect", () => {
   })
 
   it("passes axe with chips", async () => {
-    renderWithOnu(<MultiSelect aria-label="Islands" options={islands} defaultValue={["male"]} />)
+    renderWithOnu(<SearchableSelect multiple aria-label="Islands" options={islands} defaultValue={["male"]} />)
     await expectNoA11yViolations()
   })
 })
 
-describe("QuickCreateSelect", () => {
+describe("onCreate / renderCreateDialog", () => {
   it("creates an option inline and selects it", async () => {
     const onCreate = vi.fn(async (label: string) => ({ value: "new-1", label }))
     const onValueChange = vi.fn()
     renderWithOnu(
-      <QuickCreateSelect aria-label="Island" options={islands} onCreate={onCreate} onValueChange={onValueChange} />,
+      <SearchableSelect aria-label="Island" options={islands} onCreate={onCreate} onValueChange={onValueChange} />,
     )
     await userEvent.click(screen.getByRole("combobox"))
     await userEvent.type(screen.getByRole("combobox", { name: "Search…" }), "Thinadhoo")
@@ -298,8 +285,24 @@ describe("QuickCreateSelect", () => {
     await waitFor(() => expect(screen.getByText("“Thinadhoo” created and selected")).toBeInTheDocument())
   })
 
+  it("creates an option with a synchronous onCreate", async () => {
+    const onValueChange = vi.fn()
+    renderWithOnu(
+      <SearchableSelect
+        aria-label="Island"
+        options={islands}
+        onValueChange={onValueChange}
+        onCreate={(label) => ({ value: "new", label })}
+      />,
+    )
+    await userEvent.click(screen.getByRole("combobox"))
+    await userEvent.type(screen.getByRole("combobox", { name: "Search…" }), "Thinadhoo")
+    await userEvent.click(screen.getByRole("option", { name: /Create/ }))
+    expect(onValueChange).toHaveBeenLastCalledWith("new", { value: "new", label: "Thinadhoo" })
+  })
+
   it("hides Create when the query matches an option exactly", async () => {
-    renderWithOnu(<QuickCreateSelect aria-label="Island" options={islands} onCreate={() => null} />)
+    renderWithOnu(<SearchableSelect aria-label="Island" options={islands} onCreate={() => null} />)
     await userEvent.click(screen.getByRole("combobox"))
     await userEvent.type(screen.getByRole("combobox", { name: "Search…" }), "male")
     expect(screen.queryByRole("option", { name: /Create/ })).not.toBeInTheDocument()
@@ -307,7 +310,7 @@ describe("QuickCreateSelect", () => {
 
   it("reports a failed create", async () => {
     renderWithOnu(
-      <QuickCreateSelect aria-label="Island" options={islands} onCreate={() => Promise.reject(new Error("nope"))} />,
+      <SearchableSelect aria-label="Island" options={islands} onCreate={() => Promise.reject(new Error("nope"))} />,
     )
     await userEvent.click(screen.getByRole("combobox"))
     await userEvent.type(screen.getByRole("combobox", { name: "Search…" }), "Vilimalé")
@@ -318,7 +321,7 @@ describe("QuickCreateSelect", () => {
   it("creates through a dialog callback", async () => {
     const onValueChange = vi.fn()
     renderWithOnu(
-      <QuickCreateSelect
+      <SearchableSelect
         aria-label="Island"
         options={islands}
         multiple

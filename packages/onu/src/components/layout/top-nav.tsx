@@ -34,21 +34,21 @@ import { layout as en_layout } from "../../locales/en/layout"
 
 registerEnglish({ layout: en_layout })
 
-export interface MegaMenuLink extends Pick<
+export interface TopNavLink extends Pick<
   NavItem,
   "id" | "label" | "description" | "icon" | "badge" | "isActive" | "external" | "onSelect"
 > {
   href: string
 }
 
-export interface MegaMenuColumn {
+export interface TopNavColumn {
   title?: React.ReactNode
-  links: MegaMenuLink[]
+  links: TopNavLink[]
 }
 
 export interface TopNavItem extends NavItem {
   /** Columns of links shown in a wide panel (a mega menu). Used instead of `items`. */
-  columns?: MegaMenuColumn[]
+  columns?: TopNavColumn[]
   /** Highlighted content at the end of a `columns` panel (promo card, image), from `lg`. */
   featured?: React.ReactNode
 }
@@ -101,7 +101,7 @@ function toNavItem(item: TopNavItem): NavItem {
   }
 }
 
-function PanelLink({ link, active, className }: { link: MegaMenuLink; active: boolean; className?: string }) {
+function PanelLink({ link, active, className }: { link: TopNavLink; active: boolean; className?: string }) {
   return (
     <NavigationMenuLink asChild active={active}>
       <NavLink
@@ -313,19 +313,4 @@ export function TopNav({
       </Sheet>
     </div>
   )
-}
-
-/** A top-level item of `MegaMenu`: a `TopNavItem`, usually with `columns`. */
-export type MegaMenuItem = TopNavItem
-
-export interface MegaMenuProps extends Omit<TopNavProps, "classNames"> {
-  items: MegaMenuItem[]
-  /** `link` styles the panel links. */
-  classNames?: { trigger?: string; panel?: string; column?: string; link?: string; sheet?: string }
-}
-
-/** `TopNav` whose items carry `columns`: header navigation with wide multi-column panels. */
-export function MegaMenu({ classNames, ...props }: MegaMenuProps) {
-  const { link, ...rest } = classNames ?? {}
-  return <TopNav data-slot="mega-menu" {...props} classNames={{ ...rest, panelLink: link }} />
 }

@@ -38,26 +38,33 @@ Segments size to their label and are never truncated. When there is spare room (
 
 ## View switcher
 
-A listing's table, list, grid and board views are an icon-only segmented control. `ViewSwitcher` is a preset with those views built in (`iconOnly`, `size="sm"`, named "View"); its values match [`ListView`](../listing-pages/list-view)'s `layout`.
+A listing's table, list, grid and board views are an icon-only segmented control. `useListingViewOptions(views?)` returns the options for those views, with translated labels and icons; their values match [`ListView`](../listing-pages/list-view)'s `layout`.
 
 ```tsx
-import { ViewSwitcher } from '@javaabu/onu';
+import { Icon, SegmentedControl, useListingViewOptions, useTranslation } from '@javaabu/onu';
 
-<ViewSwitcher value={state.view ?? 'table'} onValueChange={state.setView} />
-<ViewSwitcher views={['list', 'grid', { value: 'map', label: 'Map', icon: 'map-pin' }]} showLabels />
+const { t } = useTranslation();
+const views = useListingViewOptions(); // table, list, grid and kanban
+const withMap = [...useListingViewOptions(['list', 'grid']), { value: 'map', label: 'Map', icon: <Icon name="map-pin" /> }];
+
+<SegmentedControl
+  iconOnly
+  size="sm"
+  aria-label={t('listing.view')}
+  options={views}
+  value={state.view ?? 'table'}
+  onValueChange={state.setView}
+/>
+<SegmentedControl size="sm" aria-label={t('listing.view')} options={withMap} />
 ```
 
 Store the view in [`useListingState`](../listing-pages/use-listing-state) (`state.view`) to keep it in the URL.
 
-| Prop            | Type                            | Default                               | Description                    |
-| --------------- | ------------------------------- | ------------------------------------- | ------------------------------ |
-| `value`         | `ListingView`                   |                                       | Controlled view                |
-| `defaultValue`  | `ListingView`                   | `"table"`                             |                                |
-| `onValueChange` | `(view) => void`                |                                       |                                |
-| `views`         | `(ListingView \| ViewOption)[]` | `["table", "list", "grid", "kanban"]` | Built-ins get labels and icons |
-| `showLabels`    | `boolean`                       | `false`                               | Text next to the icons         |
+| Parameter | Type            | Default                               | Description                                                  |
+| --------- | --------------- | ------------------------------------- | ------------------------------------------------------------ |
+| `views`   | `ListingView[]` | `["table", "list", "grid", "kanban"]` | Built-ins get labels and icons; others are labelled by value |
 
-Other props are as for `SegmentedControl` (`size` defaults to `"sm"`). The group is named "View" ("ދައްކާ ގޮތް" in Dhivehi) unless you pass `aria-label`; each icon segment is named by its view ("Table", "ޓޭބަލް") and shows it as a tooltip.
+It returns `ChoiceOption[]`. `t('listing.view')` names the group "View" ("ދައްކާ ގޮތް" in Dhivehi); with `iconOnly`, each segment is named by its view ("Table", "ޓޭބަލް") and shows it as a tooltip.
 
 ## Accessibility
 

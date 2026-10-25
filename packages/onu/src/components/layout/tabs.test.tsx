@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { TabsContent, TabsList, TabsTrigger } from "../../ui/tabs"
-import { StackedTabs, Tabs, type StackedTabItem, type TabItem } from "./tabs"
+import { Tabs, type TabItem } from "./tabs"
 
 // Overlays and axe are slow under parallel coverage runs.
 vi.setConfig({ testTimeout: 30_000 })
@@ -88,16 +88,24 @@ describe("Tabs", () => {
   })
 })
 
-const stackedItems: StackedTabItem[] = [
+const settingsItems: TabItem[] = [
   { value: "general", label: "General", icon: "settings", description: "Name and logo", content: "General panel" },
   { value: "members", label: "Members", badge: 3, content: "Members panel" },
   { value: "billing", label: <b>Billing</b>, textLabel: "Billing", content: "Billing panel" },
   { value: "danger", label: "Danger zone", disabled: true, content: "Danger panel" },
 ]
 
-describe("StackedTabs", () => {
+describe("Tabs vertical with narrow", () => {
   it("renders a vertical tablist and moves with Arrow Up/Down", async () => {
-    renderWithOnu(<StackedTabs items={stackedItems} className="extra" classNames={{ list: "lst", trigger: "trg" }} />)
+    renderWithOnu(
+      <Tabs
+        orientation="vertical"
+        narrow="select"
+        items={settingsItems}
+        className="extra"
+        classNames={{ list: "lst", trigger: "trg" }}
+      />,
+    )
     const list = screen.getByRole("tablist", { hidden: true })
     expect(list).toHaveAttribute("aria-orientation", "vertical")
     expect(list).toHaveClass("lst")
@@ -112,7 +120,15 @@ describe("StackedTabs", () => {
 
   it("becomes a labelled select in narrow containers that changes the tab", () => {
     const onValueChange = vi.fn()
-    renderWithOnu(<StackedTabs items={stackedItems} onValueChange={onValueChange} classNames={{ select: "sel" }} />)
+    renderWithOnu(
+      <Tabs
+        orientation="vertical"
+        narrow="select"
+        items={settingsItems}
+        onValueChange={onValueChange}
+        classNames={{ select: "sel" }}
+      />,
+    )
     const select = screen.getByRole("combobox", { name: "Choose a section" })
     expect(select.closest("[data-slot=native-select-wrapper]")).toHaveClass("sel")
     expect(screen.getByRole("option", { name: "Billing" })).toBeInTheDocument()
@@ -124,18 +140,20 @@ describe("StackedTabs", () => {
 
   it("is controllable and offers a horizontal scroller instead of a select", () => {
     const { rerender } = renderWithOnu(
-      <StackedTabs items={stackedItems} value="members" mobile="scroll" listLabel="Settings" />,
+      <Tabs orientation="vertical" narrow="scroll" items={settingsItems} value="members" listLabel="Settings" />,
     )
     expect(screen.queryByRole("combobox")).toBeNull()
     expect(screen.getByRole("tablist", { name: "Settings" })).toHaveClass("overflow-x-auto")
     expect(screen.getByRole("tab", { name: /Members/ })).toHaveAttribute("aria-selected", "true")
-    rerender(<StackedTabs items={stackedItems} value="general" mobile="scroll" />)
+    rerender(<Tabs orientation="vertical" narrow="scroll" items={settingsItems} value="general" />)
     expect(screen.getByRole("tab", { name: /General/ })).toHaveAttribute("aria-selected", "true")
   })
 
   it("falls back to the value for non-text labels and starts on the first enabled tab", () => {
     renderWithOnu(
-      <StackedTabs
+      <Tabs
+        orientation="vertical"
+        narrow="select"
         items={[
           { value: "off", label: "Off", disabled: true },
           { value: "icon-only", label: <span>★</span> },
@@ -150,8 +168,9 @@ describe("StackedTabs", () => {
 
   it.each(directions)("works in %s with Dhivehi", async (dir) => {
     renderWithOnu(
-      <StackedTabs
-        mobile="scroll"
+      <Tabs
+        orientation="vertical"
+        narrow="scroll"
         items={[
           { value: "a", label: "އާންމު", content: "a" },
           { value: "b", label: "މެމްބަރުން", content: "b" },
@@ -170,7 +189,7 @@ describe("Tabs with narrow", () => {
       <Tabs
         orientation="vertical"
         narrow="select"
-        items={[...stackedItems, { value: "logs", label: "Logs", count: 4, content: "Logs panel" }]}
+        items={[...settingsItems, { value: "logs", label: "Logs", count: 4, content: "Logs panel" }]}
         classNames={{ count: "cnt" }}
       />,
     )
@@ -186,12 +205,12 @@ describe("Tabs with narrow", () => {
   })
 
   it("keeps the plain vertical list without narrow, and ignores narrow when horizontal", () => {
-    const { rerender } = renderWithOnu(<Tabs orientation="vertical" items={stackedItems} />)
+    const { rerender } = renderWithOnu(<Tabs orientation="vertical" items={settingsItems} />)
     expect(screen.queryByRole("combobox")).toBeNull()
     expect(document.querySelector("[data-slot=stacked-tabs]")).toBeNull()
     expect(screen.getByText("Name and logo")).toBeInTheDocument()
     expect(screen.getByRole("tab", { name: /Members/ })).toHaveTextContent("3 new")
-    rerender(<Tabs narrow="select" items={stackedItems} />)
+    rerender(<Tabs narrow="select" items={settingsItems} />)
     expect(screen.queryByRole("combobox")).toBeNull()
     expect(screen.getByRole("tablist")).toHaveAttribute("aria-orientation", "horizontal")
     expect(screen.queryByText("Name and logo")).toBeNull()

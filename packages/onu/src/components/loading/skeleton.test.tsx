@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { FormLayoutProvider } from "../form/form-context"
-import { PlaceholderInput, SkeletonCard, SkeletonField, SkeletonTable, SkeletonText } from "./skeleton"
+import { SkeletonCard, SkeletonField, SkeletonTable, SkeletonText } from "./skeleton"
 
 // axe runs are slow in jsdom, especially under coverage on a busy machine.
 vi.setConfig({ testTimeout: 20_000 })
@@ -151,42 +151,15 @@ describe("SkeletonField", () => {
     expect(bars(root)).toHaveLength(2)
   })
 
-  it.each(directions)("works in %s with Dhivehi strings", async (dir) => {
-    renderWithOnu(<SkeletonField labelLayout="inline" />, { locale: "dv", dir })
-    expect(screen.getByRole("status", { name: "ލޯޑުވަނީ…" })).toBeInTheDocument()
-    await expectNoA11yViolations()
-  })
-})
-
-describe("PlaceholderInput", () => {
-  it("is SkeletonField with its own data-slot", async () => {
-    renderWithOnu(<PlaceholderInput />)
-    const root = screen.getByRole("status", { name: "Loading…" })
-    expect(root).toHaveAttribute("data-slot", "placeholder-input")
-    expect(root).toHaveAttribute("data-control", "input")
-    expect(root).toHaveAttribute("data-label-layout", "stacked")
-    expect(bars(root)).toHaveLength(2)
-    expect(root.querySelector("[aria-hidden=true]")).toBeInTheDocument()
-    await expectNoA11yViolations()
-  })
-
-  it("can drop the label and add help text", () => {
-    renderWithOnu(<PlaceholderInput label={false} help classNames={{ help: "help-x" }} className="root-x" />)
-    const root = screen.getByRole("status")
-    expect(root).toHaveClass("root-x")
-    expect(root.querySelector(".help-x")).toBeInTheDocument()
-    expect(bars(root)).toHaveLength(2)
-  })
-
-  it("drops the label for toggles too, with srLabel as the name", () => {
-    renderWithOnu(<PlaceholderInput control="checkbox" label={false} srLabel="Loading consent" />)
+  it("drops the label for toggles too, with label as the name", () => {
+    renderWithOnu(<SkeletonField control="checkbox" showLabel={false} label="Loading consent" />)
     const root = screen.getByRole("status", { name: "Loading consent" })
-    expect(root).toHaveAttribute("data-slot", "placeholder-input")
+    expect(root).toHaveAttribute("data-slot", "skeleton-field")
     expect(bars(root)).toHaveLength(1)
   })
 
   it.each(directions)("works in %s with Dhivehi strings", async (dir) => {
-    renderWithOnu(<PlaceholderInput labelLayout="inline" />, { locale: "dv", dir })
+    renderWithOnu(<SkeletonField labelLayout="inline" />, { locale: "dv", dir })
     expect(screen.getByRole("status", { name: "ލޯޑުވަނީ…" })).toBeInTheDocument()
     await expectNoA11yViolations()
   })

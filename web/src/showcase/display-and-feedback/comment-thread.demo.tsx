@@ -70,14 +70,6 @@ export default function CommentThreadDemo() {
     },
     { id: 2, author: me, body: "ލިޔެކިޔުންތައް ލިބިއްޖެ.", createdAt: minutesAgo(20) },
   ])
-  const noteLabels = {
-    title: "Notes",
-    empty: "No notes yet",
-    composer: "Add an internal note…",
-    submit: "Add note",
-    delete: "Delete note",
-    deleteConfirm: "Delete this note?",
-  }
   return (
     <DemoPage>
       <DemoSection title="Discussion" className="max-w-2xl block">
@@ -95,14 +87,11 @@ export default function CommentThreadDemo() {
       </DemoSection>
       <DemoSection
         title="Notes"
-        description="variant=list with replies off and the box on top. You can delete only your own notes."
+        description="variant=list: note strings, no replies and the box on top. You can delete only your own notes."
         className="max-w-xl block"
       >
         <CommentThread
           variant="list"
-          replies={false}
-          composerPosition="top"
-          labels={noteLabels}
           comments={notes}
           currentUserId={me.id}
           thaana={{ defaultEnabled: false }}
@@ -114,7 +103,7 @@ export default function CommentThreadDemo() {
         />
       </DemoSection>
       <DemoSection title="Read-only notes, empty" className="max-w-xl block">
-        <CommentThread variant="list" replies={false} labels={noteLabels} comments={[]} />
+        <CommentThread variant="list" comments={[]} />
       </DemoSection>
     </DemoPage>
   )

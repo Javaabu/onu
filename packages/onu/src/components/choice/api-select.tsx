@@ -20,7 +20,6 @@ import {
   type ApiParams,
 } from "./api-options"
 import { normalizeOptions, type ChoiceOption, type ChoiceOptionInput } from "./options"
-import { SearchableSelect, type SearchableSelectOptions, type SearchableSelectProps } from "./searchable-select"
 import { registerEnglish } from "../../i18n/english"
 import { choice as en_choice } from "../../locales/en/choice"
 import { common as en_common } from "../../locales/en/common"
@@ -331,33 +330,4 @@ export function ApiSelect<TItem = unknown>(props: ApiSelectProps<TItem>) {
       {create.dialog}
     </>
   )
-}
-
-type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never
-
-export type DependentSelectProps = DistributiveOmit<ApiSelectProps, "dependsOn" | "url" | "fetcher" | "parentValue"> & {
-  /** The value of the field this one depends on (e.g. the selected atoll). */
-  parentValue: string | number | null | undefined
-  /** Options per parent value (a map), a function of it, or a list. */
-  options?: SearchableSelectOptions
-  /** Load options for a parent value (cached per parent and search, like ApiSelect). */
-  loadOptions?: (parentValue: string, context: { query: string; page: number; signal: AbortSignal }) => Promise<unknown>
-  /** Load options from an API; the parent value is sent as `parentParam`. */
-  url?: string
-}
-
-/**
- * A select whose options depend on another field (atoll → island): a
- * `SearchableSelect` with `parentValue`, or an `ApiSelect` with `parentValue`
- * when options come from `loadOptions` or a `url`.
- */
-export function DependentSelect({ options, loadOptions, ...props }: DependentSelectProps) {
-  if (props.url || loadOptions) {
-    const fetcher = loadOptions
-      ? (query: string, ctx: { page: number; signal: AbortSignal }) =>
-          loadOptions(String(props.parentValue ?? ""), { query, page: ctx.page, signal: ctx.signal })
-      : undefined
-    return <ApiSelect {...(props as ApiSelectProps)} fetcher={fetcher} />
-  }
-  return <SearchableSelect {...(props as unknown as SearchableSelectProps)} options={options ?? []} />
 }

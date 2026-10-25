@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Button, Icon, PageTitle, SegmentedControl, toast, useOnu } from "@javaabu/onu"
 import {
-  BarChart,
+  CategoryChart,
   MapChart,
   PeriodComparisonChart,
   PieChart,
@@ -239,7 +239,8 @@ export default function ReportsPage() {
 
         <Section id="breakdown" title={tr("Breakdown", "ތަފްސީލު")}>
           <div className="gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] grid">
-            <BarChart
+            <CategoryChart
+              variant="bar"
               title={tr("Decisions by service", "ޚިދުމަތުގެ ގޮތުން ނިންމުންތައް")}
               orientation="horizontal"
               stacked

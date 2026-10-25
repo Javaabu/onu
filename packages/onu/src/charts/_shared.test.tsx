@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import { mockMatchMedia, mockRecharts } from "../../test/recharts-mock"
 import { renderWithOnu } from "../../test/utils"
 import { ChartAnimationProvider, useChartAnimation } from "./_shared"
-import { BarChart, LineChart } from "./category-chart"
+import { CategoryChart } from "./category-chart"
 import { PeriodComparisonChart } from "./period-comparison-chart"
 import { PieChart } from "./pie-chart"
 import { Sparkline } from "./sparkline"
@@ -47,18 +47,18 @@ const series = [
 /** Every Onu chart that draws with Recharts, with each animated element it uses. */
 const charts: { name: string; render: () => React.ReactElement; elements: string[] }[] = [
   {
-    name: "BarChart",
-    render: () => <BarChart title="Catch" data={cartesian} categoryKey="month" config={config} />,
+    name: "CategoryChart (bar)",
+    render: () => <CategoryChart variant="bar" title="Catch" data={cartesian} categoryKey="month" config={config} />,
     elements: ["Bar", "Tooltip"],
   },
   {
-    name: "LineChart",
-    render: () => <LineChart title="Catch" data={cartesian} categoryKey="month" config={config} />,
+    name: "CategoryChart (line)",
+    render: () => <CategoryChart title="Catch" data={cartesian} categoryKey="month" config={config} />,
     elements: ["Line", "Tooltip"],
   },
   {
-    name: "LineChart (area)",
-    render: () => <LineChart title="Catch" data={cartesian} categoryKey="month" config={config} area />,
+    name: "CategoryChart (area)",
+    render: () => <CategoryChart title="Catch" data={cartesian} categoryKey="month" config={config} variant="area" />,
     elements: ["Area", "Tooltip"],
   },
   {

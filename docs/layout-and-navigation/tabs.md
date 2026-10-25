@@ -24,8 +24,6 @@ Use [`NavTabs`](./nav-tabs) when each tab is its own page.
 
 For settings-style pages, `orientation="vertical"` with `narrow` puts the tab list at the inline start with the panel beside it. In narrow containers (below about 42rem, a container query) the list becomes a native **select** (`narrow="select"`) or a horizontally scrolling row (`narrow="scroll"`). Items can carry a `description` (shown beside the panel, hidden in the narrow row) and a `badge`. Without `narrow`, a vertical list stays as it is at every width.
 
-`StackedTabs` is `Tabs` with `orientation="vertical"` and `narrow` (its `mobile` prop, default `"select"`).
-
 ```tsx
 <Tabs
   orientation="vertical"
@@ -39,16 +37,6 @@ For settings-style pages, `orientation="vertical"` with `narrow` puts the tab li
 ```
 
 Use `textLabel` when `label` is not plain text, so the select has an option label. The list and the select are named by `listLabel` (default "Choose a section"). `variant` and `scrollable` do not apply in this layout.
-
-| `StackedTabs` prop | Type                                 | Default            | Description                                |
-| ------------------ | ------------------------------------ | ------------------ | ------------------------------------------ |
-| `items`            | `TabItem[]`                          |                    | Tabs                                       |
-| `value`            | `string`                             |                    | Controlled value                           |
-| `defaultValue`     | `string`                             | first enabled      | Initial value                              |
-| `onValueChange`    | `(value: string) => void`            |                    | Called on change                           |
-| `mobile`           | `'select' \| 'scroll'`               | `'select'`         | What the list becomes in narrow containers |
-| `listLabel`        | `string`                             | "Choose a section" | Name of the tab list and the select        |
-| `classNames`       | `{ list, trigger, content, select }` |                    | Classes for each part                      |
 
 ## Props
 

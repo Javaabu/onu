@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useSearchParams } from "react-router"
-import { Button, Card, Countdown, Icon, LinkButton, Notice, SegmentedControl, toast } from "@javaabu/onu"
+import { Button, Callout, Card, Countdown, Icon, LinkButton, SegmentedControl, toast } from "@javaabu/onu"
 
 import { useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -62,12 +62,12 @@ function Locked({ onVerify }: { onVerify: () => void }) {
             {tr("Back to sign in", "ސައިން އިން އަށް")}
           </LinkButton>
         </div>
-        <Notice tone="info" variant="bordered" icon="mail" className="text-start">
+        <Callout appearance="bordered" variant="info" icon="mail" className="text-start">
           {tr("Never verified your email?", "އީމެއިލް ވެރިފައި ނުކުރައްވަނީތޯ؟")}{" "}
           <Button variant="link" className="p-0 h-auto" onClick={onVerify}>
             {tr("Verify it to unlock now", "ވެރިފައިކޮށް މިހާރުން ހުޅުއްވާ")}
           </Button>
-        </Notice>
+        </Callout>
         <p className="text-xs text-muted-foreground">
           {tr("Not you? Call 1500 or email", "ތިބާއެއް ނޫންތޯ؟ 1500 އަށް ގުޅުއްވާ، ނުވަތަ އީމެއިލް ކުރައްވާ")}{" "}
           <a className="text-primary underline underline-offset-4" href="mailto:support@example.mv" dir="ltr">

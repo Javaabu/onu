@@ -9,7 +9,7 @@ export const meta = {
   group: "Overlays",
   order: 7,
   description:
-    "ActionMenu: items with icons, shortcuts, checkbox/radio items, submenus and confirmations, and a record's ⋯ row menu (RowActions).",
+    "ActionMenu: items with icons, shortcuts, checkbox/radio items, submenus and confirmations, and a record's ⋯ row menu (with `name`).",
 }
 
 export default function ActionMenuDemo() {

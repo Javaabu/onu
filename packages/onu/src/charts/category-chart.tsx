@@ -38,14 +38,14 @@ import { chart as en_chart } from "../locales/en/chart"
 
 registerEnglish({ chart: en_chart })
 
-export type LineCurve = "monotone" | "linear" | "step" | "natural"
+export type CategoryChartCurve = "monotone" | "linear" | "step" | "natural"
 
 export type CategoryChartVariant = "line" | "area" | "bar"
 
 /** Options for lines and areas. */
 interface LineSeriesOptions {
   /** Line interpolation. Default `"monotone"`. */
-  curve?: LineCurve
+  curve?: CategoryChartCurve
   /** Show a dot on each data point. Default `true` up to 31 points. */
   dots?: boolean
   /** Draw across missing (`null`) values instead of leaving a gap. Default `false`. */
@@ -65,36 +65,24 @@ interface BarSeriesOptions {
 /** Rejects the other variant's options. */
 type Without<T> = { [K in keyof T]?: never }
 
-export interface LineChartProps extends CartesianChartProps, LineSeriesOptions {
-  /**
-   * Fill the area under each line.
-   * @deprecated Use `variant="area"` on `CategoryChart`, or `AreaChart`.
-   */
-  area?: boolean
-  /** Stack areas on top of each other (with `area`). */
+/** `CategoryChart` props for `variant="line"` (the default) and `variant="area"`. */
+export interface CategoryChartLineProps extends CartesianChartProps, LineSeriesOptions, Without<BarSeriesOptions> {
+  /** How series are drawn. Default `"line"`. */
+  variant?: "line" | "area"
+  /** Stack areas on top of each other (with `variant="area"`). */
   stacked?: boolean
 }
 
-export type AreaChartProps = Omit<LineChartProps, "area">
-
-export interface BarChartProps extends CartesianChartProps, BarSeriesOptions {
+/** `CategoryChart` props for `variant="bar"`. */
+export interface CategoryChartBarProps extends CartesianChartProps, BarSeriesOptions, Without<LineSeriesOptions> {
+  /** How series are drawn. */
+  variant: "bar"
   /** Stack series on top of each other instead of grouping them side by side. */
   stacked?: boolean
 }
 
-interface LineVariantProps extends LineChartProps, Without<BarSeriesOptions> {
-  /** How series are drawn. Default `"line"` (`"area"` with `area`). */
-  variant?: "line" | "area"
-}
-
-interface BarVariantProps extends BarChartProps, Without<LineSeriesOptions> {
-  /** How series are drawn. */
-  variant: "bar"
-  area?: never
-}
-
 /** `curve`, `dots`, `connectNulls` and `dashedSeries` are for lines and areas; `orientation` and `radius` for bars. */
-export type CategoryChartProps = LineVariantProps | BarVariantProps
+export type CategoryChartProps = CategoryChartLineProps | CategoryChartBarProps
 
 const TYPE_KEY = { line: "chart.typeLine", area: "chart.typeArea", bar: "chart.typeBar" } as const
 
@@ -113,8 +101,7 @@ export function CategoryChart({
   categoryLabel,
   showLegend,
   showGrid = true,
-  variant: variantProp,
-  area = false,
+  variant = "line",
   stacked = false,
   curve = "monotone",
   dots,
@@ -136,7 +123,6 @@ export function CategoryChart({
   const chartConfig = React.useMemo(() => seriesConfig(config, series), [config, series])
   const rtl = dir === "rtl"
   const axes = rtlAxes(rtl)
-  const variant = variantProp ?? (area ? "area" : "line")
   const bar = variant === "bar"
   const horizontal = bar && orientation === "horizontal"
   const legend = showLegend ?? series.length > 1
@@ -290,19 +276,4 @@ export function CategoryChart({
       )}
     </ChartFrame>
   )
-}
-
-/** `CategoryChart` with `variant="line"` (or `"area"` with the deprecated `area`). */
-export function LineChart(props: LineChartProps) {
-  return <CategoryChart {...props} variant={props.area ? "area" : "line"} />
-}
-
-/** `CategoryChart` with `variant="area"`. */
-export function AreaChart(props: AreaChartProps) {
-  return <CategoryChart {...props} variant="area" />
-}
-
-/** `CategoryChart` with `variant="bar"`. */
-export function BarChart(props: BarChartProps) {
-  return <CategoryChart {...props} variant="bar" />
 }

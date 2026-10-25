@@ -35,8 +35,6 @@ The item whose `href` matches `currentHref` gets `aria-current="page"`. With the
 
 An item with `columns` opens a wide panel with several columns of links (each with an optional icon, description and badge) and an optional `featured` area (a promo card, an image). Up to four columns sit side by side from `md`; the featured area shows from `lg`. `columns` take the place of `items`. Panel links take part in the active state like any other item.
 
-`MegaMenu` is `TopNav` for items with `columns` (its `classNames.link` styles the panel links).
-
 ```tsx
 import { Card, TopNav } from "@javaabu/onu"
 
@@ -62,17 +60,7 @@ import { Card, TopNav } from "@javaabu/onu"
 />
 ```
 
-`MegaMenuColumn`: `{ title?, links: MegaMenuLink[] }`. `MegaMenuLink`: `{ label, href, description?, icon?, badge?, isActive?, external?, onSelect? }`.
-
-| `MegaMenu` prop | Type                                      | Default | Description                    |
-| --------------- | ----------------------------------------- | ------- | ------------------------------ |
-| `items`         | `MegaMenuItem[]` (a `TopNavItem`)         |         | Top-level items                |
-| `logo`          | `ReactNode`                               |         | Top of the phone drawer        |
-| `mobileSide`    | `'start' \| 'end'`                        | `'end'` | Side the drawer slides in from |
-| `navLabel`      | `string`                                  | "Main"  | Accessible name                |
-| `classNames`    | `{ trigger, panel, column, link, sheet }` |         | Classes for each part          |
-
-`MegaMenu` takes the other `TopNav` props too (`currentHref`, `match`, `mobileFooter`).
+`TopNavColumn`: `{ title?, links: TopNavLink[] }`. `TopNavLink`: `{ label, href, description?, icon?, badge?, isActive?, external?, onSelect? }`. `classNames.panel` and `classNames.column` style the panel and its columns.
 
 In the phone drawer, an item with `columns` is a collapsible section: a titled column becomes a labelled sub-section, and an untitled column's links sit directly in the item's section. The sections holding the current page start open. The featured area is not shown on phones.
 
@@ -89,7 +77,7 @@ In the phone drawer, an item with `columns` is a collapsible section: a titled c
 | `navLabel`     | `string`                                                            | "Main"     | Accessible name of the navigation         |
 | `classNames`   | `{ list, link, content, trigger, sheet, panel, column, panelLink }` |            | Classes for each part                     |
 
-`TopNavItem` adds `columns?: MegaMenuColumn[]` (a mega menu panel) and `featured?: ReactNode` to `NavItem`. `classNames.link` styles top-level links; `panelLink` styles links in dropdowns and panels.
+`TopNavItem` adds `columns?: TopNavColumn[]` (a mega menu panel) and `featured?: ReactNode` to `NavItem`. `classNames.link` styles top-level links; `panelLink` styles links in dropdowns and panels.
 
 ## Accessibility
 

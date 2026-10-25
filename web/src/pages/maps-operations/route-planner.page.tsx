@@ -1,11 +1,11 @@
 import * as React from "react"
 import {
   Button,
+  Callout,
   Card,
   FormField,
   FormGroup,
   Icon,
-  Notice,
   PageTitle,
   Select,
   Table,
@@ -258,12 +258,12 @@ export default function RoutePlannerPage() {
                 />
               </FormField>
               {customised && stretch > 1.001 ? (
-                <Notice tone="info" variant="bordered" icon="info">
+                <Callout appearance="bordered" variant="info" icon="info">
                   {tr(
                     `The detours add ${formatDistance(sailed - straight, t, locale.numberLocale)} to the trip.`,
                     `މަގު ބަދަލުކުރުމުން ${formatDistance(sailed - straight, t, locale.numberLocale)} އިތުރުވޭ.`,
                   )}
-                </Notice>
+                </Callout>
               ) : null}
             </div>
           </Card>

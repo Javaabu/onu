@@ -26,6 +26,9 @@ export interface ListingNoun {
   other: string
 }
 
+/** A listing's view: the built-in table, list, grid and kanban, or one of your own. */
+export type ListingView = "table" | "list" | "grid" | "kanban" | (string & {})
+
 export interface FilterOption {
   value: string
   label: React.ReactNode

@@ -8,7 +8,7 @@ import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test
 import { Button } from "../../ui/button"
 import type { RecordAction } from "../listing/_actions"
 import { ConfirmProvider } from "./confirm-dialog"
-import { ActionMenu, RowActions, trashActions } from "./action-menu"
+import { ActionMenu, trashActions } from "./action-menu"
 import { visibleItems, type MenuItem } from "./_menu-items"
 
 // Radix overlays + axe are slow in jsdom, especially under coverage on a busy machine.
@@ -318,15 +318,13 @@ describe("ActionMenu with a record name", () => {
     expect(await screen.findByRole("alertdialog", { name: "ޖަމީލާ ފޮހެލަންތަ؟" })).toBeInTheDocument()
     await expectNoA11yViolations()
   })
-})
 
-describe("RowActions", () => {
-  it("opens a menu of permitted actions for the row (§25.6)", async () => {
+  it("opens a menu of the row's permitted actions from a ⋯ button sized for a row (§25.6)", async () => {
     const onEdit = vi.fn()
     renderWithOnu(
-      <RowActions
+      <ActionMenu
         name="Jane Doe"
-        actions={[
+        items={[
           { id: "view", label: "View", icon: "eye", href: "/users/1" },
           { id: "edit", label: "Edit", icon: "edit", onSelect: onEdit },
           { id: "ban", label: "Ban", permitted: false },
@@ -336,7 +334,7 @@ describe("RowActions", () => {
       />,
     )
     const trigger = screen.getByRole("button", { name: "Actions for Jane Doe" })
-    expect(trigger).toHaveClass("trigger-x")
+    expect(trigger).toHaveClass("trigger-x", "touch:size-11")
     await userEvent.click(trigger)
     const menu = await screen.findByRole("menu")
     expect(
@@ -355,10 +353,7 @@ describe("RowActions", () => {
     const deferred = Deferred()
     const onDelete = vi.fn(() => deferred.promise)
     renderWithOnu(
-      <RowActions
-        name="Jane Doe"
-        actions={[{ id: "delete", label: "Delete", destructive: true, onSelect: onDelete }]}
-      />,
+      <ActionMenu name="Jane Doe" items={[{ id: "delete", label: "Delete", destructive: true, onSelect: onDelete }]} />,
     )
     const trigger = screen.getByRole("button", { name: "Actions for Jane Doe" })
     await userEvent.click(trigger)
@@ -377,7 +372,7 @@ describe("RowActions", () => {
   })
 
   it("Escape closes the menu and returns focus (§25.6)", async () => {
-    renderWithOnu(<RowActions name="Jane" actions={[{ id: "v", label: "View" }]} />)
+    renderWithOnu(<ActionMenu name="Jane" items={[{ id: "v", label: "View" }]} />)
     const trigger = screen.getByRole("button", { name: "Actions for Jane" })
     await userEvent.click(trigger)
     await screen.findByRole("menu")
@@ -390,9 +385,9 @@ describe("RowActions", () => {
     const onApprove = vi.fn()
     const onRemove = vi.fn()
     renderWithOnu(
-      <RowActions
+      <ActionMenu
         name="Form 12"
-        actions={[
+        items={[
           {
             id: "approve",
             label: "Approve",
@@ -420,27 +415,18 @@ describe("RowActions", () => {
     await userEvent.keyboard("{Escape}")
   })
 
-  it("renders nothing without permitted actions", () => {
-    const { container } = renderWithOnu(<RowActions name="x" actions={[{ id: "a", label: "A", permitted: false }]} />)
+  it("renders nothing when no action is permitted", () => {
+    const { container } = renderWithOnu(<ActionMenu name="x" items={[{ id: "a", label: "A", permitted: false }]} />)
     expect(container).toBeEmptyDOMElement()
   })
+})
 
-  it("builds trash actions from handlers and permissions", () => {
+describe("trashActions", () => {
+  it("builds Restore and Delete permanently from handlers and permissions", () => {
     const t = (k: string) => k
     expect(trashActions(t, { onRestore: vi.fn() }).map((a) => a.permitted)).toEqual([true, false])
     expect(
       trashActions(t, { onRestore: vi.fn(), onForceDelete: vi.fn() }, { restore: false }).map((a) => a.permitted),
     ).toEqual([false, true])
-  })
-
-  it.each(directions)("works in %s with Dhivehi strings", async (dir) => {
-    renderWithOnu(<RowActions name="ޖަމީލާ" actions={[{ id: "delete", label: "ފޮހެލާ", destructive: true }]} />, {
-      locale: "dv",
-      dir,
-    })
-    await userEvent.click(screen.getByRole("button", { name: "ޖަމީލާ އާ ގުޅޭ ކަންކަން" }))
-    await userEvent.click(await screen.findByRole("menuitem"))
-    expect(await screen.findByRole("alertdialog", { name: "ޖަމީލާ ފޮހެލަންތަ؟" })).toBeInTheDocument()
-    await expectNoA11yViolations()
   })
 })

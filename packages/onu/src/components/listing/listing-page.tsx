@@ -8,6 +8,7 @@ import { cn } from "../../lib/utils"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
 import { buttonVariants } from "../../ui/button"
 import type { ThaanaProp } from "../../thaana/use-thaana-field"
+import type { ChoiceOption } from "../choice/options"
 import { useAppLayout } from "../layout/app-layout"
 import type { BreadcrumbsItem } from "../layout/breadcrumbs"
 import { Card } from "../layout/card"
@@ -18,7 +19,7 @@ import { DataTable, type DataTableProps } from "./data-table"
 import { ExportMenu, type ExportFormat, type ExportOption } from "./export-menu"
 import { FilterPanel } from "./filter-panel"
 import { FilterTabs, type FilterTab } from "./filter-tabs"
-import type { FilterDefinition } from "./listing-types"
+import type { FilterDefinition, ListingView } from "./listing-types"
 import { Pagination } from "./pagination"
 import { SearchBox } from "./search-box"
 import { SortMenu } from "./_sort-menu"
@@ -67,7 +68,7 @@ export interface ListingPageProps<T extends RowData> extends Omit<DataTableProps
   /** Status tabs; choosing one sets the filter named by `tabsFilterKey` (default `status`). */
   tabs?: FilterTab[]
   tabsFilterKey?: string
-  /** Extra toolbar content at the end (e.g. a `ViewSwitcher`). */
+  /** Extra toolbar content at the end (e.g. a `SegmentedControl` of `useListingViewOptions()` views). */
   toolbarEnd?: React.ReactNode
   /**
    * `card` (Ant ProTable, the default inside a panel `AppLayout`): a page
@@ -93,7 +94,7 @@ export interface ListingPageProps<T extends RowData> extends Omit<DataTableProps
   /** Key figures in the header band. */
   figures?: PageTitleFigure[]
   /**
-   * Replace the table (e.g. a `ListView` or `GridView` for other views). The
+   * Replace the table (e.g. a `ListView` for the list and grid views). The
    * page keeps the "Sort by" menu (from the sortable `columns`) and the
    * pagination footer (from `total` / `pagination`) around it.
    */
@@ -395,4 +396,24 @@ export function ListingPage<T extends RowData>({
       {pagination}
     </section>
   )
+}
+
+const LISTING_VIEWS: Record<string, { icon: string; key: string }> = {
+  table: { icon: "table", key: "listing.viewTable" },
+  list: { icon: "list", key: "listing.viewList" },
+  grid: { icon: "grid", key: "listing.viewGrid" },
+  kanban: { icon: "kanban", key: "listing.viewKanban" },
+}
+
+/**
+ * Options for a listing's view switcher, `<SegmentedControl iconOnly
+ * options={…}>`: the built-in views with translated labels and icons. Other
+ * views are labelled with their value; add options of your own for those.
+ */
+export function useListingViewOptions(views: ListingView[] = ["table", "list", "grid", "kanban"]): ChoiceOption[] {
+  const { t } = useTranslation()
+  return views.map((view) => {
+    const known = LISTING_VIEWS[view]
+    return { value: view, label: known ? t(known.key) : view, icon: <Icon name={known?.icon ?? "grid"} /> }
+  })
 }

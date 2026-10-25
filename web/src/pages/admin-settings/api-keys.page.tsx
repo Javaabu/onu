@@ -5,7 +5,6 @@ import {
   Card,
   Checkbox,
   ConfirmDialog,
-  CopyInput,
   DataTable,
   DescriptionList,
   FieldErrors,
@@ -485,7 +484,7 @@ function ClientCard({ client, onDelete }: { client: OAuthClient; onDelete: () =>
     >
       <div className="gap-4 md:grid-cols-2 grid">
         <FormField label={tr("Client ID", "ކްލައިންޓް އައިޑީ")}>
-          <CopyInput value={client.clientId} mono dir="ltr" />
+          <SensitiveInput masked={false} value={client.clientId} dir="ltr" />
         </FormField>
         <FormField label={tr("Client secret", "ކްލައިންޓް ސީކްރެޓް")}>
           <SensitiveInput value={secret} />

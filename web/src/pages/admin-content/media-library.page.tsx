@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   ConfirmDialog,
-  CopyInput,
   DescriptionList,
   DropzoneUploader,
   FileIcon,
@@ -13,6 +12,7 @@ import {
   MediaLister,
   PageTitle,
   Select,
+  SensitiveInput,
   TextInput,
   toast,
   useFormatFileSize,
@@ -284,7 +284,9 @@ export default function MediaLibraryPage() {
                   </FormField>
                 ) : null}
                 <FormField label={tr("File URL", "ފައިލްގެ ލިންކް")}>
-                  <CopyInput
+                  <SensitiveInput
+                    masked={false}
+                    mono={false}
                     value={`${CDN}${current.name}`}
                     dir="ltr"
                     onCopy={() => toast.success(tr("Link copied", "ލިންކް ކޮޕީކުރެވިއްޖެ"))}

@@ -5,14 +5,14 @@ import * as React from "react"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
 import { isInteractiveTarget } from "./_shared"
 import { SelectionCheckbox } from "./_selection-checkbox"
-import { RowActions } from "../overlays/action-menu"
+import { ActionMenu } from "../overlays/action-menu"
 import type { RecordAction } from "./_actions"
 import { registerEnglish } from "../../i18n/english"
 import { listing as en_listing } from "../../locales/en/listing"
 
 registerEnglish({ listing: en_listing })
 
-/** Item props of `ListView` (and its `GridView` preset). */
+/** Item props of `ListView`. */
 export interface CollectionProps<T> {
   items: T[]
   /** Stable id. Defaults to `item.id`. */
@@ -83,7 +83,9 @@ export function useCollectionItem<T>(props: CollectionProps<T>) {
       />
     ) : null
     const actionsList = props.itemActions?.(item)
-    const actions = actionsList?.length ? <RowActions name={nameOf(item)} actions={actionsList} /> : null
+    const actions = actionsList?.length ? (
+      <ActionMenu name={nameOf(item)} items={actionsList} className="min-w-40" />
+    ) : null
     const clickable = !!props.onItemClick || !!href
     const onClick = clickable
       ? (event: React.MouseEvent<HTMLElement>) => {

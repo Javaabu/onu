@@ -15,7 +15,7 @@ import { SearchableSelect } from '@javaabu/onu';
 <SearchableSelect options={islandsByAtoll} parentValue={atoll} parentLabel="an atoll" />
 ```
 
-The same component covers several values (`multiple`), creating missing options (`onCreate`) and dependent fields (`parentValue`); see the sections below. `MultiSelect`, `QuickCreateSelect` and `DependentSelect` are presets of it.
+The same component covers several values (`multiple`), creating missing options (`onCreate`) and dependent fields (`parentValue`); see the sections below.
 
 ## Options
 
@@ -55,13 +55,13 @@ interface ChoiceOption {
 
 ## Several values
 
-With `multiple`, selected values show as chips in the field (each with a remove button), the list has a "Select all" row for the visible options, and `max` caps the number of values. `MultiSelect` is the same component with `multiple` fixed on.
+With `multiple`, selected values show as chips in the field (each with a remove button), the list has a "Select all" row for the visible options, and `max` caps the number of values.
 
 ```tsx
-import { MultiSelect, SearchableSelect } from '@javaabu/onu';
+import { SearchableSelect } from '@javaabu/onu';
 
 <SearchableSelect multiple name="islands" options={islands} defaultValue={['male']} />
-<MultiSelect options={ministries} max={3} maxVisibleChips={2} />
+<SearchableSelect multiple options={ministries} max={3} maxVisibleChips={2} />
 ```
 
 | Prop                     | Type                        | Default | Description                                                |
@@ -77,7 +77,7 @@ With `name="islands"` it submits `islands[]` (Laravel arrays). Options carry `ar
 
 ## Creating options
 
-When nothing matches the search exactly, a "Create “…”" row appears. Create inline with `onCreate`, or open your own dialog with `renderCreateDialog`. The new option is added, selected and announced. Works with `multiple`; [API select](./api-select) accepts the same props (and refreshes its cache afterwards). `QuickCreateSelect` is an alias of `SearchableSelect`, kept for discoverability.
+When nothing matches the search exactly, a "Create “…”" row appears. Create inline with `onCreate`, or open your own dialog with `renderCreateDialog`. The new option is added, selected and announced. Works with `multiple`; [API select](./api-select) accepts the same props (and refreshes its cache afterwards).
 
 ```tsx
 // Inline
@@ -110,10 +110,8 @@ While `onCreate` runs the row shows "Creating…"; if it throws, the row shows "
 
 A field whose options depend on another (atoll → island): pass `parentValue`. The field is disabled until the parent has a value (the placeholder says which field to fill first) and **clears itself whenever the parent changes**: `onValueChange(null)` (or `[]` for multiple) is called. `options` can then be a map keyed by the parent value or a function of it. For options from an API, [API select](./api-select) takes the same props and sends the parent value with each request.
 
-`DependentSelect` picks between the two: `SearchableSelect` for local options, `ApiSelect` when you pass a `url` or `loadOptions`.
-
 ```tsx
-import { DependentSelect, SearchableSelect, Select } from '@javaabu/onu';
+import { ApiSelect, SearchableSelect, Select } from '@javaabu/onu';
 
 <Select options={atolls} value={atoll} onValueChange={setAtoll} />
 
@@ -121,20 +119,19 @@ import { DependentSelect, SearchableSelect, Select } from '@javaabu/onu';
 <SearchableSelect parentValue={atoll} parentLabel="an atoll" options={{ K: kaafuIslands, S: seenuIslands }} />
 
 // Loaded and cached per parent
-<DependentSelect parentValue={atoll} loadOptions={(atoll, { query, signal }) => api.islands(atoll, query, signal)} />
+<ApiSelect parentValue={atoll} fetcher={(query, { signal }) => api.islands(atoll, query, signal)} />
 
 // From an API: GET /api/islands?atoll_id=K&search=…
-<DependentSelect parentValue={atoll} url="/api/islands" parentParam="atoll_id" />
+<ApiSelect parentValue={atoll} url="/api/islands" parentParam="atoll_id" />
 ```
 
-| Prop                              | Type                                                           | Default       | Description                                         |
-| --------------------------------- | -------------------------------------------------------------- | ------------- | --------------------------------------------------- |
-| `parentValue`                     | `string \| number \| null`                                     |               | The value this field depends on                     |
-| `parentLabel`                     | `string`                                                       |               | Shown as "Select {parentLabel} first" while waiting |
-| `options`                         | `Record<string, ChoiceOption[]> \| (parent) => ChoiceOption[]` |               | Local options per parent                            |
-| `loadOptions` (`DependentSelect`) | `(parent, { query, page, signal }) => Promise<response>`       |               | Async options (cached per parent and search)        |
-| `url` (`DependentSelect`)         | `string`                                                       |               | API endpoint                                        |
-| `parentParam` (`DependentSelect`) | `string`                                                       | `"parent_id"` | Request param carrying the parent value             |
+| Prop                            | Type                                                           | Default       | Description                                         |
+| ------------------------------- | -------------------------------------------------------------- | ------------- | --------------------------------------------------- |
+| `parentValue`                   | `string \| number \| null`                                     |               | The value this field depends on                     |
+| `parentLabel`                   | `string`                                                       |               | Shown as "Select {parentLabel} first" while waiting |
+| `options`                       | `Record<string, ChoiceOption[]> \| (parent) => ChoiceOption[]` |               | Local options per parent                            |
+| `url` / `fetcher` (`ApiSelect`) | `string` / `(query, { page, signal }) => Promise<response>`    |               | Remote options (cached per parent and search)       |
+| `parentParam` (`ApiSelect`)     | `string`                                                       | `"parent_id"` | Request param carrying the parent value             |
 
 ## Accessibility
 

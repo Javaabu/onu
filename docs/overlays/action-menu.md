@@ -32,7 +32,7 @@ const items: MenuItem[] = [
 ;<ActionMenu items={items} />
 ```
 
-Without a `trigger`, a ⋯ icon button labelled "More actions" opens the menu. Pass `name` for a record's menu: the button becomes "Actions for Aishath Ali" and confirmations default to "Delete Aishath Ali?" (see [Row actions](#row-actions)), or `label` to name the button yourself.
+Without a `trigger`, a ⋯ icon button labelled "More actions" opens the menu (44px on touch screens). Pass `name` for a record's menu: the button becomes "Actions for Aishath Ali" and confirmations default to "Delete Aishath Ali?" (see [Row actions](#row-actions)), or `label` to name the button yourself. The menu renders nothing when no item is visible, e.g. when no action is `permitted`.
 
 ## Item types
 
@@ -65,10 +65,10 @@ Other props go to Radix `DropdownMenu.Content` (`side`, `sideOffset`, …).
 
 ## Row actions
 
-The ⋯ menu at the end of a table row or list item (REQUIREMENTS §25.6). Give the menu the record's `name` and listing-style [`RecordAction`](#recordaction) items: only permitted actions are listed, and destructive ones close the menu and then ask "Delete Jane Doe?". `RowActions` is a preset with a ⋯ button sized for a row (44px on touch screens); `DataTable` and `ListView` use it.
+The ⋯ menu at the end of a table row or list item (REQUIREMENTS §25.6). Give the menu the record's `name` and listing-style [`RecordAction`](#recordaction) items: only permitted actions are listed (with none, there is no ⋯ button), and destructive ones close the menu and then ask "Delete Jane Doe?". `DataTable` and `ListView` render one per row.
 
 ```tsx
-import { ActionMenu, RowActions, trashActions } from "@javaabu/onu"
+import { ActionMenu, trashActions } from "@javaabu/onu"
 
 <ActionMenu
   name={user.name}
@@ -81,7 +81,7 @@ import { ActionMenu, RowActions, trashActions } from "@javaabu/onu"
 
 // Trash view: Restore, and Delete permanently (confirms first)
 const { t } = useTranslation()
-<RowActions name={user.name} actions={trashActions(t, { onRestore, onForceDelete })} />
+<ActionMenu name={user.name} items={trashActions(t, { onRestore, onForceDelete })} />
 ```
 
 A destructive action (or `confirm: true`) asks "Delete Jane Doe?" for `id: "delete"`, "Permanently delete Jane Doe?" for `id: "force-delete"`, and "{label} Jane Doe?" otherwise, with "This can't be undone." below; `confirm` options replace any part of that. The dialog is styled even without a `ConfirmProvider`.
@@ -100,21 +100,9 @@ A destructive action (or `confirm: true`) asks "Delete Jane Doe?" for `id: "dele
 | `permitted`             | `boolean`                                                      | `false` leaves it out                                |
 | `disabled`, `separator` | `boolean`                                                      | `separator` draws a line above the item              |
 
-### `RowActions` props
-
-| Prop         | Type                           | Default | Description                                                   |
-| ------------ | ------------------------------ | ------- | ------------------------------------------------------------- |
-| `name`       | `string`                       |         | The record's name: "Actions for Jane Doe", "Delete Jane Doe?" |
-| `actions`    | `RecordAction[]`               |         | See above                                                     |
-| `align`      | `"start" \| "center" \| "end"` | `"end"` | Menu alignment                                                |
-| `classNames` | `{ trigger, content }`         |         | Classes for the ⋯ button and the menu                         |
-| `ref`        | `Ref<HTMLButtonElement>`       |         | The ⋯ button                                                  |
-
-Other button props are passed to the ⋯ button. `RowActions` renders nothing when no action is permitted. The button is named "Actions for Jane Doe" ("ޖަމީލާ އާ ގުޅޭ ކަންކަން" in Dhivehi); after a confirmation closes, focus returns to ⋯.
-
 ## Accessibility
 
-Follows the WAI-ARIA menu button pattern. Focus returns to the trigger when the menu closes, and again when a confirmation closes. Items are at least 44px tall on touch screens.
+Follows the WAI-ARIA menu button pattern. Focus returns to the trigger when the menu closes, and again when a confirmation closes. With `name`, the ⋯ button is named "Actions for Jane Doe" ("ޖަމީލާ އާ ގުޅޭ ކަންކަން" in Dhivehi). The ⋯ button and the items are at least 44px tall on touch screens.
 
 | Key                                                | Action                              |
 | -------------------------------------------------- | ----------------------------------- |

@@ -5,8 +5,13 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { makeUsers, noun, userColumns, userFilters, type User } from "../../../test/listing-fixtures"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
+import { Icon } from "../../icons/icon"
+import { useTranslation } from "../../providers/onu-provider"
+import type { ChoiceOption } from "../choice/options"
+import { SegmentedControl, type SegmentedControlProps } from "../choice/segmented-control"
 import { AppLayout } from "../layout/app-layout"
-import { ListingPage, type ListingPageProps } from "./listing-page"
+import { ListingPage, useListingViewOptions, type ListingPageProps } from "./listing-page"
+import type { ListingView } from "./listing-types"
 import { applyListingState, useListingState } from "./use-listing-state"
 
 // Interaction-heavy tests: allow for slow CI machines and coverage instrumentation.
@@ -189,6 +194,68 @@ describe("ListingPage", () => {
     })
     expect(screen.getByRole("link", { name: /ޓްރޭޝް/ })).toBeInTheDocument()
     expect(screen.getByText("60 މީހުން އިން 1–25 ދައްކަނީ")).toBeInTheDocument()
+    await expectNoA11yViolations()
+  })
+})
+
+function ViewSwitch({
+  views,
+  extra = [],
+  ...props
+}: Partial<SegmentedControlProps> & { views?: ListingView[]; extra?: ChoiceOption[] }) {
+  const { t } = useTranslation()
+  const options = useListingViewOptions(views)
+  return (
+    <SegmentedControl
+      iconOnly
+      size="sm"
+      aria-label={t("listing.view")}
+      defaultValue="table"
+      options={[...options, ...extra]}
+      {...props}
+    />
+  )
+}
+
+describe("useListingViewOptions", () => {
+  it("gives a view switcher the built-in views, switched with clicks and arrow keys", async () => {
+    const onValueChange = vi.fn()
+    renderWithOnu(<ViewSwitch onValueChange={onValueChange} />)
+    const group = screen.getByRole("radiogroup", { name: "View" })
+    const table = within(group).getByRole("radio", { name: "Table" })
+    expect(table).toBeChecked()
+    await userEvent.click(within(group).getByRole("radio", { name: "Grid" }))
+    expect(onValueChange).toHaveBeenCalledWith("grid")
+    expect(within(group).getByRole("radio", { name: "Grid" })).toBeChecked()
+    // Clicking the active view keeps it on.
+    await userEvent.click(within(group).getByRole("radio", { name: "Grid" }))
+    expect(within(group).getByRole("radio", { name: "Grid" })).toBeChecked()
+    await userEvent.keyboard("{ArrowRight}")
+    expect(within(group).getByRole("radio", { name: "Board" })).toHaveFocus()
+    await expectNoA11yViolations()
+  })
+
+  it("supports custom views, labels and controlled value", () => {
+    renderWithOnu(
+      <ViewSwitch
+        value="map"
+        iconOnly={false}
+        views={["list", "custom"]}
+        extra={[{ value: "map", label: "Map", icon: <Icon name="map-pin" /> }]}
+      />,
+    )
+    expect(screen.getByRole("radio", { name: "Map" })).toBeChecked()
+    expect(screen.getByText("List")).toBeInTheDocument()
+    expect(screen.getByRole("radio", { name: "custom" })).toBeInTheDocument()
+  })
+
+  it.each(directions)("follows visual order in %s", async (dir) => {
+    renderWithOnu(<ViewSwitch />, { dir, locale: "dv" })
+    expect(screen.getByRole("radiogroup", { name: "ދައްކާ ގޮތް" })).toBeInTheDocument()
+    const first = screen.getByRole("radio", { name: "ޓޭބަލް" })
+    first.focus()
+    await userEvent.keyboard(dir === "rtl" ? "{ArrowLeft}" : "{ArrowRight}")
+    expect(screen.getByRole("radio", { name: "ލިސްޓު" })).toHaveFocus()
     await expectNoA11yViolations()
   })
 })

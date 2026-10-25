@@ -31,7 +31,7 @@ import { BulkActionBar, type BulkAction } from "./bulk-actions"
 import { EmptyState } from "./empty-state"
 import type { FilterDefinition, ListingNoun } from "./listing-types"
 import { Pagination } from "./pagination"
-import { RowActions } from "../overlays/action-menu"
+import { ActionMenu } from "../overlays/action-menu"
 import type { RecordAction } from "./_actions"
 import { useListingState, type ListingController } from "./use-listing-state"
 import { registerEnglish } from "../../i18n/english"
@@ -306,7 +306,7 @@ export function DataTable<T extends RowData>({
 
   const actionsFor = (row: T) => {
     const actions = rowActions?.(row)
-    return actions?.length ? <RowActions name={nameOf(row)} actions={actions} /> : null
+    return actions?.length ? <ActionMenu name={nameOf(row)} items={actions} className="min-w-40" /> : null
   }
 
   const empty_ = !loading && data.length === 0

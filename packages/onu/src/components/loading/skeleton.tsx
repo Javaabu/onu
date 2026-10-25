@@ -260,15 +260,3 @@ export function SkeletonField({
     </SkeletonRoot>
   )
 }
-
-export interface PlaceholderInputProps extends Omit<SkeletonFieldProps, "label" | "showLabel"> {
-  /** Show a label placeholder. Default `true`. */
-  label?: boolean
-  /** Screen-reader text. Default "Loading…". */
-  srLabel?: string
-}
-
-/** `SkeletonField` under its older name: `label` toggles the label shape and `srLabel` is the screen-reader text. */
-export function PlaceholderInput({ label = true, srLabel, ...props }: PlaceholderInputProps) {
-  return <SkeletonField data-slot="placeholder-input" {...props} showLabel={label} label={srLabel} />
-}

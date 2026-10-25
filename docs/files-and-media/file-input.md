@@ -31,8 +31,6 @@ const [files, setFiles] = React.useState<File[]>([])
 
 With `append`, each pick adds to the list (duplicates are skipped) instead of replacing it, and every file has a remove button. `showLimits` adds a hint with the limits and a live count ("3 of 5"). When `maxFiles` is reached the picker is disabled until a file is removed; extra files from one pick are rejected with "x.pdf was not added: only 5 files are allowed." The count is announced politely as it changes, and the hint uses plural rules for both locales.
 
-`MultipleFileInput` is `FileInput` with `append` and `showLimits` on (pass `showLimits={false}` to hide the hint).
-
 ```tsx
 <FormField label="Tender documents">
   <FileInput append showLimits accept=".pdf,.xlsx,.docx" maxFiles={5} maxSize={10 * 1024 * 1024} />

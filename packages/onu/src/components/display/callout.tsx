@@ -27,37 +27,37 @@ export const calloutVariants = cva("", {
   defaultVariants: { variant: "default" },
 })
 
-/** Classes for the inline appearances (`plain`, `subtle`, `bordered`). Notice's `neutral` tone is Callout's `default`. */
-export const noticeVariants = cva(
+/** Classes for the inline appearances (`plain`, `subtle`, `bordered`). */
+export const calloutInlineVariants = cva(
   "gap-2 text-sm [&>svg]:mt-0.5 [&>svg]:size-4 flex items-start text-pretty [&>svg]:shrink-0",
   {
     variants: {
-      tone: {
-        neutral: "text-muted-foreground",
+      variant: {
+        default: "text-muted-foreground",
         info: "text-muted-foreground [&>svg]:text-info",
         success: "text-muted-foreground [&>svg]:text-success",
         warning: "text-foreground [&>svg]:text-warning",
         destructive: "text-destructive",
       },
-      variant: {
+      appearance: {
         plain: "",
         subtle: "px-3 py-2 rounded-md bg-muted/60",
         bordered: "px-3 py-2 rounded-md border-s-2 bg-muted/40",
       },
     },
     compoundVariants: [
-      { variant: "bordered", tone: "info", className: "border-info" },
-      { variant: "bordered", tone: "success", className: "border-success" },
-      { variant: "bordered", tone: "warning", className: "border-warning" },
-      { variant: "bordered", tone: "destructive", className: "border-destructive" },
-      { variant: "bordered", tone: "neutral", className: "border-border" },
+      { appearance: "bordered", variant: "info", className: "border-info" },
+      { appearance: "bordered", variant: "success", className: "border-success" },
+      { appearance: "bordered", variant: "warning", className: "border-warning" },
+      { appearance: "bordered", variant: "destructive", className: "border-destructive" },
+      { appearance: "bordered", variant: "default", className: "border-border" },
     ],
-    defaultVariants: { tone: "neutral", variant: "plain" },
+    defaultVariants: { variant: "default", appearance: "plain" },
   },
 )
 
 type CalloutVariant = NonNullable<VariantProps<typeof calloutVariants>["variant"]>
-type InlineAppearance = NonNullable<VariantProps<typeof noticeVariants>["variant"]>
+type InlineAppearance = NonNullable<VariantProps<typeof calloutInlineVariants>["appearance"]>
 
 const ICONS: Record<CalloutVariant, string> = {
   default: "info",
@@ -95,7 +95,7 @@ export interface CalloutProps extends Omit<React.ComponentProps<"div">, "title">
  * An alert box for messages that need attention: info, success, warning or
  * destructive, with a title, description, actions and an optional dismiss
  * button. Extends shadcn's `Alert`. With `appearance` set to `plain`,
- * `subtle` or `bordered` it is a quiet inline hint instead (see `Notice`).
+ * `subtle` or `bordered` it is a quiet inline hint instead.
  *
  * Warning and destructive callouts use `role="alert"`; the others use
  * `role="status"` so they are announced politely, and the inline appearances
@@ -146,7 +146,7 @@ export function Callout({
         data-slot="callout"
         data-variant={v}
         data-appearance={appearance}
-        className={cn(noticeVariants({ tone: v === "default" ? "neutral" : v, variant: appearance }), className)}
+        className={cn(calloutInlineVariants({ variant: v, appearance }), className)}
         {...props}
       >
         {iconNode}
@@ -191,27 +191,5 @@ export function Callout({
         </Button>
       ) : null}
     </Alert>
-  )
-}
-
-export interface NoticeProps extends Omit<React.ComponentProps<"div">, "title">, VariantProps<typeof noticeVariants> {
-  /** Semantic icon name, a node, or `false` for none. */
-  icon?: string | React.ReactNode | false
-}
-
-/**
- * `Callout` with an inline `appearance` (`variant` here, default `plain`) and
- * `tone` for its colour: a subtle line of supporting text with an icon, for
- * hints such as "Changes apply from the next billing period". Uses `role="note"`.
- */
-export function Notice({ tone, variant, ...props }: NoticeProps) {
-  return (
-    <Callout
-      data-slot="notice"
-      data-tone={tone ?? "neutral"}
-      variant={!tone || tone === "neutral" ? "default" : tone}
-      appearance={variant ?? "plain"}
-      {...props}
-    />
   )
 }

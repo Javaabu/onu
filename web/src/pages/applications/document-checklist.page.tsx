@@ -4,7 +4,7 @@ import {
   Button,
   Callout,
   Card,
-  InstantFileUpload,
+  DropzoneUploader,
   LinkButton,
   PageTitle,
   ProgressBar,
@@ -176,8 +176,10 @@ export default function DocumentChecklistPage() {
                     }
                   />
                 ) : (
-                  <InstantFileUpload
-                    aria-label={tr(...item.title)}
+                  <DropzoneUploader
+                    appearance="input"
+                    multiple={false}
+                    inputProps={{ "aria-label": tr(...item.title) }}
                     upload={fakeUpload}
                     accept={item.accept}
                     maxSize={5 * 1024 * 1024}

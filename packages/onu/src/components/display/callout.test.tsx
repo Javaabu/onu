@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
-import { Callout, Notice } from "./callout"
+import { Callout } from "./callout"
 
 describe("Callout", () => {
   it.each([
@@ -123,39 +123,55 @@ describe("Callout appearance", () => {
   })
 })
 
-describe("Notice", () => {
-  it.each(["neutral", "info", "success", "warning", "destructive"] as const)("renders the %s tone", (tone) => {
+describe("Callout inline variants", () => {
+  it.each(["default", "info", "success", "warning", "destructive"] as const)("renders the %s variant", (variant) => {
     renderWithOnu(
-      <Notice tone={tone} variant="bordered">
+      <Callout variant={variant} appearance="bordered">
         Changes apply next month.
-      </Notice>,
+      </Callout>,
     )
     const el = screen.getByRole("note")
-    expect(el).toHaveAttribute("data-slot", "notice")
-    expect(el).toHaveAttribute("data-tone", tone)
-    expect(el).toHaveClass(tone === "neutral" ? "border-border" : `border-${tone}`)
+    expect(el).toHaveAttribute("data-slot", "callout")
+    expect(el).toHaveAttribute("data-variant", variant)
+    expect(el).toHaveClass(variant === "default" ? "border-border" : `border-${variant}`)
   })
 
-  it("is plain and neutral by default", () => {
-    const { container } = renderWithOnu(<Notice className="n-x">Hint</Notice>)
+  it("is neutral by default", () => {
+    const { container } = renderWithOnu(
+      <Callout appearance="plain" className="n-x">
+        Hint
+      </Callout>,
+    )
     const el = screen.getByRole("note")
-    expect(el).toHaveAttribute("data-tone", "neutral")
+    expect(el).toHaveAttribute("data-variant", "default")
     expect(el).toHaveClass("n-x", "text-muted-foreground")
     expect(el).not.toHaveClass("rounded-md")
     expect(container.querySelector("[data-icon-name=info]")).toBeInTheDocument()
   })
 
   it("supports custom and hidden icons", () => {
-    const { container, rerender } = renderWithOnu(<Notice icon="clock">Soon</Notice>)
+    const { container, rerender } = renderWithOnu(
+      <Callout appearance="plain" icon="clock">
+        Soon
+      </Callout>,
+    )
     expect(container.querySelector("[data-icon-name=clock]")).toBeInTheDocument()
-    rerender(<Notice icon={false}>Soon</Notice>)
+    rerender(
+      <Callout appearance="plain" icon={false}>
+        Soon
+      </Callout>,
+    )
     expect(container.querySelector("svg")).toBeNull()
-    rerender(<Notice icon={<i data-testid="x" />}>Soon</Notice>)
+    rerender(
+      <Callout appearance="plain" icon={<i data-testid="x" />}>
+        Soon
+      </Callout>,
+    )
     expect(screen.getByTestId("x")).toBeInTheDocument()
   })
 
   it.each(directions)("is accessible in %s", async (dir) => {
-    const { container } = renderWithOnu(<Notice variant="subtle">Hint</Notice>, { dir })
+    const { container } = renderWithOnu(<Callout appearance="subtle">Hint</Callout>, { dir })
     await expectNoA11yViolations(container)
   })
 })

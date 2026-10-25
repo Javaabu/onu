@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import { mockMatchMedia, mockRecharts } from "../../test/recharts-mock"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../test/utils"
 import { useChartAnimation, useTooltipTrigger } from "./_shared"
-import { AreaChart, BarChart, CategoryChart, LineChart, type CategoryChartVariant } from "./category-chart"
+import { CategoryChart, type CategoryChartVariant } from "./category-chart"
 
 vi.mock("recharts", async (importOriginal) => mockRecharts(await importOriginal()))
 
@@ -53,24 +53,8 @@ describe("CategoryChart", () => {
     )
   })
 
-  it("defaults to lines, and variant wins over the deprecated area", () => {
-    const { rerender } = renderWithOnu(
-      <CategoryChart title="Catch" data={fish} categoryKey="month" config={fishConfig} animate={false} />,
-    )
-    expect(screen.getByRole("figure")).toHaveAttribute("data-slot", "line-chart")
-    rerender(<CategoryChart title="Catch" area data={fish} categoryKey="month" config={fishConfig} animate={false} />)
-    expect(screen.getByRole("figure")).toHaveAttribute("data-slot", "area-chart")
-    rerender(
-      <CategoryChart
-        title="Catch"
-        variant="line"
-        area
-        data={fish}
-        categoryKey="month"
-        config={fishConfig}
-        animate={false}
-      />,
-    )
+  it("defaults to lines", () => {
+    renderWithOnu(<CategoryChart title="Catch" data={fish} categoryKey="month" config={fishConfig} animate={false} />)
     expect(screen.getByRole("figure")).toHaveAttribute("data-slot", "line-chart")
   })
 
@@ -115,8 +99,8 @@ describe("CategoryChart", () => {
     void (<CategoryChart {...props} variant="bar" curve="step" />)
     // @ts-expect-error `orientation` is for bars
     void (<CategoryChart {...props} variant="area" orientation="horizontal" />)
-    // @ts-expect-error `area` is for lines
-    void (<CategoryChart {...props} variant="bar" area />)
+    // @ts-expect-error there is no `area` prop: use `variant="area"`
+    void (<CategoryChart {...props} area />)
     void (<CategoryChart {...props} variant="bar" orientation="horizontal" radius={2} stacked />)
     void (<CategoryChart {...props} variant="area" curve="step" dots={false} stacked />)
   })
@@ -143,23 +127,14 @@ describe("CategoryChart", () => {
   )
 })
 
-describe("AreaChart", () => {
-  it("is CategoryChart with variant=area", () => {
-    const { container } = renderWithOnu(
-      <AreaChart title="Catch" stacked data={fish} categoryKey="month" config={fishConfig} animate={false} />,
-    )
-    expect(screen.getByRole("figure")).toHaveAttribute("data-slot", "area-chart")
-    expect(container.querySelectorAll(".recharts-area")).toHaveLength(2)
-  })
-})
-
-describe("BarChart", () => {
+describe('CategoryChart variant="bar"', () => {
   let restore: (() => void) | undefined
   afterEach(() => restore?.())
 
   it("renders a titled figure with an accessible chart surface and summary", () => {
     const { container } = renderWithOnu(
-      <BarChart
+      <CategoryChart
+        variant="bar"
         title="Council revenue"
         description="In Rufiyaa"
         data={data}
@@ -183,7 +158,7 @@ describe("BarChart", () => {
 
   it("draws one bar per value and a legend for several series", () => {
     const { container } = renderWithOnu(
-      <BarChart title="Revenue" data={data} categoryKey="island" config={config} animate={false} />,
+      <CategoryChart variant="bar" title="Revenue" data={data} categoryKey="island" config={config} animate={false} />,
     )
     expect(container.querySelectorAll(".recharts-bar-rectangle path")).toHaveLength(3)
     expect(container.querySelector(".recharts-legend-wrapper")).toHaveTextContent("RevenueExpenses")
@@ -191,7 +166,14 @@ describe("BarChart", () => {
 
   it("hides the legend for a single series and uses chart tokens for colours", () => {
     const { container } = renderWithOnu(
-      <BarChart title="Revenue" data={data} categoryKey="island" series={["revenue"]} animate={false} />,
+      <CategoryChart
+        variant="bar"
+        title="Revenue"
+        data={data}
+        categoryKey="island"
+        series={["revenue"]}
+        animate={false}
+      />,
     )
     expect(container.querySelector(".recharts-legend-wrapper")).toBeNull()
     expect(container.querySelector("style")!.innerHTML).toContain("--color-revenue: var(--chart-1)")
@@ -199,7 +181,16 @@ describe("BarChart", () => {
 
   it("toggles to a real data table and back", async () => {
     const user = userEvent.setup()
-    renderWithOnu(<BarChart title="Revenue" data={data} categoryKey="island" config={config} valueFormat="currency" />)
+    renderWithOnu(
+      <CategoryChart
+        variant="bar"
+        title="Revenue"
+        data={data}
+        categoryKey="island"
+        config={config}
+        valueFormat="currency"
+      />,
+    )
     await user.click(screen.getByRole("button", { name: "View as table" }))
     const table = screen.getByRole("table")
     const rows = within(table).getAllByRole("row")
@@ -221,7 +212,8 @@ describe("BarChart", () => {
     const user = userEvent.setup()
     const onViewChange = vi.fn()
     renderWithOnu(
-      <BarChart
+      <CategoryChart
+        variant="bar"
         title="Revenue"
         data={data}
         categoryKey="island"
@@ -237,7 +229,8 @@ describe("BarChart", () => {
 
   it("can start in table view and hide the toggle", () => {
     renderWithOnu(
-      <BarChart
+      <CategoryChart
+        variant="bar"
         title="Revenue"
         data={data}
         categoryKey="island"
@@ -251,19 +244,31 @@ describe("BarChart", () => {
   })
 
   it("shows loading and empty states", () => {
-    const { rerender } = renderWithOnu(<BarChart title="Revenue" data={data} categoryKey="island" loading />)
+    const { rerender } = renderWithOnu(
+      <CategoryChart variant="bar" title="Revenue" data={data} categoryKey="island" loading />,
+    )
     expect(screen.getByRole("status")).toHaveTextContent("Loading chart…")
     expect(screen.getByRole("figure")).toHaveAttribute("aria-busy", "true")
     expect(screen.queryByRole("button")).toBeNull()
-    rerender(<BarChart title="Revenue" data={[]} categoryKey="island" config={config} />)
+    rerender(<CategoryChart variant="bar" title="Revenue" data={[]} categoryKey="island" config={config} />)
     expect(screen.getByText("No data to show")).toBeInTheDocument()
-    rerender(<BarChart title="Revenue" data={[]} categoryKey="island" config={config} emptyMessage="Nothing yet" />)
+    rerender(
+      <CategoryChart
+        variant="bar"
+        title="Revenue"
+        data={[]}
+        categoryKey="island"
+        config={config}
+        emptyMessage="Nothing yet"
+      />,
+    )
     expect(screen.getByText("Nothing yet")).toBeInTheDocument()
   })
 
   it("lays out horizontal bars with categories on the y axis", () => {
     const { container } = renderWithOnu(
-      <BarChart
+      <CategoryChart
+        variant="bar"
         title="Revenue"
         orientation="horizontal"
         data={data}
@@ -278,7 +283,15 @@ describe("BarChart", () => {
 
   it("stacks series", () => {
     const { container } = renderWithOnu(
-      <BarChart title="Revenue" stacked data={data} categoryKey="island" config={config} animate={false} />,
+      <CategoryChart
+        variant="bar"
+        title="Revenue"
+        stacked
+        data={data}
+        categoryKey="island"
+        config={config}
+        animate={false}
+      />,
     )
     const paths = [...container.querySelectorAll(".recharts-bar-rectangle path")]
     // Stacked bars for the same category share an x position.
@@ -287,7 +300,7 @@ describe("BarChart", () => {
 
   it.each(directions)("mirrors the axes in %s", (dir) => {
     const { container } = renderWithOnu(
-      <BarChart title="Revenue" data={data} categoryKey="island" config={config} animate={false} />,
+      <CategoryChart variant="bar" title="Revenue" data={data} categoryKey="island" config={config} animate={false} />,
       { dir },
     )
     const [first, second] = tickTexts(container, "xAxis")
@@ -300,7 +313,14 @@ describe("BarChart", () => {
 
   it("reads in Dhivehi", () => {
     const { container } = renderWithOnu(
-      <BarChart title="އާމްދަނީ" data={data} categoryKey="island" config={config} valueFormat="currency" />,
+      <CategoryChart
+        variant="bar"
+        title="އާމްދަނީ"
+        data={data}
+        categoryKey="island"
+        config={config}
+        valueFormat="currency"
+      />,
       { locale: "dv" },
     )
     expect(screen.getByRole("button", { name: "ޖަދުވަލުގައި ބައްލަވާ" })).toBeInTheDocument()
@@ -309,7 +329,8 @@ describe("BarChart", () => {
 
   it("accepts className and classNames", () => {
     const { container } = renderWithOnu(
-      <BarChart
+      <CategoryChart
+        variant="bar"
         title="Revenue"
         data={data}
         categoryKey="island"
@@ -332,7 +353,8 @@ describe("BarChart", () => {
   it("uses a custom summary and category format", async () => {
     const user = userEvent.setup()
     const { container } = renderWithOnu(
-      <BarChart
+      <CategoryChart
+        variant="bar"
         title="Revenue"
         summary="Custom summary"
         data={data}
@@ -351,7 +373,7 @@ describe("BarChart", () => {
   it("has no axe violations in chart and table view", async () => {
     const user = userEvent.setup()
     const { container } = renderWithOnu(
-      <BarChart title="Revenue" data={data} categoryKey="island" config={config} animate={false} />,
+      <CategoryChart variant="bar" title="Revenue" data={data} categoryKey="island" config={config} animate={false} />,
     )
     await expectNoA11yViolations(container)
     await user.click(screen.getByRole("button", { name: "View as table" }))
@@ -376,10 +398,10 @@ describe("BarChart", () => {
   })
 })
 
-describe("LineChart", () => {
+describe('CategoryChart variant="line" and "area"', () => {
   it("renders a line per series with a legend", () => {
     const { container } = renderWithOnu(
-      <LineChart title="Catch" data={fish} categoryKey="month" config={fishConfig} animate={false} />,
+      <CategoryChart title="Catch" data={fish} categoryKey="month" config={fishConfig} animate={false} />,
     )
     expect(screen.getByRole("figure", { name: "Catch" })).toHaveAttribute("data-slot", "line-chart")
     expect(container.querySelectorAll(".recharts-line")).toHaveLength(2)
@@ -391,7 +413,7 @@ describe("LineChart", () => {
 
   it("leaves gaps for missing values unless connectNulls is set", () => {
     const { container, rerender } = renderWithOnu(
-      <LineChart
+      <CategoryChart
         title="Catch"
         data={fish}
         categoryKey="month"
@@ -404,7 +426,7 @@ describe("LineChart", () => {
     // A gap starts a new sub-path (a second "M").
     expect(path().match(/M/g)).toHaveLength(2)
     rerender(
-      <LineChart
+      <CategoryChart
         title="Catch"
         data={fish}
         categoryKey="month"
@@ -419,7 +441,7 @@ describe("LineChart", () => {
 
   it("dashes the given series", () => {
     const { container } = renderWithOnu(
-      <LineChart
+      <CategoryChart
         title="Catch"
         data={fish}
         categoryKey="month"
@@ -435,9 +457,9 @@ describe("LineChart", () => {
 
   it("draws filled, optionally stacked areas", () => {
     const { container } = renderWithOnu(
-      <LineChart
+      <CategoryChart
         title="Catch"
-        area
+        variant="area"
         stacked
         data={fish}
         categoryKey="month"
@@ -453,7 +475,7 @@ describe("LineChart", () => {
 
   it("shows gaps as 'No data' in the table", async () => {
     const user = userEvent.setup()
-    renderWithOnu(<LineChart title="Catch" data={fish} categoryKey="month" config={fishConfig} />)
+    renderWithOnu(<CategoryChart title="Catch" data={fish} categoryKey="month" config={fishConfig} />)
     await user.click(screen.getByRole("button", { name: "View as table" }))
     const row = screen.getAllByRole("row")[2]!
     expect(within(row).getByRole("rowheader")).toHaveTextContent("Feb")
@@ -462,7 +484,7 @@ describe("LineChart", () => {
 
   it.each(directions)("puts the newest category on the %s-appropriate side", (dir) => {
     const { container } = renderWithOnu(
-      <LineChart title="Catch" data={fish} categoryKey="month" config={fishConfig} animate={false} />,
+      <CategoryChart title="Catch" data={fish} categoryKey="month" config={fishConfig} animate={false} />,
       { dir },
     )
     const ticks = [...container.querySelectorAll(".recharts-xAxis-tick-labels text")]
@@ -473,7 +495,7 @@ describe("LineChart", () => {
 
   it("uses Dhivehi labels", () => {
     const { container } = renderWithOnu(
-      <LineChart title="މަސް" data={fish} categoryKey="month" config={fishConfig} animate={false} />,
+      <CategoryChart title="މަސް" data={fish} categoryKey="month" config={fishConfig} animate={false} />,
       { locale: "dv" },
     )
     expect(container.querySelector('[data-slot="chart-summary"]')).toHaveTextContent("ލައިން ޗާޓް")
@@ -481,7 +503,7 @@ describe("LineChart", () => {
 
   it("has no axe violations", async () => {
     const { container } = renderWithOnu(
-      <LineChart title="Catch" data={fish} categoryKey="month" config={fishConfig} animate={false} />,
+      <CategoryChart title="Catch" data={fish} categoryKey="month" config={fishConfig} animate={false} />,
     )
     await expectNoA11yViolations(container)
   })

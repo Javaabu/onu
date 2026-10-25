@@ -1,12 +1,12 @@
 import * as React from "react"
-import { screen, configure, within } from "@testing-library/react"
+import { screen, configure } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { Icon } from "../../icons/icon"
 import { FormField } from "../form/form-field"
-import { SegmentedControl, ViewSwitcher } from "./segmented-control"
+import { SegmentedControl } from "./segmented-control"
 
 // Interaction-heavy tests: allow for slow, shared CI machines.
 vi.setConfig({ testTimeout: 30_000 })
@@ -128,48 +128,6 @@ describe("SegmentedControl", () => {
       { locale: "dv", dir },
     )
     expect(screen.getByRole("radio", { name: "ލިސްޓު" })).toHaveAttribute("aria-checked", "true")
-    await expectNoA11yViolations()
-  })
-})
-
-describe("ViewSwitcher", () => {
-  it("switches views with buttons and arrow keys", async () => {
-    const onValueChange = vi.fn()
-    renderWithOnu(<ViewSwitcher onValueChange={onValueChange} />)
-    const group = screen.getByRole("radiogroup", { name: "View" })
-    expect(group).toHaveAttribute("data-slot", "view-switcher")
-    const table = within(group).getByRole("radio", { name: "Table" })
-    expect(table).toBeChecked()
-    await userEvent.click(within(group).getByRole("radio", { name: "Grid" }))
-    expect(onValueChange).toHaveBeenCalledWith("grid")
-    expect(within(group).getByRole("radio", { name: "Grid" })).toBeChecked()
-    // Clicking the active view keeps it on.
-    await userEvent.click(within(group).getByRole("radio", { name: "Grid" }))
-    expect(within(group).getByRole("radio", { name: "Grid" })).toBeChecked()
-    await userEvent.keyboard("{ArrowRight}")
-    expect(within(group).getByRole("radio", { name: "Board" })).toHaveFocus()
-    await expectNoA11yViolations()
-  })
-
-  it("supports custom views, labels and controlled value", () => {
-    renderWithOnu(
-      <ViewSwitcher
-        value="map"
-        showLabels
-        views={["list", { value: "map", label: "Map", icon: "map-pin" }, "custom"]}
-      />,
-    )
-    expect(screen.getByRole("radio", { name: "Map" })).toBeChecked()
-    expect(screen.getByText("List")).toBeInTheDocument()
-    expect(screen.getByRole("radio", { name: "custom" })).toBeInTheDocument()
-  })
-
-  it.each(directions)("follows visual order in %s", async (dir) => {
-    renderWithOnu(<ViewSwitcher />, { dir, locale: "dv" })
-    const first = screen.getByRole("radio", { name: "ޓޭބަލް" })
-    first.focus()
-    await userEvent.keyboard(dir === "rtl" ? "{ArrowLeft}" : "{ArrowRight}")
-    expect(screen.getByRole("radio", { name: "ލިސްޓު" })).toHaveFocus()
     await expectNoA11yViolations()
   })
 })

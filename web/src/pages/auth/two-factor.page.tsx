@@ -2,12 +2,12 @@ import * as React from "react"
 import { useNavigate } from "react-router"
 import {
   Button,
+  Callout,
   Form,
   FormContainer,
   FormField,
   Icon,
   LinkButton,
-  Notice,
   OtpInput,
   SubmitButton,
   TextInput,
@@ -172,12 +172,12 @@ export default function TwoFactorPage() {
           </div>
         </Form>
       </FormContainer>
-      <Notice tone="neutral" variant="subtle" icon="lock" className="max-w-sm mt-4 mx-auto">
+      <Callout appearance="subtle" icon="lock" className="max-w-sm mt-4 mx-auto">
         {tr(
           "Never share this code. Staff will never ask you for it.",
           "މި ކޯޑު އެއްވެސް މީހަކާ ހިއްސާ ނުކުރައްވާ. މުވައްޒަފުން ކޯޑު ނުއަހާނެ.",
         )}
-      </Notice>
+      </Callout>
     </AuthShell>
   )
 }

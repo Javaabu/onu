@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest"
 import { mockRecharts } from "../../test/recharts-mock"
 import { renderWithOnu } from "../../test/utils"
 import { areaGradient, barDirections, barGradient, ChartStyleProvider, useChartGradient } from "./_gradient"
-import { BarChart, LineChart } from "./category-chart"
+import { CategoryChart } from "./category-chart"
 import { PeriodComparisonChart } from "./period-comparison-chart"
 import { PieChart } from "./pie-chart"
 import { Sparkline } from "./sparkline"
@@ -31,7 +31,7 @@ const fills = (root: ParentNode, selector: string) =>
 describe("chart gradients", () => {
   it("defines one gradient per bar series and fills the bars with it", () => {
     const { container } = renderWithOnu(
-      <BarChart title="Catch" data={data} categoryKey="month" config={config} animate={false} />,
+      <CategoryChart variant="bar" title="Catch" data={data} categoryKey="month" config={config} animate={false} />,
     )
     const defs = gradients(container)
     expect(defs).toHaveLength(2)
@@ -47,8 +47,8 @@ describe("chart gradients", () => {
   it("gives each chart instance its own gradient ids", () => {
     const { container } = renderWithOnu(
       <>
-        <BarChart title="A" data={data} categoryKey="month" config={config} animate={false} />
-        <BarChart title="B" data={data} categoryKey="month" config={config} animate={false} />
+        <CategoryChart variant="bar" title="A" data={data} categoryKey="month" config={config} animate={false} />
+        <CategoryChart variant="bar" title="B" data={data} categoryKey="month" config={config} animate={false} />
       </>,
     )
     const ids = gradients(container).map((g) => g.id)
@@ -59,7 +59,15 @@ describe("chart gradients", () => {
 
   it("draws solid fills with gradient={false}", () => {
     const { container } = renderWithOnu(
-      <BarChart title="Catch" data={data} categoryKey="month" config={config} gradient={false} animate={false} />,
+      <CategoryChart
+        variant="bar"
+        title="Catch"
+        data={data}
+        categoryKey="month"
+        config={config}
+        gradient={false}
+        animate={false}
+      />,
     )
     expect(gradients(container)).toHaveLength(0)
     expect(container.querySelector("[data-fill]")).toHaveAttribute("data-fill", "solid")
@@ -69,8 +77,16 @@ describe("chart gradients", () => {
   it("follows ChartStyleProvider, and the prop wins over it", () => {
     renderWithOnu(
       <ChartStyleProvider gradient={false}>
-        <LineChart title="Off" data={data} categoryKey="month" config={config} area animate={false} />
-        <LineChart title="On" data={data} categoryKey="month" config={config} area gradient animate={false} />
+        <CategoryChart title="Off" data={data} categoryKey="month" config={config} variant="area" animate={false} />
+        <CategoryChart
+          title="On"
+          data={data}
+          categoryKey="month"
+          config={config}
+          variant="area"
+          gradient
+          animate={false}
+        />
       </ChartStyleProvider>,
     )
     const [off, on] = screen.getAllByRole("figure")
@@ -92,7 +108,7 @@ describe("chart gradients", () => {
 
   it("fades area fills and keeps lines solid", () => {
     const { container } = renderWithOnu(
-      <LineChart title="Catch" data={data} categoryKey="month" config={config} area animate={false} />,
+      <CategoryChart title="Catch" data={data} categoryKey="month" config={config} variant="area" animate={false} />,
     )
     const [first] = gradients(container)
     expect(first).toHaveAttribute("y2", "1")
@@ -106,7 +122,7 @@ describe("chart gradients", () => {
   it("adds no gradients to plain line charts or pies", () => {
     const { container } = renderWithOnu(
       <>
-        <LineChart title="Lines" data={data} categoryKey="month" config={config} animate={false} />
+        <CategoryChart title="Lines" data={data} categoryKey="month" config={config} animate={false} />
         <TimeSeriesChart title="Arrivals" data={days} config={{ arrivals: { label: "Arrivals" } }} animate={false} />
         <PieChart
           title="Share"
@@ -182,7 +198,7 @@ describe("chart gradients", () => {
 
   it("keeps legend swatches solid", () => {
     const { container } = renderWithOnu(
-      <BarChart title="Catch" data={data} categoryKey="month" config={config} animate={false} />,
+      <CategoryChart variant="bar" title="Catch" data={data} categoryKey="month" config={config} animate={false} />,
     )
     const swatches = [...container.querySelectorAll<HTMLElement>(".recharts-legend-wrapper .rounded-\\[2px\\]")]
     expect(swatches.map((s) => s.style.backgroundColor)).toEqual(["var(--color-skipjack)", "var(--color-yellowfin)"])
@@ -190,7 +206,8 @@ describe("chart gradients", () => {
 
   it.each(["ltr", "rtl"] as const)("runs horizontal bar gradients towards the value end in %s", (dir) => {
     const { container } = renderWithOnu(
-      <BarChart
+      <CategoryChart
+        variant="bar"
         title="Catch"
         data={data}
         categoryKey="month"
@@ -210,7 +227,8 @@ describe("chart gradients", () => {
 
   it("mirrors negative bars", () => {
     const { container } = renderWithOnu(
-      <BarChart
+      <CategoryChart
+        variant="bar"
         title="Change"
         data={[
           { month: "Jan", change: 4 },

@@ -4,7 +4,6 @@ import {
   Callout,
   Card,
   ConfirmDialog,
-  CopyInput,
   EmailInput,
   Form,
   FormField,
@@ -18,6 +17,7 @@ import {
   RelativeDate,
   SaveBar,
   Select,
+  SensitiveInput,
   StatusBadge,
   SubmitButton,
   TextInput,
@@ -341,7 +341,7 @@ export default function UserProfilePage() {
                     </span>
                     <FakeQr label={tr("QR code for the authenticator app", "އޮތެންޓިކޭޓަރ އެޕަށް ކިއުއާރް ކޯޑު")} />
                     <FormField label={tr("Or enter this key", "ނުވަތަ މި ކީ ޖައްސަވާ")}>
-                      <CopyInput value={SECRET} mono dir="ltr" />
+                      <SensitiveInput masked={false} value={SECRET} dir="ltr" />
                     </FormField>
                   </li>
                   <li className="gap-2 grid">

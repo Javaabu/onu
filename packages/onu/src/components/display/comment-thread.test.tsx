@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
-import { CommentThread, Notes, type CommentData, type NoteData } from "./comment-thread"
+import { CommentThread, type CommentData } from "./comment-thread"
 
 const NOW = new Date("2026-03-12T10:00:00Z")
 const ago = (minutes: number) => new Date(NOW.getTime() - minutes * 60_000)
@@ -152,8 +152,6 @@ describe("CommentThread", () => {
       <CommentThread
         comments={comments.slice(0, 1).map((c) => ({ ...c, replies: undefined }))}
         variant="list"
-        replies={false}
-        composerPosition="top"
         onAdd={onAdd}
         now={NOW}
         classNames={{ comment: "item-x" }}
@@ -202,18 +200,20 @@ describe("CommentThread", () => {
   })
 })
 
-const notes: NoteData[] = [
+const notes: CommentData[] = [
   { id: 1, author: { id: "u1", name: "Aishath Shiuna" }, body: "Called the applicant.", createdAt: ago(90) },
   { id: 2, author: { id: "u2", name: "Ahmed Ali" }, body: "Waiting for documents.", createdAt: ago(3) },
 ]
 
-describe("Notes", () => {
+describe("CommentThread as notes", () => {
   it("lists notes with author and time", () => {
-    const { container } = renderWithOnu(<Notes notes={notes} now={NOW} classNames={{ note: "note-x" }} />)
+    const { container } = renderWithOnu(
+      <CommentThread variant="list" comments={notes} now={NOW} classNames={{ comment: "note-x" }} />,
+    )
     expect(screen.getByRole("heading", { name: "Notes" })).toBeInTheDocument()
-    expect(screen.getByRole("region", { name: "Notes" })).toHaveAttribute("data-slot", "notes")
-    expect(container.querySelectorAll("[data-slot=note]")).toHaveLength(2)
-    expect(container.querySelector("[data-slot=note]")).toHaveClass("note-x")
+    expect(screen.getByRole("region", { name: "Notes" })).toHaveAttribute("data-slot", "comment-thread")
+    expect(container.querySelectorAll("[data-slot=comment]")).toHaveLength(2)
+    expect(container.querySelector("[data-slot=comment]")).toHaveClass("note-x")
     expect(screen.getByText("Called the applicant.")).toBeInTheDocument()
     expect(screen.getByText("3 minutes ago")).toBeInTheDocument()
   })
@@ -221,38 +221,56 @@ describe("Notes", () => {
   it("adds a note", async () => {
     const user = userEvent.setup()
     const onAdd = vi.fn()
-    renderWithOnu(<Notes notes={[]} onAdd={onAdd} composerPosition="bottom" />)
+    renderWithOnu(<CommentThread variant="list" comments={[]} onAdd={onAdd} composerPosition="bottom" />)
     expect(screen.getByText("No notes yet")).toBeInTheDocument()
     await user.type(screen.getByRole("textbox", { name: "Add an internal note…" }), "Checked")
     await user.click(screen.getByRole("button", { name: "Add note" }))
-    expect(onAdd).toHaveBeenCalledWith("Checked")
+    expect(onAdd).toHaveBeenCalledWith("Checked", null)
   })
 
   it("deletes after confirmation, only for allowed notes", async () => {
     const user = userEvent.setup()
     const onDelete = vi.fn()
-    const { rerender } = renderWithOnu(<Notes notes={notes} onDelete={onDelete} currentUserId="u2" now={NOW} />)
+    const { rerender } = renderWithOnu(
+      <CommentThread variant="list" comments={notes} onDelete={onDelete} currentUserId="u2" now={NOW} />,
+    )
     const buttons = screen.getAllByRole("button", { name: "Delete note" })
     expect(buttons).toHaveLength(1)
     await user.click(buttons[0]!)
     await user.click(within(await screen.findByRole("alertdialog")).getByRole("button", { name: "Delete" }))
     expect(onDelete).toHaveBeenCalledWith(2)
-    rerender(<Notes notes={notes} onDelete={onDelete} canDelete={() => true} title={null} now={NOW} />)
+    rerender(
+      <CommentThread
+        variant="list"
+        comments={notes}
+        onDelete={onDelete}
+        canDelete={() => true}
+        title={null}
+        now={NOW}
+      />,
+    )
     expect(screen.getAllByRole("button", { name: "Delete note" })).toHaveLength(2)
-    rerender(<Notes notes={notes} onDelete={onDelete} now={NOW} />)
-    expect(screen.getAllByRole("button", { name: "Delete note" })).toHaveLength(2)
+    rerender(<CommentThread variant="list" comments={notes} onDelete={onDelete} now={NOW} />)
+    expect(screen.queryByRole("button", { name: "Delete note" })).toBeNull()
   })
 
   it("supports Thaana in the note box", () => {
-    renderWithOnu(<Notes notes={[]} onAdd={() => {}} thaana />)
+    renderWithOnu(<CommentThread variant="list" comments={[]} onAdd={() => {}} thaana />)
     expect(screen.getByRole("textbox")).toHaveAttribute("lang", "dv")
   })
 
   it.each(directions)("is accessible in %s", async (dir) => {
-    const { container } = renderWithOnu(<Notes notes={notes} onAdd={() => {}} onDelete={() => {}} now={NOW} />, {
-      dir,
-      locale: "dv",
-    })
+    const { container } = renderWithOnu(
+      <CommentThread
+        variant="list"
+        comments={notes}
+        onAdd={() => {}}
+        onDelete={() => {}}
+        currentUserId="u1"
+        now={NOW}
+      />,
+      { dir, locale: "dv" },
+    )
     await expectNoA11yViolations(container)
   })
 })

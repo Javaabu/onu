@@ -50,7 +50,7 @@ import { ListView } from "@javaabu/onu"
 
 ## Grid layout
 
-`layout="grid"` shows the records as a responsive grid of cards. Columns follow the space available (`repeat(auto-fill, minmax(…))`), not the viewport, so the grid also works in a sidebar or a narrow column. `GridView` is a preset with the layout fixed to `grid`.
+`layout="grid"` shows the records as a responsive grid of cards. Columns follow the space available (`repeat(auto-fill, minmax(…))`), not the viewport, so the grid also works in a sidebar or a narrow column.
 
 ```tsx
 <ListView

@@ -19,29 +19,15 @@ Copy always copies the full secret, even while it is masked. The clipboard API i
 
 With `masked={false}` the value is shown as is, with only the copy button: share links, reference numbers, account numbers. Focusing the input selects the whole value.
 
-`CopyInput` is `SensitiveInput` with `masked={false}`, and it is not monospace unless you pass `mono`.
+It stays monospace unless you pass `mono={false}` (for links and other prose-like values).
 
 ```tsx
-import { CopyInput } from "@javaabu/onu"
-
 ;<FormField label="Share link">
   <SensitiveInput masked={false} mono={false} value="https://portal.gov.mv/track/REF-2026-00451" />
 </FormField>
 
-<CopyInput value="REF-2026-00451" mono onCopy={() => toast.success("Copied")} />
+<SensitiveInput masked={false} value="REF-2026-00451" onCopy={() => toast.success("Copied")} />
 ```
-
-`CopyInput` props:
-
-| Prop         | Type                                    | Default | Description                           |
-| ------------ | --------------------------------------- | ------- | ------------------------------------- |
-| `value`      | `string`                                |         | The value to show and copy (required) |
-| `onCopy`     | `(value: string) => void`               |         | Called after a successful copy        |
-| `mono`       | `boolean`                               | `false` | Use the monospace font                |
-| `endAddon`   | `ReactNode`                             |         | Extra content before the copy button  |
-| `classNames` | `{ root, input, startAddon, endAddon }` |         | Classes for each part                 |
-
-All other `<input>` props are passed through. The input is always `readOnly`.
 
 ## Props
 
@@ -58,7 +44,10 @@ All other `<input>` props are passed through. The input is always `readOnly`.
 | `copyable`         | `boolean`                               | `true`  | Show the copy button                                   |
 | `onCopy`           | `(value: string) => void`               |         | Called after a successful copy                         |
 | `mono`             | `boolean`                               | `true`  | Use the monospace font                                 |
+| `endAddon`         | `ReactNode`                             |         | Extra content before the buttons                       |
 | `classNames`       | `{ root, input, startAddon, endAddon }` |         | Classes for each part                                  |
+
+All other `<input>` props are passed through. The input is always `readOnly`.
 
 Also exported: `maskSecret(value, visibleChars?, maskLength?, maskChar?)`.
 

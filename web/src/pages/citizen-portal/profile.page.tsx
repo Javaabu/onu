@@ -2,6 +2,7 @@ import * as React from "react"
 import {
   AccountSwitcher,
   Button,
+  Callout,
   Card,
   Checkbox,
   FormErrorsProvider,
@@ -10,7 +11,6 @@ import {
   Form,
   ListView,
   Modal,
-  Notice,
   PageTitle,
   PhoneInput,
   Select,
@@ -177,12 +177,12 @@ export default function ProfilePage() {
               }}
             />
             {acting !== "me" ? (
-              <Notice tone="info">
+              <Callout appearance="plain" variant="info">
                 {tr(
                   `Applications and payments you make now are made for ${actingAccount?.name}.`,
                   `މިހާރު ކުރާ ޢަމަލުތައް ކުރެވެނީ ${actingAccount?.name} ގެ ފަރާތުން.`,
                 )}
-              </Notice>
+              </Callout>
             ) : null}
           </div>
         </Card>

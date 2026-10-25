@@ -7,7 +7,7 @@ import { useFormFieldControl } from "../form/form-field"
 import { ComboboxCore, type ComboboxPresentationProps } from "./_combobox"
 import { useQuickCreate, type QuickCreateProps } from "./_create"
 import { useOnChange, useParentField, type ParentFieldProps } from "./_hooks"
-import { useChoiceSelection, useOpenState, type MultipleSelectionProps, type SelectionProps } from "./_selection"
+import { useChoiceSelection, useOpenState, type SelectionProps } from "./_selection"
 import { filterOptions, normalizeOptions, type ChoiceOption, type ChoiceOptionInput } from "./options"
 
 type TriggerProps = Omit<
@@ -44,10 +44,21 @@ export type { CreateDialogRenderProps, QuickCreateProps } from "./_create"
 
 export type SearchableSelectProps = SelectionProps & SearchableSelectBaseProps & QuickCreateProps
 
-type InternalProps = SearchableSelectProps & { dataSlot?: string }
-
-/** @internal Shared by SearchableSelect and its presets. */
-export function LocalCombobox(props: InternalProps) {
+/**
+ * A select with a search field: a button that opens a searchable list
+ * (Popover + Command, a bottom sheet on phones). Matching uses `Intl.Collator`
+ * so it handles accents and Thaana (R12.8); the search field accepts `thaana`.
+ *
+ * - `multiple`: chips in the field (each removable), a "Select all" row and an
+ *   optional `max`; Backspace in the empty search removes the last chip.
+ *   Submits `name[]` for Laravel.
+ * - `onCreate` / `renderCreateDialog`: when nothing matches the search exactly,
+ *   a "Create “x”" row creates the option inline or through your own dialog.
+ *   The new option is added, selected and announced.
+ * - `parentValue`: a field that depends on another (atoll → island), with
+ *   `options` per parent value. For remote options use `ApiSelect`.
+ */
+export function SearchableSelect(props: SearchableSelectProps) {
   const {
     multiple,
     value,
@@ -61,7 +72,6 @@ export function LocalCombobox(props: InternalProps) {
     onCreate,
     renderCreateDialog,
     onCreated,
-    dataSlot = "searchable-select",
     parentValue: _parentValue,
     parentLabel: _parentLabel,
     placeholder: placeholderProp,
@@ -128,7 +138,7 @@ export function LocalCombobox(props: InternalProps) {
     <>
       <ComboboxCore
         ref={ref}
-        dataSlot={dataSlot}
+        dataSlot="searchable-select"
         multiple={selection.multiple}
         selected={selection.selected}
         options={visible}
@@ -168,34 +178,4 @@ export function LocalCombobox(props: InternalProps) {
       {create.dialog}
     </>
   )
-}
-
-/**
- * A select with a search field: a button that opens a searchable list
- * (Popover + Command, a bottom sheet on phones). Matching uses `Intl.Collator`
- * so it handles accents and Thaana (R12.8); the search field accepts `thaana`.
- *
- * - `multiple`: chips in the field (each removable), a "Select all" row and an
- *   optional `max`; Backspace in the empty search removes the last chip.
- *   Submits `name[]` for Laravel.
- * - `onCreate` / `renderCreateDialog`: when nothing matches the search exactly,
- *   a "Create “x”" row creates the option inline or through your own dialog.
- *   The new option is added, selected and announced.
- */
-export function SearchableSelect(props: SearchableSelectProps) {
-  return <LocalCombobox {...props} />
-}
-
-export type MultiSelectProps = Omit<MultipleSelectionProps, "multiple"> & SearchableSelectBaseProps & QuickCreateProps
-
-/** `SearchableSelect` with `multiple`. */
-export function MultiSelect(props: MultiSelectProps) {
-  return <LocalCombobox {...props} multiple dataSlot="multi-select" />
-}
-
-export type QuickCreateSelectProps = SearchableSelectProps
-
-/** `SearchableSelect` for lists that grow: pass `onCreate` or `renderCreateDialog`. */
-export function QuickCreateSelect(props: QuickCreateSelectProps) {
-  return <LocalCombobox {...props} dataSlot="quick-create-select" />
 }

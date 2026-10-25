@@ -8,11 +8,10 @@ import {
   DescriptionList,
   DescriptionListItem,
   Divider,
+  DropzoneUploader,
   FormField,
-  InstantFileUpload,
   LinkButton,
   Modal,
-  Notice,
   PageTitle,
   PaymentMethodSelector,
   Spinner,
@@ -136,12 +135,12 @@ export default function CheckoutPage() {
 
                 {method === "bml-transfer" ? (
                   <div className="gap-5 grid">
-                    <Notice variant="bordered" tone="info">
+                    <Callout appearance="bordered" variant="info">
                       {tr(
                         "Transfer the exact amount from any BML account, then upload the slip.",
                         "ބީއެމްއެލްގެ ކޮންމެ އެކައުންޓަކުން ފީގެ ޢަދަދު ޓްރާންސްފަރކޮށް، ސްލިޕް އަޕްލޯޑްކުރައްވާ.",
                       )}
-                    </Notice>
+                    </Callout>
                     <DescriptionList layout="inline" striped>
                       <DescriptionListItem label={tr("Bank", "ބޭންކު")}>
                         {tr("Bank of Maldives", "ބޭންކް އޮފް މޯލްޑިވްސް")}
@@ -178,7 +177,9 @@ export default function CheckoutPage() {
                       error={slipError}
                       required
                     >
-                      <InstantFileUpload
+                      <DropzoneUploader
+                        appearance="input"
+                        multiple={false}
                         upload={fakeUpload}
                         accept="image/*,.pdf"
                         maxSize={5 * 1024 * 1024}
@@ -210,12 +211,12 @@ export default function CheckoutPage() {
                   </div>
                 ) : method === "bml-connect" ? (
                   <div className="gap-4 grid">
-                    <Notice variant="bordered" tone="info" icon="lock">
+                    <Callout appearance="bordered" variant="info" icon="lock">
                       {tr(
                         "You'll go to BML Connect's secure page to pay by Visa, Mastercard or American Express.",
                         "ވިސާ، މާސްޓަކާޑް ނުވަތަ އެމެކްސް ކާޑުން ފައިސާ ދެއްކުމަށް ބީއެމްއެލް ކަނެކްޓްގެ ރައްކާތެރި ސަފްހާއަށް ދާނެ.",
                       )}
-                    </Notice>
+                    </Callout>
                     <div>
                       <Button type="submit" startIcon="credit-card">
                         {tr(`Pay ${money(order.total)}`, `${money(order.total)} ދައްކާ`)}

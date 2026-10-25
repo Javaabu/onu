@@ -47,8 +47,6 @@ const [documents, setDocuments] = useState<DropzoneFile[]>(application.documents
 
 `appearance="input"` swaps the drop area for a [`FileInput`](./file-input) trigger. Everything else is shared: the value, the upload queue, the lists and the hidden inputs. With an uploader, each file uploads as soon as it is chosen, with a progress bar per file, cancel, retry and remove; when an upload succeeds its id is written to a hidden input, so the surrounding form submits ids instead of files (the usual "temporary upload" pattern in Laravel apps). The text next to the button counts uploads ("Uploading 2 files…", "3 files uploaded"). With `multiple={false}`, picking is disabled while a file is uploading or uploaded; remove it (or let it fail) to pick another. `inputProps` go to the `FileInput` (`aria-label`, `buttonLabel`, `placeholder`, …) and `inputRef` points at its `<input>`. `title`, `description` and `icon` are not used. Files dropped on the input are taken natively.
 
-`InstantFileUpload` is `DropzoneUploader` with `appearance="input"` and `multiple={false}` by default, taking the `FileInput` props directly (`aria-label`, `size`, …) and `ref` to the `<input>`. It also takes `value` / `defaultValue` / `onValueChange`, so an edit page can show the saved file.
-
 ```tsx
 // Built-in XHR uploader (XHR is the only browser API that reports upload progress)
 <FormField label="Transfer slip" name="slip_id">
@@ -66,8 +64,8 @@ const [documents, setDocuments] = useState<DropzoneFile[]>(application.documents
 Or bring your own uploader (axios, Inertia, S3 pre-signed URLs, …):
 
 ```tsx
-<InstantFileUpload
-  multiple
+<DropzoneUploader
+  appearance="input"
   upload={async (file, { onProgress, signal }) => {
     const { data } = await axios.post("/uploads", toFormData(file), {
       signal,
@@ -78,22 +76,6 @@ Or bring your own uploader (axios, Inertia, S3 pre-signed URLs, …):
   onUploaded={(item) => console.log(item.response)}
 />
 ```
-
-`InstantFileUpload` takes the [`FileInput`](./file-input) props (`accept`, `maxSize`, `multiple`, `size`, …) except `value`/`onChange`, plus:
-
-| Prop                                   | Type                                                    | Default                   | Description                                          |
-| -------------------------------------- | ------------------------------------------------------- | ------------------------- | ---------------------------------------------------- |
-| `upload`                               | `(file, { onProgress, signal }) => Promise`             |                           | Your uploader                                        |
-| `url`                                  | `string`                                                |                           | Endpoint for the built-in XHR uploader               |
-| `uploadOptions`                        | `{ method, fieldName, headers, data, withCredentials }` |                           | Options for the built-in uploader                    |
-| `onUploaded`                           | `(item: UploadItem) => void`                            |                           | A file finished; `item.response` holds the response  |
-| `onError`                              | `(item, error) => void`                                 |                           | A file failed (not called on cancel)                 |
-| `onItemsChange`                        | `(items: UploadItem[]) => void`                         |                           | The upload list changed                              |
-| `value` / `defaultValue`               | `DropzoneFile[]`                                        |                           | Stored files, as for `DropzoneUploader`              |
-| `onValueChange`                        | `(value: DropzoneFile[]) => void`                       |                           | A file finished uploading or was removed             |
-| `name`                                 | `string`                                                | FormField's `name`        | Name for hidden id inputs (`name[]` when `multiple`) |
-| `getValue`                             | `(response) => string \| number \| null`                | `id` / `uuid` / `data.id` | Value submitted for each upload                      |
-| `classNames`                           | FileInput's `classNames` + `{ progress }`               |                           | Classes for each part                                |
 
 Progress bars are named "Upload progress for {name}" and expose `aria-valuenow`; starts, completions, cancellations and failures are announced in a polite live region. Cancel, retry and remove buttons are named with the file ("Retry upload of slip.pdf"), and removing a file returns focus to the input. The input keeps the [`FileInput`](./file-input) keyboard behaviour (<kbd>Enter</kbd> / <kbd>Space</kbd> opens the picker). Progress bars fill from the inline start, so from the right in RTL.
 
