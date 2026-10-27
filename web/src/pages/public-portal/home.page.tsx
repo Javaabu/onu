@@ -3,10 +3,10 @@ import {
   AnnouncementBar,
   Card,
   ContentCard,
+  DateCalendar,
   Icon,
   IconText,
   LinkButton,
-  MiniCalendar,
   SearchBox,
   Section,
   Tag,
@@ -249,7 +249,9 @@ export default function PortalHomePage() {
               })}
             </ul>
             <Card size="sm" title={tr("Calendar", "ކެލެންޑަރު")} headingLevel={3}>
-              <MiniCalendar
+              <DateCalendar
+                readOnly
+                size="sm"
                 className="px-2"
                 defaultMonth={new Date(2026, 9, 1)}
                 events={events.map((e) => ({

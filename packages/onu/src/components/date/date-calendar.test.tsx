@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import type { DateRangeValue } from "./_utils"
-import { DateCalendar, DEFAULT_WEEKEND_DAYS, type CalendarView } from "./date-calendar"
+import { DateCalendar, DEFAULT_WEEKEND_DAYS, type CalendarView, type DateCalendarEvent } from "./date-calendar"
 
 // Calendars render many buttons; user-event runs slowly when the whole suite runs in parallel.
 vi.setConfig({ testTimeout: 30_000 })
@@ -245,6 +245,98 @@ describe("DateCalendar — zooming out (§25.1)", () => {
     renderWithOnu(<DateCalendar today={TODAY} defaultView="year" />)
     await user.click(screen.getByRole("button", { name: "Next 12 years" }))
     expect(document.querySelector("[data-slot=calendar-header] [aria-live]")).toHaveTextContent("2028–2039")
+  })
+})
+
+const events: DateCalendarEvent[] = [
+  { id: 1, date: new Date(2026, 2, 12, 9), title: "Independence Day rehearsal", tone: "primary", href: "/e/1" },
+  { id: 2, date: new Date(2026, 2, 12, 14), title: "Council meeting", tone: "warning" },
+  { id: 3, date: "2026-03-20T10:00:00", title: "Job fair", tone: "success" },
+  { id: 4, date: "invalid", title: "Ignored" },
+]
+
+/** A day button whose name may go on with an event count. */
+const eventDay = (day: number) =>
+  screen.getByRole("button", { name: new RegExp(`March ${day}(st|nd|rd|th), 2026(, |$)`) })
+
+describe("DateCalendar — events and readOnly", () => {
+  it("shows event dots and counts them in the day's accessible name", () => {
+    const { container } = renderWithOnu(<DateCalendar events={events} today={TODAY} />)
+    const day = eventDay(12)
+    expect(day).toHaveAccessibleName("Today, Thursday, March 12th, 2026, 2 events")
+    expect(day.querySelectorAll("[data-slot=date-calendar-dot]")).toHaveLength(2)
+    expect(container.querySelectorAll("[data-slot=date-calendar-dot]")).toHaveLength(3)
+    expect(eventDay(20).querySelector("[data-slot=date-calendar-dot]")).toHaveClass("bg-success")
+    expect(eventDay(13)).toHaveAccessibleName("Friday, March 13th, 2026")
+  })
+
+  it("still picks dates when it has events, and passes a day's events to onDayClick", async () => {
+    const user = userEvent.setup()
+    const onSelect = vi.fn()
+    const onDayClick = vi.fn()
+    renderWithOnu(<DateCalendar events={events} today={TODAY} onSelect={onSelect} onDayClick={onDayClick} />)
+    await user.click(eventDay(12))
+    expect(onSelect).toHaveBeenCalledWith(expect.any(Date))
+    expect(onDayClick).toHaveBeenCalledWith(expect.any(Date), expect.anything(), [events[0], events[1]])
+    expect(document.querySelector("[data-slot=date-calendar-events]")).toBeNull()
+  })
+
+  it("lists a clicked day's events in a live region when readOnly", async () => {
+    const user = userEvent.setup()
+    const onSelect = vi.fn()
+    const onDayClick = vi.fn()
+    renderWithOnu(
+      <DateCalendar
+        readOnly
+        events={events}
+        today={TODAY}
+        selected={new Date(2026, 2, 3)}
+        onSelect={onSelect}
+        onDayClick={onDayClick}
+      />,
+    )
+    const list = document.querySelector("[data-slot=date-calendar-events]") as HTMLElement
+    expect(list).toHaveAttribute("aria-live", "polite")
+    expect(list).toBeEmptyDOMElement()
+    // `selected` is ignored: nothing is selected until a day is clicked.
+    expect(eventDay(3).closest("td")).not.toHaveAttribute("aria-selected", "true")
+
+    await user.click(eventDay(12))
+    expect(onDayClick).toHaveBeenCalledWith(expect.any(Date), expect.anything(), [events[0], events[1]])
+    expect(onSelect).not.toHaveBeenCalled()
+    expect(eventDay(12).closest("td")).toHaveAttribute("aria-selected", "true")
+    expect(list).toHaveTextContent("Events on March 12th, 2026")
+    expect(within(list).getByRole("link", { name: "Independence Day rehearsal" })).toHaveAttribute("href", "/e/1")
+    expect(within(list).getByText("Council meeting")).toBeInTheDocument()
+
+    await user.click(eventDay(13))
+    expect(within(list).getByText("No events")).toBeInTheDocument()
+    // Clicking the active day again keeps reporting it.
+    await user.click(eventDay(13))
+    expect(onDayClick).toHaveBeenCalledTimes(3)
+  })
+
+  it("can hide the list, limit dots and be compact", async () => {
+    const { container } = renderWithOnu(
+      <DateCalendar readOnly events={events} today={TODAY} showEventList={false} maxDots={1} size="sm" />,
+    )
+    expect(container.querySelector("[data-slot=date-calendar]")).toHaveAttribute("data-size", "sm")
+    expect(eventDay(12).querySelectorAll("[data-slot=date-calendar-dot]")).toHaveLength(1)
+    await userEvent.click(eventDay(12))
+    expect(document.querySelector("[data-slot=date-calendar-events]")).toBeNull()
+  })
+
+  it("names event counts in Dhivehi", () => {
+    renderWithOnu(<DateCalendar readOnly events={events} today={TODAY} />, { locale: "dv" })
+    expect(screen.getAllByRole("button", { name: /2 އިވެންޓް/ })).toHaveLength(1)
+  })
+
+  it.each(directions)("has no axe violations with events in %s", async (dir) => {
+    const user = userEvent.setup()
+    const { container } = renderWithOnu(<DateCalendar readOnly events={events} today={TODAY} />, { dir })
+    expect(container.querySelector("[data-slot=calendar]")?.closest("[dir]")).toHaveAttribute("dir", dir)
+    await user.click(screen.getAllByRole("button", { name: /2 events|2 އިވެންޓް/ })[0]!)
+    await expectNoA11yViolations(container)
   })
 })
 

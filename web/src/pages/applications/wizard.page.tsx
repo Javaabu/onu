@@ -17,7 +17,6 @@ import {
   SearchableSelect,
   Select,
   TextInput,
-  ThaanaInput,
   Wizard,
   toast,
   type AutosaveStatus,
@@ -183,7 +182,7 @@ export default function ApplicationWizardPage() {
             <TextInput value={values.name} onChange={(e) => set("name", e.target.value)} autoComplete="name" />
           </FormField>
           <FormField label={tr("Full name (Dhivehi)", "ފުރިހަމަ ނަން (ދިވެހިން)")} name="name_dv">
-            <ThaanaInput value={values.name_dv} onChange={(e) => set("name_dv", e.target.value)} />
+            <TextInput thaana thaanaToggle value={values.name_dv} onChange={(e) => set("name_dv", e.target.value)} />
           </FormField>
           <FormField
             label={tr("ID card number", "އައިޑީ ކާޑު ނަންބަރު")}

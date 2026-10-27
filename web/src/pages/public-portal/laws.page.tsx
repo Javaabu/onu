@@ -4,7 +4,6 @@ import {
   Button,
   DocumentDownload,
   Highlight,
-  PrintButton,
   SegmentedControl,
   SideNav,
   StatusBadge,
@@ -145,7 +144,15 @@ export default function LawsReaderPage() {
               {q ? tr(`${matchCount} sections`, `${matchCount} މާއްދާ`) : ""}
             </span>
           </div>
-          <PrintButton size="sm" iconOnly className="ms-auto" />
+          <Button
+            variant="outline"
+            size="icon-sm"
+            aria-label={tr("Print", "ޕްރިންޓްކުރޭ")}
+            className="ms-auto print:hidden"
+            onClick={() => window.print()}
+          >
+            <Icon name="print" />
+          </Button>
         </Container>
       </div>
 

@@ -5,7 +5,6 @@ import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { KanbanBoard, type KanbanColumn } from "./kanban-board"
-import { ReorderableTable } from "./reorderable-table"
 import { SortableList } from "./sortable-list"
 
 // Interaction-heavy tests: allow for slow CI machines and coverage instrumentation.
@@ -81,29 +80,63 @@ describe("SortableList", () => {
   })
 })
 
-describe("ReorderableTable", () => {
-  function Table() {
+describe("SortableList as a table", () => {
+  function Table(props: { moveButtons?: boolean; disabled?: boolean }) {
     const [rows, setRows] = React.useState(tasks)
     return (
-      <ReorderableTable
-        caption="Stops"
-        rows={rows}
+      <SortableList
+        aria-label="Stops"
+        items={rows}
         getName={(t) => t.title}
         onReorder={setRows}
-        columns={[{ id: "title", header: "Stop", cell: (t) => t.title }]}
+        moveButtons={props.moveButtons}
+        disabled={props.disabled}
+        className="wrap-x"
+        classNames={{ table: "table-x", item: "row-x", handle: "handle-x" }}
+        columns={[{ id: "title", header: "Stop", cell: (t) => t.title, className: "col-x" }]}
       />
     )
   }
+  const cells = () => screen.getAllByRole("cell").filter((c) => !c.querySelector("button"))
 
   it("moves rows with Alt+Arrow on the handle and announces it", async () => {
-    renderWithOnu(<Table />)
-    expect(screen.getByRole("table", { name: "Stops" })).toBeInTheDocument()
-    screen.getByRole("button", { name: "Drag to reorder Renew licence" }).focus()
+    renderWithOnu(<Table moveButtons={false} />)
+    const table = screen.getByRole("table", { name: "Stops" })
+    expect(table).toHaveClass("table-x")
+    expect(table.closest("[data-slot=sortable-list]")).toHaveClass("wrap-x")
+    expect(screen.getByRole("columnheader", { name: "Reorder" })).toBeInTheDocument()
+    expect(screen.getByRole("columnheader", { name: "Stop" })).toHaveClass("col-x")
+    const handle = screen.getByRole("button", { name: "Drag to reorder Renew licence" })
+    expect(handle).toHaveClass("handle-x")
+    expect(handle).toHaveAttribute("aria-keyshortcuts", "Alt+ArrowUp Alt+ArrowDown")
+    expect(handle.closest("tr")).toHaveClass("row-x")
+    expect(screen.queryByRole("button", { name: /Move up/ })).not.toBeInTheDocument()
+    handle.focus()
     await userEvent.keyboard("{Alt>}{ArrowDown}{/Alt}")
-    const cells = screen.getAllByRole("cell").filter((c) => !c.querySelector("button"))
-    expect(cells.map((c) => c.textContent)).toEqual(["Inspect vessel", "Renew licence", "Collect fee"])
+    expect(cells().map((c) => c.textContent)).toEqual(["Inspect vessel", "Renew licence", "Collect fee"])
     await waitFor(() => expect(screen.getByText("Renew licence moved to position 2 of 3")).toBeInTheDocument())
     await userEvent.keyboard("{Alt>}{ArrowUp}{/Alt}{Alt>}{ArrowUp}{/Alt}")
+    expect(cells().map((c) => c.textContent)).toEqual(["Renew licence", "Inspect vessel", "Collect fee"])
+    await expectNoA11yViolations()
+  })
+
+  it("has Move up / Move down buttons in the handle column by default", async () => {
+    renderWithOnu(<Table />)
+    expect(screen.getByRole("button", { name: "Move up: Renew licence" })).toBeDisabled()
+    await userEvent.click(screen.getByRole("button", { name: "Move down: Renew licence" }))
+    expect(cells().map((c) => c.textContent)).toEqual(["Inspect vessel", "Renew licence", "Collect fee"])
+    await expectNoA11yViolations()
+  })
+
+  it("can be turned off", () => {
+    renderWithOnu(<Table disabled />)
+    expect(screen.getByRole("button", { name: "Drag to reorder Renew licence" })).toBeDisabled()
+    expect(screen.getByRole("button", { name: "Move down: Renew licence" })).toBeDisabled()
+  })
+
+  it.each(directions)("has no axe violations in %s with Dhivehi", async (dir) => {
+    renderWithOnu(<Table />, { dir, locale: "dv" })
+    expect(screen.getByRole("button", { name: "Renew licence ގެ ތަރުތީބު ބަދަލުކުރަން ދަމާ" })).toBeInTheDocument()
     await expectNoA11yViolations()
   })
 })

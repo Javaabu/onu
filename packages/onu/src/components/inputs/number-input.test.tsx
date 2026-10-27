@@ -1,7 +1,7 @@
 import * as React from "react"
-import { fireEvent, screen } from "@testing-library/react"
+import { act, fireEvent, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it, vi } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { FormField } from "../form/form-field"
@@ -9,6 +9,8 @@ import { NumberInput, numberSymbols, parseLocaleNumber } from "./number-input"
 
 // userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
 vi.setConfig({ testTimeout: 30_000 })
+
+afterEach(() => vi.useRealTimers())
 
 describe("parseLocaleNumber", () => {
   it("parses locale-formatted numbers", () => {
@@ -182,5 +184,157 @@ describe("NumberInput", () => {
     expect(input).toHaveValue("12,000")
     expect(input).toHaveAttribute("dir", "ltr")
     await expectNoA11yViolations()
+  })
+})
+
+describe("NumberInput stepper", () => {
+  it("steps with the − and + buttons and stops at min and max", async () => {
+    const onValueChange = vi.fn()
+    renderWithOnu(
+      <NumberInput stepper aria-label="Tickets" defaultValue={1} min={1} max={3} onValueChange={onValueChange} />,
+    )
+    const input = screen.getByRole("spinbutton", { name: "Tickets" })
+    const minus = screen.getByRole("button", { name: "Decrease" })
+    const plus = screen.getByRole("button", { name: "Increase" })
+    expect(minus).toHaveAttribute("aria-disabled", "true")
+    await userEvent.click(plus)
+    await userEvent.click(plus)
+    expect(input).toHaveValue("3")
+    expect(onValueChange).toHaveBeenLastCalledWith(3)
+    expect(plus).toHaveAttribute("aria-disabled", "true")
+    await userEvent.click(minus)
+    expect(input).toHaveValue("2")
+    await expectNoA11yViolations()
+  })
+
+  it("repeats while the button is held", () => {
+    vi.useFakeTimers()
+    renderWithOnu(<NumberInput stepper aria-label="Qty" defaultValue={0} repeatDelay={300} repeatInterval={50} />)
+    const plus = screen.getByRole("button", { name: "Increase" })
+    fireEvent.pointerDown(plus, { button: 0 })
+    expect(screen.getByRole("spinbutton")).toHaveValue("1")
+    act(() => vi.advanceTimersByTime(300 + 50 * 4))
+    expect(screen.getByRole("spinbutton")).toHaveValue("5")
+    act(() => window.dispatchEvent(new Event("pointerup")))
+    act(() => vi.advanceTimersByTime(500))
+    expect(screen.getByRole("spinbutton")).toHaveValue("5")
+  })
+
+  it("stops repeating at the limit and on pointer leave", () => {
+    vi.useFakeTimers()
+    renderWithOnu(
+      <NumberInput stepper aria-label="Qty" defaultValue={0} max={2} repeatDelay={100} repeatInterval={10} />,
+    )
+    const plus = screen.getByRole("button", { name: "Increase" })
+    fireEvent.pointerDown(plus, { button: 0 })
+    act(() => vi.advanceTimersByTime(500))
+    expect(screen.getByRole("spinbutton")).toHaveValue("2")
+    const minus = screen.getByRole("button", { name: "Decrease" })
+    fireEvent.pointerDown(minus, { button: 0 })
+    fireEvent.pointerLeave(minus)
+    act(() => vi.advanceTimersByTime(500))
+    expect(screen.getByRole("spinbutton")).toHaveValue("1")
+    fireEvent.pointerDown(minus, { button: 2 })
+    expect(screen.getByRole("spinbutton")).toHaveValue("1")
+  })
+
+  it("works from the keyboard: arrow keys in the field and Enter on the buttons", async () => {
+    renderWithOnu(<NumberInput stepper aria-label="Qty" defaultValue={5} step={5} />)
+    const input = screen.getByRole("spinbutton")
+    input.focus()
+    await userEvent.keyboard("{ArrowUp}")
+    expect(input).toHaveValue("10")
+    fireEvent.click(screen.getByRole("button", { name: "Decrease" }), { detail: 0 })
+    expect(input).toHaveValue("5")
+    // A mouse click (detail 1) is handled on pointer down, not twice.
+    fireEvent.click(screen.getByRole("button", { name: "Decrease" }), { detail: 1 })
+    expect(input).toHaveValue("5")
+  })
+
+  it("is controlled, sized and disabled", () => {
+    function Controlled() {
+      const [v, setV] = React.useState(2)
+      return <NumberInput stepper aria-label="Qty" value={v} onValueChange={setV} size="lg" className="x-root" />
+    }
+    const { container, rerender } = renderWithOnu(<Controlled />)
+    fireEvent.pointerDown(screen.getByRole("button", { name: "Increase" }), { button: 0 })
+    fireEvent.pointerUp(window)
+    expect(screen.getByRole("spinbutton")).toHaveValue("3")
+    expect(container.querySelector("[data-slot=input-group]")).toHaveClass("x-root", "h-12")
+    rerender(<NumberInput stepper aria-label="Qty" disabled />)
+    expect(screen.getByRole("button", { name: "Increase" })).toBeDisabled()
+    expect(screen.getByRole("button", { name: "Decrease" })).toBeDisabled()
+  })
+
+  it("falls back to min when cleared", async () => {
+    renderWithOnu(<NumberInput stepper aria-label="Qty" defaultValue={4} min={1} />)
+    const input = screen.getByRole("spinbutton")
+    await userEvent.clear(input)
+    await userEvent.tab()
+    expect(input).toHaveValue("1")
+  })
+
+  it.each(directions)("uses Dhivehi labels in %s", async (dir) => {
+    renderWithOnu(<NumberInput stepper aria-label="އަދަދު" />, { dir, locale: "dv" })
+    expect(screen.getByRole("button", { name: "އިތުރުކުރޭ" })).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "މަދުކުރޭ" })).toBeInTheDocument()
+    await expectNoA11yViolations()
+  })
+})
+
+describe("NumberInput units", () => {
+  it("shows a fixed unit at the end or start", () => {
+    const { container, rerender } = renderWithOnu(<NumberInput aria-label="Weight" unit="kg" defaultValue={12} />)
+    const addon = container.querySelector("[data-slot=input-group-addon]")
+    expect(addon).toHaveAttribute("data-align", "inline-end")
+    expect(screen.getByText("kg")).toBeInTheDocument()
+    rerender(<NumberInput aria-label="Price" unit="MVR" unitPosition="start" classNames={{ unit: "u-x" }} />)
+    expect(container.querySelector("[data-slot=input-group-addon]")).toHaveAttribute("data-align", "inline-start")
+    expect(screen.getByText("MVR")).toHaveClass("u-x")
+  })
+
+  it("renders a unit select and reports changes", async () => {
+    const onUnitChange = vi.fn()
+    const { container } = renderWithOnu(
+      <form>
+        <NumberInput
+          aria-label="Distance"
+          defaultValue={5}
+          units={[
+            { value: "m", label: "m" },
+            { value: "km", label: "km" },
+          ]}
+          defaultUnit="km"
+          unitName="distance_unit"
+          onUnitChange={onUnitChange}
+        />
+      </form>,
+    )
+    const select = screen.getByRole("combobox", { name: "Unit" })
+    expect(select).toHaveTextContent("km")
+    await userEvent.click(select)
+    await userEvent.click(await screen.findByRole("option", { name: "m" }))
+    expect(onUnitChange).toHaveBeenCalledWith("m")
+    expect(new FormData(container.querySelector("form")!).get("distance_unit")).toBe("m")
+    await expectNoA11yViolations(container)
+  })
+
+  it("combines a unit with the stepper and your own addons, the unit next to the number", () => {
+    const { container } = renderWithOnu(
+      <NumberInput stepper aria-label="Weight" unit="kg" endAddon={<span>max</span>} defaultValue={2} />,
+    )
+    const end = container.querySelector("[data-slot=input-group-addon][data-align=inline-end]")!
+    expect(Array.from(end.children).map((el) => el.getAttribute("data-slot") ?? el.textContent)).toEqual([
+      "unit",
+      "max",
+      "number-input-increment",
+    ])
+    expect(container.querySelector("[data-slot=input-group-addon][data-align=inline-start]")!.children).toHaveLength(1)
+  })
+
+  it.each(directions)("labels the unit select in Dhivehi in %s", (dir) => {
+    renderWithOnu(<NumberInput aria-label="ދިގުމިން" units={[{ value: "cm", label: "cm" }]} />, { dir, locale: "dv" })
+    expect(screen.getByRole("combobox", { name: "މިންވަރު" })).toBeInTheDocument()
+    expect(screen.getByRole("spinbutton")).toHaveAttribute("dir", "ltr")
   })
 })

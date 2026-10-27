@@ -1,4 +1,4 @@
-import { FormField, HelpText, Label, TextInput, ThaanaInput } from "@javaabu/onu"
+import { FormField, HelpText, Label, TextInput } from "@javaabu/onu"
 
 import { DemoPage, DemoSection } from "../../components/demo"
 
@@ -42,7 +42,7 @@ export default function HelpTextDemo() {
       <DemoSection title="Dhivehi" className="max-w-md gap-4 grid">
         <div dir="rtl" lang="dv" className="gap-4 grid">
           <FormField label="ނަން" help="ކާޑުގައި ލިޔެވިފައިވާ ގޮތަށް">
-            <ThaanaInput />
+            <TextInput thaana thaanaToggle />
           </FormField>
         </div>
       </DemoSection>

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Button, Card, CardContent, FilterTabs, Icon, PageTitle, ProgressBar, toast } from "@javaabu/onu"
+import { Button, Card, CardContent, Tabs, Icon, PageTitle, ProgressBar, toast } from "@javaabu/onu"
 import { TranslationsEditor, type TranslationEntry } from "@javaabu/onu/editor"
 
 import { useDv, useTr } from "../_shared/i18n"
@@ -82,11 +82,14 @@ export default function TranslationsPage() {
           </div>
         </section>
 
-        <FilterTabs
+        <Tabs
+          variant="line"
+          countAppearance="pill"
+          listLabel={tr("Translation groups", "ތަރުޖަމާގެ ބައިތައް")}
           controls="translations-list"
           value={group}
           onValueChange={setGroup}
-          tabs={translationGroups.map((g) => ({
+          items={translationGroups.map((g) => ({
             value: g.value,
             label: dv ? g.label.dv : g.label.en,
             count: entries.filter((e) => g.value === "all" || e.key.startsWith(`${g.value}.`)).length,

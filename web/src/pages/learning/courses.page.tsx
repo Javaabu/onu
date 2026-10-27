@@ -3,7 +3,7 @@ import {
   Card,
   ContentCard,
   EmptyState,
-  FilterTabs,
+  Tabs,
   IconText,
   LinkButton,
   ProgressBar,
@@ -103,9 +103,11 @@ export default function CourseCataloguePage() {
 
       <Container className="py-10">
         <div className="gap-4 lg:flex-row lg:items-end flex flex-col justify-between">
-          <FilterTabs
+          <Tabs
+            variant="line"
+            countAppearance="pill"
             className="min-w-0"
-            tabs={[
+            items={[
               { value: "all", label: tr("All courses", "ހުރިހާ ކޯހެއް"), count: base.length },
               {
                 value: "enrolled",
@@ -121,7 +123,7 @@ export default function CourseCataloguePage() {
             value={tab}
             onValueChange={setTab}
             controls="course-grid"
-            aria-label={tr("Courses", "ކޯސްތައް")}
+            listLabel={tr("Courses", "ކޯސްތައް")}
           />
           <div className="gap-3 sm:grid-cols-2 lg:w-[26rem] grid">
             <Select

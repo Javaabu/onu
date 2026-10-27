@@ -36,7 +36,7 @@ Inside a panel [`AppLayout`](./app-layout) (the default), a page's `h1` header i
 - the **title** (20px) with a grey `subtitle` and `tags`, and the actions at the inline end,
 - the **description** with key `figures` at the end of its row (a `<dl>`: label above a 20px value, split by lines),
 - secondary `links` and extra `content`,
-- a `tabs` row (`FilterTabs`, `Tabs` or `NavTabs`) as Ant's line tabs with the brand ink bar on the band's bottom edge.
+- a `tabs` row (`Tabs`, such as [filter tabs](./tabs#filter-tabs-above-a-listing), or `NavTabs`) as Ant's line tabs with the brand ink bar on the band's bottom edge.
 
 ```tsx
 <PageTitle
@@ -49,7 +49,7 @@ Inside a panel [`AppLayout`](./app-layout) (the default), a page's `h1` header i
   ]}
   actions={<LinkButton href="/trash" variant="outline" startIcon="trash">Trash</LinkButton>}
   action={<LinkButton href="/applications/new" startIcon="add">New application</LinkButton>}
-  tabs={<FilterTabs tabs={tabs} value={status} onValueChange={setStatus} />}
+  tabs={<Tabs variant="line" countAppearance="pill" items={tabs} value={status} onValueChange={setStatus} />}
 />
 ```
 

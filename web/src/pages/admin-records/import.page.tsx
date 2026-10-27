@@ -5,7 +5,7 @@ import {
   Card,
   DataTable,
   DescriptionList,
-  DropzoneUploader,
+  FileInput,
   FormField,
   LinkButton,
   PageTitle,
@@ -281,9 +281,9 @@ export default function ImportPage() {
                           "ފުރަތަމަ ލައިނުގައި ކޮލަމްގެ ނަންތައް. 5 MB އަށް.",
                         )}
                       >
-                        <DropzoneUploader
+                        <FileInput
+                          appearance="dropzone"
                           accept=".csv,text/csv"
-                          maxFiles={1}
                           maxSize={5 * 1024 * 1024}
                           onChange={async (next) => {
                             const file = next[0]

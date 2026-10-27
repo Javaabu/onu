@@ -1,11 +1,10 @@
 import * as React from "react"
 import { useSearchParams } from "react-router"
 import {
-  ActivityFeed,
   Card,
   CommentThread,
   DocumentDownload,
-  DropzoneUploader,
+  FileInput,
   FormField,
   LinkButton,
   Timeline,
@@ -139,7 +138,8 @@ export default function ShowTabsPage() {
               headingLevel={2}
             >
               <FormField label={tr("Files", "ފައިލްތައް")} name="files" hideLabel>
-                <DropzoneUploader
+                <FileInput
+                  appearance="dropzone"
                   multiple
                   accept=".pdf,image/*"
                   maxSize={8 * 1024 * 1024}
@@ -182,7 +182,12 @@ export default function ShowTabsPage() {
               />
             </Card>
             <Card title={tr("All activity", "ހުރިހާ ހަރަކާތެއް")} headingLevel={2}>
-              <ActivityFeed title={null} items={activity} />
+              <Timeline
+                aria-label={tr("All activity", "ހުރިހާ ހަރަކާތެއް")}
+                groupByDay
+                timeFormat="relative"
+                items={activity}
+              />
             </Card>
           </div>
         ) : null}

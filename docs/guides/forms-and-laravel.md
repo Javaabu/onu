@@ -88,4 +88,4 @@ On edit pages, the [`SaveBar`](../form-scaffolding/save-bar) lists each change i
 
 # Uploads
 
-[`DropzoneUploader`](../files-and-media/dropzone-uploader#compact-input-instant-upload) with `appearance="input"` uploads as soon as a file is chosen, sends your CSRF header, shows progress, and reads 422 errors from the upload endpoint. The uploaded file's id goes into a hidden input for the main form.
+[`FileInput`](../files-and-media/file-input#uploads) with `upload` or `url` uploads as soon as a file is chosen, sends your CSRF header, shows progress, and reads 422 errors from the upload endpoint. The uploaded file's id goes into a hidden input for the main form.

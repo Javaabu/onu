@@ -69,7 +69,7 @@ export interface AppSidebarProps extends Omit<React.ComponentProps<typeof Sideba
    * icons, only its icon shows.
    */
   action?: React.ReactNode
-  /** Bottom of the sidebar, e.g. a `UsageMeter` or a `UserProfile`. */
+  /** Bottom of the sidebar, e.g. a quota `ProgressBar` or a `UserProfile`. */
   footer?: React.ReactNode
   /**
    * `shell` (the default inside a panel `AppLayout`): Proton's sidebar on the

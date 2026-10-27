@@ -1,7 +1,7 @@
 import * as React from "react"
 import { act, fireEvent, screen, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { en } from "../../locales"
@@ -10,6 +10,7 @@ import { TextInput } from "../inputs/text-input"
 import { Form } from "./form"
 import { FormField } from "./form-field"
 import { describeChanges, formatChangeValue, SaveBar, type SaveBarProps } from "./save-bar"
+import { SubmitButton } from "./submit-button"
 import { useUnsavedChangesGuard } from "./unsaved-changes-guard"
 import { ValidationError } from "./validation"
 
@@ -439,5 +440,134 @@ describe("useUnsavedChangesGuard", () => {
     expect(traverse("/list").defaultPrevented).toBe(false)
     expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument()
     restore()
+  })
+})
+
+describe('SaveBar layout="floating"', () => {
+  type Callback = (entries: { isIntersecting: boolean }[]) => void
+  let observers: { cb: Callback; target?: Element; disconnect: ReturnType<typeof vi.fn> }[] = []
+
+  beforeEach(() => {
+    observers = []
+    vi.stubGlobal(
+      "IntersectionObserver",
+      class {
+        cb: Callback
+        disconnect = vi.fn()
+        constructor(cb: Callback) {
+          this.cb = cb
+          observers.push(this as never)
+        }
+        observe(target: Element) {
+          ;(this as unknown as { target: Element }).target = target
+        }
+        unobserve() {}
+      },
+    )
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  const scroll = (visible: boolean) =>
+    act(() => {
+      observers.forEach((o) => o.cb([{ isIntersecting: visible }]))
+    })
+
+  it("appears when the main submit scrolls out of view and hides when it is back", async () => {
+    renderWithOnu(
+      <Form>
+        <SubmitButton>Save application</SubmitButton>
+        <SaveBar layout="floating" />
+      </Form>,
+    )
+    expect(observers[0]!.target).toHaveTextContent("Save application")
+    expect(screen.queryByRole("button", { name: "Save" })).not.toBeInTheDocument()
+    scroll(false)
+    const floating = screen.getByRole("button", { name: "Save" })
+    expect(floating).toHaveAttribute("type", "submit")
+    expect(floating).toBeEnabled()
+    expect(floating.closest("[data-slot=save-bar]")).toHaveClass("fixed")
+    expect(screen.queryByRole("complementary")).not.toBeInTheDocument()
+    await expectNoA11yViolations()
+    scroll(true)
+    expect(screen.queryByRole("button", { name: "Save" })).not.toBeInTheDocument()
+  })
+
+  it("watches an explicit target and disconnects on unmount", () => {
+    function Page() {
+      const ref = React.useRef<HTMLDivElement>(null)
+      return (
+        <>
+          <div ref={ref}>footer</div>
+          <SaveBar layout="floating" target={ref} />
+        </>
+      )
+    }
+    const { unmount } = renderWithOnu(<Page />)
+    expect(observers[0]!.target).toHaveTextContent("footer")
+    unmount()
+    expect(observers[0]!.disconnect).toHaveBeenCalled()
+  })
+
+  it("finds the main submit of the form named by `form` when it sits outside it", () => {
+    renderWithOnu(
+      <>
+        <form id="profile">
+          <button type="submit">Save profile</button>
+        </form>
+        <SaveBar layout="floating" form="profile" />
+      </>,
+    )
+    expect(observers[0]!.target).toHaveTextContent("Save profile")
+    scroll(false)
+    expect(screen.getByRole("button", { name: "Save" })).toHaveAttribute("form", "profile")
+  })
+
+  it("shows the processing state of the form and can be forced visible", () => {
+    renderWithOnu(
+      <Form processing>
+        <SaveBar layout="floating" forceVisible saveLabel="Submit" className="r" classNames={{ save: "b" }} />
+      </Form>,
+    )
+    const button = screen.getByRole("button", { name: "Submit" })
+    expect(button).toHaveAttribute("aria-busy", "true")
+    expect(button).toHaveClass("b")
+    expect(button.closest("[data-slot=save-bar]")).toHaveClass("r")
+  })
+
+  it("follows change tracking when it is given", () => {
+    const { rerender } = renderWithOnu(<SaveBar layout="floating" forceVisible changes={[]} />)
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled()
+    rerender(<SaveBar layout="floating" forceVisible changes={[{ field: "Email", value: "a@b.mv" }]} />)
+    expect(screen.getByRole("button", { name: "Save" })).toBeEnabled()
+    rerender(<SaveBar layout="floating" forceVisible dirty={false} />)
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled()
+  })
+
+  it("saves with onSave", async () => {
+    const onSave = vi.fn()
+    renderWithOnu(<SaveBar layout="floating" forceVisible onSave={onSave} />)
+    const button = screen.getByRole("button", { name: "Save" })
+    expect(button).toHaveAttribute("type", "button")
+    await userEvent.click(button)
+    expect(onSave).toHaveBeenCalled()
+  })
+
+  it("does nothing without IntersectionObserver", () => {
+    vi.stubGlobal("IntersectionObserver", undefined)
+    renderWithOnu(
+      <form>
+        <button type="submit">Go</button>
+        <SaveBar layout="floating" />
+      </form>,
+    )
+    expect(screen.getAllByRole("button")).toHaveLength(1)
+  })
+
+  it.each(directions)("sits at the inline end in %s", (dir) => {
+    renderWithOnu(<SaveBar layout="floating" forceVisible />, { locale: "dv", dir })
+    expect(screen.getByRole("button", { name: "ސޭވްކުރޭ" }).parentElement).toHaveClass("sm:end-6")
   })
 })

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ContentCard, EmptyState, FilterTabs, IconText, Pagination, SearchBox } from "@javaabu/onu"
+import { ContentCard, EmptyState, Tabs, IconText, Pagination, SearchBox } from "@javaabu/onu"
 
 import { useDv, useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -51,16 +51,18 @@ export default function NewsIndexPage() {
       />
       <Container className="py-8 sm:py-10">
         <div className="gap-4 md:flex-row md:items-end flex flex-col justify-between">
-          <FilterTabs
+          <Tabs
+            variant="line"
+            countAppearance="pill"
             className="min-w-0 flex-1"
-            tabs={tabs}
+            items={tabs}
             value={category}
             onValueChange={(v) => {
               setCategory(v)
               setPage(1)
             }}
             controls="news-list"
-            aria-label={tr("News categories", "ޚަބަރުގެ ބައިތައް")}
+            listLabel={tr("News categories", "ޚަބަރުގެ ބައިތައް")}
           />
           <SearchBox
             value={query}

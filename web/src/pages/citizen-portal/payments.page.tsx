@@ -3,7 +3,7 @@ import {
   Callout,
   Card,
   DataTable,
-  FilterTabs,
+  Tabs,
   LinkButton,
   PageTitle,
   StatusBadge,
@@ -131,11 +131,13 @@ export default function MyPaymentsPage() {
           </Card>
         </div>
 
-        <FilterTabs
-          aria-label={tr("Filter by status", "ހާލަތުން ފިލްޓަރ")}
+        <Tabs
+          variant="line"
+          countAppearance="pill"
+          listLabel={tr("Filter by status", "ހާލަތުން ފިލްޓަރ")}
           value={tab}
           onValueChange={(v) => state.setFilter("tab", v === "all" ? undefined : v)}
-          tabs={TABS.map((t) => ({ value: t, label: labels[t], count: payments.filter((p) => inTab(p, t)).length }))}
+          items={TABS.map((t) => ({ value: t, label: labels[t], count: payments.filter((p) => inTab(p, t)).length }))}
         />
 
         <DataTable

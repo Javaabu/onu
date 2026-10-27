@@ -54,10 +54,25 @@ export interface SaveBarProps extends Omit<React.ComponentProps<"aside">, "title
   guard?: boolean
   /**
    * `responsive` (default): sticky side panel from `lg`, fixed bottom bar on phones.
-   * `side` / `bottom` force one layout.
+   * `side` / `bottom` force one layout. `floating`: only the Save button, floating at
+   * the bottom of the screen while the form's main submit button is out of view.
    */
-  layout?: "responsive" | "side" | "bottom"
-  classNames?: { title?: string; list?: string; item?: string; actions?: string; message?: string }
+  layout?: "responsive" | "side" | "bottom" | "floating"
+  /**
+   * `floating` only: the element to watch. When it scrolls out of view the Save
+   * button appears. Defaults to the first other submit button in the same form.
+   */
+  target?: React.RefObject<HTMLElement | null>
+  /** `floating` only: show the Save button regardless of `target`. */
+  forceVisible?: boolean
+  classNames?: {
+    title?: string
+    list?: string
+    item?: string
+    actions?: string
+    message?: string
+    save?: string
+  }
 }
 
 /** Formats a changed value for the save bar; `null` means "cleared". */
@@ -145,13 +160,41 @@ function useContentColumnInset(ref: React.RefObject<HTMLElement | null>, enabled
 }
 
 /**
+ * For `layout="floating"`: whether the form's main submit button (or `target`)
+ * is out of view. Never true without `IntersectionObserver`.
+ */
+function useOutOfView(
+  anchor: React.RefObject<HTMLElement | null>,
+  target: React.RefObject<HTMLElement | null> | undefined,
+  formId: string | undefined,
+  enabled: boolean,
+) {
+  const [outOfView, setOutOfView] = React.useState(false)
+  React.useEffect(() => {
+    if (!enabled) return
+    const form = anchor.current?.closest("form") ?? (formId ? document.getElementById(formId) : null)
+    const el =
+      target?.current ??
+      Array.from(form?.querySelectorAll<HTMLElement>("[type=submit]") ?? []).find(
+        (b) => !b.closest("[data-slot=save-bar]"),
+      )
+    if (!el || typeof IntersectionObserver === "undefined") return
+    const observer = new IntersectionObserver(([entry]) => setOutOfView(!entry!.isIntersecting))
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [anchor, target, formId, enabled])
+  return outOfView
+}
+
+/**
  * The edit-page save bar (§25.9): lists each change in plain words, keeps Save
  * disabled until something changed, Discard restores, a sticky side panel on
  * desktop and a fixed bottom bar on phones, and warns before leaving with
- * unsaved changes.
+ * unsaved changes. `layout="floating"` is just a Save button that floats
+ * while the form's own submit button is scrolled out of view, for long forms.
  */
 export function SaveBar({
-  changes = [],
+  changes: changesProp,
   dirty: dirtyProp,
   onSave,
   onDiscard,
@@ -165,6 +208,8 @@ export function SaveBar({
   discardLabel,
   guard = true,
   layout = "responsive",
+  target,
+  forceVisible = false,
   className,
   classNames,
   ...props
@@ -176,6 +221,8 @@ export function SaveBar({
   const [expanded, setExpanded] = React.useState(false)
   const listId = React.useId()
   const barRef = React.useRef<HTMLElement>(null)
+  const anchorRef = React.useRef<HTMLSpanElement>(null)
+  const changes = changesProp ?? []
   const dirty = dirtyProp ?? changes.length > 0
   const saving = savingProp ?? (ownSaving || (!onSave && !!formCtx?.processing))
   const formStatus = formCtx?.status === "success" ? "success" : formCtx?.status === "error" ? "error" : "idle"
@@ -198,10 +245,53 @@ export function SaveBar({
   const side = layout === "side"
   const bottom = layout === "bottom"
   const responsive = layout === "responsive"
+  const floating = layout === "floating"
   const showSuccess = status === "success" && !dirty
   const showError = status === "error"
   const count = changes.length
   useContentColumnInset(barRef, bottom || responsive)
+  const outOfView = useOutOfView(anchorRef, target, formId, floating)
+
+  const saveButton = (disabled: boolean, className?: string) => (
+    <Button
+      type={onSave ? "button" : "submit"}
+      form={onSave ? undefined : formId}
+      size={floating ? "lg" : undefined}
+      disabled={disabled}
+      loading={saving}
+      onClick={onSave ? () => void save() : undefined}
+      startIcon="save"
+      className={cn(className, classNames?.save)}
+    >
+      {saveLabel ?? t("common.save")}
+    </Button>
+  )
+
+  if (floating) {
+    // Without change tracking (no `changes` or `dirty`), the form can always be saved.
+    const canSave = dirtyProp ?? (changesProp ? changesProp.length > 0 : true)
+    return (
+      <>
+        <span ref={anchorRef} data-slot="save-bar-anchor" className="contents">
+          {forceVisible || outOfView ? (
+            <div
+              data-slot="save-bar"
+              data-layout="floating"
+              data-dirty={dirty || undefined}
+              className={cn(
+                "inset-x-4 sm:inset-x-auto sm:end-6 fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 animate-in fade-in-0 slide-in-from-bottom-2",
+                className,
+              )}
+              {...(props as React.ComponentProps<"div">)}
+            >
+              {saveButton(!canSave, "sm:w-auto px-5 w-full rounded-full shadow-popup")}
+            </div>
+          ) : null}
+        </span>
+        {guard ? dialog : null}
+      </>
+    )
+  }
 
   const message = showError ? (
     <p role="alert" className={cn("gap-1.5 text-sm flex items-start text-destructive", classNames?.message)}>
@@ -307,17 +397,7 @@ export function SaveBar({
           >
             {discardLabel ?? t("form.discard")}
           </Button>
-          <Button
-            type={onSave ? "button" : "submit"}
-            form={onSave ? undefined : formId}
-            disabled={!dirty}
-            loading={saving}
-            onClick={onSave ? () => void save() : undefined}
-            startIcon="save"
-            className={cn("touch:min-h-11", (side || responsive) && "lg:order-1")}
-          >
-            {saveLabel ?? t("common.save")}
-          </Button>
+          {saveButton(!dirty, cn("touch:min-h-11", (side || responsive) && "lg:order-1"))}
         </div>
       </aside>
       {/* Keeps page content clear of the fixed bar on phones. */}

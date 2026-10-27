@@ -5,7 +5,9 @@ import {
   FormField,
   FormGroup,
   SaveBar,
+  SubmitButton,
   TextInput,
+  Textarea,
   ValidationError,
   describeChanges,
 } from "@javaabu/onu"
@@ -28,6 +30,19 @@ const initial = {
 }
 
 const labels = { name: "Name", email: "Email", role: "Role", island: "Island" }
+
+const questions = [
+  "Name of the business",
+  "Registration number",
+  "Island",
+  "Address",
+  "Contact person",
+  "Phone",
+  "Email",
+  "Number of employees",
+  "Opening hours",
+  "Website",
+]
 
 export default function SaveBarDemo() {
   const [saved, setSaved] = React.useState(initial)
@@ -83,6 +98,26 @@ export default function SaveBarDemo() {
             </div>
             <SaveBar changes={changes} onDiscard={() => setValues(saved)} successMessage="User saved" />
           </div>
+        </Form>
+      </DemoSection>
+      <DemoSection
+        title="Floating"
+        description='layout="floating": a Submit button floats while the main one is scrolled out of view. Here it is sticky to this form; by default it is fixed to the screen.'
+        className="max-w-xl grid"
+      >
+        <Form onSubmit={() => new Promise((r) => setTimeout(r, 1200))}>
+          {questions.map((q) => (
+            <FormField key={q} label={q}>
+              <TextInput />
+            </FormField>
+          ))}
+          <FormField label="Anything else?">
+            <Textarea />
+          </FormField>
+          <div>
+            <SubmitButton startIcon="send">Submit application</SubmitButton>
+          </div>
+          <SaveBar layout="floating" saveLabel="Submit" className="sticky flex justify-end" />
         </Form>
       </DemoSection>
     </DemoPage>

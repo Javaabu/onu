@@ -8,7 +8,6 @@ import { Icon } from "../../icons/icon"
 import { FormField } from "../form/form-field"
 import { TextInput } from "./text-input"
 import { Textarea } from "./textarea"
-import { ThaanaInput, ThaanaTextarea } from "./thaana-input"
 
 function typeThaana(el: HTMLElement, data: string) {
   for (const ch of data) {
@@ -93,7 +92,7 @@ describe("TextInput", () => {
   })
 
   it.each(directions)("works in %s with Dhivehi strings", async (dir) => {
-    renderWithOnu(<ThaanaInput aria-label="ނަން" />, { locale: "dv", dir })
+    renderWithOnu(<TextInput thaana thaanaToggle aria-label="ނަން" />, { locale: "dv", dir })
     expect(screen.getByRole("button", { name: "ތާނައާއި ލަތީނުގެ ދެމެދު ބަދަލުކުރޭ" })).toBeInTheDocument()
     await expectNoA11yViolations()
   })
@@ -140,7 +139,7 @@ describe("Textarea", () => {
   })
 
   it("types Thaana and shows a toggle", () => {
-    renderWithOnu(<ThaanaTextarea aria-label="Notes" />)
+    renderWithOnu(<Textarea thaana thaanaToggle aria-label="Notes" />)
     const ta = screen.getByLabelText("Notes")
     typeThaana(ta, "salAm")
     expect(ta).toHaveValue("ސަލާމ")

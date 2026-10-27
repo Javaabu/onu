@@ -122,7 +122,7 @@ The `--onu-shell*` tokens describe the area around the content panel (Proton's s
 | `--onu-shell-field` | `#ffffff` | `#292733` | Fields on the shell (the header search) |
 | `--onu-shell-hover` | `rgb(194 193 192 / 20%)` | `rgb(91 87 107 / 20%)` | Hovered nav items and header buttons |
 | `--onu-shell-active` | `rgb(194 192 190 / 35%)` | `rgb(91 87 107 / 40%)` | The current nav item |
-| `--onu-shell-weak` | `#eae7e4` | `#3f3b4c` | Weak fills on the shell: usage-meter tracks, avatar tiles |
+| `--onu-shell-weak` | `#eae7e4` | `#3f3b4c` | Weak fills on the shell: progress tracks, avatar tiles |
 
 ## Preset colours
 

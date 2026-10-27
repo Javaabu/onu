@@ -17,7 +17,6 @@ import {
   SubmitButton,
   Tag,
   TextInput,
-  ThaanaInput,
   toast,
   type Account,
   type FormErrors,
@@ -238,7 +237,7 @@ export default function ProfilePage() {
                 name="address_dv"
                 className="col-span-full"
               >
-                <ThaanaInput defaultValue={applicant.house[1]} />
+                <TextInput thaana thaanaToggle defaultValue={applicant.house[1]} />
               </FormField>
             </FormGroup>
             <div>

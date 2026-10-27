@@ -1,0 +1,5 @@
+---
+"@javaabu/onu": minor
+---
+
+`DateCalendar` takes `events` (`DateCalendarEvent[]`: `{ id?, date, title, tone?, href? }`), shown as up to `maxDots` dots under each day and counted in the day's accessible name, and `readOnly`, which turns off selection so that clicking a day lists its events underneath in a polite live region (`showEventList={false}` hides the list). `size="sm"` makes it compact, and `onDayClick` now also gets the day's events: `(date, modifiers, events)`. `MiniCalendar`, `MiniCalendarProps`, `MiniCalendarEvent` and `MiniCalendarEventTone` are removed: use `<DateCalendar readOnly size="sm" events={events} />` with `DateCalendarEvent` and `DateCalendarEventTone`. Its `onDayClick(date, events)` is `onDayClick(date, modifiers, events)`, and `classNames.calendar` / `list` / `dot` are `className` / `classNames.eventList` / `classNames.dot`. The `mini-calendar*` data-slots are now `date-calendar`, `date-calendar-dot` and `date-calendar-events`. The `display.events` and `display.eventsOn` strings move to `date.events` and `date.eventsOn`.

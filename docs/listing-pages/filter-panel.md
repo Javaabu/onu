@@ -53,6 +53,28 @@ const filters: FilterDefinition[] = [
 
 [`ListingPage`](listing-page) shows one above its table card when you pass `queryFilters`.
 
+### Server-rendered filter forms
+
+For a classic filter bar that you render yourself (a `GET` form above a server-rendered table), end the form with a [`SubmitButton`](../form-scaffolding/submit-button) and a [`Button`](../form-scaffolding/button) (or a [`LinkButton`](../form-scaffolding/link-button) to the unfiltered URL) rather than a dedicated component:
+
+```tsx
+<form method="get" action="/users" className="gap-3 flex flex-wrap items-end">
+  <FormField label="Name">
+    <TextInput name="search" />
+  </FormField>
+  <div className="gap-2 flex flex-wrap items-center">
+    <SubmitButton processing={processing} startIcon="filter">
+      {t("listing.filterSubmit")}
+    </SubmitButton>
+    <Button variant="ghost" onClick={() => router.get("/users")}>
+      {t("listing.filterReset")}
+    </Button>
+  </div>
+</form>
+```
+
+`SubmitButton` shows a spinner and `aria-busy` while `processing` and blocks double submits; `listing.filterSubmit` / `listing.filterReset` are the built-in "Filter" / "Reset" strings.
+
 ## Behaviour
 
 - Changes in the panel are a draft: the list doesn't change until **Apply**.

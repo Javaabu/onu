@@ -1,3 +1,4 @@
+import * as React from "react"
 import { Label, Switch, Tabs, TabsContent, TabsList, TabsTrigger } from "@javaabu/onu"
 
 import { DemoPage, DemoSection } from "../../components/demo"
@@ -8,7 +9,7 @@ export const meta = {
   group: "Layout and navigation",
   order: 14,
   description:
-    "shadcn Tabs, extended with an items API, counts, badges, icons and a scrollable list. Vertical tabs can become a select (or a scroller) in narrow containers. Arrow keys follow RTL.",
+    "shadcn Tabs, extended with an items API, counts, badges, icons and a scrollable list. Vertical tabs can become a select (or a scroller) in narrow containers, and tabs without panels filter a listing. Arrow keys follow RTL.",
 }
 
 function Panel({ title, text }: { title: string; text: string }) {
@@ -26,6 +27,14 @@ function Panel({ title, text }: { title: string; text: string }) {
 
 export default function TabsDemo() {
   const dv = useDhivehi()
+  const [status, setStatus] = React.useState("all")
+  const statuses = [
+    { value: "all", label: dv ? "ހުރިހާ" : "All", count: 312 },
+    { value: "new", label: dv ? "އާ" : "New", count: 18 },
+    { value: "done", label: dv ? "ނިމިފައި" : "Done", count: 294 },
+    { value: "locked", label: dv ? "ބަންދު" : "Locked", disabled: true },
+  ]
+  const shown = statuses.find((s) => s.value === status)
   const items = [
     {
       value: "details",
@@ -101,6 +110,31 @@ export default function TabsDemo() {
       </DemoSection>
       <DemoSection title="Line variant" className="block">
         <Tabs items={items} variant="line" defaultValue="documents" />
+      </DemoSection>
+      <DemoSection
+        title="Filter tabs above a listing"
+        description="Items without content: no panels, aria-controls points at the list, counts as pills."
+        className="gap-3 grid"
+      >
+        <Tabs
+          variant="line"
+          countAppearance="pill"
+          listLabel={dv ? "ހާލަތުން ފިލްޓަރ" : "Filter by status"}
+          controls="tabs-demo-list"
+          value={status}
+          onValueChange={setStatus}
+          items={statuses}
+        />
+        <p id="tabs-demo-list" className="text-sm text-muted-foreground">
+          {shown?.label}: {shown?.count}
+        </p>
+        <Tabs
+          countAppearance="pill"
+          listLabel={dv ? "ހާލަތުން ފިލްޓަރ" : "Filter by status"}
+          value={status}
+          onValueChange={setStatus}
+          items={statuses}
+        />
       </DemoSection>
       <DemoSection title="Vertical" className="block">
         <Tabs items={items.slice(0, 3)} orientation="vertical" />

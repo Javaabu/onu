@@ -10,7 +10,6 @@ import {
   Select,
   Textarea,
   TextInput,
-  ThaanaInput,
   ValidationError,
 } from "@javaabu/onu"
 
@@ -181,7 +180,7 @@ export function ApplicationFields({
             <TextInput autoComplete="off" {...text("name")} />
           </FormField>
           <FormField label={l.nameDv} name="nameDv" required>
-            <ThaanaInput {...text("nameDv")} />
+            <TextInput thaana thaanaToggle {...text("nameDv")} />
           </FormField>
           <FormField label={l.idCard} name="idCard" required help={tr("For example A123456", "މިސާލަކަށް A123456")}>
             <TextInput dir="ltr" autoComplete="off" {...text("idCard")} />

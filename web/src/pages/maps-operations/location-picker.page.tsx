@@ -11,7 +11,6 @@ import {
   SaveBar,
   Select,
   TextInput,
-  ThaanaInput,
   ValidationError,
   describeChanges,
   toast,
@@ -156,7 +155,12 @@ export default function LocationPickerPage() {
                     <TextInput value={values.name} onChange={(e) => set("name", e.target.value)} />
                   </FormField>
                   <FormField label={tr("Name in Dhivehi", "ދިވެހި ނަން")} name="dv_name" required>
-                    <ThaanaInput value={values.dvName} onChange={(e) => set("dvName", e.target.value)} />
+                    <TextInput
+                      thaana
+                      thaanaToggle
+                      value={values.dvName}
+                      onChange={(e) => set("dvName", e.target.value)}
+                    />
                   </FormField>
                   <FormField label={tr("Category", "ބާވަތް")} name="category" required>
                     <Select

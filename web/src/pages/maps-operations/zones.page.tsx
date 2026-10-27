@@ -14,7 +14,6 @@ import {
   StatusBadge,
   SubmitButton,
   TextInput,
-  ThaanaInput,
   ValidationError,
   cn,
   confirm,
@@ -132,7 +131,7 @@ function ZoneEditor({
           <TextInput defaultValue={zone?.name} autoComplete="off" />
         </FormField>
         <FormField label={tr("Name in Dhivehi", "ދިވެހި ނަން")} name="dv_name" required>
-          <ThaanaInput defaultValue={zone?.dvName} />
+          <TextInput thaana thaanaToggle defaultValue={zone?.dvName} />
         </FormField>
         <div className="gap-4 sm:grid-cols-2 grid">
           <FormField label={tr("Zone type", "ބާވަތް")} name="type" required>

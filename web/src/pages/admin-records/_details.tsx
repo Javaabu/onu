@@ -1,7 +1,6 @@
 import * as React from "react"
 import { useNavigate } from "react-router"
 import {
-  ActivityFeed,
   Button,
   Callout,
   Card,
@@ -12,6 +11,7 @@ import {
   LinkButton,
   RelativeDate,
   StatusBadge,
+  Timeline,
   toast,
 } from "@javaabu/onu"
 
@@ -240,7 +240,11 @@ export function ActivityCard({ record, limit = 4 }: { record: Application; limit
         </LinkButton>
       }
     >
-      <ActivityFeed title={null} groupByDay={false} items={recordActivity(record, labels, tr).slice(0, limit)} />
+      <Timeline
+        aria-label={tr("Recent activity", "ފަހުގެ ހަރަކާތްތައް")}
+        timeFormat="relative"
+        items={recordActivity(record, labels, tr).slice(0, limit)}
+      />
     </Card>
   )
 }

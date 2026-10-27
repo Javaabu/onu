@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Button, EmptyState, FilterTabs, Icon, ListView, PageTitle, Select, Tag, toast } from "@javaabu/onu"
+import { Button, EmptyState, Tabs, Icon, ListView, PageTitle, Select, Tag, toast } from "@javaabu/onu"
 
 import { CitizenShell } from "../_shared/shells"
 import { useTr } from "../_shared/i18n"
@@ -53,11 +53,13 @@ export default function NotificationsPage() {
         />
 
         <div className="gap-3 sm:flex-row sm:items-end sm:justify-between flex flex-col">
-          <FilterTabs
-            aria-label={tr("Show", "ދައްކާ")}
+          <Tabs
+            variant="line"
+            countAppearance="pill"
+            listLabel={tr("Show", "ދައްކާ")}
             value={tab}
             onValueChange={setTab}
-            tabs={[
+            items={[
               { value: "all", label: tr("All", "ހުރިހާ"), count: items.length },
               { value: "unread", label: tr("Unread", "ނުކިޔާ"), count: unread },
             ]}

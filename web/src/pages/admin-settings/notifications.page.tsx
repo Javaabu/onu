@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   EmptyState,
-  FilterTabs,
   Icon,
   ListView,
   PageTitle,
@@ -80,11 +79,14 @@ export default function NotificationsPage() {
   const inboxPanel = (
     <div className="gap-4 grid">
       <div className="gap-3 flex flex-wrap items-center justify-between">
-        <FilterTabs
+        <Tabs
+          variant="line"
+          countAppearance="pill"
+          listLabel={tr("Show", "ދައްކާ")}
           controls="inbox-list"
           value={filter}
           onValueChange={setFilter}
-          tabs={[
+          items={[
             { value: "all", label: tr("All", "ހުރިހާ"), count: items.length },
             { value: "unread", label: tr("Unread", "ނުކިޔާ"), count: unread },
           ]}

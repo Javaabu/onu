@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useNavigate } from "react-router"
-import { Card, Countdown, DescriptionList, Icon, LinkButton, PrintButton } from "@javaabu/onu"
+import { Button, Card, Countdown, DescriptionList, Icon, LinkButton } from "@javaabu/onu"
 
 import { KioskShell } from "../_shared/shells"
 import { useTr } from "../_shared/i18n"
@@ -52,9 +52,9 @@ export default function KioskPaymentSuccessPage() {
         </Card>
 
         <div className="gap-4 sm:grid-cols-2 grid">
-          <PrintButton variant="outline" className={BIG}>
+          <Button variant="outline" startIcon="print" className={`${BIG} print:hidden`} onClick={() => window.print()}>
             {tr("Print receipt", "ރަސީދު ޕްރިންޓްކުރޭ")}
-          </PrintButton>
+          </Button>
           <LinkButton href={routes.kiosk.start} className={BIG} startIcon="check">
             {tr("Done", "ނިމުނީ")}
           </LinkButton>

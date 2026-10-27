@@ -345,7 +345,7 @@ Javaabu currently uses the JTK (JavaScript Thaana Keyboard) approach for typing 
   - Pure functions for Latin → Thaana conversion of a keystroke and of a whole string (useful for paste and tests).
 - **R13.2** React bindings:
   - `useThaanaInput(ref, options)` hook that can be attached to any `<input>`, `<textarea>` or `contenteditable`.
-  - `<ThaanaInput>` and `<ThaanaTextarea>` components.
+  - `thaana` and `thaanaToggle` props on `<TextInput>` and `<Textarea>`.
   - A Tiptap extension (`ThaanaKeyboard`) so the WYSIWYG and block editors type Thaana through ProseMirror transactions rather than raw DOM edits.
 - **R13.3** **Every component that accepts free text** exposes a `thaana` prop (`boolean | ThaanaOptions`), including: Text input, Textarea, Search box, Autocomplete, Searchable select / Multi-select search field, Tags input, Inline edit, Editable select, Combobox-style inputs, Command palette, Translations editor, Notes, Comment thread composer, WYSIWYG and Block editor. Inputs whose content must be Latin (email, password, URL, number, phone, OTP, slug, colour) do **not** offer it.
 - **R13.4** When `thaana` is on, the field sets `dir="rtl"`, `lang="dv"` and the Thaana font automatically.

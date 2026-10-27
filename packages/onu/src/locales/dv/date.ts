@@ -113,4 +113,8 @@ export const date = {
   noEvents: "ދައްކާނެ އެއްވެސް ހަރަކާތެއް ނެތް",
   moreEvents: "+{count} އިތުރަށް",
   weekShort: "ހ",
+
+  // Events on DateCalendar
+  events: { zero: "އެއްވެސް އިވެންޓެއް ނެތް", other: "{count} އިވެންޓް" },
+  eventsOn: "{date} ގެ އިވެންޓްތައް",
 } satisfies Record<keyof typeof en, MessageDict[string]> & MessageDict

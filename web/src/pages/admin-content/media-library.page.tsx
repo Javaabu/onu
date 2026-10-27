@@ -5,8 +5,8 @@ import {
   Card,
   ConfirmDialog,
   DescriptionList,
-  DropzoneUploader,
   FileIcon,
+  FileInput,
   FormField,
   Icon,
   MediaLister,
@@ -113,7 +113,9 @@ export default function MediaLibraryPage() {
         {showUpload ? (
           <Card id="media-upload" title={tr("Upload files", "ފައިލް އަޕްލޯޑްކުރޭ")} headingLevel={2} size="sm">
             <FormField label={tr("Files", "ފައިލްތައް")} hideLabel>
-              <DropzoneUploader
+              <FileInput
+                appearance="dropzone"
+                multiple
                 upload={fakeUpload}
                 accept="image/*,.pdf,.xlsx,.mp4,.mp3"
                 maxSize={20 * 1024 * 1024}

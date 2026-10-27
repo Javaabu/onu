@@ -306,7 +306,7 @@ export function Home() {
               <ChartCard />
             </div>
           </Showcase>
-          <Showcase title="Thaana input" href="/components/text-inputs/thaana-input">
+          <Showcase title="Thaana input" href="/components/text-inputs/text-input">
             <ThaanaCard />
           </Showcase>
           <Showcase title="Data table" href="/components/listing-pages/data-table" className="xl:col-span-2">

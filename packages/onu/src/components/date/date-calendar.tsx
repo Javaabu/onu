@@ -16,7 +16,8 @@ import type { DateRange, Matcher, Modifiers, WeekNumberProps } from "react-day-p
 
 import { cn } from "../../lib/utils"
 import { useOnu } from "../../providers/onu-provider"
-import { Calendar } from "../../ui/calendar"
+import { Calendar, CalendarDayButton } from "../../ui/calendar"
+import { ConditionalLink } from "../display/conditional-link"
 import { CalendarHeader } from "./_calendar-header"
 import { PeriodGrid, type GridItem } from "./_period-grid"
 import { useControllableState } from "./_use-controllable-state"
@@ -33,6 +34,28 @@ const ZOOM_ORDER: CalendarView[] = ["day", "month", "year", "decade"]
 
 /** Maldivian weekend: Friday and Saturday. */
 export const DEFAULT_WEEKEND_DAYS = [5, 6]
+
+export type DateCalendarEventTone = "primary" | "success" | "warning" | "destructive" | "info" | "muted"
+
+/** An event shown as a dot on its day. */
+export interface DateCalendarEvent {
+  id?: string | number
+  /** A `Date`, ISO string or timestamp; invalid dates are skipped. */
+  date: Date | string | number
+  title: React.ReactNode
+  tone?: DateCalendarEventTone
+  /** Link for the event in the day's event list. */
+  href?: string
+}
+
+const EVENT_DOT: Record<DateCalendarEventTone, string> = {
+  primary: "bg-primary",
+  success: "bg-success",
+  warning: "bg-warning",
+  destructive: "bg-destructive",
+  info: "bg-info",
+  muted: "bg-muted-foreground",
+}
 
 type SelectionProps =
   | {
@@ -90,20 +113,45 @@ export type DateCalendarProps = SelectionProps & {
   /** Extra day modifiers (react-day-picker). */
   modifiers?: Record<string, Matcher | Matcher[] | undefined>
   modifiersClassNames?: Record<string, string>
-  onDayClick?: (date: Date, modifiers: Modifiers) => void
+  /** Called when a day is clicked, with its modifiers and its `events`. */
+  onDayClick?: (date: Date, modifiers: Modifiers, events: DateCalendarEvent[]) => void
+  /** Events shown as dots under their day; the day's accessible name says how many. */
+  events?: DateCalendarEvent[]
+  /** Most dots per day. Default 3. */
+  maxDots?: number
+  /**
+   * Not a picker: `mode`, `selected` and `onSelect` are ignored, and clicking a
+   * day highlights it and lists its `events` underneath (for sidebars and
+   * dashboards, e.g. "Upcoming events").
+   */
+  readOnly?: boolean
+  /** With `readOnly`, list the clicked day's events under the calendar. Default `true`. */
+  showEventList?: boolean
+  /** `sm` is a compact calendar with smaller day cells (larger again on touch screens). */
+  size?: "default" | "sm"
   /** Pins "today" (tests, demos, or server time). */
   today?: Date
   /** Focus the active day (or cell) when mounted. */
   initialFocus?: boolean
   className?: string
-  classNames?: { header?: string; caption?: string; nav?: string; grid?: string; cell?: string }
+  classNames?: {
+    header?: string
+    caption?: string
+    nav?: string
+    grid?: string
+    cell?: string
+    dot?: string
+    eventList?: string
+  }
   ref?: React.Ref<HTMLDivElement>
 }
 
 /**
  * Month calendar with zoom levels: days → months → years → ranges of years
  * (§25.1). The days view is shadcn's `Calendar` (react-day-picker); the other
- * views are accessible grids with the same keyboard model.
+ * views are accessible grids with the same keyboard model. With `events` it
+ * shows event dots, and with `readOnly` it is a month view that lists the
+ * clicked day's events instead of picking a date.
  */
 export function DateCalendar(props: DateCalendarProps) {
   const {
@@ -125,6 +173,11 @@ export function DateCalendar(props: DateCalendarProps) {
     modifiers,
     modifiersClassNames,
     onDayClick,
+    events,
+    maxDots = 3,
+    readOnly = false,
+    showEventList = true,
+    size = "default",
     today: todayProp,
     initialFocus,
     className,
@@ -133,7 +186,24 @@ export function DateCalendar(props: DateCalendarProps) {
   } = props
   const { locale, dir, t } = useOnu()
   const today = todayProp ?? new Date()
-  const anchor = selectionAnchor(props)
+  const anchor = readOnly ? null : selectionAnchor(props)
+  const [activeDay, setActiveDay] = React.useState<Date | undefined>(undefined)
+
+  const eventsByDay = React.useMemo(() => {
+    const map = new Map<string, DateCalendarEvent[]>()
+    for (const event of events ?? []) {
+      const date = toValidDate(event.date)
+      if (!date) continue
+      const key = dayKey(date)
+      map.set(key, [...(map.get(key) ?? []), event])
+    }
+    return map
+  }, [events])
+  const eventsOn = (date: Date) => eventsByDay.get(dayKey(date)) ?? []
+  const eventContext = React.useMemo(
+    () => (events ? { byDay: eventsByDay, maxDots, dotClassName: classNames?.dot } : null),
+    [events, eventsByDay, maxDots, classNames?.dot],
+  )
 
   const [month, setMonthState] = useControllableState(
     monthProp,
@@ -206,13 +276,13 @@ export function DateCalendar(props: DateCalendarProps) {
     zoomTo(below, true)
   }
 
-  const selectedDates = selectedList(props)
+  const selectedDates = readOnly ? (activeDay ? [activeDay] : []) : selectedList(props)
 
   let body: React.ReactNode
   if (view === "day") {
     body = (
       <Calendar
-        {...dayPickerSelection(props)}
+        {...(readOnly ? { mode: "single", selected: activeDay, onSelect: setActiveDay } : dayPickerSelection(props))}
         month={month}
         onMonthChange={setMonth}
         hideNavigation
@@ -231,7 +301,7 @@ export function DateCalendar(props: DateCalendarProps) {
           ...(min ? [{ before: min }] : []),
           ...(max ? [{ after: max }] : []),
           ...toArray(disabledDates),
-          ...(props.mode === "multiple" && props.maxSelected && selectedDates.length >= props.maxSelected
+          ...(!readOnly && props.mode === "multiple" && props.maxSelected && selectedDates.length >= props.maxSelected
             ? [(d: Date) => !selectedDates.some((s) => isSameDay(s, d))]
             : []),
         ]}
@@ -240,11 +310,19 @@ export function DateCalendar(props: DateCalendarProps) {
           weekend: "[&:not([data-outside])]:text-destructive",
           ...modifiersClassNames,
         }}
-        onDayClick={onDayClick}
+        onDayClick={onDayClick ? (date, mods) => onDayClick(date, mods, eventsOn(date)) : undefined}
         components={CALENDAR_COMPONENTS}
         labels={{
-          labelDayButton: (date, mods) =>
-            [mods.today ? t("date.today") : null, formatDate(date, "PPPP", locale.dateFns)].filter(Boolean).join(", "),
+          labelDayButton: (date, mods) => {
+            const count = eventsOn(date).length
+            return [
+              mods.today ? t("date.today") : null,
+              formatDate(date, "PPPP", locale.dateFns),
+              count ? t("date.events", { count }) : null,
+            ]
+              .filter(Boolean)
+              .join(", ")
+          },
           labelGrid: (date) => formatDate(date, "LLLL yyyy", locale.dateFns),
           labelWeekNumber: (week) => t("date.weekNumber", { week }),
           labelWeekNumberHeader: () => t("date.week"),
@@ -285,13 +363,18 @@ export function DateCalendar(props: DateCalendarProps) {
     )
   }
 
+  const listEvents = readOnly && showEventList && !!events
+  const activeEvents = activeDay ? eventsOn(activeDay) : []
+
   return (
     <div
       ref={ref}
       data-slot="date-calendar"
       data-view={view}
+      data-size={size}
       className={cn(
-        "p-2 gap-2 [--cell-size:--spacing(9)] touch:[--cell-size:--spacing(11)] flex w-fit flex-col [--cell-radius:var(--radius-md)]",
+        "p-2 gap-2 touch:[--cell-size:--spacing(11)] flex w-fit flex-col [--cell-radius:var(--radius-md)]",
+        size === "sm" ? "[--cell-size:--spacing(7)]" : "[--cell-size:--spacing(9)]",
         className,
       )}
     >
@@ -309,9 +392,80 @@ export function DateCalendar(props: DateCalendarProps) {
         className={classNames?.header}
         classNames={{ caption: classNames?.caption, nav: classNames?.nav }}
       />
-      {body}
+      <EventsContext.Provider value={eventContext}>{body}</EventsContext.Provider>
+      {listEvents ? (
+        // Always rendered (empty until a day is clicked) so screen readers announce the first list too.
+        <div
+          aria-live="polite"
+          data-slot="date-calendar-events"
+          className={cn("gap-1 text-sm empty:-mt-2 grid max-w-[calc(var(--cell-size)*7)]", classNames?.eventList)}
+        >
+          {activeDay ? (
+            <>
+              <p className="font-medium">
+                {t("date.eventsOn", { date: formatDate(activeDay, "PPP", locale.dateFns) })}
+              </p>
+              {activeEvents.length ? (
+                <ul className="gap-1 grid">
+                  {activeEvents.map((event, i) => (
+                    <li key={event.id ?? i} className="gap-2 flex items-center">
+                      <span
+                        aria-hidden
+                        className={cn("size-2 shrink-0 rounded-full", EVENT_DOT[event.tone ?? "primary"])}
+                      />
+                      <ConditionalLink href={event.href}>{event.title}</ConditionalLink>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-muted-foreground">{t("date.events", { count: 0 })}</p>
+              )}
+            </>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   )
+}
+
+interface EventsContextValue {
+  byDay: Map<string, DateCalendarEvent[]>
+  maxDots: number
+  dotClassName?: string
+}
+
+const EventsContext = React.createContext<EventsContextValue | null>(null)
+
+/** The day button, with a row of event dots when the calendar has `events`. */
+function EventDayButton({ children, ...props }: React.ComponentProps<typeof CalendarDayButton>) {
+  const events = React.useContext(EventsContext)
+  const { locale } = useOnu()
+  const dayEvents = events?.byDay.get(dayKey(props.day.date)) ?? []
+  return (
+    <CalendarDayButton locale={locale.dateFns} {...props}>
+      {children}
+      {events ? (
+        <span aria-hidden className="gap-0.5 h-1 flex justify-center opacity-100!">
+          {dayEvents.slice(0, events.maxDots).map((event, i) => (
+            <span
+              key={event.id ?? i}
+              data-slot="date-calendar-dot"
+              className={cn("size-1 rounded-full", EVENT_DOT[event.tone ?? "primary"], events.dotClassName)}
+            />
+          ))}
+        </span>
+      ) : null}
+    </CalendarDayButton>
+  )
+}
+
+function dayKey(date: Date) {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+}
+
+function toValidDate(value: Date | string | number): Date | null {
+  const date = value instanceof Date ? value : new Date(value)
+  return Number.isNaN(date.getTime()) ? null : date
 }
 
 /** Week numbers are row headers (`<th scope="row">`); shadcn renders a `<td>`, which axe rejects. */
@@ -325,7 +479,7 @@ function WeekNumberCell({ children, week: _week, ...props }: WeekNumberProps) {
   )
 }
 
-const CALENDAR_COMPONENTS = { WeekNumber: WeekNumberCell }
+const CALENDAR_COMPONENTS = { WeekNumber: WeekNumberCell, DayButton: EventDayButton }
 
 function toArray<T>(value: T | T[] | undefined): T[] {
   if (value === undefined) return []

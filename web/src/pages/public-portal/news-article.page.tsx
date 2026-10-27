@@ -1,5 +1,5 @@
 import * as React from "react"
-import { BackButton, Breadcrumbs, ContentCard, SegmentedControl, ShareButtons, Tag, UserAvatar } from "@javaabu/onu"
+import { Breadcrumbs, ContentCard, LinkButton, SegmentedControl, ShareButtons, Tag, UserAvatar } from "@javaabu/onu"
 import { BlockRenderer, type JSONContent } from "@javaabu/onu/editor"
 
 import { useDv, useTr } from "../_shared/i18n"
@@ -254,9 +254,9 @@ export default function NewsArticlePage() {
               size="sm"
             />
           </div>
-          <BackButton className="mt-6" href={routes.public.news}>
+          <LinkButton variant="ghost" startIcon="back" className="mt-6 print:hidden" href={routes.public.news}>
             {tr("All news", "ހުރިހާ ޚަބަރެއް")}
-          </BackButton>
+          </LinkButton>
         </Container>
       </article>
 

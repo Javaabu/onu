@@ -13,12 +13,12 @@ import { useAppLayout } from "../layout/app-layout"
 import type { BreadcrumbsItem } from "../layout/breadcrumbs"
 import { Card } from "../layout/card"
 import { PageTitle, type PageTitleFigure } from "../layout/page-title"
+import { Tabs, type TabItem } from "../layout/tabs"
 import { ActiveFilterChips } from "./active-filter-chips"
 import { ColumnVisibility } from "./column-visibility"
 import { DataTable, type DataTableProps } from "./data-table"
 import { ExportMenu, type ExportFormat, type ExportOption } from "./export-menu"
 import { FilterPanel } from "./filter-panel"
-import { FilterTabs, type FilterTab } from "./filter-tabs"
 import type { FilterDefinition, ListingView } from "./listing-types"
 import { Pagination } from "./pagination"
 import { SearchBox } from "./search-box"
@@ -65,8 +65,8 @@ export interface ListingPageProps<T extends RowData> extends Omit<DataTableProps
   exportOptions?: (ExportFormat | ExportOption)[]
   /** Show the Columns menu. Default `false`. */
   columnToggle?: boolean
-  /** Status tabs; choosing one sets the filter named by `tabsFilterKey` (default `status`). */
-  tabs?: FilterTab[]
+  /** Status tabs (`TabItem`s without `content`); choosing one sets the filter named by `tabsFilterKey` (default `status`). */
+  tabs?: TabItem[]
   tabsFilterKey?: string
   /** Extra toolbar content at the end (e.g. a `SegmentedControl` of `useListingViewOptions()` views). */
   toolbarEnd?: React.ReactNode
@@ -196,8 +196,11 @@ export function ListingPage<T extends RowData>({
     ))
 
   const filterTabs = tabs?.length ? (
-    <FilterTabs
-      tabs={tabs}
+    <Tabs
+      items={tabs}
+      variant="line"
+      countAppearance="pill"
+      listLabel={t("listing.filterTabs")}
       value={tabValue}
       controls={listId}
       onValueChange={(value) => state.setFilter(tabsFilterKey, value === tabs[0]?.value ? undefined : value)}

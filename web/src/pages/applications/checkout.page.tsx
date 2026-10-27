@@ -8,7 +8,7 @@ import {
   DescriptionList,
   DescriptionListItem,
   Divider,
-  DropzoneUploader,
+  FileInput,
   FormField,
   LinkButton,
   Modal,
@@ -177,9 +177,7 @@ export default function CheckoutPage() {
                       error={slipError}
                       required
                     >
-                      <DropzoneUploader
-                        appearance="input"
-                        multiple={false}
+                      <FileInput
                         upload={fakeUpload}
                         accept="image/*,.pdf"
                         maxSize={5 * 1024 * 1024}

@@ -2,7 +2,7 @@ import { expect, test } from "./fixtures"
 
 // Real-browser check of the Thaana keyboard (beforeinput + execCommand undo), on desktop and mobile.
 test("types Thaana and keeps undo working", async ({ page }) => {
-  await page.goto("/#/components/text-inputs/thaana-input")
+  await page.goto("/#/components/text-inputs/text-input")
   const input = page.getByLabel("ނަން", { exact: true })
   await input.click()
   await input.pressSequentially("dhivehi")

@@ -1,0 +1,5 @@
+---
+"@javaabu/onu": minor
+---
+
+`SortableList` takes `columns` instead of `renderItem` for a table layout on shadcn `Table`: each row's drag handle (with `aria-keyshortcuts`, Alt+↑/↓) sits in the first column under a "Reorder" header, and `aria-label` names the table through a visually hidden caption. `SortableListColumn` is exported, `classNames` gains `table`, and list handles now carry `aria-keyshortcuts` too. `ReorderableTable`, `ReorderableTableProps` and `ReorderableColumn` are removed: use `<SortableList aria-label="Ferry route stops" items={rows} getName={…} onReorder={…} columns={columns} />` (`rows` is now `items`, `caption` is `aria-label`, and `classNames.row` is `classNames.item`). Table rows now also get Move up / Move down buttons beside the handle, the non-drag alternative SortableList already had (`moveButtons={false}` for just the handle). The table wrapper's `data-slot` is `sortable-list` with `data-layout="table"` (was `reorderable-table`), and rows are `sortable-item`.

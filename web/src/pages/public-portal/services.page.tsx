@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useSearchParams } from "react-router"
-import { Card, EmptyState, FilterTabs, Icon, IconText, SearchBox, Select, Switch, Tag } from "@javaabu/onu"
+import { Card, EmptyState, Tabs, Icon, IconText, SearchBox, Select, Switch, Tag } from "@javaabu/onu"
 
 import { useDv, useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -74,12 +74,14 @@ export default function ServicesDirectoryPage() {
       </PortalPageHeader>
 
       <Container className="py-8 sm:py-10">
-        <FilterTabs
-          tabs={tabs}
+        <Tabs
+          variant="line"
+          countAppearance="pill"
+          items={tabs}
           value={category}
           onValueChange={setCategory}
           controls="service-results"
-          aria-label={tr("Service categories", "ޚިދުމަތުގެ ބައިތައް")}
+          listLabel={tr("Service categories", "ޚިދުމަތުގެ ބައިތައް")}
         />
 
         <div className="mt-4 gap-x-6 gap-y-3 flex flex-wrap items-center justify-between">

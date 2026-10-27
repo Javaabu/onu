@@ -31,8 +31,14 @@ export default function TextInputDemo() {
         <FormField label="ނަން">
           <TextInput thaana thaanaToggle placeholder="ނަން ލިޔުއްވާ" />
         </FormField>
+        <FormField label="Phonetic (Hassan Hameed)">
+          <TextInput thaana={{ keymap: "phonetic-hh" }} thaanaToggle />
+        </FormField>
         <FormField label="Typewriter layout">
           <TextInput thaana={{ keymap: "typewriter" }} thaanaToggle />
+        </FormField>
+        <FormField label="Paste converts Latin text">
+          <TextInput thaana={{ paste: "transliterate" }} thaanaToggle />
         </FormField>
       </DemoSection>
     </DemoPage>

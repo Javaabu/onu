@@ -43,7 +43,7 @@ Inside a panel `AppLayout` (the default) the sidebar uses `surface="shell"`: Pro
 - **`action`**: the main call to action under the header, as a full-width 44px button (Proton's "New message"). Collapsed to icons, only its icon shows; the label stays its accessible name.
 - **Count pills**: numeric badges are brand-coloured pills for unread-like counts, read as "12 new" by screen readers. Set `badgeTone: "neutral"` on an item for a plain muted total, read as the number alone.
 - **Folders and labels**: give an item a `color`. With a semantic icon (`icon: "folder"`) the icon is tinted; with no icon it shows a coloured dot. The colour is decorative; the label carries the meaning.
-- **Header and footer**: put a `Logo` and an [`AppSwitcher`](./app-switcher) in `header`, and a [`UsageMeter`](./usage-meter) (or a `UserProfile`) in `footer`.
+- **Header and footer**: put a `Logo` and an [`AppSwitcher`](./app-switcher) in `header`, and a quota bar ([`ProgressBar`](../loading/progress-bar) with a link) or a `UserProfile` in `footer`.
 
 ```tsx
 <AppSidebar
@@ -69,7 +69,14 @@ Inside a panel `AppLayout` (the default) the sidebar uses `surface="shell"`: Pro
     { label: "Folders", items: [{ label: "Building permits", href: "/f/building", icon: "folder", color: "#8080ff" }] },
     { label: "Labels", items: [{ label: "Malé", href: "/l/male", color: "#1da583" }] },
   ]}
-  footer={<UsageMeter label="Storage" value={1284} max={2000} link={{ label: "Get more space", href: "/billing" }} />}
+  footer={
+    <div className="gap-2 pt-3 grid border-t border-shell-border">
+      <ProgressBar size="sm" label="Storage" value={1284} max={2000} showValue classNames={{ track: "bg-shell-weak" }} />
+      <a href="/billing" className="text-xs text-primary hover:underline">
+        Get more space
+      </a>
+    </div>
+  }
 />
 ```
 

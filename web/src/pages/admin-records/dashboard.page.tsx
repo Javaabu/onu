@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ActivityFeed, Card, Checkbox, ConditionalLink, LinkButton, PageTitle, StatusBadge, toast } from "@javaabu/onu"
+import { Card, Checkbox, ConditionalLink, LinkButton, PageTitle, StatusBadge, Timeline, toast } from "@javaabu/onu"
 import { CategoryChart, PieChart, StatTile, StatTiles, TimeSeriesChart } from "@javaabu/onu/charts"
 
 import { useTr } from "../_shared/i18n"
@@ -205,14 +205,14 @@ export default function DashboardPage() {
               </LinkButton>
             }
           >
-            <ActivityFeed
-              title={null}
-              groupByDay={false}
+            <Timeline
+              aria-label={tr("Recent activity", "ފަހުގެ ހަރަކާތްތައް")}
+              timeFormat="relative"
               items={recent.map((a) => ({
                 id: a.id,
                 actor: a.assignee ? { name: labels.staff(a.assignee) } : null,
                 icon: a.assignee ? undefined : "file-text",
-                action: (
+                title: (
                   <>
                     {tr("set ", "")}
                     <ConditionalLink href={showHref(a.id)} className="text-xs font-mono underline">
@@ -221,7 +221,7 @@ export default function DashboardPage() {
                     {tr(` to ${labels.status(a.status)}`, ` ގެ ސްޓޭޓަސް: ${labels.status(a.status)}`)}
                   </>
                 ),
-                timestamp: `${a.updated}T09:30:00`,
+                time: `${a.updated}T09:30:00`,
               }))}
             />
           </Card>

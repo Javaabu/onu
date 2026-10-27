@@ -1,7 +1,7 @@
 import {
   applyListingState,
   DataTable,
-  FilterTabs,
+  Tabs,
   LinkButton,
   PageTitle,
   SearchBox,
@@ -92,13 +92,15 @@ export default function MyApplicationsPage() {
           }
         />
 
-        <FilterTabs
-          aria-label={tr("Filter by status", "ހާލަތުން ފިލްޓަރ")}
+        <Tabs
+          variant="line"
+          countAppearance="pill"
+          listLabel={tr("Filter by status", "ހާލަތުން ފިލްޓަރ")}
           value={tab}
           onValueChange={(v) => {
             state.setFilter("tab", v === "all" ? undefined : v)
           }}
-          tabs={TABS.map((t) => ({
+          items={TABS.map((t) => ({
             value: t,
             label: labels[t],
             count: applications.filter((a) => inTab(a, t)).length,

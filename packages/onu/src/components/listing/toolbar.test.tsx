@@ -4,11 +4,9 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { Deferred } from "../../../test/listing-fixtures"
-import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
+import { expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { ColumnVisibility } from "./column-visibility"
 import { ExportMenu } from "./export-menu"
-import { FilterSubmit } from "./filter-submit"
-import { FilterTabs } from "./filter-tabs"
 import { LoadMore } from "./load-more"
 import { Highlight, SearchResults } from "./search-results"
 
@@ -49,42 +47,6 @@ describe("ColumnVisibility", () => {
   it("can be icon-only", () => {
     renderWithOnu(<ColumnVisibility columns={[]} value={{}} onValueChange={vi.fn()} showLabel={false} />)
     expect(screen.getByRole("button", { name: "Show or hide columns" })).toBeInTheDocument()
-  })
-})
-
-describe("FilterTabs", () => {
-  it("shows status tabs with counts and reports the chosen one", async () => {
-    const onValueChange = vi.fn()
-    renderWithOnu(
-      <FilterTabs
-        controls="users"
-        onValueChange={onValueChange}
-        tabs={[
-          { value: "all", label: "All", count: 1312 },
-          { value: "active", label: "Active", count: 1280 },
-          { value: "banned", label: "Banned", count: 32 },
-          { value: "pending", label: "Pending", disabled: true },
-        ]}
-      />,
-    )
-    const list = screen.getByRole("tablist", { name: "Filter by status" })
-    const all = within(list).getByRole("tab", { name: "All (1,312)" })
-    expect(all).toHaveAttribute("aria-selected", "true")
-    expect(all).toHaveAttribute("aria-controls", "users")
-    await userEvent.click(within(list).getByRole("tab", { name: "Banned (32)" }))
-    expect(onValueChange).toHaveBeenCalledWith("banned")
-    expect(within(list).getByRole("tab", { name: "Pending" })).toBeDisabled()
-  })
-
-  it.each(directions)("has no axe violations in %s", async (dir) => {
-    renderWithOnu(
-      <div id="list">
-        <FilterTabs controls="list" tabs={[{ value: "a", label: "ހުރިހާ", count: 3 }]} />
-      </div>,
-      { dir, locale: "dv" },
-    )
-    expect(screen.getByRole("tablist", { name: "ހާލަތުން ފިލްޓަރުކުރޭ" })).toBeInTheDocument()
-    await expectNoA11yViolations()
   })
 })
 
@@ -185,35 +147,6 @@ describe("LoadMore", () => {
     await act(async () => deferred.resolve())
     expect(screen.getByRole("button", { name: "Load more" })).toBeEnabled()
     globalThis.IntersectionObserver = original
-  })
-})
-
-describe("FilterSubmit", () => {
-  it("submits and resets a filter form", async () => {
-    const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault())
-    const onReset = vi.fn()
-    const { rerender } = renderWithOnu(
-      <form onSubmit={onSubmit} aria-label="Filters">
-        <FilterSubmit onReset={onReset} />
-      </form>,
-    )
-    await userEvent.click(screen.getByRole("button", { name: "Filter" }))
-    expect(onSubmit).toHaveBeenCalled()
-    await userEvent.click(screen.getByRole("button", { name: "Reset" }))
-    expect(onReset).toHaveBeenCalled()
-    rerender(
-      <form onSubmit={onSubmit} aria-label="Filters">
-        <FilterSubmit loading onReset={onReset} submitLabel="Search" resetLabel="Clear" />
-      </form>,
-    )
-    expect(screen.getByRole("button", { name: "Search" })).toHaveAttribute("aria-busy", "true")
-    expect(screen.getByRole("button", { name: "Clear" })).toBeDisabled()
-    await expectNoA11yViolations()
-  })
-
-  it("speaks Dhivehi", () => {
-    renderWithOnu(<FilterSubmit />, { locale: "dv" })
-    expect(screen.getByRole("button", { name: "ފިލްޓަރު ކުރޭ" })).toHaveAttribute("type", "submit")
   })
 })
 

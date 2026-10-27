@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { StatusMap } from "@javaabu/onu"
+import type { StatusMap, TimelineItem } from "@javaabu/onu"
 
 import { useDv } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -334,40 +334,40 @@ export const filterFns = {
 }
 
 /** Mock activity entries for a record. */
-export function recordActivity(a: Application, labels: Labels, tr: (en: string, dv: string) => string) {
+export function recordActivity(a: Application, labels: Labels, tr: (en: string, dv: string) => string): TimelineItem[] {
   const staff = STAFF.find((s) => s.value === a.assignee) ?? STAFF[0]!
   const staffName = labels.dv ? staff.dv : staff.en
   return [
     {
       id: "a5",
       actor: { name: staffName },
-      action: tr(`changed the status to ${labels.status(a.status)}`, `ސްޓޭޓަސް ބަދަލުކުރީ: ${labels.status(a.status)}`),
-      timestamp: `${a.updated}T10:24:00`,
+      title: tr(`changed the status to ${labels.status(a.status)}`, `ސްޓޭޓަސް ބަދަލުކުރީ: ${labels.status(a.status)}`),
+      time: `${a.updated}T10:24:00`,
     },
     {
       id: "a4",
       actor: { name: staffName },
-      action: tr("added a note", "ނޯޓެއް ލިޔުއްވައިފި"),
-      detail: tr("Site visit requested before approval.", "ފާސްކުރުމުގެ ކުރިން ސައިޓް ވިޒިޓެއް ބޭނުންވޭ."),
-      timestamp: `${a.updated}T09:02:00`,
+      title: tr("added a note", "ނޯޓެއް ލިޔުއްވައިފި"),
+      description: tr("Site visit requested before approval.", "ފާސްކުރުމުގެ ކުރިން ސައިޓް ވިޒިޓެއް ބޭނުންވޭ."),
+      time: `${a.updated}T09:02:00`,
     },
     {
       id: "a3",
       icon: "attachment",
-      action: tr("Land ownership document uploaded", "ބިމުގެ މިލްކިއްޔާތުގެ ލިޔުން އަޕްލޯޑްކުރެވިއްޖެ"),
-      timestamp: `${a.submitted}T16:40:00`,
+      title: tr("Land ownership document uploaded", "ބިމުގެ މިލްކިއްޔާތުގެ ލިޔުން އަޕްލޯޑްކުރެވިއްޖެ"),
+      time: `${a.submitted}T16:40:00`,
     },
     {
       id: "a2",
       icon: "credit-card",
-      action: tr(`Payment received: ${labels.mvr(a.amount)}`, `ފައިސާ ލިބިއްޖެ: ${labels.mvr(a.amount)}`),
-      timestamp: `${a.submitted}T11:15:00`,
+      title: tr(`Payment received: ${labels.mvr(a.amount)}`, `ފައިސާ ލިބިއްޖެ: ${labels.mvr(a.amount)}`),
+      time: `${a.submitted}T11:15:00`,
     },
     {
       id: "a1",
       actor: { name: labels.name(a) },
-      action: tr("submitted the application", "އެޕްލިކޭޝަން ހުށަހެޅުއްވި"),
-      timestamp: `${a.submitted}T11:02:00`,
+      title: tr("submitted the application", "އެޕްލިކޭޝަން ހުށަހެޅުއްވި"),
+      time: `${a.submitted}T11:02:00`,
     },
   ]
 }

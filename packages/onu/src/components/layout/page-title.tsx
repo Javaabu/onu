@@ -57,7 +57,7 @@ export interface PageTitleProps extends Omit<React.ComponentProps<"header">, "ti
   /** More content under the heading. */
   content?: React.ReactNode
   /**
-   * A tab row at the bottom of the header (`FilterTabs`, `Tabs`, `NavTabs`),
+   * A tab row at the bottom of the header (`Tabs`, e.g. filter tabs, or `NavTabs`),
    * styled as Ant's line tabs with an ink bar.
    */
   tabs?: React.ReactNode

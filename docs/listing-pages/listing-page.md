@@ -3,7 +3,7 @@ title: ListingPage
 sidebar_position: 1
 ---
 
-A complete index page, laid out as REQUIREMENTS §25.6 describes: a header with the title, the main action and secondary links (Trash, with a dot when it isn't empty), status tabs, a toolbar with the [search box](search-box), [Filters](filter-panel), [Columns](column-visibility) and [Export](export-menu), the [filter pills](active-filter-chips), the [table](data-table) with bulk actions and row menus, and [pagination](pagination).
+A complete index page, laid out as REQUIREMENTS §25.6 describes: a header with the title, the main action and secondary links (Trash, with a dot when it isn't empty), [status tabs](../layout-and-navigation/tabs#filter-tabs-above-a-listing), a toolbar with the [search box](search-box), [Filters](filter-panel), [Columns](column-visibility) and [Export](export-menu), the [filter pills](active-filter-chips), the [table](data-table) with bulk actions and row menus, and [pagination](pagination).
 
 ```tsx
 import { applyListingState, Button, ListingPage, useListingState } from "@javaabu/onu"
@@ -92,29 +92,29 @@ const views = useListingViewOptions(["table", "list", "grid"])
 
 All [`DataTable`](data-table) props, plus:
 
-| Prop                          | Type                                             | Default             | Description                                                |
-| ----------------------------- | ------------------------------------------------ | ------------------- | ---------------------------------------------------------- |
-| `title`                       | `ReactNode`                                      |                     | Page heading (`h1`)                                        |
-| `description`                 | `ReactNode`                                      |                     | Text under the title                                       |
-| `primaryAction`               | `ReactNode`                                      |                     | Main action; also shown in the "no records" empty state    |
-| `links`                       | `{ label, href, icon?, dot?, dotLabel? }[]`      |                     | Secondary links next to the title                          |
-| `trashHref` / `trashHasItems` | `string` / `boolean`                             |                     | Adds a Trash link, with a dot when it isn't empty          |
-| `state`                       | `ListingController`                              | `useListingState()` | Listing state (see [`useListingState`](use-listing-state)) |
-| `filters`                     | `FilterDefinition[]`                             | `[]`                | Filters for the panel and pills                            |
-| `searchable`                  | `boolean`                                        | `true`              | Show the search box                                        |
-| `searchPlaceholder`           | `string`                                         |                     | Placeholder of the search box                              |
-| `searchThaana`                | `boolean \| ThaanaOptions`                       |                     | Type Thaana in the search box                              |
-| `onExport` / `exportOptions`  | `(format) => void \| Promise` / `ExportOption[]` |                     | Show the Export menu                                       |
-| `columnToggle`                | `boolean`                                        | `false`             | Show the Columns menu                                      |
-| `tabs` / `tabsFilterKey`      | `FilterTab[]` / `string`                         | – / `"status"`      | Status tabs that set one filter                            |
-| `toolbarEnd`                  | `ReactNode`                                      |                     | Extra toolbar content                                      |
-| `variant`                     | `"card" \| "default"`                            | `"card"` in a panel `AppLayout` | ProTable card layout or stacked                 |
-| `tableTitle`                  | `ReactNode`                                      |                     | Card layout: title at the start of the table card          |
-| `queryFilters`                | `FilterDefinition[]`                             |                     | Card layout: filters in an inline query form               |
-| `queryForm`                   | `ReactNode`                                      |                     | Card layout: a custom form above the table card            |
-| `breadcrumbs`                 | `BreadcrumbsItem[]`                              | the layout's        | Card layout: breadcrumbs in the header band                |
-| `tags` / `figures`            | `ReactNode` / `{ label, value }[]`               |                     | Card layout: tags after the title, key figures             |
-| `children`                    | `ReactNode`                                      |                     | Replaces the table; pagination and Sort by stay            |
+| Prop                          | Type                                             | Default                         | Description                                                                                  |
+| ----------------------------- | ------------------------------------------------ | ------------------------------- | -------------------------------------------------------------------------------------------- |
+| `title`                       | `ReactNode`                                      |                                 | Page heading (`h1`)                                                                          |
+| `description`                 | `ReactNode`                                      |                                 | Text under the title                                                                         |
+| `primaryAction`               | `ReactNode`                                      |                                 | Main action; also shown in the "no records" empty state                                      |
+| `links`                       | `{ label, href, icon?, dot?, dotLabel? }[]`      |                                 | Secondary links next to the title                                                            |
+| `trashHref` / `trashHasItems` | `string` / `boolean`                             |                                 | Adds a Trash link, with a dot when it isn't empty                                            |
+| `state`                       | `ListingController`                              | `useListingState()`             | Listing state (see [`useListingState`](use-listing-state))                                   |
+| `filters`                     | `FilterDefinition[]`                             | `[]`                            | Filters for the panel and pills                                                              |
+| `searchable`                  | `boolean`                                        | `true`                          | Show the search box                                                                          |
+| `searchPlaceholder`           | `string`                                         |                                 | Placeholder of the search box                                                                |
+| `searchThaana`                | `boolean \| ThaanaOptions`                       |                                 | Type Thaana in the search box                                                                |
+| `onExport` / `exportOptions`  | `(format) => void \| Promise` / `ExportOption[]` |                                 | Show the Export menu                                                                         |
+| `columnToggle`                | `boolean`                                        | `false`                         | Show the Columns menu                                                                        |
+| `tabs` / `tabsFilterKey`      | `TabItem[]` / `string`                           | – / `"status"`                  | [Status tabs](../layout-and-navigation/tabs#filter-tabs-above-a-listing) that set one filter |
+| `toolbarEnd`                  | `ReactNode`                                      |                                 | Extra toolbar content                                                                        |
+| `variant`                     | `"card" \| "default"`                            | `"card"` in a panel `AppLayout` | ProTable card layout or stacked                                                              |
+| `tableTitle`                  | `ReactNode`                                      |                                 | Card layout: title at the start of the table card                                            |
+| `queryFilters`                | `FilterDefinition[]`                             |                                 | Card layout: filters in an inline query form                                                 |
+| `queryForm`                   | `ReactNode`                                      |                                 | Card layout: a custom form above the table card                                              |
+| `breadcrumbs`                 | `BreadcrumbsItem[]`                              | the layout's                    | Card layout: breadcrumbs in the header band                                                  |
+| `tags` / `figures`            | `ReactNode` / `{ label, value }[]`               |                                 | Card layout: tags after the title, key figures                                               |
+| `children`                    | `ReactNode`                                      |                                 | Replaces the table; pagination and Sort by stay                                              |
 
 ## Accessibility
 

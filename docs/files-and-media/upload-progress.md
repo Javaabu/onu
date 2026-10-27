@@ -3,7 +3,7 @@ title: UploadProgress
 sidebar_position: 4
 ---
 
-A list of uploads, each with its name, size, progress bar, status (waiting, uploading, uploaded, failed, cancelled) and cancel / retry / remove buttons. Pair it with `useUploadQueue`, or render your own states.
+A list of uploads, each with its name, size, progress bar, status (waiting, uploading, uploaded, failed, cancelled) and cancel / retry / remove buttons. Pair it with `useUploadQueue`, or render your own states. [`FileInput`](./file-input#uploads) renders it for you when given `upload` or `url`.
 
 ```tsx
 import { UploadProgress, useUploadQueue } from "@javaabu/onu"

@@ -1,11 +1,11 @@
 import {
-  BackButton,
   BmlConnectLogo,
+  Button,
   Card,
   DescriptionList,
   Divider,
+  LinkButton,
   Logo,
-  PrintButton,
   StatusBadge,
   Table,
   TableBody,
@@ -40,8 +40,12 @@ export default function ReceiptPage() {
       <PrintOnlyContent />
       <div className="gap-4 max-w-3xl mx-auto grid w-full grid-cols-1">
         <div className="gap-2 flex flex-wrap items-center justify-between" data-print="hide">
-          <BackButton fallbackHref={routes.citizen.payments}>{tr("Back", "ފަހަތަށް")}</BackButton>
-          <PrintButton variant="default">{tr("Print receipt", "ރަސީދު ޕްރިންޓްކުރޭ")}</PrintButton>
+          <LinkButton variant="ghost" startIcon="back" href={routes.citizen.payments} className="print:hidden">
+            {tr("Back", "ފަހަތަށް")}
+          </LinkButton>
+          <Button startIcon="print" className="print:hidden" onClick={() => window.print()}>
+            {tr("Print receipt", "ރަސީދު ޕްރިންޓްކުރޭ")}
+          </Button>
         </div>
 
         <Card className="print:border-0 print:shadow-none">

@@ -112,4 +112,8 @@ export const date = {
   noEvents: "No events to show",
   moreEvents: "+{count} more",
   weekShort: "W",
+
+  // Events on DateCalendar
+  events: { zero: "No events", one: "{count} event", other: "{count} events" },
+  eventsOn: "Events on {date}",
 } satisfies MessageDict

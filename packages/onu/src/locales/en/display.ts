@@ -79,8 +79,6 @@ export const display = {
   statusPendingReview: "Pending review",
   visibilityPublic: "Public",
   visibilityPrivate: "Private",
-  // Last edited by
-  lastEditedBy: "Last edited by {name}",
   // Relative date
   justNow: "just now",
   // Countdown
@@ -95,12 +93,6 @@ export const display = {
   secondsCount: { one: "{count} second", other: "{count} seconds" },
   timeRemaining: "{time} remaining",
   countdownComplete: "Time's up",
-  // Activity feed
-  activity: "Activity",
-  today: "Today",
-  yesterday: "Yesterday",
-  loadMore: "Load more",
-  noActivity: "No activity yet",
   // Comment thread
   comments: "Comments",
   writeComment: "Write a comment…",
@@ -134,11 +126,6 @@ export const display = {
   viber: "Viber",
   telegram: "Telegram",
   email: "Email",
-  // Print and back
-  print: "Print",
-  // Calendar widget
-  events: { zero: "No events", one: "{count} event", other: "{count} events" },
-  eventsOn: "Events on {date}",
   // Content card
   readMore: "Read more",
   // Error pages

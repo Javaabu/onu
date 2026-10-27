@@ -1,6 +1,5 @@
 import * as React from "react"
 import {
-  ActivityFeed,
   applyListingState,
   Card,
   ConditionalLink,
@@ -9,6 +8,7 @@ import {
   RelativeDate,
   SegmentedControl,
   StatusBadge,
+  Timeline,
   useListingState,
   useListingViewOptions,
   UserAvatar,
@@ -245,14 +245,16 @@ export default function ActivityLogPage() {
         {view === "feed" ? (
           <div className="gap-4 grid">
             <Card>
-              <ActivityFeed
-                title={null}
+              <Timeline
+                aria-label={tr("Activity", "ހަރަކާތްތައް")}
+                groupByDay
+                timeFormat="relative"
                 emptyText={tr("No events match your filters.", "ފިލްޓަރަށް ދިމާވާ އެއްވެސް ހާދިސާއެއް ނެތް.")}
                 items={rows.map((e) => ({
                   id: e.id,
                   actor: e.causer ? { name: causerName(e.causer) } : null,
                   icon: e.causer ? undefined : e.event === "payment" ? "credit-card" : "file-text",
-                  action: (
+                  title: (
                     <>
                       {e.detail} ·{" "}
                       <ConditionalLink href={showHref(e.record.id)} className="text-xs font-mono underline">
@@ -260,7 +262,7 @@ export default function ActivityLogPage() {
                       </ConditionalLink>
                     </>
                   ),
-                  timestamp: e.at,
+                  time: e.at,
                 }))}
               />
             </Card>

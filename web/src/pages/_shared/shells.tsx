@@ -6,17 +6,18 @@ import {
   AppSidebar,
   AppSwitcher,
   BottomNav,
+  ConditionalLink,
   Density,
   Icon,
   LanguageSwitcher,
   LinkButton,
   Logo,
   NotificationCenter,
+  ProgressBar,
   SearchBox,
   SiteFooter,
   ThemeToggle,
   TopNav,
-  UsageMeter,
   UserProfile,
   cn,
   type BreadcrumbsItem,
@@ -231,14 +232,32 @@ export function AdminShell({
             </LinkButton>
           }
           footer={
-            <UsageMeter
-              label={tr("Records quota", "ރެކޯޑު ކޯޓާ")}
-              icon="file-archive"
-              value={1284}
-              max={2000}
-              link={{ label: tr("Get more space", "އިތުރު ޖާގަ"), href: routes.adminSettings.settings }}
-              meta={<span dir="ltr">v5.0.42</span>}
-            />
+            <div className="gap-2 pt-3 grid border-t border-shell-border">
+              <ProgressBar
+                size="sm"
+                value={1284}
+                max={2000}
+                showValue
+                label={
+                  <span className="gap-1.5 inline-flex items-center">
+                    <Icon name="file-archive" className="size-4" />
+                    {tr("Records quota", "ރެކޯޑު ކޯޓާ")}
+                  </span>
+                }
+                classNames={{ label: "text-xs", value: "text-xs tabular-nums", track: "bg-shell-weak" }}
+              />
+              <div className="gap-2 text-xs flex items-center justify-between">
+                <ConditionalLink
+                  href={routes.adminSettings.settings}
+                  className="touch:min-h-11 inline-flex items-center rounded-sm text-primary underline-offset-4 hover:underline"
+                >
+                  {tr("Get more space", "އިތުރު ޖާގަ")}
+                </ConditionalLink>
+                <span dir="ltr" className="text-muted-foreground">
+                  v5.0.42
+                </span>
+              </div>
+            </div>
           }
         />
       }

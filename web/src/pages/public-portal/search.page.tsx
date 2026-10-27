@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useSearchParams } from "react-router"
-import { EmptyState, FilterTabs, SearchBox, SearchResults, type SearchResultGroup } from "@javaabu/onu"
+import { EmptyState, Tabs, SearchBox, SearchResults, type SearchResultGroup } from "@javaabu/onu"
 
 import { useDv, useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -138,15 +138,17 @@ export default function SearchResultsPage() {
       </PortalPageHeader>
       <Container className="py-8 sm:py-10">
         {q && total ? (
-          <FilterTabs
-            tabs={[
+          <Tabs
+            variant="line"
+            countAppearance="pill"
+            items={[
               { value: "all", label: tr("All", "ހުރިހާ"), count: total },
               ...nonEmpty.map((g) => ({ value: g.id, label: g.label, count: g.items.length })),
             ]}
             value={type}
             onValueChange={setType}
             controls="search-results"
-            aria-label={tr("Result types", "ނަތީޖާގެ ބާވަތް")}
+            listLabel={tr("Result types", "ނަތީޖާގެ ބާވަތް")}
           />
         ) : null}
         <div id="search-results" className="mt-6">

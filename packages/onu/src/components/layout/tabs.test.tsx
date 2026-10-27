@@ -1,4 +1,4 @@
-import { fireEvent, screen } from "@testing-library/react"
+import { fireEvent, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
@@ -28,7 +28,7 @@ describe("Tabs", () => {
     )
     expect(screen.getByRole("tablist", { name: "Record" })).toHaveClass("lst")
     expect(screen.getByRole("tab", { name: "Profile" })).toHaveAttribute("aria-selected", "true")
-    expect(screen.getByRole("tab", { name: /Activity/ })).toHaveTextContent("Activity(12)")
+    expect(screen.getByRole("tab", { name: "Activity (12)" })).toHaveTextContent("Activity (12)")
     expect(screen.getByText("(12)")).toHaveClass("cnt")
     expect(screen.getByText("Profile panel")).toBeVisible()
     await expectNoA11yViolations()
@@ -229,6 +229,86 @@ describe("Tabs with narrow", () => {
       { locale: "dv", dir },
     )
     expect(screen.getByRole("combobox", { name: "ބައެއް ހޮވާ" })).toHaveValue("a")
+    await expectNoA11yViolations()
+  })
+})
+
+describe("Tabs as filter tabs", () => {
+  const statuses: TabItem[] = [
+    { value: "all", label: "All", count: 1312 },
+    { value: "active", label: "Active", count: 1280 },
+    { value: "banned", label: "Banned", count: 32 },
+    { value: "pending", label: "Pending", disabled: true },
+  ]
+
+  it("filters a listing: no panels, aria-controls on the listing, counts in the names", async () => {
+    const onValueChange = vi.fn()
+    renderWithOnu(
+      <>
+        <Tabs
+          variant="line"
+          countAppearance="pill"
+          listLabel="Filter by status"
+          controls="users"
+          onValueChange={onValueChange}
+          items={statuses}
+          classNames={{ count: "cnt" }}
+        />
+        <div id="users">Users</div>
+      </>,
+    )
+    const list = screen.getByRole("tablist", { name: "Filter by status" })
+    expect(list).toHaveClass("min-w-full")
+    const all = within(list).getByRole("tab", { name: "All (1,312)" })
+    expect(all).toHaveAttribute("aria-selected", "true")
+    expect(all).toHaveAttribute("aria-controls", "users")
+    expect(screen.getByText("1,312")).toHaveClass("cnt")
+    expect(screen.getByText("1,312")).toHaveAttribute("aria-hidden", "true")
+    expect(screen.queryByRole("tabpanel")).toBeNull()
+    await userEvent.click(within(list).getByRole("tab", { name: "Banned (32)" }))
+    expect(onValueChange).toHaveBeenCalledWith("banned")
+    expect(within(list).getByRole("tab", { name: "Pending" })).toBeDisabled()
+    await expectNoA11yViolations()
+  })
+
+  it("leaves aria-controls out without controls, and keeps panels for items that have content", () => {
+    renderWithOnu(
+      <Tabs
+        items={[
+          { value: "a", label: "A" },
+          { value: "b", label: "B", content: "Panel B" },
+        ]}
+        defaultValue="b"
+      />,
+    )
+    expect(screen.getByRole("tab", { name: "A" })).not.toHaveAttribute("aria-controls")
+    const b = screen.getByRole("tab", { name: "B" })
+    expect(b).toHaveAttribute("aria-controls", screen.getByRole("tabpanel").id)
+    expect(screen.getAllByRole("tabpanel")).toHaveLength(1)
+  })
+
+  it("works without panels in the vertical layout too", () => {
+    renderWithOnu(
+      <Tabs orientation="vertical" narrow="scroll" controls="list" items={[{ value: "a", label: "A", count: 2 }]} />,
+    )
+    expect(screen.getByRole("tab", { name: /A/ })).toHaveAttribute("aria-controls", "list")
+    expect(screen.queryByRole("tabpanel")).toBeNull()
+  })
+
+  it.each(directions)("has no axe violations in %s with Dhivehi", async (dir) => {
+    renderWithOnu(
+      <div id="list">
+        <Tabs
+          variant="line"
+          countAppearance="pill"
+          listLabel="ހާލަތުން ފިލްޓަރުކުރޭ"
+          controls="list"
+          items={[{ value: "a", label: "ހުރިހާ", count: 3 }]}
+        />
+      </div>,
+      { dir, locale: "dv" },
+    )
+    expect(screen.getByRole("tab", { name: "ހުރިހާ (3)" })).toHaveAttribute("aria-controls", "list")
     await expectNoA11yViolations()
   })
 })

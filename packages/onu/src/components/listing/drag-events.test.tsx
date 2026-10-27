@@ -6,7 +6,6 @@ import { Accessibility } from "@dnd-kit/dom"
 
 import { renderWithOnu } from "../../../test/utils"
 import { KanbanBoard } from "./kanban-board"
-import { ReorderableTable } from "./reorderable-table"
 import { SortableList } from "./sortable-list"
 
 // Interaction-heavy tests: allow for slow CI machines and coverage instrumentation.
@@ -70,11 +69,11 @@ describe("drag events", () => {
     expect(onReorder).toHaveBeenCalledWith([items[1], items[0]], { id: "a", from: 0, to: 1 })
   })
 
-  it("ReorderableTable commits the dropped order", () => {
+  it("SortableList as a table commits the dropped order", () => {
     const onReorder = vi.fn()
     renderWithOnu(
-      <ReorderableTable
-        rows={items}
+      <SortableList
+        items={items}
         getName={(i) => i.title}
         onReorder={onReorder}
         columns={[{ id: "t", header: "T", cell: (i) => i.title }]}

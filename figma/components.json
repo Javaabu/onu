@@ -185,12 +185,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "display-and-feedback/activity-feed": {
-    "title": "ActivityFeed",
-    "component": "ActivityFeed",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "display-and-feedback/announcement-bar": {
     "title": "AnnouncementBar",
     "component": "AnnouncementBar",
@@ -260,24 +254,6 @@
   "display-and-feedback/keyboard-key": {
     "title": "KeyboardKey",
     "component": "KeyboardKey",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "display-and-feedback/last-edited-by": {
-    "title": "LastEditedBy",
-    "component": "LastEditedBy",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "display-and-feedback/mini-calendar": {
-    "title": "MiniCalendar",
-    "component": "MiniCalendar",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "display-and-feedback/print-back-buttons": {
-    "title": "PrintButton and BackButton",
-    "component": "BackButton",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -356,12 +332,6 @@
   "files-and-media/document-download": {
     "title": "DocumentDownload",
     "component": "DocumentDownload",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "files-and-media/dropzone-uploader": {
-    "title": "DropzoneUploader",
-    "component": "DropzoneUploader",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -464,12 +434,6 @@
   "form-scaffolding/fieldset": {
     "title": "Fieldset / FormSection",
     "component": "Fieldset",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "form-scaffolding/floating-submit": {
-    "title": "FloatingSubmit",
-    "component": "FloatingSubmit",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -797,18 +761,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "listing-pages/filter-submit": {
-    "title": "FilterSubmit",
-    "component": "FilterSubmit",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "listing-pages/filter-tabs": {
-    "title": "FilterTabs",
-    "component": "FilterTabs",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "listing-pages/kanban-board": {
     "title": "KanbanBoard",
     "component": "KanbanBoard",
@@ -848,12 +800,6 @@
   "listing-pages/record-actions-menu": {
     "title": "RecordActionsMenu",
     "component": "RecordActionsMenu",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "listing-pages/reorderable-table": {
-    "title": "ReorderableTable",
-    "component": "ReorderableTable",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
@@ -1037,12 +983,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "overlays/context-action-menu": {
-    "title": "ContextActionMenu",
-    "component": "ContextActionMenu",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "overlays/modal": {
     "title": "Modal",
     "component": "Modal",
@@ -1175,12 +1115,6 @@
     "import": "@javaabu/onu/media",
     "figmaUrl": null
   },
-  "text-inputs/quantity-stepper": {
-    "title": "QuantityStepper",
-    "component": "QuantityStepper",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "text-inputs/sensitive-input": {
     "title": "SensitiveInput",
     "component": "SensitiveInput",
@@ -1217,21 +1151,9 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "text-inputs/thaana-input": {
-    "title": "ThaanaInput",
-    "component": "ThaanaInput",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "text-inputs/thaana-toggle": {
     "title": "ThaanaToggle",
     "component": "ThaanaToggle",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
-  "text-inputs/unit-input": {
-    "title": "UnitInput",
-    "component": "UnitInput",
     "import": "@javaabu/onu",
     "figmaUrl": null
   },

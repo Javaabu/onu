@@ -1,11 +1,10 @@
 import {
-  BackButton,
   Button,
   DescriptionList,
   DescriptionListItem,
   Icon,
+  LinkButton,
   Logo,
-  PrintButton,
   StatusBadge,
   Table,
   TableBody,
@@ -46,7 +45,9 @@ export default function PrintLayoutPage() {
         data-print="hide"
         className="top-0 gap-2 px-4 py-2 backdrop-blur sticky z-20 flex flex-wrap items-center justify-between border-b bg-background/95"
       >
-        <BackButton fallbackHref={routes.applications.statusTracker} />
+        <LinkButton variant="ghost" startIcon="back" href={routes.applications.statusTracker} className="print:hidden">
+          {tr("Back", "ފަހަތަށް")}
+        </LinkButton>
         <div className="gap-2 flex flex-wrap">
           <Button
             variant="outline"
@@ -56,7 +57,9 @@ export default function PrintLayoutPage() {
             <Icon name="download" data-icon="inline-start" />
             {tr("Download PDF", "PDF ޑައުންލޯޑް")}
           </Button>
-          <PrintButton variant="default" />
+          <Button startIcon="print" className="print:hidden" onClick={() => window.print()}>
+            {tr("Print", "ޕްރިންޓްކުރޭ")}
+          </Button>
         </div>
       </div>
 

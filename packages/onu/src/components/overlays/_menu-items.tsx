@@ -94,7 +94,7 @@ export interface MenuSeparatorItem extends BaseItem {
   type: "separator"
 }
 
-/** One entry of an `ActionMenu` or `ContextActionMenu`. */
+/** One entry of an `ActionMenu` (dropdown or context menu). */
 export type MenuItem =
   MenuActionItem | MenuCheckboxItem | MenuRadioItem | MenuSubItem | MenuGroupItem | MenuLabelItem | MenuSeparatorItem
 

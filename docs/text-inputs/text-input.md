@@ -21,7 +21,7 @@ Inside a [`FormField`](../form-scaffolding/form-field) the input gets its `id`, 
 
 ## Thaana
 
-Set `thaana` to type Thaana from a Latin keyboard. The input switches to `dir="rtl"`, `lang="dv"` and the Thaana font. Add `thaanaToggle` for a button that switches between Thaana and Latin (also <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd>).
+Set `thaana` to type Thaana from a Latin keyboard. The input switches to `dir="rtl"`, `lang="dv"` and the Thaana font. Add `thaanaToggle` for a button that switches between Thaana and Latin (also <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd>). `thaana` and `thaanaToggle` work the same on [`Textarea`](./textarea).
 
 ```tsx
 <TextInput thaana />
@@ -56,7 +56,9 @@ All other `<input>` props are passed to the input, and `ref` points at the `<inp
 ## Accessibility
 
 - Always give the input a label: a `FormField`, a `<label>`, or `aria-label`.
-- The Thaana toggle has an accessible name, exposes its state with `aria-pressed`, and announces "Thaana typing on/off".
+- While Thaana is on, the input has `dir="rtl"` and `lang="dv"`, so screen readers can pick a Dhivehi voice and the caret moves right to left. In Latin mode it has `dir="auto"` and no `lang`.
+- The keyboard inserts text the way typing does, so the browser's undo and `onChange` keep working. Text composed by a native Thaana keyboard or another IME passes through untouched.
+- The Thaana toggle has an accessible name, exposes its state with `aria-pressed`, and announces "Thaana typing on/off". Keep it (`thaanaToggle`) when users may switch with the shortcut, so the change is announced; see [`ThaanaToggle`](./thaana-toggle#accessibility).
 
 | Key                                          | Action                                                |
 | -------------------------------------------- | ----------------------------------------------------- |

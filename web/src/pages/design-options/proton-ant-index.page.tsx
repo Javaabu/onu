@@ -11,7 +11,7 @@ import {
   EmptyState,
   ExportMenu,
   FilterPanel,
-  FilterTabs,
+  Tabs,
   Icon,
   Label,
   LinkButton,
@@ -485,8 +485,11 @@ export default function ProtonAntIndexPage() {
         { label: tr("Fees approved", "ފާސްވި ފީ"), value: <span dir="ltr">{labels.mvr(fees)}</span> },
       ]}
       footer={
-        <FilterTabs
-          tabs={tabs}
+        <Tabs
+          variant="line"
+          countAppearance="pill"
+          listLabel={tr("Filter by status", "ހާލަތުން ފިލްޓަރ")}
+          items={tabs}
           value={tabValue}
           controls={listId}
           onValueChange={(value) => state.setFilter("status", value === "all" ? undefined : value)}

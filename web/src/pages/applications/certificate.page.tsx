@@ -1,4 +1,4 @@
-import { BackButton, Button, Logo, PrintButton, StatusBadge, toast } from "@javaabu/onu"
+import { Button, LinkButton, Logo, StatusBadge, toast } from "@javaabu/onu"
 import { QrCode } from "@javaabu/onu/media"
 
 import { CitizenShell } from "../_shared/shells"
@@ -41,7 +41,9 @@ export default function CertificatePage() {
       <PrintOnlyContent />
       <div className="gap-4 max-w-4xl mx-auto grid w-full grid-cols-1">
         <div className="gap-2 flex flex-wrap items-center justify-between" data-print="hide">
-          <BackButton fallbackHref={routes.citizen.documents}>{tr("Back", "ފަހަތަށް")}</BackButton>
+          <LinkButton variant="ghost" startIcon="back" href={routes.citizen.documents} className="print:hidden">
+            {tr("Back", "ފަހަތަށް")}
+          </LinkButton>
           <div className="gap-2 flex flex-wrap items-center">
             <StatusBadge status="success">{tr("Valid", "ޞައްޙަ")}</StatusBadge>
             <Button
@@ -53,7 +55,9 @@ export default function CertificatePage() {
             >
               {tr("Download PDF", "PDF ޑައުންލޯޑްކުރޭ")}
             </Button>
-            <PrintButton variant="default">{tr("Print", "ޕްރިންޓްކުރޭ")}</PrintButton>
+            <Button startIcon="print" className="print:hidden" onClick={() => window.print()}>
+              {tr("Print", "ޕްރިންޓްކުރޭ")}
+            </Button>
           </div>
         </div>
 

@@ -20,7 +20,6 @@ import {
   Tag,
   TextInput,
   Textarea,
-  ThaanaInput,
   toast,
 } from "@javaabu/onu"
 
@@ -181,7 +180,7 @@ export default function JobDetailPage() {
                       <TextInput autoComplete="name" dir="ltr" />
                     </FormField>
                     <FormField label={tr("Full name (Dhivehi)", "ފުރިހަމަ ނަން (ދިވެހި)")} name="name_dv" required>
-                      <ThaanaInput />
+                      <TextInput thaana thaanaToggle />
                     </FormField>
                     <FormField
                       label={tr("ID card number", "ކާޑު ނަންބަރު")}
@@ -198,7 +197,7 @@ export default function JobDetailPage() {
                       <EmailInput dir="ltr" />
                     </FormField>
                     <FormField label={tr("Permanent address (Dhivehi)", "ދާއިމީ އެޑްރެސް (ދިވެހި)")} name="address_dv">
-                      <ThaanaInput placeholder="މ. ފެހިވިލާ، މާލެ" />
+                      <TextInput thaana thaanaToggle placeholder="މ. ފެހިވިލާ، މާލެ" />
                     </FormField>
                   </FormGroup>
                 </Fieldset>

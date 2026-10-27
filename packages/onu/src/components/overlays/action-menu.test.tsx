@@ -1,7 +1,7 @@
 import * as React from "react"
-import { act, screen, waitFor, within } from "@testing-library/react"
+import { act, fireEvent, screen, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it, vi } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { Deferred } from "../../../test/listing-fixtures"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
@@ -240,6 +240,11 @@ describe("ActionMenu", () => {
     expect(screen.getByRole("menuitem", { name: "View" })).toHaveClass("item-x")
   })
 
+  it("disables the trigger with disabled", () => {
+    renderWithOnu(<ActionMenu disabled items={[{ label: "View" }]} />)
+    expect(screen.getByRole("button", { name: "More actions" })).toBeDisabled()
+  })
+
   it.each(directions)("works in %s with Dhivehi strings", async (dir) => {
     renderWithOnu(<ActionMenu defaultOpen items={[{ label: "ބައްލަވާ", icon: "eye" }]} />, { locale: "dv", dir })
     expect(screen.getByRole("button", { name: "އިތުރު ޢަމަލުތައް", hidden: true })).toBeInTheDocument()
@@ -418,6 +423,136 @@ describe("ActionMenu with a record name", () => {
   it("renders nothing when no action is permitted", () => {
     const { container } = renderWithOnu(<ActionMenu name="x" items={[{ id: "a", label: "A", permitted: false }]} />)
     expect(container).toBeEmptyDOMElement()
+  })
+})
+
+describe("ActionMenu as a context menu", () => {
+  afterEach(() => vi.useRealTimers())
+
+  const fileItems = (onOpen = vi.fn()): MenuItem[] => [
+    { label: "Open", icon: "external-link", onSelect: onOpen },
+    { label: "Download", icon: "download", shortcut: "⌘S" },
+    { type: "separator" },
+    { type: "sub", label: "Share with", items: [{ label: "Finance team" }] },
+    { label: "Delete", icon: "trash", variant: "destructive" },
+  ]
+
+  it("opens on Right-click with the same items as the dropdown", async () => {
+    const onOpen = vi.fn()
+    const onOpenChange = vi.fn()
+    renderWithOnu(
+      <ActionMenu openOn="context" items={fileItems(onOpen)} onOpenChange={onOpenChange} side="top">
+        permit-2041.pdf
+      </ActionMenu>,
+    )
+    expect(screen.queryByRole("button")).toBeNull()
+    fireEvent.contextMenu(screen.getByText("permit-2041.pdf"))
+    const menu = await screen.findByRole("menu")
+    expect(onOpenChange).toHaveBeenCalledWith(true)
+    expect(menu).toHaveAttribute("data-slot", "action-menu-content")
+    expect(screen.getAllByRole("menuitem").map((i) => i.textContent)).toEqual([
+      "Open",
+      "Download⌘S",
+      "Share with",
+      "Delete",
+    ])
+    await expectNoA11yViolations()
+    await userEvent.click(screen.getByRole("menuitem", { name: "Open" }))
+    expect(onOpen).toHaveBeenCalledOnce()
+  })
+
+  it("opens on long press on touch screens", () => {
+    vi.useFakeTimers()
+    renderWithOnu(
+      <ActionMenu openOn="context" items={fileItems()}>
+        Hold me
+      </ActionMenu>,
+    )
+    fireEvent.pointerDown(screen.getByText("Hold me"), { pointerType: "touch", clientX: 10, clientY: 10 })
+    act(() => {
+      vi.advanceTimersByTime(800)
+    })
+    expect(screen.getByRole("menu")).toBeInTheDocument()
+  })
+
+  it("closes with Escape", async () => {
+    renderWithOnu(
+      <ActionMenu openOn="context" items={fileItems()}>
+        Area
+      </ActionMenu>,
+    )
+    fireEvent.contextMenu(screen.getByText("Area"))
+    await screen.findByRole("menu")
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument())
+  })
+
+  it("does nothing when disabled or when no item is visible, but keeps the area", () => {
+    renderWithOnu(
+      <>
+        <ActionMenu openOn="context" items={fileItems()} disabled>
+          Off
+        </ActionMenu>
+        <ActionMenu openOn="context" name="x" items={[{ id: "a", label: "A", permitted: false }]}>
+          Nothing
+        </ActionMenu>
+      </>,
+    )
+    fireEvent.contextMenu(screen.getByText("Off"))
+    fireEvent.contextMenu(screen.getByText("Nothing"))
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument()
+  })
+
+  it("renders children as the area with asChild, and accepts classNames", async () => {
+    renderWithOnu(
+      <ActionMenu
+        openOn="context"
+        items={fileItems()}
+        asChild
+        className="menu-x"
+        classNames={{ trigger: "t-x", item: "i-x" }}
+      >
+        <div data-testid="row">Row</div>
+      </ActionMenu>,
+    )
+    const row = screen.getByTestId("row")
+    expect(row).toHaveClass("t-x")
+    expect(row).toHaveAttribute("data-slot", "action-menu-area")
+    fireEvent.contextMenu(row)
+    expect(await screen.findByRole("menu")).toHaveClass("menu-x")
+    expect(screen.getByRole("menuitem", { name: "Open" })).toHaveClass("i-x")
+  })
+
+  it("closes the menu and then asks 'Delete Jane Doe?' for a destructive record action", async () => {
+    const remove = vi.fn()
+    renderWithOnu(
+      <ActionMenu
+        openOn="context"
+        name="Jane Doe"
+        items={[{ id: "delete", label: "Delete", icon: "trash", destructive: true, onSelect: remove }]}
+      >
+        Jane Doe
+      </ActionMenu>,
+    )
+    fireEvent.contextMenu(screen.getByText("Jane Doe"))
+    await userEvent.click(await screen.findByRole("menuitem", { name: "Delete" }))
+    const dialog = await screen.findByRole("alertdialog", { name: "Delete Jane Doe?" })
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument()
+    expect(remove).not.toHaveBeenCalled()
+    await userEvent.click(within(dialog).getByRole("button", { name: "Delete" }))
+    await waitFor(() => expect(remove).toHaveBeenCalledOnce())
+  })
+
+  it.each(directions)("works in %s with Dhivehi content", async (dir) => {
+    renderWithOnu(
+      <ActionMenu openOn="context" items={[{ label: "ހުޅުވާ" }]}>
+        ފައިލު
+      </ActionMenu>,
+      { locale: "dv", dir },
+    )
+    fireEvent.contextMenu(screen.getByText("ފައިލު"))
+    expect(await screen.findByRole("menuitem", { name: "ހުޅުވާ" })).toBeInTheDocument()
+    await expectNoA11yViolations()
   })
 })
 

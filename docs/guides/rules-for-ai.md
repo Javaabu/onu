@@ -28,12 +28,12 @@ Short rules for AI coding assistants (and people) writing UI with Onu. They sit 
 - Put every control inside `FormField` with the field's `name` (bracket notation is fine, `items[0][name]`). `FormField` wires the label, help, errors and ARIA. Don't hand-write `<label>`, error text or `aria-describedby`.
 - Use `Form` with an `onSubmit` that returns the request promise (axios, fetch or Inertia). It shows Laravel 422 errors under the fields, focuses the first one and shows the error summary. With Inertia, pass `errors={form.errors}` and `processing={form.processing}`.
 - Submit with `SubmitButton` (spinner, no double submit), not a plain `Button type="submit"`.
-- Pick the specific input: `EmailInput`, `PasswordInput`, `PhoneInput`, `NumberInput`, `DatePicker`, `ApiSelect` (Laravel paginated API), `DropzoneUploader` (instant uploads), and so on, rather than `TextInput type="…"`.
+- Pick the specific input: `EmailInput`, `PasswordInput`, `PhoneInput`, `NumberInput`, `DatePicker`, `ApiSelect` (Laravel paginated API), `FileInput` (`url` for instant uploads), and so on, rather than `TextInput type="…"`.
 - Edit pages get `SaveBar`; index pages get `ListingPage` (or `DataTable` with `useListingState`).
 
 # Dhivehi, Thaana and RTL
 
-- Free-text fields that may hold Dhivehi take `thaana` (`<TextInput thaana />`, `<Textarea thaana />`), or use `ThaanaInput`. Never add `thaana` to email, password, URL, number, phone, OTP or code inputs; they stay LTR by design.
+- Free-text fields that may hold Dhivehi take `thaana` (`<TextInput thaana />`, `<Textarea thaana />`; add `thaanaToggle` for the Thaana/Latin button). Never add `thaana` to email, password, URL, number, phone, OTP or code inputs; they stay LTR by design.
 - Use logical Tailwind utilities only: `ms-*`/`me-*`, `ps-*`/`pe-*`, `start-*`/`end-*`, `text-start`/`text-end`, `border-s`/`border-e`, `rounded-s-*`/`rounded-e-*`. Never `ml-*`, `mr-*`, `pl-*`, `pr-*`, `left-*`, `right-*`, `text-left` or `text-right`. Flip transforms with `rtl:`.
 - Sides are `side="start" | "end"`, not left/right.
 - Format dates, numbers and money with `useFormatDate`, `useFormatNumber` and `useFormatCurrency` (MVR), not `toLocaleString` or hand-built strings. Numbers use Western digits in Dhivehi too.

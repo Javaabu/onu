@@ -1,45 +1,31 @@
 "use client"
 
-import * as React from "react"
-import type { DropdownMenu as DropdownMenuPrimitive } from "radix-ui"
-
-import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
-import { useTranslation } from "../../providers/onu-provider"
-import { Button } from "../../ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "../../ui/dropdown-menu"
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuGroup,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "../../ui/context-menu"
 import type { RecordAction } from "../listing/_actions"
-import { useMountedConfirm } from "./_confirm-context"
-import {
-  MenuItems,
-  useConfirmQuestion,
-  visibleItems,
-  type MenuActionItem,
-  type MenuItem,
-  type MenuParts,
-} from "./_menu-items"
-import { ConfirmDialog, type ConfirmOptions } from "./confirm-dialog"
+import { DropdownActionMenu, useActionMenuItems, type ActionMenuProps } from "./_action-menu"
+import type { MenuParts } from "./_menu-items"
 import { registerEnglish } from "../../i18n/english"
 import { listing as en_listing } from "../../locales/en/listing"
-import { overlay as en_overlay } from "../../locales/en/overlay"
 
-registerEnglish({ listing: en_listing, overlay: en_overlay })
+registerEnglish({ listing: en_listing })
 
+export type { ActionMenuProps } from "./_action-menu"
 export type {
   MenuItem,
   MenuActionItem,
@@ -51,40 +37,72 @@ export type {
   MenuSeparatorItem,
 } from "./_menu-items"
 
-const dropdownParts: MenuParts = {
-  Item: DropdownMenuItem,
-  CheckboxItem: DropdownMenuCheckboxItem,
-  RadioGroup: DropdownMenuRadioGroup,
-  RadioItem: DropdownMenuRadioItem,
-  Label: DropdownMenuLabel,
-  Separator: DropdownMenuSeparator,
-  Shortcut: DropdownMenuShortcut,
-  Group: DropdownMenuGroup,
-  Sub: DropdownMenuSub,
-  SubTrigger: DropdownMenuSubTrigger,
-  SubContent: DropdownMenuSubContent,
-}
+// The context menu parts have the same props as the dropdown ones.
+const contextParts = {
+  Item: ContextMenuItem,
+  CheckboxItem: ContextMenuCheckboxItem,
+  RadioGroup: ContextMenuRadioGroup,
+  RadioItem: ContextMenuRadioItem,
+  Label: ContextMenuLabel,
+  Separator: ContextMenuSeparator,
+  Shortcut: ContextMenuShortcut,
+  Group: ContextMenuGroup,
+  Sub: ContextMenuSub,
+  SubTrigger: ContextMenuSubTrigger,
+  SubContent: ContextMenuSubContent,
+} as unknown as MenuParts
 
-export interface ActionMenuProps extends Omit<React.ComponentProps<typeof DropdownMenuPrimitive.Content>, "children"> {
-  /** Menu entries: actions, checkbox and radio items, submenus, groups, labels and separators. */
-  items: MenuItem[]
-  /**
-   * Element that opens the menu (rendered with `asChild`). Defaults to a ⋯ icon
-   * button labelled `label`, sized for a table row (44px on touch screens).
-   */
-  trigger?: React.ReactNode
-  /** Accessible name of the default trigger. Default "More actions", or "Actions for {name}". */
-  label?: string
-  /**
-   * The record the menu acts on, e.g. "Jane Doe". Names the default trigger
-   * ("Actions for Jane Doe") and the default confirmations ("Delete Jane Doe?").
-   */
-  name?: string
-  open?: boolean
-  defaultOpen?: boolean
-  onOpenChange?: (open: boolean) => void
-  modal?: boolean
-  classNames?: { trigger?: string; item?: string }
+function ContextActionMenu({
+  items,
+  children,
+  asChild,
+  disabled,
+  name,
+  onOpenChange,
+  modal,
+  onCloseAutoFocus,
+  className,
+  classNames,
+  // A context menu opens at the pointer: no trigger button, no controlled state, no side or alignment.
+  openOn: _openOn,
+  trigger: _trigger,
+  label: _label,
+  open: _open,
+  defaultOpen: _defaultOpen,
+  align: _align,
+  side: _side,
+  sideOffset: _sideOffset,
+  ...props
+}: ActionMenuProps) {
+  const menu = useActionMenuItems({ items, name, itemClassName: classNames?.item })
+  return (
+    <>
+      <ContextMenu onOpenChange={onOpenChange} modal={modal}>
+        <ContextMenuTrigger
+          asChild={asChild}
+          // With nothing to offer the area stays, but right-click shows the browser's own menu.
+          disabled={disabled || menu.empty}
+          data-slot="action-menu-area"
+          className={cn("[-webkit-touch-callout:none]", classNames?.trigger)}
+        >
+          {children}
+        </ContextMenuTrigger>
+        <ContextMenuContent
+          data-slot="action-menu-content"
+          collisionPadding={8}
+          className={cn("min-w-44 w-auto max-w-[calc(100vw-1rem)]", className)}
+          {...props}
+          onCloseAutoFocus={(event) => {
+            onCloseAutoFocus?.(event)
+            menu.ask()
+          }}
+        >
+          {menu.render(contextParts)}
+        </ContextMenuContent>
+      </ContextMenu>
+      {menu.dialog}
+    </>
+  )
 }
 
 /**
@@ -94,100 +112,13 @@ export interface ActionMenuProps extends Omit<React.ComponentProps<typeof Dropdo
  * has closed and returns focus to the trigger. Submenus open towards the
  * inline end (left in RTL), and arrow keys follow the visual order. Renders
  * nothing when no item is visible (e.g. none is `permitted`).
+ *
+ * With `openOn="context"` the same items open as a context menu (shadcn
+ * `ContextMenu`) on `children`: right-click, long press, or the Menu key.
+ * Context menus are hard to discover, so offer the actions somewhere visible too.
  */
-export function ActionMenu({
-  items,
-  trigger,
-  label,
-  name,
-  open,
-  defaultOpen,
-  onOpenChange,
-  modal,
-  align = "end",
-  onCloseAutoFocus,
-  className,
-  classNames,
-  ...props
-}: ActionMenuProps) {
-  const { t } = useTranslation()
-  const triggerLabel = label ?? (name === undefined ? t("overlay.moreActions") : t("listing.actionsFor", { name }))
-  const question = useConfirmQuestion(name)
-  const mountedConfirm = useMountedConfirm()
-  const queued = React.useRef<MenuActionItem | null>(null)
-  const [asking, setAsking] = React.useState<{ options: ConfirmOptions; key: number } | null>(null)
-  const [dialogOpen, setDialogOpen] = React.useState(false)
-
-  // Confirmations wait for the menu to close (§25.6). This runs in the menu's
-  // `onCloseAutoFocus`, just before Radix moves focus back to the trigger; the
-  // dialog renders after that, so it returns focus there too (§25.10).
-  const ask = () => {
-    const item = queued.current
-    if (!item) return
-    queued.current = null
-    const base = question(item)
-    const options: ConfirmOptions = {
-      ...base,
-      onConfirm: async () => {
-        await base.onConfirm?.()
-        await item.onSelect?.()
-      },
-    }
-    const provider = mountedConfirm()
-    if (provider) void provider(options)
-    else {
-      // Without a ConfirmProvider, ask with a dialog of our own rather than `window.confirm`.
-      setAsking((current) => ({ options, key: (current?.key ?? 0) + 1 }))
-      setDialogOpen(true)
-    }
-  }
-
-  const dialog = asking ? (
-    <ConfirmDialog key={asking.key} {...asking.options} open={dialogOpen} onOpenChange={setDialogOpen} />
-  ) : null
-  // Nothing to offer (e.g. no item is `permitted`): no ⋯ button, but a question already asked stays open.
-  if (visibleItems(items).length === 0) return dialog
-
-  return (
-    <>
-      <DropdownMenu open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange} modal={modal}>
-        <DropdownMenuTrigger asChild>
-          {trigger ?? (
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              data-slot="action-menu-trigger"
-              aria-label={triggerLabel}
-              className={cn("touch:size-11", classNames?.trigger)}
-            >
-              <Icon name="more" />
-            </Button>
-          )}
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          data-slot="action-menu-content"
-          align={align}
-          collisionPadding={8}
-          className={cn("min-w-44 w-auto max-w-[calc(100vw-1rem)]", className)}
-          {...props}
-          onCloseAutoFocus={(event) => {
-            onCloseAutoFocus?.(event)
-            ask()
-          }}
-        >
-          <MenuItems
-            items={items}
-            parts={dropdownParts}
-            itemClassName={classNames?.item}
-            onAsk={(item) => {
-              queued.current = item
-            }}
-          />
-        </DropdownMenuContent>
-      </DropdownMenu>
-      {dialog}
-    </>
-  )
+export function ActionMenu(props: ActionMenuProps) {
+  return props.openOn === "context" ? <ContextActionMenu {...props} /> : <DropdownActionMenu {...props} />
 }
 
 /** Standard actions for a trashed record: Restore, and Delete permanently (with confirmation). */

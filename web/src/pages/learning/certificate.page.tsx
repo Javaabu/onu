@@ -1,4 +1,4 @@
-import { BackButton, Button, Card, DescriptionList, Logo, PrintButton, SensitiveInput, toast } from "@javaabu/onu"
+import { Button, Card, DescriptionList, LinkButton, Logo, SensitiveInput, toast } from "@javaabu/onu"
 
 import { useDv, useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -56,7 +56,14 @@ export default function CertificatePage() {
       <div className="max-w-5xl gap-6 mx-auto grid">
         <div className="gap-3 flex flex-wrap items-center justify-between">
           <div>
-            <BackButton href={routes.learning.quizResult} className="-ms-3" />
+            <LinkButton
+              variant="ghost"
+              startIcon="back"
+              href={routes.learning.quizResult}
+              className="-ms-3 print:hidden"
+            >
+              {tr("Back", "ފަހަތަށް")}
+            </LinkButton>
             <h1 className="text-2xl font-semibold tracking-tight">{tr("Your certificate", "ތިބާގެ ސެޓްފިކެޓް")}</h1>
           </div>
           <div className="gap-2 flex flex-wrap">
@@ -69,7 +76,9 @@ export default function CertificatePage() {
                 {tr("Download", "ޑައުންލޯޑް")}
               </a>
             </Button>
-            <PrintButton variant="default" />
+            <Button startIcon="print" className="print:hidden" onClick={() => window.print()}>
+              {tr("Print", "ޕްރިންޓްކުރޭ")}
+            </Button>
           </div>
         </div>
 

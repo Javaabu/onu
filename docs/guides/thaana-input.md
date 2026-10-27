@@ -12,7 +12,6 @@ Every component that accepts free text has a `thaana` prop: text inputs, textare
 ```tsx
 <TextInput thaana />
 <TextInput thaana thaanaToggle />   // with a Thaana/Latin button
-<ThaanaInput />                     // Thaana on and toggle shown by default
 <Textarea thaana={{ keymap: 'typewriter', paste: 'transliterate' }} />
 ```
 

@@ -9,7 +9,7 @@ export const meta = {
   group: "Overlays",
   order: 7,
   description:
-    "ActionMenu: items with icons, shortcuts, checkbox/radio items, submenus and confirmations, and a record's ⋯ row menu (with `name`).",
+    'ActionMenu: items with icons, shortcuts, checkbox/radio items, submenus and confirmations, a record\'s ⋯ row menu (with `name`), and the same items as a Right-click context menu (openOn="context").',
 }
 
 export default function ActionMenuDemo() {
@@ -69,6 +69,31 @@ export default function ActionMenuDemo() {
         { value: "created", label: "Date created" },
         { value: "salary", label: "Salary (MVR)" },
       ],
+    },
+  ]
+
+  const files = ["permit-2041.pdf", "vessel-photo.jpg", "receipt-MVR-1250.pdf"]
+  const fileActions = (file: string): MenuItem[] => [
+    { label: "Open", icon: "external-link", onSelect: () => setLast(`Opened ${file}`) },
+    { label: "Download", icon: "download", shortcut: "⌘S", onSelect: () => setLast(`Downloaded ${file}`) },
+    { label: "Rename", icon: "edit", shortcut: "F2", onSelect: () => setLast(`Rename ${file}`) },
+    { type: "separator" },
+    {
+      type: "sub",
+      label: "Share with",
+      icon: "share",
+      items: [
+        { label: "Finance team", onSelect: () => setLast("Shared with finance") },
+        { label: "HR team", onSelect: () => setLast("Shared with HR") },
+      ],
+    },
+    { type: "separator" },
+    {
+      label: "Delete",
+      icon: "trash",
+      variant: "destructive",
+      confirm: { title: `Delete ${file}?`, variant: "destructive" },
+      onSelect: () => setLast(`Deleted ${file}`),
     },
   ]
 
@@ -141,6 +166,34 @@ export default function ActionMenuDemo() {
               { label: "Contact support (closed)", icon: "phone", disabled: true },
             ]}
           />
+        </DemoSection>
+        <DemoSection
+          title="Context menu"
+          description="Right-click a file (long press on touch, or focus it and press the Menu key / Shift+F10). The same actions are also in the ⋯ menu."
+          className="grid"
+        >
+          <ul className="gap-2 grid">
+            {files.map((file) => (
+              <li key={file}>
+                <ActionMenu openOn="context" items={fileActions(file)} asChild>
+                  <div
+                    // Focusable so keyboard users can open the menu with the Menu key or Shift+F10.
+                    // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                    tabIndex={0}
+                    className="gap-3 px-3 py-2 flex items-center justify-between rounded-lg border outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                  >
+                    <span className="text-sm">{file}</span>
+                    <ActionMenu items={fileActions(file)} label={`Actions for ${file}`} />
+                  </div>
+                </ActionMenu>
+              </li>
+            ))}
+          </ul>
+          <ActionMenu openOn="context" items={fileActions("canvas")}>
+            <span className="h-32 text-sm flex items-center justify-center rounded-lg border border-dashed text-muted-foreground">
+              Right-click or long press here
+            </span>
+          </ActionMenu>
         </DemoSection>
         <DemoSection title="ދިވެހި">
           <ActionMenu

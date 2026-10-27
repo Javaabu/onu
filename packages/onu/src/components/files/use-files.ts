@@ -136,7 +136,7 @@ let nextId = 0
 
 /**
  * Uploads files as soon as they are added, tracking progress per file with cancel, retry
- * and remove. Used by `DropzoneUploader`; usable on its own.
+ * and remove. Used by `FileInput`; usable on its own.
  */
 export function useUploadQueue<R = unknown>(options: UseUploadQueueOptions<R>) {
   const { upload, url, uploadOptions, onUploaded, onError, onItemsChange } = options

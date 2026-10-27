@@ -10,6 +10,7 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../../ui/table"
 import { useDndPlugins } from "./_dnd"
 import { registerEnglish } from "../../i18n/english"
 import { listing as en_listing } from "../../locales/en/listing"
@@ -25,24 +26,47 @@ export interface SortableListItemParts {
   isDragging: boolean
 }
 
-export interface SortableListProps<T> {
+/** A column of the table layout. */
+export interface SortableListColumn<T> {
+  id: string
+  header: string
+  cell: (item: T) => React.ReactNode
+  className?: string
+}
+
+interface SortableListBaseProps<T> {
   items: T[]
   /** Stable id. Defaults to `item.id`. */
   getId?: (item: T) => string
   /** Name for the handle label and announcements. */
   getName: (item: T) => string
-  renderItem: (item: T, parts: SortableListItemParts) => React.ReactNode
-  /** Called with the new order after a drop or a move button. */
+  /** Called with the new order after a drop, Alt+Arrow on a handle, or a move button. */
   onReorder: (items: T[], change: { id: string; from: number; to: number }) => void
   /** Show Move up / Move down buttons as a non-drag alternative (R3.27). Default `true`. */
   moveButtons?: boolean
   disabled?: boolean
+  /** Accessible name of the list, or of the table (as a visually hidden caption). */
   "aria-label"?: string
   className?: string
-  classNames?: { item?: string; handle?: string }
+  /** `item` is each `li`, or each table row; `table` is the table layout's `<table>`. */
+  classNames?: { item?: string; handle?: string; table?: string }
 }
 
-function SortableRow({
+export type SortableListProps<T> = SortableListBaseProps<T> &
+  (
+    | {
+        /** List layout: render each item, placing `handle` and `moveButtons` where they belong. */
+        renderItem: (item: T, parts: SortableListItemParts) => React.ReactNode
+        columns?: undefined
+      }
+    | {
+        /** Table layout: one row per item on shadcn `Table`, the handle (and move buttons) in the first column. */
+        columns: SortableListColumn<T>[]
+        renderItem?: undefined
+      }
+  )
+
+function useSortableItem({
   id,
   index,
   name,
@@ -50,8 +74,6 @@ function SortableRow({
   count,
   onMove,
   moveButtons,
-  children,
-  className,
   handleClassName,
 }: {
   id: string
@@ -61,8 +83,6 @@ function SortableRow({
   count: number
   onMove: (from: number, to: number) => void
   moveButtons: boolean
-  children: (parts: SortableListItemParts) => React.ReactNode
-  className?: string
   handleClassName?: string
 }) {
   const { t } = useTranslation()
@@ -74,6 +94,7 @@ function SortableRow({
       type="button"
       data-slot="drag-handle"
       aria-label={t("listing.dragHandle", { name })}
+      aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown"
       disabled={disabled}
       onKeyDown={(e) => {
         // Alt+Arrow moves the item straight away, without a drag.
@@ -120,6 +141,17 @@ function SortableRow({
     </span>
   ) : null
 
+  return { ref, isDragging, parts: { handle, moveButtons: buttons, index, isDragging } }
+}
+
+type RowProps = Parameters<typeof useSortableItem>[0] & { className?: string }
+
+function SortableListItem({
+  className,
+  children,
+  ...props
+}: RowProps & { children: (parts: SortableListItemParts) => React.ReactNode }) {
+  const { ref, isDragging, parts } = useSortableItem(props)
   return (
     <li
       ref={ref}
@@ -127,27 +159,50 @@ function SortableRow({
       data-dragging={isDragging || undefined}
       className={cn("data-dragging:shadow-md data-dragging:opacity-60", className)}
     >
-      {children({ handle, moveButtons: buttons, index, isDragging })}
+      {children(parts)}
     </li>
   )
 }
 
+function SortableTableRow({ className, children, ...props }: RowProps & { children: React.ReactNode }) {
+  const { ref, isDragging, parts } = useSortableItem(props)
+  return (
+    <TableRow
+      ref={ref}
+      data-slot="sortable-item"
+      data-dragging={isDragging || undefined}
+      className={cn("data-dragging:bg-muted data-dragging:opacity-60", className)}
+    >
+      <TableCell className={props.moveButtons ? "w-px" : "w-10"}>
+        <span className="gap-1 flex items-center">
+          {parts.handle}
+          {parts.moveButtons}
+        </span>
+      </TableCell>
+      {children}
+    </TableRow>
+  )
+}
+
 /**
- * A list the user can reorder by dragging (mouse, touch with a press delay,
- * or keyboard: Space to lift, arrows to move, Space to drop) or with Move up /
- * Move down buttons. Built on `@dnd-kit/react`; moves are announced.
+ * A list, or a table, the user can reorder by dragging (mouse, touch with a
+ * press delay, or keyboard: Space to lift, arrows to move, Space to drop),
+ * with Alt+Up/Down on a handle, or with Move up / Move down buttons. Pass
+ * `renderItem` for a list or `columns` for a table (shadcn `Table`). Built on
+ * `@dnd-kit/react`; moves are announced.
  */
 export function SortableList<T>({
   items,
   getId = (item: T) => String((item as { id?: unknown }).id),
   getName,
   renderItem,
+  columns,
   onReorder,
   moveButtons = true,
   disabled,
   className,
   classNames,
-  ...props
+  "aria-label": ariaLabel,
 }: SortableListProps<T>) {
   const { t, locale } = useTranslation()
   const { announce, region } = useAnnouncer({ role: "status" })
@@ -177,6 +232,22 @@ export function SortableList<T>({
     )
   }
 
+  const rowProps = (item: T, index: number) => {
+    const id = getId(item)
+    return {
+      key: id,
+      id,
+      index,
+      name: getName(item),
+      disabled,
+      count: items.length,
+      moveButtons,
+      onMove: (from: number, to: number) => commit(arrayMove(ids, from, to), id),
+      className: classNames?.item,
+      handleClassName: classNames?.handle,
+    }
+  }
+
   return (
     <DragDropProvider
       plugins={plugins}
@@ -186,27 +257,54 @@ export function SortableList<T>({
       }}
     >
       {region}
-      <ul data-slot="sortable-list" aria-label={props["aria-label"]} className={cn("gap-2 grid", className)}>
-        {items.map((item, index) => {
-          const id = getId(item)
-          return (
-            <SortableRow
-              key={id}
-              id={id}
-              index={index}
-              name={getName(item)}
-              disabled={disabled}
-              count={items.length}
-              moveButtons={moveButtons}
-              onMove={(from, to) => commit(arrayMove(ids, from, to), id)}
-              className={classNames?.item}
-              handleClassName={classNames?.handle}
-            >
-              {(parts) => renderItem(item, parts)}
-            </SortableRow>
-          )
-        })}
-      </ul>
+      {columns ? (
+        <div
+          data-slot="sortable-list"
+          data-layout="table"
+          className={cn("overflow-hidden rounded-lg border", className)}
+        >
+          <Table className={classNames?.table}>
+            {ariaLabel ? <TableCaption className="sr-only">{ariaLabel}</TableCaption> : null}
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className={moveButtons ? "w-px" : "w-10"}>
+                  <span className="sr-only">{t("listing.reorder")}</span>
+                </TableHead>
+                {columns.map((column) => (
+                  <TableHead key={column.id} className={column.className}>
+                    {column.header}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {items.map((item, index) => {
+                const { key, ...props } = rowProps(item, index)
+                return (
+                  <SortableTableRow key={key} {...props}>
+                    {columns.map((column) => (
+                      <TableCell key={column.id} className={column.className}>
+                        {column.cell(item)}
+                      </TableCell>
+                    ))}
+                  </SortableTableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <ul data-slot="sortable-list" aria-label={ariaLabel} className={cn("gap-2 grid", className)}>
+          {items.map((item, index) => {
+            const { key, ...props } = rowProps(item, index)
+            return (
+              <SortableListItem key={key} {...props}>
+                {(parts) => renderItem?.(item, parts)}
+              </SortableListItem>
+            )
+          })}
+        </ul>
+      )}
     </DragDropProvider>
   )
 }
