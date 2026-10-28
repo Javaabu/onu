@@ -6,7 +6,7 @@ sidebar_position: 20
 Ready-made, presentational authentication forms: `SignInForm`, `RegisterForm`, `ForgotPasswordForm` and `ResetPasswordForm`. They render the fields Laravel's auth scaffolding expects, call `onSubmit` with typed values, and show the `errors`, `processing` and `status` you pass. They never make requests themselves.
 
 ```tsx
-import { EfaasButton, SignInForm } from "@javaabu/onu"
+import { LinkButton, SignInForm } from "@javaabu/onu"
 import { useForm } from "@inertiajs/react"
 
 const form = useForm({ email: "", password: "", remember: false })
@@ -17,7 +17,7 @@ const form = useForm({ email: "", password: "", remember: false })
   processing={processing}
   forgotPasswordHref="/forgot-password"
   registerHref="/register"
-  efaas={<EfaasButton href="/login/efaas" logo={<img src={efaasIcon} alt="" />} fullWidth />}
+  sso={<LinkButton href="/login/sso" variant="outline" className="w-full">Sign in with eFaas</LinkButton>}
 />
 ```
 
@@ -36,16 +36,14 @@ Fields you add with `extraFields` are submitted too: `onSubmit` receives the typ
 
 Fields: `email`, `password` (with show/hide), `remember`. Values: `{ email, password, remember: boolean }`.
 
-| Prop                 | Type        | Default | Description                                       |
-| -------------------- | ----------- | ------- | ------------------------------------------------- |
-| `forgotPasswordHref` | `string`    |         | Shows "Forgot password?" beside the password      |
-| `registerHref`       | `string`    |         | Shows "Don’t have an account? Create an account"  |
-| `showRemember`       | `boolean`   | `true`  | "Remember me" checkbox                            |
-| `efaas`              | `ReactNode` |         | eFaas (or other SSO) button under an "or" divider |
+| Prop                 | Type        | Default | Description                                      |
+| -------------------- | ----------- | ------- | ------------------------------------------------ |
+| `forgotPasswordHref` | `string`    |         | Shows "Forgot password?" beside the password     |
+| `registerHref`       | `string`    |         | Shows "Don’t have an account? Create an account" |
+| `showRemember`       | `boolean`   | `true`  | "Remember me" checkbox                           |
+| `sso`                | `ReactNode` |         | Single sign-on button(s) under an "or" divider   |
 
-:::info eFaas branding
-Use [`EfaasButton`](./efaas-button), styled after the eFaas brand guide, with the eFaas icon from eFaas's brand kit as its `logo` (R16.7).
-:::
+Pass your own single sign-on button in `sso`. A provider's branding (eFaas, Google, …) follows that provider's guidelines and assets, so it belongs in your app rather than in Onu.
 
 ## RegisterForm
 

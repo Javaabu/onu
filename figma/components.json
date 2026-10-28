@@ -71,12 +71,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "choice-inputs/payment-method-selector": {
-    "title": "Payment method selector",
-    "component": "PaymentMethodSelector",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "choice-inputs/radio": {
     "title": "Radio",
     "component": "Radio",

@@ -35,12 +35,6 @@ export const choice = {
   rating: "ރޭޓިންގ",
   ratingValue: "{max} ތަރިން {value}",
   notRated: "ރޭޓިންގ ދީފައެއް ނެތް",
-  paymentMethod: "ފައިސާ ދައްކާނެ ގޮތް",
-  bmlTransfer: "BML ޓްރާންސްފަރ",
-  bmlTransferDescription:
-    "ބޭންކް އޮފް މޯލްޑިވްސްގައިވާ އަޅުގަނޑުމެންގެ އެކައުންޓަށް ފައިސާ ޓްރާންސްފަރ ކުރައްވައި، ޓްރާންސްފަރ ސްލިޕް އަޕްލޯޑް ކުރައްވާ.",
-  bmlConnect: "BML ކަނެކްޓް",
-  bmlConnectDescription: "ބޭންކް އޮފް މޯލްޑިވްސްގެ ތެރެއިން ކާޑުން އޮންލައިންކޮށް ފައިސާ ދައްކަވާ.",
   switchAccount: "އެކައުންޓް ބަދަލުކުރައްވާ",
   searchAccounts: "އެކައުންޓް ހޯއްދަވާ…",
   personalAccount: "ތިޔަބޭފުޅާގެ އެކައުންޓް",

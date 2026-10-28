@@ -1,7 +1,6 @@
 import * as React from "react"
 import { useNavigate } from "react-router"
 import {
-  BmlConnectLogo,
   Button,
   Callout,
   Card,
@@ -10,14 +9,14 @@ import {
   Divider,
   FileInput,
   FormField,
+  Icon,
   LinkButton,
   Modal,
   PageTitle,
-  PaymentMethodSelector,
+  RadioGroup,
   Spinner,
   TextInput,
   toast,
-  type PaymentMethodId,
 } from "@javaabu/onu"
 
 import { CitizenShell } from "../_shared/shells"
@@ -28,6 +27,7 @@ import { fakeUpload, order, useFormat, wait } from "./_data"
 export const meta = { title: "Payment checkout", group: "Applications and workflows", layout: "bare", order: 5 }
 
 type GatewayState = "idle" | "open" | "processing"
+type PaymentMethodId = "bml-transfer" | "bml-connect"
 
 export default function CheckoutPage() {
   const tr = useTr()
@@ -124,12 +124,33 @@ export default function CheckoutPage() {
                   error={methodError}
                   required
                 >
-                  <PaymentMethodSelector
+                  <RadioGroup
+                    variant="card"
                     value={method}
                     onValueChange={(m) => {
-                      setMethod(m)
+                      setMethod(m as PaymentMethodId)
                       setMethodError(null)
                     }}
+                    options={[
+                      {
+                        value: "bml-transfer",
+                        label: tr("Bank transfer", "ބޭންކް ޓްރާންސްފަރ"),
+                        description: tr(
+                          "Transfer to the Ministry's BML account, then upload the slip.",
+                          "ވުޒާރާގެ ބީއެމްއެލް އެކައުންޓަށް ޓްރާންސްފަރކޮށް، ސްލިޕް އަޕްލޯޑްކުރައްވާ.",
+                        ),
+                        media: <Icon name="bank" className="size-6 text-muted-foreground" />,
+                      },
+                      {
+                        value: "bml-connect",
+                        label: tr("Card", "ކާޑު"),
+                        description: tr(
+                          "Pay online by Visa, Mastercard or Amex through BML Connect.",
+                          "ބީއެމްއެލް ކަނެކްޓް މެދުވެރިކޮށް ކާޑުން އޮންލައިންކޮށް ދައްކަވާ.",
+                        ),
+                        media: <Icon name="credit-card" className="size-6 text-muted-foreground" />,
+                      },
+                    ]}
                   />
                 </FormField>
 
@@ -292,7 +313,6 @@ export default function CheckoutPage() {
           </div>
         ) : (
           <div className="gap-4 grid">
-            <BmlConnectLogo className="h-10 bg-white p-1 justify-self-start rounded-md ring-1 ring-border" />
             <DescriptionList
               items={[
                 {

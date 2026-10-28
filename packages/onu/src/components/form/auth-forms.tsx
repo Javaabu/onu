@@ -190,19 +190,16 @@ export interface SignInFormProps extends AuthFormProps<SignInValues> {
   registerHref?: string
   /** Show "Remember me". Default `true`. */
   showRemember?: boolean
-  /**
-   * An eFaas (or other single sign-on) button, shown under an "or" divider.
-   * Usually an `EfaasButton` with the eFaas icon from eFaas's brand kit (R16.7).
-   */
-  efaas?: React.ReactNode
+  /** A single sign-on button (or several), shown under an "or" divider. */
+  sso?: React.ReactNode
 }
 
-/** Email + password sign-in form with remember me, forgot-password link and an optional eFaas slot. */
+/** Email + password sign-in form with remember me, forgot-password link and an optional single sign-on slot. */
 export function SignInForm({
   forgotPasswordHref,
   registerHref,
   showRemember = true,
-  efaas,
+  sso,
   title,
   description,
   defaultValues,
@@ -219,12 +216,12 @@ export function SignInForm({
       submit={submitLabel ?? t("auth.signIn")}
       after={
         <>
-          {efaas ? (
+          {sso ? (
             <>
               {/* Lines either side of the label, no background, so it suits any card surface. */}
               <Divider label={t("auth.or")} className="text-sm" />
-              <div data-slot="auth-efaas" className="grid">
-                {efaas}
+              <div data-slot="auth-sso" className="grid">
+                {sso}
               </div>
             </>
           ) : null}

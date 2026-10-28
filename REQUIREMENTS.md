@@ -405,14 +405,8 @@ Javaabu currently uses the JTK (JavaScript Thaana Keyboard) approach for typing 
   - **Dependent use**: params can come from other field values. When the parent field changes, the child refetches and its value clears.
   - **Shared behaviour**: single and multi-select, `thaana` search input, RTL, and full keyboard support, as for Searchable select.
 - **R16.6** CSRF and auth are the consumer's concern; components never perform network requests without a consumer-supplied URL/fetcher.
-- **R16.7** eFaas sign-in button follows eFaas branding guidelines (asset/colours supplied by eFaas, not invented).
-- **R16.8** **Payment method selector** offers two gateways:
-  - **BML Transfer** (bank transfer to a Bank of Maldives account, typically followed by a transfer-slip upload);
-  - **BML Connect** (BML's online card/payment gateway).
-  - Options are configurable: a project can enable either or both, set their order and the default, and supply its own labels and descriptions in both locales.
-  - Logos and colours follow BML's branding guidelines, using assets supplied by BML rather than invented ones.
-  - It is a radio group of cards: fully keyboard-operable, with a large touch size for kiosks.
-  - Selection only. Onu does not integrate with the gateway itself; redirects and callbacks are the consuming app's job.
+- **R16.7** *(Removed.)* Onu does not ship provider-branded components (eFaas sign-in button, eFaas logos). Apps pass their own single sign-on button to `SignInForm`'s `sso` slot, following the provider's branding guidelines.
+- **R16.8** *(Removed.)* Onu does not ship a payment method selector or BML logos. Apps build the choice from `RadioGroup` (`variant="card"`) with the gateway's own assets.
 - **R16.9** **Maps default to Google Maps.**
   - `OnuProvider` (or `<MapProvider>`) takes the Google Maps API key and an optional Map ID (needed for vector maps, advanced markers and cloud-based styling).
   - Map styles follow light/dark mode and the theme tokens. The map UI language follows the active locale (`dv`/`en`) and direction.
@@ -602,7 +596,6 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Segmented control
 - [ ] Range slider
 - [ ] Rating
-- [ ] Payment method selector
 - [ ] Account switcher
 - [ ] Image select
 - [ ] Select with quick-create
@@ -788,7 +781,7 @@ A build-list item is ticked only when all of the following are true:
 All sample pages live in `web/` and must render correctly in light/dark, LTR/RTL and `en`/`dv`.
 
 ### Auth
-- [ ] Sign in (email and eFaas)
+- [ ] Sign in (email and single sign-on)
 - [ ] Register
 - [ ] Forgot password
 - [ ] Reset password
@@ -906,7 +899,6 @@ To be resolved before (or while) building the affected components:
    - *Custom attribute fields* — schema shape (align with an existing Javaabu Laravel package?).
    - *Reporting-period picker* — fiscal periods (monthly/quarterly/yearly) with custom fiscal year start?
    - *Map navigation* / *Map replay* — data shape for tracks (GeoJSON LineString with timestamps?).
-   - *BML Transfer*: should the selector itself show the bank account details and slip upload, or only the choice?
 9. **React Native / Flutter parity** — should token names align with the Flutter design system for cross-platform consistency?
 
 ---

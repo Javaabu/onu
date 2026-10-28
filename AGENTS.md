@@ -39,4 +39,4 @@ pnpm e2e:chromium                          # Playwright (a11y with axe, visual)
 - No hard-coded English: strings live in `src/locales/{en,dv}/<namespace>.ts`, and a module registers the English namespaces it uses with `registerEnglish(...)`.
 - Every package export has a `size-limit` budget; raise it only on purpose and say why.
 - Docs pages need a `## Props` table and a `## Accessibility` section (or a front-matter opt-out with a reason). Adding or renaming a docs page changes `llms.txt`; nothing to regenerate by hand.
-- Don't reformat files you aren't changing. Generated files (`tokens.css`, `efaas-logo-*.data.ts`, `packages/*/docs`, `llms*.txt`) come from their scripts.
+- Don't reformat files you aren't changing. Generated files (`tokens.css`, `packages/*/docs`, `llms*.txt`) come from their scripts.

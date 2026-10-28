@@ -42,7 +42,7 @@ describe("SignInForm", () => {
   })
 
   it("draws the 'or' divider without a background, so it suits the card in dark mode", () => {
-    renderWithOnu(<SignInForm efaas={<button type="button">eFaas</button>} />, { dark: true })
+    renderWithOnu(<SignInForm sso={<button type="button">Single sign-on</button>} />, { dark: true })
     const label = screen.getByText("or")
     expect(label.closest("[data-slot=divider]")).toBeInTheDocument()
     expect(label.className).not.toMatch(/\bbg-/)
@@ -58,12 +58,12 @@ describe("SignInForm", () => {
     expect(screen.getByRole("button", { name: "Hide password" })).toHaveAttribute("aria-pressed", "true")
   })
 
-  it("shows server errors, processing state, status and the eFaas slot", async () => {
+  it("shows server errors, processing state, status and the single sign-on slot", async () => {
     renderWithOnu(
       <SignInForm
         errors={{ email: "These credentials do not match our records." }}
         status="Your password has been reset."
-        efaas={<button type="button">Sign in with eFaas</button>}
+        sso={<button type="button">Sign in with eFaas</button>}
         showRemember={false}
         logo={<span>logo</span>}
       />,

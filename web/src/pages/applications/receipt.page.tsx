@@ -1,9 +1,9 @@
 import {
-  BmlConnectLogo,
   Button,
   Card,
   DescriptionList,
   Divider,
+  Icon,
   LinkButton,
   Logo,
   StatusBadge,
@@ -89,7 +89,7 @@ export default function ReceiptPage() {
                       label: tr("Method", "ދެއްކި ގޮތް"),
                       value: (
                         <span className="gap-2 inline-flex flex-wrap items-center">
-                          <BmlConnectLogo decorative className="h-6 bg-white p-0.5 rounded-sm ring-1 ring-border" />
+                          <Icon name="credit-card" className="size-4 text-muted-foreground" />
                           {tr("BML Connect (Visa •••• 4242)", "ބީއެމްއެލް ކަނެކްޓް (ވިސާ 4242)")}
                         </span>
                       ),
