@@ -147,7 +147,8 @@ export function ReportingPeriodPicker({
       }}
     >
       {({ close }) => (
-        <div className="gap-2 p-2 [--cell-size:--spacing(9)] touch:[--cell-size:--spacing(11)] flex flex-col">
+        // The tab row can be wider than the calendar; the views are centred under it.
+        <div className="gap-2 p-2 [--cell-size:--spacing(9)] touch:[--cell-size:--spacing(11)] flex flex-col items-center">
           {types.length > 1 ? (
             <ToggleGroup
               type="single"
@@ -160,7 +161,7 @@ export function ReportingPeriodPicker({
               className="w-full"
             >
               {types.map((kind) => (
-                <ToggleGroupItem key={kind} value={kind} className="px-2 touch:h-11 flex-1">
+                <ToggleGroupItem key={kind} value={kind} className="px-2 touch:h-11 flex-auto">
                   {t(`date.${kind}`)}
                 </ToggleGroupItem>
               ))}
