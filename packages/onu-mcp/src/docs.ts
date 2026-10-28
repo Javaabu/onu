@@ -7,6 +7,8 @@ export interface DocPage {
   path: string
   title: string
   description: string
+  /** Building blocks documented on this page, by file name (`help-text`), from its `covers` front matter. */
+  covers?: string[]
 }
 
 export interface DocSection {
@@ -88,7 +90,8 @@ export function findDoc(docs: Docs, name: string): DocPage | undefined {
     docs.pages.find((p) => key(p.path.split("/").pop()!) === wanted) ??
     docs.pages.find((p) => key(p.title) === wanted) ??
     // Pages that document several exports: "Fieldset / FormSection", "useAnnouncer and announce".
-    docs.pages.find((p) => p.title.split(/\s*(?:\/|,|\band\b)\s*/).some((t) => key(t) === wanted))
+    docs.pages.find((p) => p.title.split(/\s*(?:\/|,|\band\b)\s*/).some((t) => key(t) === wanted)) ??
+    docs.pages.find((p) => p.covers?.some((c) => key(c) === wanted))
   )
 }
 

@@ -82,6 +82,10 @@ function readPage(pagePath) {
     path: pagePath,
     title,
     description: describe(body),
+    covers: meta.covers
+      ?.split(",")
+      .map((name) => name.trim())
+      .filter(Boolean),
     position: Number(meta.sidebar_position ?? 100),
     content: `${content}\n`,
   }
@@ -212,7 +216,7 @@ export function buildLlms({ siteUrl } = {}) {
         rules: rules(),
         sections: sections.map(({ pages, ...section }) => ({
           ...section,
-          pages: pages.map(({ path, title, description }) => ({ path, title, description })),
+          pages: pages.map(({ path, title, description, covers }) => ({ path, title, description, covers })),
         })),
       },
       null,

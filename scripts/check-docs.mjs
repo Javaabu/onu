@@ -6,6 +6,8 @@
  *    Component files: packages/onu/src/components/<group>/<name>.tsx (and the subpath entries).
  *    Docs pages: docs/<docs folder>/<name>.md. The page may live in any group folder
  *    (e.g. a component exported from the media entry documented under Text inputs).
+ *    A page can also cover the building blocks of a bigger component: list their
+ *    file names in its front matter, e.g. `covers: label, help-text`.
  *
  * 2. Every reference page (any page in a docs folder except docs/guides) has
  *    - an API table: a "Props" heading (`## Props`, `## Toaster props`, `### Props`)
@@ -48,7 +50,17 @@ const REFERENCE_KINDS = new Set(["component", "hook", "function", "extension"])
 const docsDirs = readdirSync(path.join(root, "docs"), { withFileTypes: true })
   .filter((d) => d.isDirectory())
   .map((d) => d.name)
-const hasPage = (name) => docsDirs.some((d) => existsSync(path.join(root, "docs", d, `${name}.md`)))
+const covered = new Set(
+  docsDirs.flatMap((d) =>
+    readdirSync(path.join(root, "docs", d))
+      .filter((f) => f.endsWith(".md"))
+      .flatMap((f) => (frontMatter(readFileSync(path.join(root, "docs", d, f), "utf8")).covers ?? "").split(","))
+      .map((name) => name.trim())
+      .filter(Boolean),
+  ),
+)
+const hasPage = (name) =>
+  covered.has(name) || docsDirs.some((d) => existsSync(path.join(root, "docs", d, `${name}.md`)))
 
 const problems = []
 

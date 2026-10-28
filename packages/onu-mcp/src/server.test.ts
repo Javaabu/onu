@@ -44,6 +44,8 @@ describe("findDoc", () => {
   it("finds a page by one of the exports it documents", () => {
     expect(findDoc(docs, "announce")?.path).toBe("accessibility/use-announcer")
     expect(findDoc(docs, "FormSection")?.path).toBe("form-scaffolding/fieldset")
+    expect(findDoc(docs, "HelpText")?.path).toBe("form-scaffolding/form-field")
+    expect(findDoc(docs, "required-marker")?.path).toBe("form-scaffolding/form-field")
   })
 
   it("returns undefined for an unknown name", () => expect(findDoc(docs, "FluxCapacitor")).toBeUndefined())
