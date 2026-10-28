@@ -1,0 +1,1 @@
+import{r as e}from"./rolldown-runtime-hePW80VL.js";import{r as t}from"./createLucideIcon-szDhxmRU.js";import{s as n}from"./button-DdNGmfo-.js";var r=e(t(),1);function i(e){let t=n();return r.createElement(t,e)}export{i as t};

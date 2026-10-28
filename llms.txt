@@ -1,0 +1,434 @@
+# Onu
+
+> Javaabu's React UI component library (`@javaabu/onu`): shadcn/ui (Radix) and Tailwind CSS v4, right-to-left and Dhivehi first, Thaana typing from a Latin keyboard, one-variable theming (`--onu-primary`), dark mode, density modes and WCAG 2.2 AA. Built for Laravel apps (Inertia or plain forms) and Next.js.
+
+Version 0.1.0. Every page below is plain Markdown with a Props table and an Accessibility section. Read a component's page before using it, and use only the props it lists. Source: https://github.com/Javaabu/onu.
+
+## Rules
+
+### Before writing code
+
+- Look up a component's page before using it: `node_modules/@javaabu/onu/docs/<group>/<name>.md`, `onu_get_doc` in the MCP server, or the site's `llms.txt`. Each page has a **Props** table and an **Accessibility** section. Use only the props listed there.
+- Prefer an Onu component over writing your own or using a shadcn/ui primitive directly. `llms.txt` lists every component with one line on what it is for. Only reach for `@javaabu/onu/primitives` (the shadcn/ui parts Onu is built on) to compose something Onu doesn't have.
+- Don't add other UI kits (MUI, Chakra, Ant Design, Headless UI, a separate shadcn/ui copy) next to Onu.
+
+### Setup
+
+- One CSS entry: `@import "tailwindcss"; @import "@javaabu/onu/tailwind.css";` and, for the font pack, `@import "@javaabu/onu/fonts.css";`, which needs `npm install @fontsource-variable/inter @fontsource-variable/jetbrains-mono @fontsource-variable/noto-sans-thaana` first.
+- Wrap the app once in `<ThemeProvider><OnuProvider>…</OnuProvider></ThemeProvider>`. `OnuProvider` sets `lang`, `dir` and density on `<html>`, so portals follow.
+- Dhivehi: `locale={dv}` with `import { dv } from "@javaabu/onu/locales/dv"`, or `locale="dv"` to load it on demand. English needs no `locale`.
+- Inertia or Next.js: pass the router's `Link` as `linkComponent` on `OnuProvider`; Onu's links and `href` props then use it.
+
+### Imports
+
+- Components, hooks and helpers come from `@javaabu/onu`. Heavy features have their own entry: `@javaabu/onu/charts`, `/maps`, `/editor`, `/calendar`, `/media`, `/query-builder`, `/export`, `/thaana`, `/icons/iconify`, `/icons/fontawesome`. The docs page's first code block shows the import.
+- Never import from `@javaabu/onu/dist/...` or `@javaabu/onu/src/...`.
+
+### Forms (Laravel)
+
+- Put every control inside `FormField` with the field's `name` (bracket notation is fine, `items[0][name]`). `FormField` wires the label, help, errors and ARIA. Don't hand-write `<label>`, error text or `aria-describedby`.
+- Use `Form` with an `onSubmit` that returns the request promise (axios, fetch or Inertia). It shows Laravel 422 errors under the fields, focuses the first one and shows the error summary. With Inertia, pass `errors={form.errors}` and `processing={form.processing}`.
+- Submit with `SubmitButton` (spinner, no double submit), not a plain `Button type="submit"`.
+- Pick the specific input: `EmailInput`, `PasswordInput`, `PhoneInput`, `NumberInput`, `DatePicker`, `ApiSelect` (Laravel paginated API), `FileInput` (`url` for instant uploads), and so on, rather than `TextInput type="…"`.
+- Edit pages get `SaveBar`; index pages get `ListingPage` (or `DataTable` with `useListingState`).
+
+### Dhivehi, Thaana and RTL
+
+- Free-text fields that may hold Dhivehi take `thaana` (`<TextInput thaana />`, `<Textarea thaana />`; add `thaanaToggle` for the Thaana/Latin button). Never add `thaana` to email, password, URL, number, phone, OTP or code inputs; they stay LTR by design.
+- Use logical Tailwind utilities only: `ms-*`/`me-*`, `ps-*`/`pe-*`, `start-*`/`end-*`, `text-start`/`text-end`, `border-s`/`border-e`, `rounded-s-*`/`rounded-e-*`. Never `ml-*`, `mr-*`, `pl-*`, `pr-*`, `left-*`, `right-*`, `text-left` or `text-right`. Flip transforms with `rtl:`.
+- Sides are `side="start" | "end"`, not left/right.
+- Format dates, numbers and money with `useFormatDate`, `useFormatNumber` and `useFormatCurrency` (MVR), not `toLocaleString` or hand-built strings. Numbers use Western digits in Dhivehi too.
+- Built-in strings come from the locale. For your own strings use `useTranslation()` or your app's i18n, and override Onu's strings with `OnuProvider messages`.
+
+### Styling and theming
+
+- Brand colour: set `--onu-primary` (one variable re-themes everything). Use the theme tokens (`bg-background`, `text-foreground`, `bg-primary`, `text-muted-foreground`, `border`, `bg-card`, …), never fixed colours like `bg-blue-600` or hex values, so dark mode and themes keep working.
+- Restyle with `className` (merged with tailwind-merge, yours wins) and `classNames={{ part: "…" }}` for parts. Reuse exported variants such as `buttonVariants`. Use `asChild` to render your own element. No `!important`, no inline styles for static values.
+- Density (`compact` to `touch`) and dark mode come from the providers; don't hard-code heights or `dark:` colours on Onu components.
+
+### Icons
+
+- Use `<Icon name="search" />` and `startIcon="add"` / `endIcon="…"` props with semantic names, not imports from `lucide-react`. Give icons that carry meaning a `label`; icon-only buttons need an accessible name (`aria-label` or the component's `label` prop).
+- Directional icons mirror in RTL on their own; don't flip them yourself.
+
+### Accessibility (WCAG 2.2 AA)
+
+- Onu components already handle roles, focus and keyboard. Don't remove focus rings, add `tabIndex` to non-interactive elements, or replace buttons with clickable `div`s.
+- Announce async results with `toast()`, `announce()` or `LiveRegion`; hide text visually with `VisuallyHidden`, not `display: none`.
+- Confirm destructive actions with `confirm()` / `useConfirm()` or the item's `confirm` option, not `window.confirm`.
+
+### Bundle size
+
+- Import only what you use; every entry is tree-shaken. Keep charts, maps, the editor, the calendar and media in their own entries (and lazy routes when they are big).
+
+## Getting started
+
+- [Introduction](https://onu.on-forge.com/docs/intro.md): Onu is Javaabu's React UI component library.
+- [Installation & Setup](https://onu.on-forge.com/docs/installation-and-setup.md): First install the NPM package
+
+## Guides
+
+Theming, RTL, Dhivehi, Thaana input, icons, fonts and more.
+
+- [Design & density](https://onu.on-forge.com/docs/guides/design-and-density.md): Onu's default look pairs a Proton Mail-style app shell with Ant Design 5 content elements: 14px text, 32px controls, 6px control corners and 8px cards, hairline borders, plain greys, and colour used for emphasis.
+- [Theming](https://onu.on-forge.com/docs/guides/theming.md): Onu's default theme pairs a Proton Mail-style app shell with Ant Design 5 content elements
+- [Dark mode](https://onu.on-forge.com/docs/guides/dark-mode.md): Every Onu component has a dark variant. Dark mode turns on when an ancestor has the `dark` class or `data-theme="dark"`, so it works with any toggling approach.
+- [RTL](https://onu.on-forge.com/docs/guides/rtl.md): Every Onu component works right-to-left with no extra props.
+- [Dhivehi & locales](https://onu.on-forge.com/docs/guides/dhivehi-and-locales.md): Onu ships with English (`en`) and Dhivehi (`dv`).
+- [Thaana input](https://onu.on-forge.com/docs/guides/thaana-input.md): Onu can type Thaana from a Latin keyboard, so users don't need a Dhivehi keyboard installed.
+- [Icons](https://onu.on-forge.com/docs/guides/icons.md): Onu uses Lucide icons by default, with no setup.
+- [Fonts](https://onu.on-forge.com/docs/guides/fonts.md): Onu's optional font pack. Install the three Latin and fallback fonts it loads from npm, then import it after `tailwind.css`
+- [Accessibility](https://onu.on-forge.com/docs/guides/accessibility.md): Onu targets WCAG 2.2 Level AA for every component, in light and dark mode and in both directions.
+- [Style overrides](https://onu.on-forge.com/docs/guides/style-overrides.md): Every component can be restyled without forking it.
+- [Forms & Laravel validation](https://onu.on-forge.com/docs/guides/forms-and-laravel.md): Onu's form components are built around Laravel's conventions, so server validation errors show up under the right fields with no glue code.
+- [Inertia & Next.js](https://onu.on-forge.com/docs/guides/inertia-and-nextjs.md): Onu is plain React, so it works in Vite apps, Laravel + Inertia (React) and Next.js.
+- [AI assistants](https://onu.on-forge.com/docs/guides/ai-assistants.md): Onu's docs are written so AI coding assistants (Claude Code, Cursor, Copilot, ChatGPT and others) can use them: every page is plain Markdown with a Props table and an Accessibility section, and there is a short list o…
+- [Rules for AI assistants](https://onu.on-forge.com/docs/guides/rules-for-ai.md): Short rules for AI coding assistants (and people) writing UI with Onu.
+
+## Accessibility
+
+Screen-reader helpers: visually hidden text, live regions and announcements.
+
+- [VisuallyHidden](https://onu.on-forge.com/docs/accessibility/visually-hidden.md): Content for screen readers only. It is taken out of the visual layout with Tailwind's `sr-only` but is still read out, and focusable content inside it stays in the tab order.
+- [LiveRegion](https://onu.on-forge.com/docs/accessibility/live-region.md): An `aria-live` region: screen readers read its text whenever it changes, without moving focus.
+- [useAnnouncer and announce](https://onu.on-forge.com/docs/accessibility/use-announcer.md): Announces messages to screen-reader users: "Row moved to position 3", "Settings saved", "4 results".
+
+## Form scaffolding
+
+Forms, fields, labels, errors and buttons.
+
+- [Form](https://onu.on-forge.com/docs/form-scaffolding/form.md): A `<form>` that handles the boring parts: label layout for every field, disabling fields while saving, server validation errors (Laravel 422) under each field, an error summary at the top, and moving focus to the firs…
+- [FormField](https://onu.on-forge.com/docs/form-scaffolding/form-field.md): A label, a control, help text and error messages, laid out stacked (label above) or inline (label beside).
+- [Form layout & errors](https://onu.on-forge.com/docs/form-scaffolding/form-context.md): Providers that configure every `FormField` inside them.
+- [FormGroup](https://onu.on-forge.com/docs/form-scaffolding/form-group.md): Lays out related fields in a responsive grid and sets their label layout.
+- [Fieldset / FormSection](https://onu.on-forge.com/docs/form-scaffolding/fieldset.md): A titled section of a form: a real `<fieldset>` with a `<legend>`, an optional description, and an optional collapse toggle.
+- [ValidationSummary (AJAX validation errors)](https://onu.on-forge.com/docs/form-scaffolding/validation-summary.md): An error summary for the top of a form. It lists every error, and each one is a link that moves focus to its field.
+- [FormContainer](https://onu.on-forge.com/docs/form-scaffolding/form-container.md): A card-style layout for a form: a header (title, description, actions), the body and a footer for the buttons.
+- [RepeatingGroup](https://onu.on-forge.com/docs/form-scaffolding/repeating-group.md): A list of repeated rows of fields (line items, family members, contact numbers) with Add, Remove and Move up / Move down.
+- [InlineEdit](https://onu.on-forge.com/docs/form-scaffolding/inline-edit.md): Text that turns into an input when clicked, for quick edits on detail pages and tables.
+- [AutosaveIndicator](https://onu.on-forge.com/docs/form-scaffolding/autosave-indicator.md): Shows whether changes are being saved automatically: idle, saving, saved (with relative time, "Saved 2 minutes ago") or error (with Retry).
+- [SaveBar](https://onu.on-forge.com/docs/form-scaffolding/save-bar.md): The save bar for edit pages (REQUIREMENTS §25.9), and a floating Save button for long forms.
+- [useUnsavedChangesGuard](https://onu.on-forge.com/docs/form-scaffolding/unsaved-changes-guard.md): Warns before leaving a page with unsaved changes (§25.9).
+- [SubmitButton](https://onu.on-forge.com/docs/form-scaffolding/submit-button.md): A `type="submit"` `Button` that shows a spinner while the form is processing and ignores clicks until it finishes, so a form can't be submitted twice.
+- [Button](https://onu.on-forge.com/docs/form-scaffolding/button.md): Onu's button: shadcn's `Button` with a `loading` state, `startIcon` / `endIcon`, and extra `success` and `warning` variants.
+- [LinkButton](https://onu.on-forge.com/docs/form-scaffolding/link-button.md): A link that looks like a `Button`. It renders through the `linkComponent` set on `OnuProvider`, so it navigates with Inertia, Next.js or your router (R16.2).
+- [ButtonGroup](https://onu.on-forge.com/docs/form-scaffolding/button-group.md): Groups related buttons. By default the buttons are joined into one segmented control (shadcn's button group); `attached={false}` keeps them separate with a gap and lets them wrap.
+- [Auth forms](https://onu.on-forge.com/docs/form-scaffolding/auth-forms.md): Ready-made, presentational authentication forms: `SignInForm`, `RegisterForm`, `ForgotPasswordForm` and `ResetPasswordForm`.
+
+## Text inputs
+
+Text, Thaana, number, phone, OTP and other inputs.
+
+- [TextInput](https://onu.on-forge.com/docs/text-inputs/text-input.md): A single-line text input with optional addons and Thaana keyboard support.
+- [EmailInput](https://onu.on-forge.com/docs/text-inputs/email-input.md): An email address input. It sets `type="email"`, `inputMode="email"` (the email keyboard on phones) and `autocomplete="email"`, turns off auto-capitalisation and spell check, and is always left-to-right, even on a Dhiv…
+- [PasswordInput](https://onu.on-forge.com/docs/text-inputs/password-input.md): A password input with a show/hide button, a Caps Lock warning and an optional strength meter.
+- [SensitiveInput](https://onu.on-forge.com/docs/text-inputs/sensitive-input.md): A read-only display for a secret such as an API key or client secret.
+- [NumberInput](https://onu.on-forge.com/docs/text-inputs/number-input.md): A numeric input with locale-aware formatting, `min` / `max` / `step`, spinbutton keys, an optional unit (fixed text or a unit select) and an optional stepper with large − and + buttons.
+- [PhoneInput](https://onu.on-forge.com/docs/text-inputs/phone-input.md): An international phone number input built on `react-phone-number-input` (libphonenumber).
+- [UrlInput](https://onu.on-forge.com/docs/text-inputs/url-input.md): A URL input. It sets `type="url"`, `inputMode="url"` and `autocomplete="url"`, is always left-to-right, and adds `https://` when the user leaves the field without a scheme (`javaabu.com` → `https://javaabu.com`).
+- [HiddenInput](https://onu.on-forge.com/docs/text-inputs/hidden-input.md): A hidden form value. Inside a `FormField` it takes the field's `id` and `name`, so server errors for that name show on the field like any other control.
+- [Textarea](https://onu.on-forge.com/docs/text-inputs/textarea.md): A multi-line text input that grows with its content, with Thaana support and an optional character counter.
+- [ThaanaToggle](https://onu.on-forge.com/docs/text-inputs/thaana-toggle.md): The button that switches a field between Thaana and Latin typing.
+- [OtpInput](https://onu.on-forge.com/docs/text-inputs/otp-input.md): A one-time code input built on shadcn's `input-otp`.
+- [SlugInput](https://onu.on-forge.com/docs/text-inputs/slug-input.md): A slug generator, like `slugInput` in `@javaabu/js-utilities`.
+- [Autocomplete](https://onu.on-forge.com/docs/text-inputs/autocomplete.md): A free-text input with suggestions. The typed text is the value; suggestions only help fill it in (for a fixed list of choices, use a select).
+- [ColorPicker](https://onu.on-forge.com/docs/text-inputs/color-picker.md): A colour picker built on React Aria's colour components.
+- [IconPicker](https://onu.on-forge.com/docs/text-inputs/icon-picker.md): An icon picker with search and a virtualised grid (TanStack Virtual), so thousands of icons stay fast.
+- [SignaturePad](https://onu.on-forge.com/docs/text-inputs/signature-pad.md): A signature pad built on `signature_pad`.
+- [TagsInput](https://onu.on-forge.com/docs/text-inputs/tags-input.md): A chips input for keywords, topics and similar lists.
+- [QrCodeScanner](https://onu.on-forge.com/docs/text-inputs/qr-code-scanner.md): A QR code scanner. It opens the camera with `getUserMedia`, decodes frames with the browser's `BarcodeDetector`, and loads the `barcode-detector` polyfill (ZXing in WebAssembly) only where the native API is missing (R…
+
+## Date and time
+
+Date, time and range pickers and calendars.
+
+- [DatePicker](https://onu.on-forge.com/docs/date-and-time/date-picker.md): A date field that opens a calendar. Built on shadcn's `Calendar` (react-day-picker) inside a `Popover`, or a bottom-sheet `Drawer` on phones (R3.28).
+- [TimePicker](https://onu.on-forge.com/docs/date-and-time/time-picker.md): A time field that opens large hour and minute steppers with ▲/▼, an AM/PM switch, a clock-face hour grid and a minute grid (REQUIREMENTS §25.2).
+- [DateTimePicker](https://onu.on-forge.com/docs/date-and-time/date-time-picker.md): A calendar with a time chip underneath (REQUIREMENTS §25.3).
+- [DateRangePicker](https://onu.on-forge.com/docs/date-and-time/date-range-picker.md): Two fields side by side, From and To, each opening a DatePicker (or a DateTimePicker with `withTime`).
+- [HijriDate](https://onu.on-forge.com/docs/date-and-time/hijri-date.md): Shows a date in the Umm al-Qura Hijri calendar, e.g.
+- [HijriDatePicker](https://onu.on-forge.com/docs/date-and-time/hijri-date-picker.md): Picks a date on the Umm al-Qura Hijri calendar.
+- [ReportingPeriodPicker](https://onu.on-forge.com/docs/date-and-time/reporting-period-picker.md): Picks a monthly, quarterly, yearly or custom reporting period, with a configurable financial-year start.
+- [DateCalendar](https://onu.on-forge.com/docs/date-and-time/date-calendar.md): The calendar inside every Onu date picker, for use inline.
+- [TimePanel](https://onu.on-forge.com/docs/date-and-time/time-panel.md): The steppers, clock-face hour grid and minute grid used inside TimePicker and DateTimePicker, for use inline (e.g.
+- [FullCalendar](https://onu.on-forge.com/docs/date-and-time/full-calendar.md): A full calendar with month, week, day and agenda views, built on FullCalendar v6 using only its MIT "standard" plugins (`daygrid`, `timegrid`, `list`, `interaction`; R4.3).
+
+## Choice inputs
+
+Selects, checkboxes, radios, switches and pickers.
+
+- [Select](https://onu.on-forge.com/docs/choice-inputs/select.md): A select for short lists, built on shadcn's select (Radix).
+- [Searchable select](https://onu.on-forge.com/docs/choice-inputs/searchable-select.md): A select with a search field: a field that opens a searchable list (shadcn Popover + Command; a bottom sheet on phones).
+- [API select](https://onu.on-forge.com/docs/choice-inputs/api-select.md): A searchable select that loads its options from any API (REQUIREMENTS R16.5).
+- [Dual listbox](https://onu.on-forge.com/docs/choice-inputs/dual-listbox.md): Two lists, "Available" and "Selected", with buttons to move items between them.
+- [Checkbox](https://onu.on-forge.com/docs/choice-inputs/checkbox.md): shadcn's checkbox plus a label, description and an indeterminate (mixed) state.
+- [Radio](https://onu.on-forge.com/docs/choice-inputs/radio.md): One radio button with a label, description and, in the card variant, media and an aside.
+- [Radio group](https://onu.on-forge.com/docs/choice-inputs/radio-group.md): A set of radios where one can be chosen (shadcn radio group).
+- [Switch](https://onu.on-forge.com/docs/choice-inputs/switch.md): shadcn's switch plus a label and description.
+- [Segmented control](https://onu.on-forge.com/docs/choice-inputs/segmented-control.md): Pick one of a few options shown side by side (shadcn toggle group, single mode).
+- [Range slider](https://onu.on-forge.com/docs/choice-inputs/range-slider.md): A slider for one value or a range (shadcn slider), with marks, value labels and locale number formatting.
+- [Rating](https://onu.on-forge.com/docs/choice-inputs/rating.md): A star rating with optional half steps, a read-only display mode and full keyboard support.
+- [Account switcher](https://onu.on-forge.com/docs/choice-inputs/account-switcher.md): Switch between your own account and accounts you act for: organisations and delegated individuals (e.g.
+- [Image select](https://onu.on-forge.com/docs/choice-inputs/image-select.md): A grid of image options: one choice (radio semantics) or several (`multiple`, checkbox semantics).
+
+## Files and media
+
+Uploads, images, galleries and media.
+
+- [FileInput](https://onu.on-forge.com/docs/files-and-media/file-input.md): A file field built on a native `<input type="file">` that covers its trigger, so clicking, tapping and the keyboard (Enter/Space) all work natively.
+- [UploadProgress](https://onu.on-forge.com/docs/files-and-media/upload-progress.md): A list of uploads, each with its name, size, progress bar, status (waiting, uploading, uploaded, failed, cancelled) and cancel / retry / remove buttons.
+- [AdditionalFilesUpload](https://onu.on-forge.com/docs/files-and-media/additional-files-upload.md): Manages a record's attachments on an edit page: existing files can be removed (and restored before saving), and new files can be added, each with an optional display name and description.
+- [ImageInput](https://onu.on-forge.com/docs/files-and-media/image-input.md): Picks one image with a preview, and Replace / Remove buttons.
+- [AvatarUpload](https://onu.on-forge.com/docs/files-and-media/avatar-upload.md): A circular avatar picker: shows the photo (or initials), opens a crop step after picking (using `ImageCropper`), and offers Change and Remove.
+- [ImageCropper](https://onu.on-forge.com/docs/files-and-media/image-cropper.md): Crops an image with `react-easy-crop`: drag or pinch to move and zoom, arrow keys to nudge, a zoom slider, rotation, aspect-ratio presets, and Blob/File output.
+- [MediaLister](https://onu.on-forge.com/docs/files-and-media/media-lister.md): A media library: grid or list view, search, single or multiple selection, type icons and lazy thumbnails, with infinite or paged loading driven by props (fetch the data however you like).
+- [Gallery](https://onu.on-forge.com/docs/files-and-media/gallery.md): A responsive image grid or masonry layout.
+- [Lightbox](https://onu.on-forge.com/docs/files-and-media/lightbox.md): A full-screen image viewer built on yet-another-react-lightbox: keyboard, swipe, pinch/double-tap/wheel zoom, captions and a counter, with a focus trap, focus return, translated labels and mirrored arrows in RTL.
+- [Carousel](https://onu.on-forge.com/docs/files-and-media/carousel.md): shadcn's Carousel (Embla) extended with RTL direction, translated controls, dot navigation, autoplay with a pause button, and slide announcements.
+- [AttachmentPreview](https://onu.on-forge.com/docs/files-and-media/attachment-preview.md): A file attachment: thumbnail or type icon, name, type and size, with open, download and remove actions.
+- [DocumentDownload](https://onu.on-forge.com/docs/files-and-media/document-download.md): A downloadable document card with its type, size and a download link, optionally in several language versions (English and Dhivehi).
+- [MediaPlayer](https://onu.on-forge.com/docs/files-and-media/media-player.md): An accessible audio and video player built on Media Chrome: play/pause, seek, time, mute and volume, captions, playback speed and full screen, with keyboard shortcuts, translated labels and Onu theming.
+- [VideoEmbed](https://onu.on-forge.com/docs/files-and-media/video-embed.md): A click-to-load YouTube or Vimeo embed (the "lite embed" pattern): it shows a thumbnail and a play button, and loads the privacy-enhanced player (`youtube-nocookie.com`, Vimeo with `dnt=1`) only when the user presses…
+- [FileIcon](https://onu.on-forge.com/docs/files-and-media/file-icon.md): A coloured icon for a file's type (image, video, audio, PDF, document, spreadsheet, presentation, archive, text), detected from the MIME type or the file extension.
+- [QrCode](https://onu.on-forge.com/docs/files-and-media/qr-code.md): A QR code generator. The text is encoded with `uqr` (MIT, zero dependencies) and Onu renders the SVG itself, so the dark modules use `currentColor` and follow theme tokens.
+
+## Rich content
+
+Editors and renderers.
+
+- [WYSIWYG editor](https://onu.on-forge.com/docs/rich-content/wysiwyg-editor.md): A rich text editor built on Tiptap (ProseMirror).
+- [Block editor](https://onu.on-forge.com/docs/rich-content/block-editor.md): A block-based editor (page builder) on Tiptap.
+- [Block renderer](https://onu.on-forge.com/docs/rich-content/block-renderer.md): Renders block editor (or WYSIWYG) JSON to React without loading the editor.
+- [Code block](https://onu.on-forge.com/docs/rich-content/code-block.md): Read-only code with Shiki syntax highlighting, a language label, a copy button and optional line numbers.
+- [Translations editor](https://onu.on-forge.com/docs/rich-content/translations-editor.md): Edit translation keys side by side in English and Dhivehi (or any languages).
+- [Custom attribute fields](https://onu.on-forge.com/docs/rich-content/custom-attribute-fields.md): Renders form fields from a schema, for custom attributes, settings or product specs, using Onu's inputs.
+- [ThaanaKeyboard (Tiptap)](https://onu.on-forge.com/docs/rich-content/thaana-keyboard.md): A Tiptap extension that types Thaana from a Latin keyboard through ProseMirror transactions rather than DOM edits (R13.2), so undo/redo, input rules and collaboration keep working.
+
+## Maps
+
+Google Maps components.
+
+- [MapProvider](https://onu.on-forge.com/docs/maps/map-provider.md): Configures the map engine for every map inside it.
+- [MapView](https://onu.on-forge.com/docs/maps/map-view.md): The base map. Put markers, shapes and layers inside it.
+- [MapPicker](https://onu.on-forge.com/docs/maps/map-picker.md): Pick a point: click the map, drag the pin, search a place, use the device location, or type the latitude and longitude.
+- [MapRadius](https://onu.on-forge.com/docs/maps/map-radius.md): A centre and a radius in metres: click to place the centre, drag the handles, or type the numbers.
+- [MapPolygon](https://onu.on-forge.com/docs/maps/map-polygon.md): Draw and edit polygons (zones, plots, service areas).
+- [MapRoute](https://onu.on-forge.com/docs/maps/map-route.md): Draw a route as a line (patrol path, ferry line, delivery route).
+- [LiveMap](https://onu.on-forge.com/docs/maps/live-map.md): Markers that move as positions arrive, from props (polling) or a stream (WebSocket, SSE, Laravel Echo).
+- [MapNavigation](https://onu.on-forge.com/docs/maps/map-navigation.md): Turn-by-turn style directions between stops: the route on the map, a summary, and a step list with Previous / Next.
+- [LocationCard](https://onu.on-forge.com/docs/maps/location-card.md): A place at a glance: a static map thumbnail, the address, coordinates and an Open in Google Maps link.
+- [AddressInput](https://onu.on-forge.com/docs/maps/address-input.md): Structured Maldivian address fields: atoll, island, road and house/building name, with an optional map pin.
+- [MapReplay](https://onu.on-forge.com/docs/maps/map-replay.md): Plays back a timestamped track (a vessel trip, a delivery run): play/pause, speed and a scrubber.
+- [MapInfoPanel](https://onu.on-forge.com/docs/maps/map-info-panel.md): Details of the selected marker: a side panel over the map on desktop and a bottom sheet on phones.
+- [RouteStopEditor](https://onu.on-forge.com/docs/maps/route-stop-editor.md): An ordered list of stops synced with numbered markers.
+- [HeatmapLayer](https://onu.on-forge.com/docs/maps/heatmap-layer.md): A density heatmap inside a `MapView`. On Google Maps it is deck.gl's `HeatmapLayer` through `GoogleMapsOverlay` (Google's own HeatmapLayer is deprecated and never used).
+- [ViewportMarkerMap](https://onu.on-forge.com/docs/maps/viewport-marker-map.md): Loads markers for the visible area through your fetcher and clusters them (`@googlemaps/markerclusterer`).
+- [MapLegendSwatch](https://onu.on-forge.com/docs/maps/map-legend-swatch.md): Colour and shape samples that match how layers are drawn, and `MapLegend`, a labelled list of them.
+
+## Charts
+
+Charts and statistics.
+
+- [CategoryChart](https://onu.on-forge.com/docs/charts/category-chart.md): A line, area or bar graph over categories (months, islands, councils), built on shadcn's chart (`ChartContainer` + Recharts).
+- [PieChart](https://onu.on-forge.com/docs/charts/pie-chart.md): A pie or donut chart on shadcn's chart (Recharts).
+- [TimeSeriesChart](https://onu.on-forge.com/docs/charts/time-series-chart.md): A line, area or bar chart on a real time axis, optionally stacked.
+- [PeriodComparisonChart](https://onu.on-forge.com/docs/charts/period-comparison-chart.md): Compares the current period with the previous one: headline totals with a delta percentage and an up/down indicator, the two periods overlaid (previous dashed, or as muted bars), and a table with the change per step.
+- [Sparkline](https://onu.on-forge.com/docs/charts/sparkline.md): A tiny inline line or area chart with no axes, labels or tooltip, for trends in tables, stat tiles and text.
+- [StatTile](https://onu.on-forge.com/docs/charts/stat-tile.md): KPI tiles: a label, a formatted value, a delta (arrow + sign + semantic colour), an optional icon and sparkline, and a loading skeleton.
+- [DeltaIndicator](https://onu.on-forge.com/docs/charts/delta-indicator.md): A change indicator: an arrow icon, a signed percentage and a semantic colour.
+- [MapChart](https://onu.on-forge.com/docs/charts/map-chart.md): A choropleth map: regions shaded by value on Google Maps, drawn with a deck.gl `GeoJsonLayer` (`GoogleMapsOverlay`).
+
+## Listing pages
+
+Tables, filters, pagination and listing tools.
+
+- [ListingPage](https://onu.on-forge.com/docs/listing-pages/listing-page.md): A complete index page, laid out as REQUIREMENTS §25.6 describes: a header with the title, the main action and secondary links (Trash, with a dot when it isn't empty), status tabs, a toolbar with the search box, Filter…
+- [useListingState](https://onu.on-forge.com/docs/listing-pages/use-listing-state.md): State for an index page — search, sort, page, rows per page, filters, view, selection and column visibility — with the rules from REQUIREMENTS §25.6 built in
+- [DataTable](https://onu.on-forge.com/docs/listing-pages/data-table.md): The listing table, built on TanStack Table v9 (column model, visibility and selection) and shadcn's `Table`.
+- [FilterPanel](https://onu.on-forge.com/docs/listing-pages/filter-panel.md): The Filters button and its panel (REQUIREMENTS §25.7): a dropdown on desktop and a bottom sheet on phones.
+- [ActiveFilterChips](https://onu.on-forge.com/docs/listing-pages/active-filter-chips.md): One pill per applied filter under the toolbar (REQUIREMENTS §25.7): "Status: Active", "Created: 1 Mar → 31 Mar", "Created: from 1 Mar".
+- [SearchBox](https://onu.on-forge.com/docs/listing-pages/search-box.md): The search box of an index page. Typing does nothing until the user presses Enter or leaves the box after changing the text (REQUIREMENTS §25.6), so a request isn't sent for every keystroke.
+- [Pagination](https://onu.on-forge.com/docs/listing-pages/pagination.md): Pagination for listings, laid out like Ant Design's: "Showing 26–50 of 312 users" at the start, then numbered pages between the previous and next arrows, then a rows-per-page select (10 / 25 / 50 / 100).
+- [PerPage](https://onu.on-forge.com/docs/listing-pages/per-page.md): A rows-per-page select (shadcn `Select`), used by `Pagination`.
+- [BulkActionBar](https://onu.on-forge.com/docs/listing-pages/bulk-actions.md): The bulk action bar (REQUIREMENTS §25.6).
+- [RecordActionsMenu](https://onu.on-forge.com/docs/listing-pages/record-actions-menu.md): Actions in a record page header (e.g. Logs, Approve, Delete — REQUIREMENTS §25.8).
+- [EmptyState](https://onu.on-forge.com/docs/listing-pages/empty-state.md): Empty states for listings (REQUIREMENTS §25.6), on shadcn's `Empty`
+- [ColumnVisibility](https://onu.on-forge.com/docs/listing-pages/column-visibility.md): A "Columns" menu with a checkbox per column, to show or hide table columns.
+- [ExportMenu](https://onu.on-forge.com/docs/listing-pages/export-menu.md): An Export button with a menu of formats (CSV, Excel, PDF).
+- [exportRows (client-side export)](https://onu.on-forge.com/docs/listing-pages/export-rows.md): Builds a CSV, Excel or PDF file in the browser from the rows you already have, for apps without a server export.
+- [ListView](https://onu.on-forge.com/docs/listing-pages/list-view.md): Records as a vertical list: media (avatar, icon), title, description and details, with optional checkboxes and a ⋯ menu per item.
+- [KanbanBoard](https://onu.on-forge.com/docs/listing-pages/kanban-board.md): A board of columns with cards that move between them, on `@dnd-kit/react`.
+- [TreeView](https://onu.on-forge.com/docs/listing-pages/tree-view.md): A tree of records (folders, categories, atolls and islands, org units) on React Aria's `Tree`, which implements the WAI-ARIA tree grid pattern.
+- [SortableList](https://onu.on-forge.com/docs/listing-pages/sortable-list.md): A list, or a table, the user can put in order (menu items, steps, route stops, priorities), on `@dnd-kit/react`: drag the handle with a mouse or by touch (press and hold), use the keyboard on the handle, or use the Mo…
+- [EditableDataGrid](https://onu.on-forge.com/docs/listing-pages/editable-data-grid.md): A spreadsheet-like table for quick edits (order lines, stock counts, rates), following the WAI-ARIA grid pattern.
+- [SearchResults](https://onu.on-forge.com/docs/listing-pages/search-results.md): Search results grouped by type (Services, News, Pages), with a count per group and the search words highlighted.
+- [LoadMore](https://onu.on-forge.com/docs/listing-pages/load-more.md): A Load more button for lists and grids, with "Showing 1–20 of 312" and an announcement of how many items arrived.
+- [FilterConditionBuilder](https://onu.on-forge.com/docs/listing-pages/filter-condition-builder.md): Advanced filters as conditions — "Status is Active and Island is one of Malé, Hulhumalé" — on `react-querybuilder`, with Onu controls (native selects, inputs, buttons, checkbox), translations and an RTL-aware layout.
+
+## Overlays
+
+Dialogs, sheets, popovers and menus.
+
+- [Modal](https://onu.on-forge.com/docs/overlays/modal.md): A dialog with a simple `title` / `description` / `footer` API, built on shadcn's `Dialog` (Radix).
+- [ConfirmDialog](https://onu.on-forge.com/docs/overlays/confirm-dialog.md): Asks the user to confirm an action, built on shadcn's `AlertDialog`.
+- [SlideOver](https://onu.on-forge.com/docs/overlays/slide-over.md): A panel that slides in from the side, for detail views, quick edits and filters.
+- [BottomSheet](https://onu.on-forge.com/docs/overlays/bottom-sheet.md): A pull-up panel anchored to the bottom of the screen.
+- [PopoverPanel](https://onu.on-forge.com/docs/overlays/popover-panel.md): A non-modal panel anchored to a trigger, for small forms, filters and extra details: Onu's simple-API popover.
+- [Tip](https://onu.on-forge.com/docs/overlays/tip.md): A tooltip that also works on touch screens.
+- [ActionMenu](https://onu.on-forge.com/docs/overlays/action-menu.md): A dropdown menu of actions built from an `items` array, on shadcn's `DropdownMenu` (Radix).
+- [CommandPalette](https://onu.on-forge.com/docs/overlays/command-palette.md): A ⌘K / Ctrl+K command palette for jumping to pages, records and commands from the keyboard.
+
+## Loading
+
+Spinners, skeletons and progress.
+
+- [Spinner](https://onu.on-forge.com/docs/loading/spinner.md): A spinning loading indicator with a screen-reader label.
+- [Skeleton presets](https://onu.on-forge.com/docs/loading/skeleton.md): Ready-made skeletons for the most common shapes: `SkeletonText`, `SkeletonCard`, `SkeletonTable` and `SkeletonField`.
+- [LoadingOverlay](https://onu.on-forge.com/docs/loading/loading-overlay.md): Covers a container (a card, table or form) while it loads or saves.
+- [PageProgress](https://onu.on-forge.com/docs/loading/page-progress.md): A thin bar at the top of the page that shows a navigation or long request is in progress, like NProgress.
+- [ProgressBar](https://onu.on-forge.com/docs/loading/progress-bar.md): A determinate or indeterminate progress bar with an optional label and value text, in semantic colours.
+
+## Layout and navigation
+
+App layout, navigation and structure.
+
+- [AppLayout](https://onu.on-forge.com/docs/layout-and-navigation/app-layout.md): The application shell: a Skip to content link, the sidebar, a header, the main content, an optional footer and an optional phone bottom navigation.
+- [AppHeader](https://onu.on-forge.com/docs/layout-and-navigation/app-header.md): The top bar of an app or portal: an optional sidebar toggle, a logo, the main content (page title, breadcrumbs, navigation or search) and actions at the inline end.
+- [TopNav](https://onu.on-forge.com/docs/layout-and-navigation/top-nav.md): Horizontal main navigation for headers, built on shadcn's `navigation-menu`.
+- [MenuBar](https://onu.on-forge.com/docs/layout-and-navigation/menu-bar.md): A desktop-style application menu bar (File, Edit, View …) described as data.
+- [AppSidebar](https://onu.on-forge.com/docs/layout-and-navigation/app-sidebar.md): The app's main sidebar with a simple `items` / `groups` API: icons, badges, nested items and the active state from the current URL.
+- [AppSwitcher](https://onu.on-forge.com/docs/layout-and-navigation/app-switcher.md): The app switcher next to the logo, like Proton's grid button: a menu of the products in a suite, each on a brand-tinted tile.
+- [SideNav](https://onu.on-forge.com/docs/layout-and-navigation/side-nav.md): A vertical navigation list that works on its own (settings pages, documentation, account pages) and inside drawers: groups, icons, badges, descriptions and collapsible nested items.
+- [BottomNav](https://onu.on-forge.com/docs/layout-and-navigation/bottom-nav.md): Phone bottom navigation: three to five destinations with icons and short labels, badges and the active state.
+- [SiteFooter](https://onu.on-forge.com/docs/layout-and-navigation/site-footer.md): The footer for portals and public pages: brand and description, link columns, social links, a copyright line, legal links and a slot for a `LanguageSwitcher`.
+- [PageTitle](https://onu.on-forge.com/docs/layout-and-navigation/page-title.md): The page header of index, view and edit pages (§25.6, §25.8): the title, the main action button, and secondary links where a small dot marks e.g.
+- [Breadcrumbs](https://onu.on-forge.com/docs/layout-and-navigation/breadcrumbs.md): A breadcrumb trail built on shadcn's `breadcrumb` (§25.8): every part is a link except the last, which is the current page.
+- [Section](https://onu.on-forge.com/docs/layout-and-navigation/section.md): A page section with a heading, description and actions.
+- [Card](https://onu.on-forge.com/docs/layout-and-navigation/card.md): shadcn's `Card`, extended. Without the new props it renders exactly like the shadcn card, so `CardHeader`, `CardTitle`, `CardDescription`, `CardAction`, `CardContent` and `CardFooter` still compose as before.
+- [Tabs](https://onu.on-forge.com/docs/layout-and-navigation/tabs.md): shadcn's `Tabs` (Radix, WAI-ARIA tabs), extended with an `items` API, icons, counts, badges, a tab list that scrolls sideways on phones and a settings-style vertical layout.
+- [NavTabs](https://onu.on-forge.com/docs/layout-and-navigation/nav-tabs.md): Link-based tabs for record pages (§25.8): "Profile", "Edit", "Activity (12)".
+- [Accordion](https://onu.on-forge.com/docs/layout-and-navigation/accordion.md): shadcn's `Accordion` (Radix, WAI-ARIA accordion), extended with an `items` API and visual variants.
+- [Wizard](https://onu.on-forge.com/docs/layout-and-navigation/wizard.md): A multi-step flow (application wizards, onboarding): a step list with each step's status, Back / Next buttons with per-step validation, jumping back to completed steps, a compact "Step 2 of 4" header with a progress b…
+- [Timeline](https://onu.on-forge.com/docs/layout-and-navigation/timeline.md): A vertical timeline for status trackers, activity histories and who-did-what feeds.
+- [Divider](https://onu.on-forge.com/docs/layout-and-navigation/divider.md): A separator line built on shadcn's `Separator`, optionally with a label in the middle, at the start or at the end.
+- [LanguageSwitcher](https://onu.on-forge.com/docs/layout-and-navigation/language-switcher.md): Switches between languages using their native names (English, ދިވެހި).
+- [ThemeToggle](https://onu.on-forge.com/docs/layout-and-navigation/theme-toggle.md): Light / dark / system switch using `useTheme()` from `ThemeProvider` (R10.3).
+- [NotificationCenter](https://onu.on-forge.com/docs/layout-and-navigation/notification-center.md): A bell button with the unread count that opens the notification list: a popover on desktop and a bottom sheet (vaul drawer) on phones.
+- [UserProfile](https://onu.on-forge.com/docs/layout-and-navigation/user-profile.md): The signed-in user's avatar, name and role (or email), opening a menu with Profile, Settings, your own items and Sign out.
+- [Logo](https://onu.on-forge.com/docs/layout-and-navigation/logo.md): The product or organisation logo with separate light and dark images, an optional wordmark, linking home.
+- [SkipLink](https://onu.on-forge.com/docs/layout-and-navigation/skip-link.md): A "Skip to content" link (R14.4). Render it as the first focusable element on the page: it is visually hidden until it receives keyboard focus, then moves focus to the main content.
+- [BackToTop](https://onu.on-forge.com/docs/layout-and-navigation/back-to-top.md): A floating "Back to top" button that appears after scrolling.
+- [MasonryGrid](https://onu.on-forge.com/docs/layout-and-navigation/masonry-grid.md): A masonry layout with CSS columns (no JavaScript layout): items of different heights pack into columns.
+- [OverlayMenu](https://onu.on-forge.com/docs/layout-and-navigation/overlay-menu.md): A full-screen overlay menu for portals, learning sites and kiosks.
+- [Hero](https://onu.on-forge.com/docs/layout-and-navigation/hero.md): The opening block of a portal or content page (R3.7): a heading, lead text, calls to action, an optional search field, and either media beside the text or a photo behind it.
+- [FeatureGrid](https://onu.on-forge.com/docs/layout-and-navigation/feature-grid.md): A responsive grid of features or services (R3.7): each item has an icon, a title, a description and an optional link.
+
+## Display and feedback
+
+Badges, alerts, toasts and display components.
+
+- [DescriptionList](https://onu.on-forge.com/docs/display-and-feedback/description-list.md): Label–value pairs for record views ("Email: jane@example.com").
+- [StatusBadge](https://onu.on-forge.com/docs/display-and-feedback/status-badge.md): A status label that always pairs colour with an icon and text, so colour is never the only signal (R14.6).
+- [Tag](https://onu.on-forge.com/docs/display-and-feedback/tag.md): A compact label (chip) for categories, keywords and filters.
+- [UserAvatar](https://onu.on-forge.com/docs/display-and-feedback/user-avatar.md): A person's picture with an initials fallback that handles English and Dhivehi names, sizes, shapes and a presence dot.
+- [UserAvatarGroup](https://onu.on-forge.com/docs/display-and-feedback/user-avatar-group.md): Overlapping avatars with a "+N" button that lists everyone else.
+- [KeyboardKey](https://onu.on-forge.com/docs/display-and-feedback/keyboard-key.md): Shows a key or keyboard shortcut using shadcn's `Kbd`.
+- [Callout (Alert)](https://onu.on-forge.com/docs/display-and-feedback/callout.md): An alert box for messages that need attention: info, success, warning or destructive, with a title, description, actions and an optional dismiss button.
+- [AnnouncementBar](https://onu.on-forge.com/docs/display-and-feedback/announcement-bar.md): A full-width bar at the top of the page for site-wide news.
+- [CookieConsent](https://onu.on-forge.com/docs/display-and-feedback/cookie-consent.md): A cookie banner with a preferences dialog.
+- [Toast](https://onu.on-forge.com/docs/display-and-feedback/toast.md): Short notifications, using sonner (shadcn's toast).
+- [ConditionalLink](https://onu.on-forge.com/docs/display-and-feedback/conditional-link.md): Renders a link only when there is somewhere to go and the user may go there; otherwise renders the same content as plain text.
+- [ConditionalDisplay](https://onu.on-forge.com/docs/display-and-feedback/conditional-display.md): Shows/hides or enables/disables part of a form depending on another field's value.
+- [PublishBox](https://onu.on-forge.com/docs/display-and-feedback/publish-box.md): The "Publish" panel of a content editor: status, visibility and publish date, with Preview, Save draft and Publish actions.
+- [RelativeDate](https://onu.on-forge.com/docs/display-and-feedback/relative-date.md): A date shown relative to now ("just now", "5 minutes ago", "3 days ago", "in 2 hours"), as specified in REQUIREMENTS §25.5.
+- [Countdown](https://onu.on-forge.com/docs/display-and-feedback/countdown.md): Counts down to a date in days, hours, minutes and seconds, with tabular numbers (R7.5).
+- [CommentThread](https://onu.on-forge.com/docs/display-and-feedback/comment-thread.md): A discussion with nested replies. People can edit and delete their own comments, and the composer can type Thaana (`thaana` prop, R13.3).
+- [IconText](https://onu.on-forge.com/docs/display-and-feedback/icon-text.md): An icon next to a short piece of text, aligned and sized together: meta rows such as location, date or phone number.
+- [ShareButtons](https://onu.on-forge.com/docs/display-and-feedback/share-buttons.md): Share a page. Where the device supports the Web Share API (most phones), one Share button opens the system share sheet.
+- [ContentCard](https://onu.on-forge.com/docs/display-and-feedback/content-card.md): A card for news articles, services and events: image, title, excerpt, date, category, extra meta and a link.
+- [Error pages](https://onu.on-forge.com/docs/display-and-feedback/error-page.md): Full-page error states with a code, title, message, illustration and actions (Go home, Go back, Try again), translated into English and Dhivehi.
+
+## Optional
+
+Sample pages: whole screens built only from Onu components. They use small helpers from `web/src/pages/_shared` (routes, demo data, translations) that a real app replaces with its own.
+
+- [Admin: content: Media library](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-content/media-library.page.tsx)
+- [Admin: content: Menu builder](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-content/menu-builder.page.tsx)
+- [Admin: content: Page builder](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-content/page-builder.page.tsx)
+- [Admin: content: Post editor](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-content/post-editor.page.tsx)
+- [Admin: content: Translations](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-content/translations.page.tsx)
+- [Admin: records: Activity log](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-records/activity-log.page.tsx)
+- [Admin: records: Create form](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-records/create.page.tsx)
+- [Admin: records: Dashboard](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-records/dashboard.page.tsx)
+- [Admin: records: Edit form](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-records/edit.page.tsx)
+- [Admin: records: Export](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-records/export.page.tsx)
+- [Admin: records: Import](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-records/import.page.tsx)
+- [Admin: records: Index: grid view](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-records/index-grid.page.tsx)
+- [Admin: records: Index: kanban board](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-records/index-kanban.page.tsx)
+- [Admin: records: Index: list view](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-records/index-list.page.tsx)
+- [Admin: records: Index: table](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-records/index-table.page.tsx)
+- [Admin: records: Show / detail view](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-records/show.page.tsx)
+- [Admin: records: Show with tabs](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-records/show-tabs.page.tsx)
+- [Admin: records: Trash](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-records/trash.page.tsx)
+- [Admin: settings and access: API keys and OAuth clients](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-settings/api-keys.page.tsx)
+- [Admin: settings and access: Notifications](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-settings/notifications.page.tsx)
+- [Admin: settings and access: Roles and permissions](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-settings/roles.page.tsx)
+- [Admin: settings and access: Settings](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-settings/settings.page.tsx)
+- [Admin: settings and access: User profile](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-settings/user-profile.page.tsx)
+- [Admin: settings and access: Users index](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/admin-settings/users.page.tsx)
+- [Applications and workflows: Application review](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/applications/review.page.tsx): APP-2026-00412
+- [Applications and workflows: Application status tracker](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/applications/status-tracker.page.tsx): ${money(350)} · BML Connect · RCT-2026-08841
+- [Applications and workflows: Application wizard](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/applications/wizard.page.tsx): APP-2026-00438
+- [Applications and workflows: Certificate / licence](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/applications/certificate.page.tsx): ${LICENCE}.pdf
+- [Applications and workflows: Document upload checklist](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/applications/document-checklist.page.tsx): APP-2026-00412
+- [Applications and workflows: Payment checkout](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/applications/checkout.page.tsx)
+- [Applications and workflows: Payment receipt](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/applications/receipt.page.tsx)
+- [Auth: Account locked / verify email](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/auth/account-locked.page.tsx)
+- [Auth: Forgot password](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/auth/forgot-password.page.tsx)
+- [Auth: Register](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/auth/register.page.tsx)
+- [Auth: Reset password](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/auth/reset-password.page.tsx)
+- [Auth: Sign in](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/auth/sign-in.page.tsx)
+- [Auth: Two-factor verification](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/auth/two-factor.page.tsx)
+- [Citizen portal: My applications](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/citizen-portal/applications.page.tsx)
+- [Citizen portal: My documents](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/citizen-portal/documents.page.tsx)
+- [Citizen portal: My payments](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/citizen-portal/payments.page.tsx)
+- [Citizen portal: Notifications inbox](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/citizen-portal/notifications.page.tsx)
+- [Citizen portal: Portal dashboard](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/citizen-portal/dashboard.page.tsx)
+- [Citizen portal: Profile and delegation](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/citizen-portal/profile.page.tsx): C-0821/2026
+- [Kiosk: Maintenance panel](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/kiosk/maintenance.page.tsx)
+- [Kiosk: Payment failed](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/kiosk/payment-failed.page.tsx)
+- [Kiosk: Payment in progress](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/kiosk/payment-progress.page.tsx)
+- [Kiosk: Payment method selection](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/kiosk/payment-method.page.tsx)
+- [Kiosk: Payment success](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/kiosk/payment-success.page.tsx)
+- [Kiosk: Start screen](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/kiosk/start.page.tsx)
+- [Learning: Certificate](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/learning/certificate.page.tsx)
+- [Learning: Course catalogue](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/learning/courses.page.tsx)
+- [Learning: Course detail](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/learning/course-detail.page.tsx)
+- [Learning: Lesson player](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/learning/lesson.page.tsx)
+- [Learning: Quiz](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/learning/quiz.page.tsx)
+- [Learning: Quiz result](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/learning/quiz-result.page.tsx)
+- [Maps and operations: Fleet tracking](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/maps-operations/fleet-tracking.page.tsx)
+- [Maps and operations: Location picker](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/maps-operations/location-picker.page.tsx)
+- [Maps and operations: Reports and analytics](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/maps-operations/reports.page.tsx): applications-${period}d.xlsx
+- [Maps and operations: Route planner](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/maps-operations/route-planner.page.tsx)
+- [Maps and operations: Zone management](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/maps-operations/zones.page.tsx)
+- [Public portal: About](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/about.page.tsx)
+- [Public portal: Contact](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/contact.page.tsx)
+- [Public portal: Event detail](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/event-detail.page.tsx)
+- [Public portal: Events calendar](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/events.page.tsx)
+- [Public portal: Gallery](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/gallery.page.tsx)
+- [Public portal: Home](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/home.page.tsx)
+- [Public portal: Job detail and apply](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/job-detail.page.tsx)
+- [Public portal: Job listings](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/jobs.page.tsx)
+- [Public portal: Laws and regulations reader](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/laws.page.tsx)
+- [Public portal: News article](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/news-article.page.tsx)
+- [Public portal: News index](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/news.page.tsx)
+- [Public portal: Search results](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/search.page.tsx)
+- [Public portal: Service detail](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/service-detail.page.tsx)
+- [Public portal: Services directory](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/public-portal/services.page.tsx)
+- [System: 403 Forbidden](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/system/forbidden.page.tsx)
+- [System: 404 Not found](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/system/not-found.page.tsx)
+- [System: 500 Server error](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/system/server-error.page.tsx)
+- [System: 503 Maintenance](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/system/maintenance.page.tsx)
+- [System: Empty first-run state](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/system/first-run.page.tsx)
+- [System: Print layout](https://raw.githubusercontent.com/Javaabu/onu/main/web/src/pages/system/print-layout.page.tsx)

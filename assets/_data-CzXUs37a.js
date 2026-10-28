@@ -1,0 +1,1 @@
+var e=[{id:1,name:`Aishath Shiuna`,status:`online`},{id:2,name:`Ahmed Ali`,status:`busy`},{id:3,name:`މަރިޔަމް ޒާހިރާ`,status:`away`},{id:4,name:`Mohamed Naseem`},{id:5,name:`ފާޠިމަތު ރަޝީދާ`},{id:6,name:`Ibrahim Waheed`},{id:7,name:`Hawwa Shazna`}],t=e=>new Date(Date.now()-e*6e4),n=e=>new Date(Date.now()+e*864e5);export{t as n,e as r,n as t};

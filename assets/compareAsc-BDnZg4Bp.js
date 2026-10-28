@@ -1,0 +1,1 @@
+import{a as e}from"./en-US-B2dFQnt7.js";function t(t,n){let r=+e(t)-e(n);return r<0?-1:r>0?1:r}export{t};

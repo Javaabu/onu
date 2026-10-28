@@ -1,0 +1,1 @@
+import{a as e}from"./en-US-B2dFQnt7.js";function t(t,n){let r=e(t,n?.in),i=r.getFullYear();return r.setFullYear(i+1,0,0),r.setHours(23,59,59,999),r}export{t};

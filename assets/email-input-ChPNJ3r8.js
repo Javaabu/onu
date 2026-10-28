@@ -1,0 +1,1 @@
+import{b as e,x as t}from"./button-DdNGmfo-.js";import{t as n}from"./text-input-CxKMsHZ5.js";var r=t();function i({showIcon:t=!1,startAddon:i,autoComplete:a=`email`,...o}){return(0,r.jsx)(n,{type:`email`,inputMode:`email`,autoComplete:a,autoCapitalize:`none`,autoCorrect:`off`,spellCheck:!1,startAddon:i??(t?(0,r.jsx)(e,{name:`mail`}):void 0),...o,dir:`ltr`})}export{i as t};

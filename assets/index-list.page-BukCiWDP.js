@@ -1,0 +1,1 @@
+import{x as e}from"./button-DdNGmfo-.js";import{t}from"./_index-Dlt0Gucc.js";var n=e();function r(){return(0,n.jsx)(t,{view:`list`})}export{r as default};
