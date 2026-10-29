@@ -4,7 +4,6 @@ import {
   Card,
   Countdown,
   DescriptionList,
-  EmailInput,
   Form,
   FormField,
   FormGroup,
@@ -238,7 +237,7 @@ export default function EventDetailPage() {
               <PhoneInput defaultValue="+9607771234" />
             </FormField>
             <FormField label={tr("Email", "އީމެއިލް")} name="email">
-              <EmailInput dir="ltr" />
+              <TextInput type="email" />
             </FormField>
           </FormGroup>
           <div className="gap-2 flex flex-wrap items-center justify-end">

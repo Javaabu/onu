@@ -16,7 +16,6 @@ import {
   Switch,
   TextInput,
   TopNav,
-  UrlInput,
   cn,
   toast,
   type NavItem,
@@ -373,7 +372,12 @@ export default function MenuBuilderPage() {
                     />
                     {isCustom ? (
                       <FormField label={tr("URL", "ލިންކް")}>
-                        <UrlInput value={active.href} onChange={(e) => edit({ href: e.target.value })} showIcon />
+                        <TextInput
+                          type="url"
+                          value={active.href}
+                          onChange={(e) => edit({ href: e.target.value })}
+                          startAddon={<Icon name="link" />}
+                        />
                       </FormField>
                     ) : (
                       <FormField label={tr("Page", "ސަފްހާ")}>

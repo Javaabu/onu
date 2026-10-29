@@ -11,7 +11,6 @@ import {
   CardTitle,
   Checkbox,
   DatePicker,
-  EmailInput,
   FeatureGrid,
   FormField,
   Hero,
@@ -113,7 +112,7 @@ function LoginCard() {
       </CardHeader>
       <CardContent className="gap-4 grid">
         <FormField label="Email">
-          <EmailInput placeholder="aishath@example.mv" />
+          <TextInput type="email" placeholder="aishath@example.mv" />
         </FormField>
         <FormField label="Password">
           <PasswordInput />

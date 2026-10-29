@@ -1,7 +1,6 @@
 import * as React from "react"
 import {
   Button,
-  EmailInput,
   Form,
   FormField,
   Icon,
@@ -347,7 +346,11 @@ export default function UsersPage() {
             required
             help={tr("Try shifa@javaabu.com to see the error.", "ގޯސް ދައްކާލުމަށް shifa@javaabu.com ޖައްސަވާ.")}
           >
-            <EmailInput value={invite.email} onChange={(e) => setInvite((v) => ({ ...v, email: e.target.value }))} />
+            <TextInput
+              type="email"
+              value={invite.email}
+              onChange={(e) => setInvite((v) => ({ ...v, email: e.target.value }))}
+            />
           </FormField>
           <FormField label={tr("Role", "ރޯލް")} name="role" required>
             <Select

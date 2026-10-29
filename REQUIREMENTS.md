@@ -548,7 +548,7 @@ A build-list item is ticked only when all of the following are true:
 
 ### Text inputs
 - [ ] Text input
-- [ ] Email input
+- ~~Email input~~ *(Folded into Text input: `type="email"`.)*
 - [ ] Password input
 - [ ] Sensitive input (masked secret)
 - [ ] Copy input
@@ -556,7 +556,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Quantity stepper
 - [ ] Number with unit add-on
 - [ ] Phone input
-- [ ] URL input
+- ~~URL input~~ *(Folded into Text input: `type="url"`.)*
 - [ ] Hidden input
 - [ ] Textarea
 - [ ] Thaana input

@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   ColorPicker,
-  EmailInput,
   Form,
   FormField,
   FormGroup,
@@ -171,7 +170,11 @@ export default function SettingsPage() {
               />
             </FormField>
             <FormField label={tr("Contact email", "އީމެއިލް")} name="email" required>
-              <EmailInput value={general.values.email} onChange={(e) => general.set("email", e.target.value)} />
+              <TextInput
+                type="email"
+                value={general.values.email}
+                onChange={(e) => general.set("email", e.target.value)}
+              />
             </FormField>
             <FormField label={tr("Phone", "ފޯނު")} name="phone">
               <PhoneInput value={general.values.phone} onValueChange={(v) => general.set("phone", v)} />

@@ -1,6 +1,5 @@
 import * as React from "react"
 import {
-  EmailInput,
   Fieldset,
   FormField,
   FormGroup,
@@ -194,7 +193,7 @@ export function ApplicationFields({
             required
             help={tr("Use taken@gmail.com to see a server error.", "ސާވަރު އެރަރ ބެލުމަށް taken@gmail.com ބޭނުންކުރޭ.")}
           >
-            <EmailInput dir="ltr" {...text("email")} />
+            <TextInput type="email" {...text("email")} />
           </FormField>
           <FormField label={l.address} name="address">
             <TextInput {...text("address")} />

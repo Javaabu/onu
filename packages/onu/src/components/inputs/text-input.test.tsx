@@ -6,8 +6,11 @@ import { describe, expect, it, vi } from "vitest"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { Icon } from "../../icons/icon"
 import { FormField } from "../form/form-field"
-import { TextInput } from "./text-input"
+import { normalizeUrl, TextInput } from "./text-input"
 import { Textarea } from "./textarea"
+
+// userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
+vi.setConfig({ testTimeout: 30_000 })
 
 function typeThaana(el: HTMLElement, data: string) {
   for (const ch of data) {
@@ -95,6 +98,118 @@ describe("TextInput", () => {
     renderWithOnu(<TextInput thaana thaanaToggle aria-label="ނަން" />, { locale: "dv", dir })
     expect(screen.getByRole("button", { name: "ތާނައާއި ލަތީނުގެ ދެމެދު ބަދަލުކުރޭ" })).toBeInTheDocument()
     await expectNoA11yViolations()
+  })
+})
+
+describe("TextInput type=email and type=url", () => {
+  it("is an LTR email field with the email keyboard and autofill", async () => {
+    const onChange = vi.fn()
+    renderWithOnu(<TextInput type="email" aria-label="Email" onChange={onChange} className="extra" />)
+    const input = screen.getByRole("textbox", { name: "Email" })
+    expect(input).toHaveAttribute("type", "email")
+    expect(input).toHaveAttribute("inputmode", "email")
+    expect(input).toHaveAttribute("autocomplete", "email")
+    expect(input).toHaveAttribute("autocapitalize", "none")
+    expect(input).toHaveAttribute("autocorrect", "off")
+    expect(input).toHaveAttribute("spellcheck", "false")
+    expect(input).toHaveAttribute("dir", "ltr")
+    expect(input).toHaveClass("extra")
+    await userEvent.type(input, "ali@example.mv")
+    expect(input).toHaveValue("ali@example.mv")
+    expect(onChange).toHaveBeenCalled()
+    await expectNoA11yViolations()
+  })
+
+  it("stays LTR even when dir is passed, and ignores thaana", () => {
+    renderWithOnu(<TextInput type="email" aria-label="Email" dir="rtl" thaana thaanaToggle />)
+    const input = screen.getByRole("textbox")
+    expect(input).toHaveAttribute("dir", "ltr")
+    expect(input).not.toHaveAttribute("lang")
+    expect(screen.queryByRole("button")).not.toBeInTheDocument()
+    typeThaana(input, "a")
+    expect(input).toHaveValue("")
+  })
+
+  it("keeps attributes the caller sets", () => {
+    renderWithOnu(<TextInput type="email" aria-label="Email" autoComplete="username" inputMode="text" />)
+    const input = screen.getByRole("textbox")
+    expect(input).toHaveAttribute("autocomplete", "username")
+    expect(input).toHaveAttribute("inputmode", "text")
+  })
+
+  it.each(directions)("is wired to a FormField in %s", async (dir) => {
+    renderWithOnu(
+      <FormField label="އީމެއިލް" name="email" error="Invalid" required>
+        <TextInput type="email" autoComplete="username" />
+      </FormField>,
+      { dir, locale: "dv" },
+    )
+    const input = screen.getByLabelText(/އީމެއިލް/)
+    expect(input).toHaveAttribute("name", "email")
+    expect(input).toHaveAttribute("aria-invalid", "true")
+    expect(input).toHaveAttribute("autocomplete", "username")
+    expect(input).toHaveAttribute("dir", "ltr")
+    await expectNoA11yViolations()
+  })
+
+  it("normalizes URLs", () => {
+    expect(normalizeUrl("example.mv")).toBe("https://example.mv")
+    expect(normalizeUrl("  //cdn.example.mv/a ")).toBe("https://cdn.example.mv/a")
+    expect(normalizeUrl("http://x.mv")).toBe("http://x.mv")
+    expect(normalizeUrl("mailto:a@b.mv")).toBe("mailto:a@b.mv")
+    expect(normalizeUrl("")).toBe("")
+    expect(normalizeUrl("x.mv", "http://")).toBe("http://x.mv")
+  })
+
+  it("is a URL field that adds https:// on blur (uncontrolled)", async () => {
+    const onBlur = vi.fn()
+    renderWithOnu(<TextInput type="url" aria-label="Website" onBlur={onBlur} startAddon={<Icon name="link" />} />)
+    const input = screen.getByRole("textbox", { name: "Website" })
+    expect(input).toHaveAttribute("type", "url")
+    expect(input).toHaveAttribute("inputmode", "url")
+    expect(input).toHaveAttribute("autocomplete", "url")
+    expect(input).toHaveAttribute("dir", "ltr")
+    await userEvent.type(input, "gov.mv")
+    await userEvent.tab()
+    expect(input).toHaveValue("https://gov.mv")
+    expect(onBlur).toHaveBeenCalled()
+    await expectNoA11yViolations()
+  })
+
+  it("updates a controlled URL through onChange", async () => {
+    function Controlled() {
+      const [v, setV] = React.useState("")
+      return (
+        <>
+          <TextInput type="url" aria-label="Website" value={v} onChange={(e) => setV(e.target.value)} />
+          <output>{v}</output>
+        </>
+      )
+    }
+    renderWithOnu(<Controlled />)
+    await userEvent.type(screen.getByRole("textbox"), "javaabu.com")
+    await userEvent.tab()
+    expect(screen.getByText("https://javaabu.com")).toBeInTheDocument()
+  })
+
+  it("keeps the URL as typed with urlProtocol={false}, and other types never change", async () => {
+    renderWithOnu(
+      <>
+        <TextInput type="url" aria-label="Path" urlProtocol={false} />
+        <TextInput aria-label="Name" />
+      </>,
+    )
+    await userEvent.type(screen.getByRole("textbox", { name: "Path" }), "/about")
+    await userEvent.type(screen.getByRole("textbox", { name: "Name" }), "gov.mv")
+    await userEvent.tab()
+    expect(screen.getByRole("textbox", { name: "Path" })).toHaveValue("/about")
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("gov.mv")
+    expect(screen.getByRole("textbox", { name: "Name" })).not.toHaveAttribute("dir")
+  })
+
+  it.each(directions)("keeps a URL LTR in %s", (dir) => {
+    renderWithOnu(<TextInput type="url" aria-label="ވެބްސައިޓް" />, { dir, locale: "dv" })
+    expect(screen.getByRole("textbox")).toHaveAttribute("dir", "ltr")
   })
 })
 

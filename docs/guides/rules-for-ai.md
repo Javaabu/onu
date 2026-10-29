@@ -28,7 +28,7 @@ Short rules for AI coding assistants (and people) writing UI with Onu. They sit 
 - Put every control inside `FormField` with the field's `name` (bracket notation is fine, `items[0][name]`). `FormField` wires the label, help, errors and ARIA. Don't hand-write `<label>`, error text or `aria-describedby`.
 - Use `Form` with an `onSubmit` that returns the request promise (axios, fetch or Inertia). It shows Laravel 422 errors under the fields, focuses the first one and shows the error summary. With Inertia, pass `errors={form.errors}` and `processing={form.processing}`.
 - Submit with `SubmitButton` (spinner, no double submit), not a plain `Button type="submit"`.
-- Pick the specific input: `EmailInput`, `PasswordInput`, `PhoneInput`, `NumberInput`, `DatePicker`, `ApiSelect` (Laravel paginated API), `FileInput` (`url` for instant uploads), and so on, rather than `TextInput type="…"`.
+- Email and URL fields are `TextInput type="email"` / `type="url"` (LTR, the right keyboard and autofill; URLs get `https://` on blur). For everything else pick the specific input: `PasswordInput`, `PhoneInput`, `NumberInput`, `DatePicker`, `ApiSelect` (Laravel paginated API), `FileInput` (`url` for instant uploads), and so on, rather than `TextInput type="…"`.
 - Edit pages get `SaveBar`; index pages get `ListingPage` (or `DataTable` with `useListingState`).
 
 # Dhivehi, Thaana and RTL

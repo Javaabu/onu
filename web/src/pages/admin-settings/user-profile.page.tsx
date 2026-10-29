@@ -4,7 +4,6 @@ import {
   Callout,
   Card,
   ConfirmDialog,
-  EmailInput,
   Form,
   FormField,
   FormGroup,
@@ -194,7 +193,7 @@ export default function UserProfilePage() {
                       required
                       help={tr("Try naseem@javaabu.com to see the error.", "ގޯސް ދައްކާލުމަށް naseem@javaabu.com.")}
                     >
-                      <EmailInput value={values.email} onChange={(e) => set("email", e.target.value)} />
+                      <TextInput type="email" value={values.email} onChange={(e) => set("email", e.target.value)} />
                     </FormField>
                     <FormField label={tr("Mobile", "މޮބައިލް")} name="phone">
                       <PhoneInput value={values.phone} onValueChange={(v) => set("phone", v)} />

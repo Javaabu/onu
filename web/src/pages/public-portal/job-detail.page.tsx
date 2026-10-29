@@ -5,7 +5,6 @@ import {
   Card,
   Checkbox,
   DescriptionList,
-  EmailInput,
   FileInput,
   Fieldset,
   Form,
@@ -194,7 +193,7 @@ export default function JobDetailPage() {
                       <PhoneInput />
                     </FormField>
                     <FormField label={tr("Email", "އީމެއިލް")} name="email" required>
-                      <EmailInput dir="ltr" />
+                      <TextInput type="email" />
                     </FormField>
                     <FormField label={tr("Permanent address (Dhivehi)", "ދާއިމީ އެޑްރެސް (ދިވެހި)")} name="address_dv">
                       <TextInput thaana thaanaToggle placeholder="މ. ފެހިވިލާ، މާލެ" />

@@ -4,7 +4,6 @@ import {
   Callout,
   Card,
   DescriptionList,
-  EmailInput,
   Form,
   FormField,
   FormGroup,
@@ -143,7 +142,7 @@ export default function ContactPage() {
                       <TextInput thaana={dv} autoComplete="name" />
                     </FormField>
                     <FormField label={tr("Email", "އީމެއިލް")} name="email" required>
-                      <EmailInput dir="ltr" />
+                      <TextInput type="email" />
                     </FormField>
                     <FormField label={tr("Phone", "ފޯނު")} name="phone">
                       <PhoneInput />
