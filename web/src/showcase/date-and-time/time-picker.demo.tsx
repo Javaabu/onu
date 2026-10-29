@@ -1,5 +1,5 @@
 import * as React from "react"
-import { FormField, OnuProvider, TimePicker } from "@javaabu/onu"
+import { FormField, OnuProvider, TimePanel, TimePicker, type TimeValue } from "@javaabu/onu"
 import { dv } from "@javaabu/onu/locales/dv"
 
 import { DemoPage, DemoSection } from "../../components/demo"
@@ -13,6 +13,7 @@ export const meta = {
 
 export default function TimePickerDemo() {
   const [value, setValue] = React.useState<Date | null>(new Date(2026, 2, 12, 14, 30))
+  const [time, setTime] = React.useState<TimeValue | null>({ hours: 9, minutes: 30 })
   return (
     <DemoPage>
       <DemoSection title="12-hour" className="max-w-md gap-4 grid">
@@ -42,6 +43,12 @@ export default function TimePickerDemo() {
         </FormField>
       </DemoSection>
 
+      <DemoSection
+        title="Inline time panel"
+        description="TimePanel: the panel inside the picker, for a card or a custom popover."
+      >
+        <TimePanel value={time} onChange={setTime} className="rounded-lg border" />
+      </DemoSection>
       <DemoSection title="ދިވެހި" className="max-w-md gap-4 grid">
         <OnuProvider locale={dv} syncDocument={false}>
           <div dir="rtl" lang="dv">

@@ -1,13 +1,13 @@
 import * as React from "react"
-import { DateCalendar, TimePanel, type DateCalendarEvent, type DateRangeValue, type TimeValue } from "@javaabu/onu"
+import { DateCalendar, type DateCalendarEvent, type DateRangeValue } from "@javaabu/onu"
 
 import { DemoPage, DemoSection } from "../../components/demo"
 
 export const meta = {
-  title: "Calendar and time panel",
+  title: "Calendar",
   group: "Date and time",
   order: 11,
-  description: "The panels inside the pickers, for use inline, and a read-only month with event dots.",
+  description: "The calendar inside the pickers, for use inline, and a read-only month with event dots.",
 }
 
 const today = new Date()
@@ -28,7 +28,6 @@ const events: DateCalendarEvent[] = [
 export default function DateCalendarDemo() {
   const [date, setDate] = React.useState<Date | null>(new Date())
   const [range, setRange] = React.useState<DateRangeValue>({ from: null, to: null })
-  const [time, setTime] = React.useState<TimeValue | null>({ hours: 9, minutes: 30 })
   return (
     <DemoPage>
       <DemoSection title="Single date" description={date?.toDateString()}>
@@ -45,9 +44,6 @@ export default function DateCalendarDemo() {
         description='`readOnly`, `size="sm"` and `events`: a compact month for sidebars. Click a day to list its events.'
       >
         <DateCalendar readOnly size="sm" events={events} className="rounded-lg border" />
-      </DemoSection>
-      <DemoSection title="Time panel">
-        <TimePanel value={time} onChange={setTime} className="rounded-lg border" />
       </DemoSection>
     </DemoPage>
   )

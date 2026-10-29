@@ -155,12 +155,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "date-and-time/time-panel": {
-    "title": "TimePanel",
-    "component": "TimePanel",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "date-and-time/time-picker": {
     "title": "TimePicker",
     "component": "TimePicker",

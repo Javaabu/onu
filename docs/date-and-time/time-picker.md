@@ -1,6 +1,7 @@
 ---
 title: TimePicker
 sidebar_position: 2
+covers: time-panel
 ---
 
 A time field that opens large hour and minute steppers with ▲/▼, an AM/PM switch, a clock-face hour grid and a minute grid (REQUIREMENTS §25.2). Popover on desktop, bottom sheet on phones.
@@ -38,6 +39,33 @@ The value is a `Date` (its date part is kept; changing the hour never changes th
 | `referenceDate`          | `Date`                          | today            | Date used when an empty field gets a time |
 
 Plus the shared picker field props (`name`, `placeholder`, `required`, `clearable`, `disabled`, `open`, `sheet`, `size`, `className`, `classNames`, `ref`); see [DatePicker](./date-picker#props).
+
+## Inline time panel
+
+`TimePanel` is the panel inside the picker (the steppers, the clock-face hour grid and the minute grid), also used by [DateTimePicker](./date-time-picker). Use it inline, e.g. in a card or a custom popover.
+
+```tsx
+import { TimePanel, type TimeValue } from "@javaabu/onu"
+
+const [time, setTime] = React.useState<TimeValue | null>({ hours: 9, minutes: 30 })
+<TimePanel value={time} onChange={setTime} />
+```
+
+### TimePanel props
+
+| Prop                                    | Type                                 | Default      | Description                 |
+| --------------------------------------- | ------------------------------------ | ------------ | --------------------------- |
+| `value`                                 | `{ hours, minutes } \| null`         |              | `null` shows "--"           |
+| `onChange`                              | `(value: TimeValue) => void`         |              |                             |
+| `hourCycle`                             | `12 \| 24`                           | locale       |                             |
+| `minuteStep`                            | `number`                             | `5`          | Minute grid step            |
+| `view` / `defaultView` / `onViewChange` | `"steppers" \| "hours" \| "minutes"` | `"steppers"` | Which part is shown         |
+| `initialFocus`                          | `boolean`                            |              | Focus the hour when mounted |
+| `className`                             | `string`                             |              | Root classes                |
+| `classNames`                            | `{ stepper, number, period, grid }`  |              | Classes for each part       |
+| `ref`                                   | `Ref<HTMLDivElement>`                |              | Root element                |
+
+The panel has the same keyboard model as the picker below; <kbd>A</kbd>/<kbd>P</kbd> switch AM/PM anywhere in it.
 
 ## Accessibility
 

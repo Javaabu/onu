@@ -3,7 +3,7 @@ title: DateTimePicker
 sidebar_position: 3
 ---
 
-A calendar with a **time chip** underneath (REQUIREMENTS §25.3). Clicking the chip swaps the calendar for the [time steppers](./time-panel); **Back to calendar** swaps back. **Clear time** resets the time to 00:00 and keeps the date. Picking a day before any time sets 00:00.
+A calendar with a **time chip** underneath (REQUIREMENTS §25.3). Clicking the chip swaps the calendar for the [time steppers](./time-picker#inline-time-panel); **Back to calendar** swaps back. **Clear time** resets the time to 00:00 and keeps the date. Picking a day before any time sets 00:00.
 
 ```tsx
 import { DateTimePicker } from "@javaabu/onu"
