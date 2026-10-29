@@ -605,12 +605,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "layout-and-navigation/masonry-grid": {
-    "title": "MasonryGrid",
-    "component": "MasonryGrid",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "layout-and-navigation/nav-tabs": {
     "title": "NavTabs",
     "component": "NavTabs",

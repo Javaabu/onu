@@ -110,7 +110,7 @@ Onu is used mainly for admin panels, but the same system has to work for public 
 - **R3.4** **Spacing** on a 4px grid. The **type scale** is fixed for app UIs and fluid (`clamp()`) for portal and marketing pages.
 - **R3.5** **Shape** comes from `--onu-radius`, so the same components can look sharp (0), soft (default) or pill-shaped, with presets for each.
 - **R3.6** **Motion** is short (150–250ms), purposeful and ease-out. It uses `tw-animate-css` (shadcn's default) and is disabled under `prefers-reduced-motion`.
-- **R3.7** **Beyond admin**: layout pieces for portal and content pages (hero, feature grid, content card, masonry). Prose styling (`@tailwindcss/typography`) is tuned for both Latin and Thaana for articles and the laws reader.
+- **R3.7** **Beyond admin**: layout pieces for portal and content pages (hero, feature grid, content card). Masonry is a Tailwind `columns-*` recipe shown in the Gallery docs, not a component. Prose styling (`@tailwindcss/typography`) is tuned for both Latin and Thaana for articles and the laws reader.
 - **R3.8** **Data-dense details**: tabular numerals, truncation with tooltip, sticky headers and columns, and zebra/hover rows as options.
 - **R3.9** **Print**: print styles for certificates, receipts, invoices and detail views.
 - **R3.10** **Foundations first**: before the component build starts, a *Design foundations* page in `web/` (colour, type, spacing, elevation, radius, iconography, density) is reviewed and signed off.
@@ -232,7 +232,7 @@ What each build-list group is based on. "In-house" means composed from shadcn pr
 | Listing pages | `table`, data-table pattern, `pagination`, `dropdown-menu`, `checkbox`, `empty`, `toggle-group` | TanStack Table, TanStack Virtual, `@dnd-kit`, React Aria `Tree`, `react-querybuilder` (filter condition builder) | Kanban, filter panel/chips/tabs, bulk actions, view switcher, load more |
 | Overlays | `dialog`, `alert-dialog`, `sheet`, `drawer`, `popover`, `tooltip`, `hover-card`, `dropdown-menu`, `context-menu`, `command` | `vaul`, `cmdk`, `yet-another-react-lightbox` | none |
 | Loading | `spinner`, `skeleton`, `progress` | none | Loading overlay, page progress bar |
-| Layout and navigation | `sidebar`, `navigation-menu`, `menubar`, `breadcrumb`, `tabs`, `accordion`, `card`, `separator`, `collapsible`, `scroll-area`, `resizable` | none | Wizard/stepper, timeline, masonry (CSS columns), mega menu (on `navigation-menu`), notification centre, back to top, skip link, language switcher, theme toggle |
+| Layout and navigation | `sidebar`, `navigation-menu`, `menubar`, `breadcrumb`, `tabs`, `accordion`, `card`, `separator`, `collapsible`, `scroll-area`, `resizable` | none | Wizard/stepper, timeline, mega menu (on `navigation-menu`), notification centre, back to top, skip link, language switcher, theme toggle |
 | Display and feedback | `badge`, `avatar`, `kbd`, `alert`, `sonner`, `item`, `empty`, `hover-card` | `sonner`, `Intl.RelativeTimeFormat` / `date-fns` | Countdown, activity feed, comment thread, publish box, cookie consent, share buttons, error pages |
 
 These picks were made against §4. A library may be replaced during implementation only by one that also meets §4 and the RTL, accessibility, theming and dark mode requirements.
@@ -727,7 +727,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Logo
 - [ ] Skip link
 - [ ] Back to top
-- [ ] Masonry grid
+- ~~Masonry grid~~ *(Removed.)* Masonry is a Tailwind `columns-*` recipe (shown in the Gallery docs); `Gallery` keeps its own masonry layout.
 - [ ] Full-screen overlay menu
 
 ### Display and feedback

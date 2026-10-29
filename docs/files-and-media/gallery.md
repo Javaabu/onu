@@ -23,6 +23,22 @@ import { Gallery } from "@javaabu/onu/media"
 />
 ```
 
+## Masonry for other content
+
+For cards, posts or anything else that is not an image gallery, masonry is a few Tailwind classes on a plain container, not a component: CSS columns pack items of different heights, and nothing measures them in JavaScript.
+
+```tsx
+<div className="sm:columns-2 lg:columns-3 gap-4 [&>*]:mb-4 columns-1 [&>*]:break-inside-avoid">
+  {posts.map((post) => (
+    <Card key={post.id} title={post.title}>
+      {post.excerpt}
+    </Card>
+  ))}
+</div>
+```
+
+Use container variants (`@container` on a parent, then `@sm:columns-2 @3xl:columns-3`) to follow the container width instead of the viewport. CSS columns flow top to bottom, then into the next column, so the visual order differs from a row-based grid; the DOM and tab order is the source order, so make sure it reads well on its own. Columns fill from the inline start (right to left in RTL).
+
 ## Props
 
 | Prop            | Type                                         | Default    | Description                                  |
