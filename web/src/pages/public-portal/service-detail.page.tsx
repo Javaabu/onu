@@ -1,9 +1,9 @@
 import {
   Accordion,
+  AttachmentPreview,
   Card,
   Callout,
   DescriptionList,
-  DocumentDownload,
   Icon,
   IconText,
   LinkButton,
@@ -138,9 +138,9 @@ export default function ServiceDetailPage() {
                 </li>
               ))}
             </ul>
-            <DocumentDownload
+            <AttachmentPreview
               className="mt-4"
-              title={tr("Passport application form (PA-1)", "ޕާސްޕޯޓަށް އެދޭ ފޯމު (PA-1)")}
+              name={tr("Passport application form (PA-1)", "ޕާސްޕޯޓަށް އެދޭ ފޯމު (PA-1)")}
               description={tr("For applying in person at a service centre", "ސަރވިސް ސެންޓަރުން އެދުމަށް")}
               versions={[
                 { lang: "dv", href: "#pa-1-dv.pdf", size: 184_000, type: "application/pdf" },

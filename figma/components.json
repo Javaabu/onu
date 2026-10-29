@@ -305,12 +305,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "files-and-media/document-download": {
-    "title": "DocumentDownload",
-    "component": "DocumentDownload",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "files-and-media/file-icon": {
     "title": "FileIcon",
     "component": "FileIcon",

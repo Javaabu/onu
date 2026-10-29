@@ -22,6 +22,26 @@ export default function AttachmentPreviewDemo() {
         <AttachmentPreview name="ހުށަހެޅުން.docx" url="#" size={32_000} onRemove={() => {}} />
         <AttachmentPreview name="Site survey.zip" size={14_200_000} />
       </DemoSection>
+      <DemoSection title="Language versions" className="gap-3 md:grid-cols-2 grid w-full">
+        <AttachmentPreview
+          name="Decentralisation Act (Law No. 7/2010)"
+          description="Consolidated with amendments up to 2025"
+          meta={<span>Published 14 January 2026</span>}
+          versions={[
+            { lang: "dv", href: "#", size: 1_240_000, type: "application/pdf" },
+            { lang: "en", href: "#", size: 980_000, type: "application/pdf" },
+          ]}
+        />
+        <AttachmentPreview
+          name="ރަށު ތަރައްޤީގެ ޕްލޭން 2026"
+          description="މާފުށި ކައުންސިލް"
+          versions={[{ lang: "dv", href: "#", size: 2_400_000, type: "application/pdf" }]}
+        />
+      </DemoSection>
+      <DemoSection title="Download only" className="max-w-lg gap-2 grid w-full">
+        <AttachmentPreview name="tender-form.docx" description="Tender form" downloadUrl="#tender.docx" size={56_000} />
+        <AttachmentPreview name="prices.xlsx" description="Price schedule" downloadUrl="#prices.xlsx" size={18_000} />
+      </DemoSection>
       <DemoSection title="Cards" className="gap-3 flex flex-wrap">
         <AttachmentPreview variant="card" name="Harbour.jpg" url={scene("Harbour", 210)} size={980_000} />
         <AttachmentPreview variant="card" name="Drone flight.mp4" url="#" size={84_000_000} />

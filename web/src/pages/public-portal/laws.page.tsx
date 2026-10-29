@@ -1,8 +1,8 @@
 import * as React from "react"
 import {
+  AttachmentPreview,
   BottomSheet,
   Button,
-  DocumentDownload,
   Highlight,
   SegmentedControl,
   SideNav,
@@ -210,10 +210,9 @@ export default function LawsReaderPage() {
 
           <div className="mt-12 print:hidden">
             <h2 className="text-lg font-semibold">{tr("Download", "ޑައުންލޯޑް")}</h2>
-            <DocumentDownload
+            <AttachmentPreview
               className="mt-3"
-              title={l(law.title)}
-              titleText={l(law.title)}
+              name={l(law.title)}
               description={tr(
                 "Official gazette version, consolidated to 2 March 2026",
                 "ސަރުކާރުގެ ގެޒެޓުގެ ނުސްޚާ، 2 މާރިޗް 2026 އާ ހަމައަށް",

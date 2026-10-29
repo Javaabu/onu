@@ -1,9 +1,9 @@
 import * as React from "react"
 import { useSearchParams } from "react-router"
 import {
+  AttachmentPreview,
   Card,
   CommentThread,
-  DocumentDownload,
   FileInput,
   FormField,
   LinkButton,
@@ -125,7 +125,13 @@ export default function ShowTabsPage() {
             <Card title={tr("Submitted documents", "ހުށަހެޅި ލިޔެކިޔުން")} headingLevel={2}>
               <div className="gap-3 sm:grid-cols-2 grid">
                 {docs.map((d) => (
-                  <DocumentDownload key={d.id} title={d.title} href={SAMPLE_FILE} fileName={d.file} size={d.size} />
+                  <AttachmentPreview
+                    key={d.id}
+                    name={d.file}
+                    description={d.title}
+                    downloadUrl={SAMPLE_FILE}
+                    size={d.size}
+                  />
                 ))}
               </div>
             </Card>

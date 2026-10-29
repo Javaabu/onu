@@ -43,6 +43,10 @@ export {
   type CarouselAutoplayToggleProps,
   type CarouselAutoplayOptions,
 } from "./carousel"
-export { AttachmentPreview, attachmentPreviewVariants, type AttachmentPreviewProps } from "./attachment-preview"
-export { DocumentDownload, type DocumentDownloadProps, type DocumentVersion } from "./document-download"
+export {
+  AttachmentPreview,
+  attachmentPreviewVariants,
+  type AttachmentPreviewProps,
+  type DocumentVersion,
+} from "./attachment-preview"
 export { VideoEmbed, parseVideoUrl, videoEmbedUrl, type VideoEmbedProps, type VideoProvider } from "./video-embed"

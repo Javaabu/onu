@@ -27,10 +27,25 @@ export const attachmentPreviewVariants = cva("group/attachment border border-bor
   defaultVariants: { variant: "row" },
 })
 
+/** Native names for built-in languages, shown in their own script. */
+const LANGUAGE_NAMES: Record<string, string> = { en: "English", dv: "ދިވެހި" }
+
+export interface DocumentVersion {
+  /** BCP 47 language code, e.g. `en` or `dv`. */
+  lang: string
+  href: string
+  /** Button text. Defaults to the language's native name. */
+  label?: string
+  size?: number
+  type?: string
+}
+
 export interface AttachmentPreviewProps
   extends Omit<React.ComponentProps<"div">, "children">, VariantProps<typeof attachmentPreviewVariants> {
   /** File name shown to the user. */
   name: string
+  /** A line under the name, e.g. the publisher or what the document is for. */
+  description?: React.ReactNode
   /** Where the file can be opened. */
   url?: string
   /** Download URL, if different from `url`. */
@@ -50,15 +65,27 @@ export interface AttachmentPreviewProps
   actions?: React.ReactNode
   /** Extra details after the type and size, e.g. an upload date or uploader. */
   meta?: React.ReactNode
-  classNames?: { thumbnail?: string; name?: string; meta?: string; actions?: string; dialog?: string }
+  /** Language versions, e.g. English and Dhivehi. Each gets its own download button under the file. */
+  versions?: DocumentVersion[]
+  classNames?: {
+    thumbnail?: string
+    name?: string
+    description?: string
+    meta?: string
+    actions?: string
+    versions?: string
+    dialog?: string
+  }
 }
 
 /**
  * A file attachment: thumbnail or type icon, name and size, with open, download and
- * remove actions. Images and PDFs can be previewed in a dialog.
+ * remove actions. Images and PDFs can be previewed in a dialog. With `versions`,
+ * each language version of a document gets its own download button.
  */
 export function AttachmentPreview({
   name,
+  description,
   url,
   downloadUrl,
   size,
@@ -69,6 +96,7 @@ export function AttachmentPreview({
   onRemove,
   actions,
   meta: extraMeta,
+  versions,
   variant,
   className,
   classNames,
@@ -78,10 +106,14 @@ export function AttachmentPreview({
   const format = useFormatFileSize()
   const [open, setOpen] = React.useState(false)
   const previewRef = React.useRef<HTMLButtonElement>(null)
-  const kind = getFileKind({ type, name: url && !getExtension(name) ? url : name })
+  const nameId = React.useId()
+  const hasVersions = !!versions?.length
+  // Without a URL, a language version tells the file type.
+  const source = url ?? versions?.[0]?.href
+  const kind = getFileKind({ type: type ?? versions?.[0]?.type, name: source && !getExtension(name) ? source : name })
   const thumb = thumbnailUrl ?? (kind === "image" ? url : undefined)
   const canPreview = preview && !!url && (kind === "image" || kind === "pdf")
-  const ext = getExtension(name) || getExtension(url ?? "")
+  const ext = getExtension(name) || getExtension(source ?? "")
   const card = variant === "card"
   const download = downloadUrl ?? url
 
@@ -91,7 +123,9 @@ export function AttachmentPreview({
     <div
       data-slot="attachment-preview"
       data-kind={kind}
-      className={cn(attachmentPreviewVariants({ variant }), className)}
+      role={hasVersions ? "group" : undefined}
+      aria-labelledby={hasVersions ? nameId : undefined}
+      className={cn(attachmentPreviewVariants({ variant }), hasVersions && !card && "flex-wrap", className)}
       {...props}
     >
       {thumb ? (
@@ -116,12 +150,18 @@ export function AttachmentPreview({
       <div className={cn("min-w-0 gap-2 flex flex-1 items-center", card && "p-3")}>
         <div className="min-w-0 gap-0.5 flex flex-1 flex-col">
           <span
+            id={nameId}
             dir="auto"
             title={name}
             className={cn("text-sm font-medium max-w-full self-start truncate", classNames?.name)}
           >
             <bdi>{name}</bdi>
           </span>
+          {description ? (
+            <span className={cn("text-xs text-muted-foreground", classNames?.description)}>
+              <bdi>{description}</bdi>
+            </span>
+          ) : null}
           {meta.length || extraMeta ? (
             <span className={cn("gap-x-1 text-xs flex flex-wrap text-muted-foreground tabular-nums", classNames?.meta)}>
               {meta.map((part, i) => (
@@ -176,6 +216,35 @@ export function AttachmentPreview({
           ) : null}
         </div>
       </div>
+
+      {versions?.length ? (
+        <div
+          data-slot="attachment-versions"
+          className={cn("gap-2 flex flex-wrap", card ? "px-3 pb-3" : "basis-full", classNames?.versions)}
+        >
+          {versions.map((version) => {
+            const language = version.label ?? LANGUAGE_NAMES[version.lang] ?? version.lang
+            return (
+              <Button key={version.lang} asChild variant="outline" size="sm">
+                <a
+                  href={version.href}
+                  hrefLang={version.lang}
+                  download
+                  aria-label={t("file.downloadIn", { name, language })}
+                >
+                  <Icon name="download" data-icon="inline-start" />
+                  <span lang={version.lang}>{language}</span>
+                  {typeof version.size === "number" ? (
+                    <span dir="ltr" className="text-muted-foreground tabular-nums">
+                      {format(version.size)}
+                    </span>
+                  ) : null}
+                </a>
+              </Button>
+            )
+          })}
+        </div>
+      ) : null}
 
       {canPreview ? (
         <Dialog open={open} onOpenChange={setOpen}>

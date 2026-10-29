@@ -1,10 +1,10 @@
 import * as React from "react"
 import {
+  AttachmentPreview,
   Button,
   Callout,
   Card,
   DateRangePicker,
-  DocumentDownload,
   DualListbox,
   FormField,
   FormGroup,
@@ -271,7 +271,7 @@ export default function ExportPage() {
                     `${file.rows} އެޕްލިކޭޝަން، ${columns.length} ކޮލަމް.`,
                   )}
                 />
-                <DocumentDownload title={file.name} href={file.href} fileName={file.name} size={file.size} />
+                <AttachmentPreview name={file.name} downloadUrl={file.href} size={file.size} />
               </>
             ) : null}
           </div>

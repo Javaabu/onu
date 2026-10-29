@@ -4,7 +4,6 @@ import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { AttachmentPreview } from "./attachment-preview"
-import { DocumentDownload } from "./document-download"
 
 // axe and user-event are slow on a busy machine.
 vi.setConfig({ testTimeout: 20_000 })
@@ -72,56 +71,66 @@ describe("AttachmentPreview", () => {
   })
 })
 
-describe("DocumentDownload", () => {
-  it("shows type and size with a download link", async () => {
+describe("AttachmentPreview with description and versions", () => {
+  it("shows a description, type and size with a download link", async () => {
     renderWithOnu(
-      <DocumentDownload
-        title="Annual report 2025"
+      <AttachmentPreview
+        name="Annual report 2025.pdf"
         description="Ministry of Finance"
-        href="/docs/report.pdf"
+        downloadUrl="/docs/report.pdf"
         size={2_400_000}
         meta={<span>Published 3 March</span>}
       />,
     )
-    expect(screen.getByRole("group", { name: "Annual report 2025" })).toBeInTheDocument()
+    expect(screen.getByText("Ministry of Finance")).toBeInTheDocument()
     expect(screen.getByText("PDF")).toHaveAttribute("dir", "ltr")
     expect(screen.getByText("2.3 MB")).toHaveAttribute("dir", "ltr")
     expect(screen.getByText("Published 3 March")).toBeInTheDocument()
-    expect(screen.getByRole("link", { name: "Download Annual report 2025" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Download Annual report 2025.pdf" })).toHaveAttribute(
       "href",
       "/docs/report.pdf",
     )
+    expect(screen.queryByRole("group")).not.toBeInTheDocument()
     await expectNoA11yViolations()
   })
 
-  it("offers English and Dhivehi versions", () => {
-    renderWithOnu(
-      <DocumentDownload
-        title={<span>Tender notice</span>}
-        titleText="Tender notice"
+  it("offers English and Dhivehi versions", async () => {
+    const { container } = renderWithOnu(
+      <AttachmentPreview
+        name="Tender notice"
         versions={[
-          { lang: "en", href: "/en.pdf", size: 1000 },
+          { lang: "en", href: "/en.pdf", size: 1000, type: "application/pdf" },
           { lang: "dv", href: "/dv.pdf" },
           { lang: "ar", href: "/ar.pdf", label: "العربية" },
         ]}
       />,
     )
+    expect(screen.getByRole("group", { name: "Tender notice" })).toBeInTheDocument()
+    expect(container.firstChild).toHaveAttribute("data-kind", "pdf")
+    expect(screen.getByText("PDF")).toBeInTheDocument()
     const en = screen.getByRole("link", { name: "Download Tender notice in English" })
     expect(en).toHaveAttribute("hreflang", "en")
+    expect(en).toHaveAttribute("download")
     expect(en).toHaveTextContent("1,000 B")
     const dv = screen.getByRole("link", { name: "Download Tender notice in ދިވެހި" })
     expect(within(dv).getByText("ދިވެހި")).toHaveAttribute("lang", "dv")
     expect(screen.getByRole("link", { name: "Download Tender notice in العربية" })).toBeInTheDocument()
+    expect(screen.queryByRole("link", { name: "Download Tender notice" })).not.toBeInTheDocument()
+    await expectNoA11yViolations()
   })
 
   it("renders without any link", () => {
-    renderWithOnu(<DocumentDownload title="Draft" type="application/msword" />)
+    renderWithOnu(<AttachmentPreview name="Draft" type="application/msword" />)
     expect(screen.queryByRole("link")).not.toBeInTheDocument()
   })
 
-  it.each(directions)("uses Dhivehi labels in %s", async (dir) => {
-    renderWithOnu(<DocumentDownload title="ރިޕޯޓް" href="/r.pdf" />, { locale: "dv", dir })
-    expect(screen.getByRole("link", { name: "ރިޕޯޓް ޑައުންލޯޑްކުރޭ" })).toBeInTheDocument()
+  it.each(directions)("uses Dhivehi labels for versions in %s", async (dir) => {
+    renderWithOnu(<AttachmentPreview name="ރިޕޯޓް" variant="card" versions={[{ lang: "dv", href: "/r.pdf" }]} />, {
+      locale: "dv",
+      dir,
+    })
+    expect(screen.getByRole("group", { name: "ރިޕޯޓް" })).toBeInTheDocument()
+    expect(screen.getByRole("link", { name: /ރިޕޯޓް/ })).toHaveAttribute("hreflang", "dv")
     await expectNoA11yViolations()
   })
 })

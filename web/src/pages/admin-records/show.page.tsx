@@ -1,4 +1,4 @@
-import { Card, DocumentDownload } from "@javaabu/onu"
+import { AttachmentPreview, Card } from "@javaabu/onu"
 
 import { useTr } from "../_shared/i18n"
 import { AdminShell } from "../_shared/shells"
@@ -48,16 +48,16 @@ export default function ShowPage() {
             <ActivityCard record={record} />
             <Card title={tr("Documents", "ލިޔެކިޔުން")} headingLevel={2}>
               <div className="gap-2 grid">
-                <DocumentDownload
-                  title={tr("Application form", "އެޕްލިކޭޝަން ފޯމު")}
-                  href={SAMPLE_FILE}
-                  fileName={`${record.reference}.pdf`}
+                <AttachmentPreview
+                  name={`${record.reference}.pdf`}
+                  description={tr("Application form", "އެޕްލިކޭޝަން ފޯމު")}
+                  downloadUrl={SAMPLE_FILE}
                   size={182_000}
                 />
-                <DocumentDownload
-                  title={tr("ID card copy", "އައިޑީ ކާޑުގެ ކޮޕީ")}
-                  href={SAMPLE_FILE}
-                  fileName={`${record.idCard}.jpg`}
+                <AttachmentPreview
+                  name={`${record.idCard}.jpg`}
+                  description={tr("ID card copy", "އައިޑީ ކާޑުގެ ކޮޕީ")}
+                  downloadUrl={SAMPLE_FILE}
                   size={640_000}
                 />
               </div>

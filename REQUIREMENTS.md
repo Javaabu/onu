@@ -225,7 +225,7 @@ What each build-list group is based on. "In-house" means composed from shadcn pr
 | Text inputs | `input`, `textarea`, `input-group`, `input-otp`, `popover`, `command` | `react-phone-number-input`, `signature_pad`, `barcode-detector` (zxing-wasm polyfill for the native API), `@sindresorhus/slugify`, React Aria `ColorArea`/`ColorSlider`/`ColorField` (colour picker), TanStack Virtual (icon picker grid) | Thaana engine, copy input, sensitive input, tags input (on `command` + `badge`) |
 | Date and time | `calendar`, `popover`, date-picker pattern | `react-day-picker`, `date-fns`, React Aria `DateField`/`TimeField` + `@internationalized/date` (Hijri), FullCalendar (standard plugins) | Week picker, reporting-period picker |
 | Choice inputs | `select`, `combobox`, `command`, `checkbox`, `radio-group`, `switch`, `toggle-group`, `slider` | `cmdk`, TanStack Query (API select caching and request de-duplication) | Rating, dual listbox, image tiles (radio group), payment method selector, account switcher, dependent/API selects, quick-create |
-| Files and media | `avatar`, `progress`, `carousel`, `dialog`, `aspect-ratio` | `react-dropzone`, `react-easy-crop`, `embla-carousel-react`, `yet-another-react-lightbox`, Media Chrome (media player) | Upload progress, media lister, attachment preview, document download, click-to-load embed |
+| Files and media | `avatar`, `progress`, `carousel`, `dialog`, `aspect-ratio` | `react-dropzone`, `react-easy-crop`, `embla-carousel-react`, `yet-another-react-lightbox`, Media Chrome (media player) | Upload progress, media lister, attachment preview (with language versions), click-to-load embed |
 | Rich content | none (shadcn has no editor) | [Tiptap](https://tiptap.dev) (ProseMirror) for the WYSIWYG and block editors; `@tiptap/static-renderer` for the block renderer; Shiki for code highlighting. Only MIT-licensed Tiptap packages may be used, never paid Pro/Cloud extensions | Translations editor, custom attribute fields |
 | Maps | none | **Google Maps (default)** via `@vis.gl/react-google-maps`; `terra-draw` + its Google Maps adapter (radius/polygon/route drawing); `@googlemaps/markerclusterer`; deck.gl `GoogleMapsOverlay` (heatmap, replay trails); `@turf/turf`. MapLibre via `react-map-gl` as an optional secondary adapter | Location card, info panel, legend swatch, replay controls, route stop editor |
 | Charts | `chart` | `recharts`; map chart as a choropleth on Google Maps (deck.gl `GeoJsonLayer`) | Stat tiles, period comparison |
@@ -614,7 +614,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Gallery
 - [ ] Carousel
 - [ ] Attachment preview
-- [ ] Document download
+- ~~Document download~~ *(Folded into Attachment preview: `versions`.)*
 - [ ] Media player
 - [ ] Click-to-load video embed
 
