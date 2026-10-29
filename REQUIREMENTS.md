@@ -736,7 +736,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Tag / chip
 - [ ] Avatar
 - [ ] Avatar group
-- [ ] Keyboard key
+- ~~Keyboard key~~ *(Removed.)* The `Kbd` primitive (`@javaabu/onu/primitives`) shows keys; `ActionMenu` and `CommandPalette` format their own shortcut hints.
 - [ ] Alert
 - [ ] Notice
 - [ ] Announcement bar

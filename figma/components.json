@@ -245,12 +245,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "display-and-feedback/keyboard-key": {
-    "title": "KeyboardKey",
-    "component": "KeyboardKey",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "display-and-feedback/publish-box": {
     "title": "PublishBox",
     "component": "PublishBox",
