@@ -445,7 +445,7 @@
       "name": "core (everything)",
       "path": "dist/index.js",
       "import": "*",
-      "limit": "1.25 MB"
+      "limit": "1.2 MB"
     },
     {
       "name": "primitives",
@@ -469,7 +469,7 @@
       "name": "charts",
       "path": "dist/charts/index.js",
       "import": "*",
-      "limit": "50 kB"
+      "limit": "48 kB"
     },
     {
       "name": "maps",
