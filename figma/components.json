@@ -215,12 +215,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "display-and-feedback/cookie-consent": {
-    "title": "CookieConsent",
-    "component": "CookieConsent",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "display-and-feedback/countdown": {
     "title": "Countdown",
     "component": "Countdown",

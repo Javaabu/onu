@@ -233,7 +233,7 @@ What each build-list group is based on. "In-house" means composed from shadcn pr
 | Overlays | `dialog`, `alert-dialog`, `sheet`, `drawer`, `popover`, `tooltip`, `hover-card`, `dropdown-menu`, `context-menu`, `command` | `vaul`, `cmdk`, `yet-another-react-lightbox` | none |
 | Loading | `spinner`, `skeleton`, `progress` | none | Loading overlay, page progress bar |
 | Layout and navigation | `sidebar`, `navigation-menu`, `menubar`, `breadcrumb`, `tabs`, `accordion`, `card`, `separator`, `collapsible`, `scroll-area`, `resizable` | none | Wizard/stepper, timeline, mega menu (on `navigation-menu`), notification centre, back to top, skip link, language switcher, theme toggle |
-| Display and feedback | `badge`, `avatar`, `kbd`, `alert`, `sonner`, `item`, `empty`, `hover-card` | `sonner`, `Intl.RelativeTimeFormat` / `date-fns` | Countdown, activity feed, comment thread, publish box, cookie consent, share buttons, error pages |
+| Display and feedback | `badge`, `avatar`, `kbd`, `alert`, `sonner`, `item`, `empty`, `hover-card` | `sonner`, `Intl.RelativeTimeFormat` / `date-fns` | Countdown, activity feed, comment thread, publish box, share buttons, error pages |
 
 These picks were made against §4. A library may be replaced during implementation only by one that also meets §4 and the RTL, accessibility, theming and dark mode requirements.
 
@@ -740,7 +740,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Alert
 - [ ] Notice
 - [ ] Announcement bar
-- [ ] Cookie consent
+- ~~Cookie consent~~ *(Removed.)* No Maldivian requirement asks for one and no sample page uses one; compose `AnnouncementBar` and `Modal` with `Switch`es when a project needs it.
 - [ ] Toast
 - [ ] Conditional link
 - [ ] Conditional display

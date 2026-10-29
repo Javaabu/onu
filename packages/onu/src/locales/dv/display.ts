@@ -24,28 +24,6 @@ export const display = {
   // Alerts, notices, announcement bar
   dismiss: "ފޮރުވާ",
   announcement: "އިޢުލާން",
-  // Cookie consent
-  cookieBanner: "ކުކީ ހުއްދަ",
-  cookieTitle: "އަހަރެމެން ކުކީސް ބޭނުންކުރަން",
-  cookieDescription:
-    "މި ސައިޓު މަސައްކަތްކުރުމަށް ބޭނުންވާ ކުކީސް އަހަރެމެން ބޭނުންކުރަން. ތިބާގެ ހުއްދައާއެކު، ތިބާގެ ޚިޔާރުތައް ހަނދާންކުރުމަށާއި ސައިޓު ބޭނުންކުރާ ގޮތް ދެނެގަތުމަށް ވެސް ކުކީސް ބޭނުންކުރަން.",
-  cookieAcceptAll: "ހުރިހާ ކުކީއެއް ގަބޫލުކުރަން",
-  cookieRejectNonEssential: "ލާޒިމު ނޫން ކުކީސް ނުބޭނުން",
-  cookieCustomize: "ޚިޔާރުތައް",
-  cookiePreferencesTitle: "ކުކީ ޚިޔާރުތައް",
-  cookiePreferencesDescription: "ހުއްދަ ދެއްވާ ކުކީސް ޚިޔާރުކުރައްވާ. މިއީ ކޮންމެ ވަގުތެއްގައި ބަދަލުކުރެވޭނެ ކަމެއް.",
-  cookieSave: "ޚިޔާރުތައް ސޭވްކުރޭ",
-  cookiePolicy: "ކުކީ ސިޔާސަތު",
-  cookieAlwaysOn: "އަބަދުވެސް ހުޅުވިފައި",
-  cookieNecessary: "ލާޒިމު ކުކީސް",
-  cookieNecessaryDescription:
-    "ސައިން އިން ވުމަށާއި ސަލާމަތީ ކަންކަމަށާއި ތިބާގެ ޚިޔާރުތައް ރައްކާކުރުމަށް ބޭނުންވޭ. މިއީ ނިއްވާލެވޭނެ ކުކީސްއެއް ނޫން.",
-  cookiePreferences: "ޚިޔާރުތައް",
-  cookiePreferencesCategoryDescription: "ބަހާއި ތީމް ފަދަ ސެޓިންގްސް ހަނދާންކުރުމަށް.",
-  cookieAnalytics: "އެނަލިޓިކްސް",
-  cookieAnalyticsDescription: "ސައިޓު ބޭނުންކުރާ ގޮތް ދެނެގަނެ، ރަނގަޅުކުރުމަށް.",
-  cookieMarketing: "މާކެޓިންގ",
-  cookieMarketingDescription: "ގުޅުންހުރި ކަންކަން ދެއްކުމަށާއި ކެމްޕެއިންތައް މިނުމަށް.",
   // Toast
   notifications: "ނޯޓިފިކޭޝަންތައް",
   // Publish box

@@ -23,27 +23,6 @@ export const display = {
   // Alerts, notices, announcement bar
   dismiss: "Dismiss",
   announcement: "Announcement",
-  // Cookie consent
-  cookieBanner: "Cookie consent",
-  cookieTitle: "We use cookies",
-  cookieDescription:
-    "We use essential cookies to make this site work. With your consent we also use cookies to remember your preferences and understand how the site is used.",
-  cookieAcceptAll: "Accept all",
-  cookieRejectNonEssential: "Reject non-essential",
-  cookieCustomize: "Preferences",
-  cookiePreferencesTitle: "Cookie preferences",
-  cookiePreferencesDescription: "Choose which cookies you allow. You can change this at any time.",
-  cookieSave: "Save preferences",
-  cookiePolicy: "Cookie policy",
-  cookieAlwaysOn: "Always on",
-  cookieNecessary: "Strictly necessary",
-  cookieNecessaryDescription: "Needed for sign-in, security and saving your choices. These can't be turned off.",
-  cookiePreferences: "Preferences",
-  cookiePreferencesCategoryDescription: "Remember settings such as language and theme.",
-  cookieAnalytics: "Analytics",
-  cookieAnalyticsDescription: "Help us understand how the site is used so we can improve it.",
-  cookieMarketing: "Marketing",
-  cookieMarketingDescription: "Used to show relevant content and measure campaigns.",
   // Toast
   notifications: "Notifications",
   // Publish box

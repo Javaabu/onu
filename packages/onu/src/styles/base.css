@@ -94,7 +94,6 @@ body {
   [data-slot="skip-link"],
   [data-slot="back-to-top"],
   [data-slot="announcement-bar"],
-  [data-slot="cookie-consent"],
   [data-slot="sonner-toaster"],
   [data-sonner-toaster] {
     display: none !important;
