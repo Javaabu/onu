@@ -407,12 +407,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "form-scaffolding/form-container": {
-    "title": "FormContainer",
-    "component": "FormContainer",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "form-scaffolding/form-context": {
     "title": "Form layout & errors",
     "component": "FormLayoutProvider",

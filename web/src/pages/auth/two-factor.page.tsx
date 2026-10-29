@@ -3,8 +3,8 @@ import { useNavigate } from "react-router"
 import {
   Button,
   Callout,
+  Card,
   Form,
-  FormContainer,
   FormField,
   Icon,
   LinkButton,
@@ -57,7 +57,7 @@ export default function TwoFactorPage() {
 
   return (
     <AuthShell>
-      <FormContainer
+      <Card
         headingLevel={1}
         width="sm"
         centered
@@ -171,7 +171,7 @@ export default function TwoFactorPage() {
             </LinkButton>
           </div>
         </Form>
-      </FormContainer>
+      </Card>
       <Callout appearance="subtle" icon="lock" className="max-w-sm mt-4 mx-auto">
         {tr(
           "Never share this code. Staff will never ask you for it.",

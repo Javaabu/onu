@@ -7,11 +7,11 @@ import { cn } from "../../lib/utils"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
 import { Checkbox } from "../../ui/checkbox"
 import { TextInput } from "../inputs/text-input"
+import { Card, type CardProps } from "../layout/card"
 import { Divider } from "../layout/divider"
 import { PasswordField } from "./_password-input"
 import { FieldErrors } from "./field-errors"
 import { Form, type FormValues } from "./form"
-import { FormContainer, type FormContainerProps } from "./form-container"
 import { useFieldErrors, useFormDisabled, type FormErrors } from "./form-context"
 import { FormField } from "./form-field"
 import { Label } from "./label"
@@ -27,7 +27,10 @@ registerEnglish({ auth: en_auth })
  */
 export type AuthFormValues<V> = V & Record<string, unknown>
 
-export interface AuthFormProps<V> extends Omit<FormContainerProps, "onSubmit" | "children" | "title" | "onError"> {
+export interface AuthFormProps<V> extends Omit<
+  CardProps,
+  "onSubmit" | "children" | "title" | "onError" | "href" | "external" | "asChild"
+> {
   /**
    * Called with the typed values, plus every other named field in the form
    * (e.g. from `extraFields`) as submitted. May return a promise; throw a
@@ -139,39 +142,46 @@ function AuthShell<V>({
   submit: React.ReactNode
   after?: React.ReactNode
 }) {
+  const titleId = React.useId()
   return (
-    <FormContainer
-      title={title}
+    <Card
+      asChild
+      title={<span id={titleId}>{title}</span>}
       description={description}
       media={logo}
       width="sm"
       centered
+      headingLevel={2}
       className={cn("@container/auth", className)}
       {...props}
     >
-      <Form
-        errors={errors}
-        processing={processing}
-        onSubmit={onSubmit ? (values: FormValues) => onSubmit({ ...values, ...toValues(values) }) : undefined}
-        className="gap-5"
-        {...formProps}
-      >
-        {status ? (
-          <p
-            role="status"
-            className="gap-2 p-3 text-sm flex items-start rounded-lg border border-success/30 bg-success/10 text-foreground"
-          >
-            <Icon name="success" className="mt-0.5 size-4 shrink-0 text-success" />
-            <span>{status}</span>
-          </p>
-        ) : null}
-        {children}
-        <SubmitButton size="lg" className="touch:min-h-11 w-full">
-          {submit}
-        </SubmitButton>
-        {after}
-      </Form>
-    </FormContainer>
+      {/* The card is a region named by its title. */}
+      <section aria-labelledby={titleId}>
+        <Form
+          errors={errors}
+          processing={processing}
+          onSubmit={onSubmit ? (values: FormValues) => onSubmit({ ...values, ...toValues(values) }) : undefined}
+          // asChild leaves the content unpadded: pad the form like CardContent.
+          className="gap-5 px-(--card-spacing)"
+          {...formProps}
+        >
+          {status ? (
+            <p
+              role="status"
+              className="gap-2 p-3 text-sm flex items-start rounded-lg border border-success/30 bg-success/10 text-foreground"
+            >
+              <Icon name="success" className="mt-0.5 size-4 shrink-0 text-success" />
+              <span>{status}</span>
+            </p>
+          ) : null}
+          {children}
+          <SubmitButton size="lg" className="touch:min-h-11 w-full">
+            {submit}
+          </SubmitButton>
+          {after}
+        </Form>
+      </section>
+    </Card>
   )
 }
 

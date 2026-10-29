@@ -126,3 +126,71 @@ describe("Card", () => {
     await expectNoA11yViolations()
   })
 })
+
+describe("Card as a form card", () => {
+  it("renders media, a heading, header actions, content and a stacking footer", async () => {
+    const { container } = renderWithOnu(
+      <Card
+        title="New user"
+        description="Invite a staff member."
+        actions={<span>Draft</span>}
+        footer={<button type="button">Save</button>}
+        media={<span>logo</span>}
+        width="lg"
+        classNames={{ footer: "foot", media: "med" }}
+        className="root"
+      >
+        <p>Body</p>
+      </Card>,
+    )
+    const card = container.querySelector("[data-slot=card]")
+    expect(card).toHaveClass("root", "max-w-3xl", "mx-auto", "w-full", "@container/card")
+    expect(screen.getByRole("heading", { level: 3, name: "New user" })).toBeInTheDocument()
+    expect(container.querySelector(".med")).toHaveTextContent("logo")
+    expect(screen.getByText("Draft")).toBeInTheDocument()
+    const footer = container.querySelector(".foot")
+    expect(footer).toContainElement(screen.getByRole("button"))
+    expect(footer).toHaveClass("flex-col-reverse", "@sm/card:flex-row")
+    await expectNoA11yViolations()
+  })
+
+  it("keeps cards without width as they were", () => {
+    const { container } = renderWithOnu(<Card title="T" footer="f" />)
+    const card = container.querySelector("[data-slot=card]")
+    expect(card).not.toHaveClass("mx-auto")
+    expect(card).not.toHaveClass("@container/card")
+    expect(container.querySelector("[data-slot=card-footer]")).not.toHaveClass("flex-col-reverse")
+    expect(container.querySelector("[data-slot=card-header]")).toHaveAttribute("data-bordered")
+  })
+
+  it("supports the plain variant, full width, heading level 1 and centring", () => {
+    const { container } = renderWithOnu(
+      <Card variant="plain" width="full" headingLevel={1} title="Sign in" centered footer="f">
+        x
+      </Card>,
+    )
+    expect(screen.getByRole("heading", { level: 1 })).toHaveClass("text-lg")
+    const card = container.querySelector("[data-slot=card]")
+    expect(card).toHaveAttribute("data-variant", "plain")
+    expect(card).toHaveClass("max-w-none", "bg-transparent", "ring-0")
+    const header = container.querySelector("[data-slot=card-header]")
+    expect(header).not.toHaveAttribute("data-bordered")
+    expect(header).toHaveClass("text-center")
+  })
+
+  it("becomes a titled region or form with asChild", async () => {
+    renderWithOnu(
+      <Card asChild title={<span id="t">Sign in</span>} width="sm" centered footer={<button type="submit">Go</button>}>
+        <form aria-labelledby="t" data-testid="form">
+          <label>
+            Email <input />
+          </label>
+        </form>
+      </Card>,
+    )
+    const form = screen.getByRole("form", { name: "Sign in" })
+    expect(form).toHaveAttribute("data-slot", "card")
+    expect(form).toContainElement(screen.getByRole("button", { name: "Go" }))
+    await expectNoA11yViolations()
+  })
+})

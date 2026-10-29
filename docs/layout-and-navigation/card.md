@@ -64,6 +64,44 @@ Render the card as another element. Header and footer props still work; the chil
 </Card>
 ```
 
+## Form card
+
+A form on a page, in a dialog or in a narrow column: give the card a `width` and put the buttons in `footer`. The card is then full width up to that maximum and centred, and it responds to its own width: when it is narrow, the footer buttons stack full width with the primary (last) one on top. Wrap the card in a `Form` so the footer buttons submit it, or make the form the card with `asChild` (Card never imports the form module itself):
+
+```tsx
+<Form onSubmit={save}>
+  <Card
+    title="New staff member"
+    description="They’ll get an email invitation."
+    headingLevel={2}
+    width="lg"
+    footer={
+      <>
+        <LinkButton href="/staff" variant="outline">
+          Cancel
+        </LinkButton>
+        <SubmitButton>Invite</SubmitButton>
+      </>
+    }
+  >
+    <FormField label="Email" name="email">
+      <TextInput type="email" />
+    </FormField>
+  </Card>
+</Form>
+```
+
+`media` puts a logo or icon above the title, and `centered` centres the header without its bottom line (sign-in and verification pages; the [auth forms](../form-scaffolding/auth-forms) use it). `variant="plain"` drops the surface, the padding and the lines, for a form that sits straight on a page section.
+
+```tsx
+<Card width="sm" centered headingLevel={1} media={<Logo />} title="Two-factor verification" description="Enter the code we sent.">
+  <Form>…</Form>
+</Card>
+<Card variant="plain" width="md" title="ދިވެހި ފޯމު">
+  …
+</Card>
+```
+
 ## Props
 
 | Prop           | Type                                                       | Default     | Description                   |
@@ -72,14 +110,17 @@ Render the card as another element. Header and footer props still work; the chil
 | `description`  | `ReactNode`                                                |             | Text under the title          |
 | `actions`      | `ReactNode`                                                |             | End of the header             |
 | `footer`       | `ReactNode`                                                |             | Footer content                |
+| `media`        | `ReactNode`                                                |             | Above the title (logo, icon)  |
+| `width`        | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'`                   |             | [Form card](#form-card): maximum width, centred; the footer stacks when narrow |
+| `centered`     | `boolean`                                                  | `false`     | Centre the header, without its bottom line |
 | `href`         | `string`                                                   |             | Makes it a link card          |
 | `external`     | `boolean`                                                  | `false`     | Open the link in a new tab    |
-| `headingLevel` | `2–6`                                                      | `3`         | Heading element for the title |
+| `headingLevel` | `1–6`                                                      | `3`         | Heading element for the title |
 | `size`         | `'default' \| 'sm'`                                        | `'default'` | Spacing                       |
-| `variant`      | `'default' \| 'outline' \| 'muted'`                        | `'default'` | Surface                       |
+| `variant`      | `'default' \| 'outline' \| 'muted' \| 'plain'`             | `'default'` | Surface; `plain` has none and no padding |
 | `asChild`      | `boolean`                                                  | `false`     | Render as the child element   |
 | `padded`       | `boolean`                                                  | `true`      | Pad content placed straight in the card (`false`: no padding) |
-| `classNames`   | `{ header, title, description, actions, content, footer }` |             | Classes for each part         |
+| `classNames`   | `{ header, media, title, description, actions, content, footer }` |      | Classes for each part         |
 
 `cardVariants` is exported. Other `<div>` props (including `ref`) go to the root.
 
@@ -87,6 +128,7 @@ Render the card as another element. Header and footer props still work; the chil
 
 - The title is a real heading; link cards have one link whose name is the title.
 - Link cards show a focus ring on the whole card (`focus-within`).
+- In a form card the footer keeps the primary button last in the DOM (first visually when stacked), matching reading order on wide screens. To make the card a landmark, render it as a `<section aria-labelledby>` with `asChild`.
 
 | Key              | Action              |
 | ---------------- | ------------------- |

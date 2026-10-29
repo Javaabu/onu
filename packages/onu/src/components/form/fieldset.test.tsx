@@ -9,7 +9,6 @@ import { FormLayoutProvider } from "./form-context"
 import { FormField } from "./form-field"
 import { FormGroup } from "./form-group"
 import { Label } from "./label"
-import { FormContainer } from "./form-container"
 import { revealField } from "./validation"
 
 describe("Fieldset", () => {
@@ -145,45 +144,5 @@ describe("Label", () => {
   it("translates the optional marker", () => {
     renderWithOnu(<Label optional>ނަން</Label>, { locale: "dv" })
     expect(screen.getByText("(އިޚްތިޔާރީ)")).toBeInTheDocument()
-  })
-})
-
-describe("FormContainer", () => {
-  it("renders a titled section with header actions, content and footer", async () => {
-    const { container } = renderWithOnu(
-      <FormContainer
-        title="New user"
-        description="Invite a staff member."
-        actions={<span>Draft</span>}
-        footer={<button type="button">Save</button>}
-        media={<span>logo</span>}
-        classNames={{ footer: "foot" }}
-        className="root"
-      >
-        <p>Body</p>
-      </FormContainer>,
-    )
-    const region = screen.getByRole("region", { name: "New user" })
-    expect(region).toHaveClass("root")
-    expect(screen.getByRole("heading", { level: 2, name: "New user" })).toBeInTheDocument()
-    expect(screen.getByText("Draft")).toBeInTheDocument()
-    expect(container.querySelector(".foot")).toContainElement(screen.getByRole("button"))
-    await expectNoA11yViolations()
-  })
-
-  it("supports plain variant, widths, heading levels and centring", () => {
-    const { container } = renderWithOnu(
-      <FormContainer variant="plain" width="full" headingLevel={1} title="Sign in" centered footer="f">
-        x
-      </FormContainer>,
-    )
-    expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument()
-    expect(container.firstElementChild).toHaveAttribute("data-variant", "plain")
-    expect(container.firstElementChild).toHaveClass("max-w-none")
-  })
-
-  it("renders without a header", () => {
-    const { container } = renderWithOnu(<FormContainer>Only body</FormContainer>)
-    expect(container.querySelector("header")).toBeNull()
   })
 })

@@ -534,7 +534,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Field errors
 - [ ] AJAX validation errors
 - [ ] Help text
-- [ ] Form container
+- ~~Form container~~ *(Folded into Card: `width`, `media`, `centered`, `variant="plain"`.)*
 - [ ] Repeating group
 - [ ] Inline edit
 - [ ] Autosave indicator
