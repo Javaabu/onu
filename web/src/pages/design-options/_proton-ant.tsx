@@ -1,10 +1,11 @@
 import * as React from "react"
 import { useLocation } from "react-router"
 import {
+  ActionMenu,
   AppHeader,
   AppLayout,
   AppSidebar,
-  AppSwitcher,
+  Button,
   ConditionalLink,
   Icon,
   LanguageSwitcher,
@@ -208,7 +209,7 @@ export interface ProtonAntShellProps {
 
 /**
  * ProtonAnt's shell, now Onu's default look: `AppLayout` (shell colour, white
- * content panel), `AppSidebar` (wordmark and `AppSwitcher`, the "New
+ * content panel), `AppSidebar` (wordmark and an `ActionMenu` of apps, the "New
  * application" action, nav with count pills, coloured folders and labels, a
  * quota `ProgressBar`), `AppHeader` (wide rounded search, upgrade, settings, help,
  * language, theme, notifications, account) and `PageTitle`'s Ant PageHeader
@@ -257,10 +258,16 @@ export function ProtonAntShell({
             header={
               <div className="gap-2 flex items-center justify-between">
                 <Wordmark />
-                <AppSwitcher
-                  label={tr("Atoll apps", "އެޓޮލް އެޕްތައް")}
-                  apps={[
-                    { icon: "file-text", label: tr("Records", "ރެކޯޑްސް"), href: PA_ROUTES.index, current: true },
+                <ActionMenu
+                  align="start"
+                  trigger={
+                    <Button variant="ghost" size="icon" aria-label={tr("Switch app", "އެޕް ބަދަލުކުރޭ")}>
+                      <Icon name="grid" />
+                    </Button>
+                  }
+                  items={[
+                    { type: "label", label: tr("Atoll apps", "އެޓޮލް އެޕްތައް") },
+                    { icon: "file-text", label: tr("Records", "ރެކޯޑްސް"), href: PA_ROUTES.index },
                     { icon: "credit-card", label: tr("Payments", "ފައިސާ"), href: routes.adminRecords.export },
                     { icon: "calendar", label: tr("Calendar", "ކަލެންޑަރު"), href: routes.adminRecords.activityLog },
                     { icon: "folder", label: tr("Drive", "ޑްރައިވް"), href: routes.adminRecords.import },

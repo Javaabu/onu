@@ -66,6 +66,4 @@ export const layout = {
   loadMore: "Load more",
   noActivity: "No activity yet",
   learnMore: "Learn more",
-  apps: "Apps",
-  switchApp: "Switch app",
 } satisfies MessageDict

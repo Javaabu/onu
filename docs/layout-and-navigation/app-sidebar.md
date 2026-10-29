@@ -43,7 +43,7 @@ Inside a panel `AppLayout` (the default) the sidebar uses `surface="shell"`: Pro
 - **`action`**: the main call to action under the header, as a full-width 44px button (Proton's "New message"). Collapsed to icons, only its icon shows; the label stays its accessible name.
 - **Count pills**: numeric badges are brand-coloured pills for unread-like counts, read as "12 new" by screen readers. Set `badgeTone: "neutral"` on an item for a plain muted total, read as the number alone.
 - **Folders and labels**: give an item a `color`. With a semantic icon (`icon: "folder"`) the icon is tinted; with no icon it shows a coloured dot. The colour is decorative; the label carries the meaning.
-- **Header and footer**: put a `Logo` and an [`AppSwitcher`](./app-switcher) in `header`, and a quota bar ([`ProgressBar`](../loading/progress-bar) with a link) or a `UserProfile` in `footer`.
+- **Header and footer**: put a `Logo` in `header`, with an [`ActionMenu`](../overlays/action-menu) of the suite's apps next to it if there is one, and a quota bar ([`ProgressBar`](../loading/progress-bar) with a link) or a `UserProfile` in `footer`.
 
 ```tsx
 <AppSidebar
@@ -51,7 +51,19 @@ Inside a panel `AppLayout` (the default) the sidebar uses `surface="shell"`: Pro
   header={
     <div className="flex items-center justify-between gap-2">
       <Logo src="/logo.svg" alt="" text="Atoll Records" />
-      <AppSwitcher apps={apps} />
+      <ActionMenu
+        align="start"
+        trigger={
+          <Button variant="ghost" size="icon" aria-label="Switch app">
+            <Icon name="grid" />
+          </Button>
+        }
+        items={[
+          { type: "label", label: "Atoll apps" },
+          { label: "Records", href: "/records", icon: "file-text" },
+          { label: "Calendar", href: "/calendar", icon: "calendar" },
+        ]}
+      />
     </div>
   }
   action={

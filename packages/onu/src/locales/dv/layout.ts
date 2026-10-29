@@ -66,6 +66,4 @@ export const layout = {
   loadMore: "އިތުރަށް ލޯޑުކުރޭ",
   noActivity: "އަދި އެއްވެސް ހަރަކާތެއް ނެތް",
   learnMore: "އިތުރަށް ބައްލަވާ",
-  apps: "އެޕްތައް",
-  switchApp: "އެޕް ބަދަލުކުރޭ",
 } satisfies Record<keyof typeof en, MessageDict[string]> & MessageDict

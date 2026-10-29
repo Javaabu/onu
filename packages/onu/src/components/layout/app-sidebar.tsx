@@ -61,7 +61,7 @@ export interface AppSidebarProps extends Omit<React.ComponentProps<typeof Sideba
   currentHref?: string
   /** `prefix` (default): `/users/12` keeps `/users` active. `exact`: only exact matches. */
   match?: NavMatch
-  /** Top of the sidebar, e.g. a `Logo` (and an `AppSwitcher`). */
+  /** Top of the sidebar, e.g. a `Logo` (and an `ActionMenu` of apps). */
   header?: React.ReactNode
   /**
    * The main call to action under the header, e.g. a "New application"

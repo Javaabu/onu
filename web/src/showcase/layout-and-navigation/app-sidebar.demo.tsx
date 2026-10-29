@@ -1,6 +1,6 @@
 import {
+  ActionMenu,
   AppSidebar,
-  AppSwitcher,
   Button,
   ConditionalLink,
   Icon,
@@ -64,7 +64,7 @@ function Demo({
   )
 }
 
-/** The Proton shell: app switcher, a call to action, count pills, coloured folders and labels, a quota meter. */
+/** The Proton shell: an app menu, a call to action, count pills, coloured folders and labels, a quota meter. */
 function ShellDemo() {
   const dv = useDhivehi()
   const tr = (en: string, dvText: string) => (dv ? dvText : en)
@@ -80,9 +80,15 @@ function ShellDemo() {
               header={
                 <div className="gap-2 flex items-center justify-between">
                   <Logo alt="Onu" text="Onu" src={`${import.meta.env.BASE_URL}favicon.svg`} />
-                  <AppSwitcher
-                    apps={[
-                      { label: tr("Records", "ރެކޯޑްސް"), href: "/inbox", icon: "file-text", current: true },
+                  <ActionMenu
+                    align="start"
+                    trigger={
+                      <Button variant="ghost" size="icon" aria-label={tr("Switch app", "އެޕް ބަދަލުކުރޭ")}>
+                        <Icon name="grid" />
+                      </Button>
+                    }
+                    items={[
+                      { label: tr("Records", "ރެކޯޑްސް"), href: "/inbox", icon: "file-text" },
                       { label: tr("Calendar", "ކަލެންޑަރު"), href: "/calendar", icon: "calendar" },
                       { label: tr("Drive", "ޑްރައިވް"), href: "/drive", icon: "folder" },
                     ]}

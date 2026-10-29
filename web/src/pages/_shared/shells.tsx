@@ -1,11 +1,12 @@
 import * as React from "react"
 import { useLocation, useNavigate } from "react-router"
 import {
+  ActionMenu,
   AppHeader,
   AppLayout,
   AppSidebar,
-  AppSwitcher,
   BottomNav,
+  Button,
   ConditionalLink,
   Density,
   Icon,
@@ -209,15 +210,21 @@ export function AdminShell({
                 text={tr("Onu Admin", "އޮނު އެޑްމިން")}
                 href={routes.adminRecords.dashboard}
               />
-              <AppSwitcher
-                label={tr("Onu apps", "އޮނު އެޕްތައް")}
-                apps={[
-                  {
-                    label: tr("Records", "ރެކޯޑްސް"),
-                    href: routes.adminRecords.dashboard,
-                    icon: "file-text",
-                    current: true,
-                  },
+              <ActionMenu
+                align="start"
+                trigger={
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="group-data-[collapsible=icon]:hidden"
+                    aria-label={tr("Switch app", "އެޕް ބަދަލުކުރޭ")}
+                  >
+                    <Icon name="grid" />
+                  </Button>
+                }
+                items={[
+                  { type: "label", label: tr("Onu apps", "އޮނު އެޕްތައް") },
+                  { label: tr("Records", "ރެކޯޑްސް"), href: routes.adminRecords.dashboard, icon: "file-text" },
                   { label: tr("Content", "ކޮންޓެންޓް"), href: routes.adminContent.postEditor, icon: "edit" },
                   { label: tr("Maps", "މެޕް"), href: routes.maps.fleet, icon: "map-pin" },
                   { label: tr("Learning", "ދަސްކުރުން"), href: routes.learning.courses, icon: "play" },
