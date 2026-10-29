@@ -611,12 +611,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "layout-and-navigation/menu-bar": {
-    "title": "MenuBar",
-    "component": "MenuBar",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "layout-and-navigation/nav-tabs": {
     "title": "NavTabs",
     "component": "NavTabs",

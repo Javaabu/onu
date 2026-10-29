@@ -703,7 +703,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] App layout
 - [ ] Header
 - [ ] Top navigation bar
-- [ ] Menu bar
+- ~~Menu bar~~ *(Removed.)* Desktop-application menus do not appear in web admin panels or portals; the shadcn `Menubar` primitive is still exported from `@javaabu/onu/primitives`.
 - [ ] Mega menu
 - [ ] Sidebar
 - [ ] Side navigation
