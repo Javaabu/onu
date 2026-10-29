@@ -701,12 +701,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "listing-pages/editable-data-grid": {
-    "title": "EditableDataGrid",
-    "component": "EditableDataGrid",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "listing-pages/empty-state": {
     "title": "EmptyState",
     "component": "EmptyState",

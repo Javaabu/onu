@@ -654,7 +654,7 @@ A build-list item is ticked only when all of the following are true:
 
 ### Listing pages
 - [ ] Table
-- [ ] Editable data grid
+- ~~Editable data grid~~ *(Removed.)* `RepeatingGroup` covers line items and `InlineEdit` covers single cells; a spreadsheet grid needs a dedicated grid library.
 - [ ] List view
 - [ ] Grid view
 - [ ] Kanban board

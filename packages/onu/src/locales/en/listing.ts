@@ -186,15 +186,6 @@ export const listing = {
   expand: "Expand",
   collapse: "Collapse",
 
-  // Editable grid
-  editCell: "Edit {column}",
-  cellInvalid: "{column}: {message}",
-  cellRequired: "Required",
-  cellNumber: "Enter a number",
-  cellSaved: "Saved",
-  gridInstructions:
-    "Use the arrow keys to move between cells. Press Enter to edit and Enter again to save, Escape to cancel, or Tab to save and move on.",
-
   // Condition builder
   addRule: "Add condition",
   addGroup: "Add group",
