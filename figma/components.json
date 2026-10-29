@@ -713,12 +713,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "listing-pages/filter-condition-builder": {
-    "title": "FilterConditionBuilder",
-    "component": "FilterConditionBuilder",
-    "import": "@javaabu/onu/query-builder",
-    "figmaUrl": null
-  },
   "listing-pages/filter-panel": {
     "title": "FilterPanel",
     "component": "FilterPanel",

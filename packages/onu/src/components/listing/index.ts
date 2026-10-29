@@ -32,5 +32,3 @@ export * from "./search-results"
 export * from "./sortable-list"
 export * from "./tree-view"
 export type { CollectionProps } from "./_collection"
-// The filter condition builder needs the optional `react-querybuilder` peer, so it
-// has its own entry point: `@javaabu/onu/query-builder`.

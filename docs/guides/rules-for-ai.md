@@ -20,7 +20,7 @@ Short rules for AI coding assistants (and people) writing UI with Onu. They sit 
 
 # Imports
 
-- Components, hooks and helpers come from `@javaabu/onu`. Heavy features have their own entry: `@javaabu/onu/charts`, `/maps`, `/editor`, `/calendar`, `/media`, `/query-builder`, `/export`, `/thaana`, `/icons/iconify`, `/icons/fontawesome`. The docs page's first code block shows the import.
+- Components, hooks and helpers come from `@javaabu/onu`. Heavy features have their own entry: `@javaabu/onu/charts`, `/maps`, `/editor`, `/calendar`, `/media`, `/export`, `/thaana`, `/icons/iconify`, `/icons/fontawesome`. The docs page's first code block shows the import.
 - Never import from `@javaabu/onu/dist/...` or `@javaabu/onu/src/...`.
 
 # Forms (Laravel)

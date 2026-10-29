@@ -75,10 +75,6 @@
       "types": "./dist/media/index.d.ts",
       "default": "./dist/media/index.js"
     },
-    "./query-builder": {
-      "types": "./dist/query-builder/index.d.ts",
-      "default": "./dist/query-builder/index.js"
-    },
     "./export": {
       "types": "./dist/export/index.d.ts",
       "default": "./dist/export/index.js"
@@ -149,7 +145,6 @@
     "react": "^18.3.0 || ^19.0.0",
     "react-dom": "^18.3.0 || ^19.0.0",
     "react-easy-crop": "^6.2.4",
-    "react-querybuilder": "^8.24.4",
     "recharts": "^3.10.1",
     "shiki": "^4.5.0",
     "signature_pad": "^5.1.4",
@@ -217,7 +212,6 @@
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-easy-crop": "^6.2.4",
-    "react-querybuilder": "^8.24.4",
     "recharts": "^3.10.1",
     "shadcn": "^4.21.4",
     "shiki": "^4.5.0",
@@ -371,9 +365,6 @@
     "media-chrome": {
       "optional": true
     },
-    "react-querybuilder": {
-      "optional": true
-    },
     "@iconify/react": {
       "optional": true
     },
@@ -504,12 +495,6 @@
       "path": "dist/media/index.js",
       "import": "*",
       "limit": "54 kB"
-    },
-    {
-      "name": "query-builder",
-      "path": "dist/query-builder/index.js",
-      "import": "*",
-      "limit": "22 kB"
     },
     {
       "name": "export",

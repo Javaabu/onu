@@ -229,7 +229,7 @@ What each build-list group is based on. "In-house" means composed from shadcn pr
 | Rich content | none (shadcn has no editor) | [Tiptap](https://tiptap.dev) (ProseMirror) for the WYSIWYG and block editors; `@tiptap/static-renderer` for the block renderer; Shiki for code highlighting. Only MIT-licensed Tiptap packages may be used, never paid Pro/Cloud extensions | Translations editor, custom attribute fields |
 | Maps | none | **Google Maps (default)** via `@vis.gl/react-google-maps`; `terra-draw` + its Google Maps adapter (radius/polygon/route drawing); `@googlemaps/markerclusterer`; deck.gl `GoogleMapsOverlay` (heatmap, replay trails); `@turf/turf`. MapLibre via `react-map-gl` as an optional secondary adapter | Location card, info panel, legend swatch, replay controls, route stop editor |
 | Charts | `chart` | `recharts`; map chart as a choropleth on Google Maps (deck.gl `GeoJsonLayer`) | Stat tiles, period comparison |
-| Listing pages | `table`, data-table pattern, `pagination`, `dropdown-menu`, `checkbox`, `empty`, `toggle-group` | TanStack Table, TanStack Virtual, `@dnd-kit`, React Aria `Tree`, `react-querybuilder` (filter condition builder) | Kanban, filter panel/chips/tabs, bulk actions, view switcher, load more |
+| Listing pages | `table`, data-table pattern, `pagination`, `dropdown-menu`, `checkbox`, `empty`, `toggle-group` | TanStack Table, TanStack Virtual, `@dnd-kit`, React Aria `Tree` | Kanban, filter panel/chips/tabs, bulk actions, view switcher, load more |
 | Overlays | `dialog`, `alert-dialog`, `sheet`, `drawer`, `popover`, `tooltip`, `hover-card`, `dropdown-menu`, `context-menu`, `command` | `vaul`, `cmdk`, `yet-another-react-lightbox` | none |
 | Loading | `spinner`, `skeleton`, `progress` | none | Loading overlay, page progress bar |
 | Layout and navigation | `sidebar`, `navigation-menu`, `menubar`, `breadcrumb`, `tabs`, `accordion`, `card`, `separator`, `collapsible`, `scroll-area`, `resizable` | none | Wizard/stepper, timeline, mega menu (on `navigation-menu`), notification centre, back to top, skip link, language switcher, theme toggle |
@@ -676,7 +676,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Empty state
 - [ ] Row actions
 - [ ] Record actions menu
-- [ ] Filter condition builder
+- ~~Filter condition builder~~ *(Removed.)* `FilterPanel` with `ApiSelect` and the date pickers is the Javaabu filtering pattern; add a builder back only with a report screen that needs it.
 - [ ] Drag-and-drop row reordering
 
 ### Overlays
