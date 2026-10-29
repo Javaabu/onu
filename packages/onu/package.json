@@ -485,7 +485,7 @@
       "name": "maps",
       "path": "dist/maps/index.js",
       "import": "*",
-      "limit": "105 kB"
+      "limit": "100 kB"
     },
     {
       "name": "editor",

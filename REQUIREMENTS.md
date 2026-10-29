@@ -632,7 +632,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Map polygon
 - [ ] Map route
 - [ ] Live map
-- [ ] Map navigation
+- ~~Map navigation~~ *(Removed.)* Turn-by-turn directions belong in the Google Maps app: `LocationCard` has an "Open in Google Maps" link and `MapRoute` draws the line.
 - [ ] Location card
 - [ ] Address
 - [ ] Map replay
@@ -898,7 +898,7 @@ To be resolved before (or while) building the affected components:
 8. **Component semantics to confirm**:
    - *Custom attribute fields* — schema shape (align with an existing Javaabu Laravel package?).
    - *Reporting-period picker* — fiscal periods (monthly/quarterly/yearly) with custom fiscal year start?
-   - *Map navigation* / *Map replay* — data shape for tracks (GeoJSON LineString with timestamps?).
+   - *Map replay* — data shape for tracks (GeoJSON LineString with timestamps?).
 9. **React Native / Flutter parity** — should token names align with the Flutter design system for cross-platform consistency?
 
 ---

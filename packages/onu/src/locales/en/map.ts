@@ -107,26 +107,9 @@ export const map = {
   stoppedFollowing: "Stopped following",
   noMarkers: "Nothing to show yet.",
 
-  // Navigation
-  navigationLabel: "Route map",
-  directions: "Directions",
-  findingRoute: "Finding the route…",
-  straightLineNotice: "Directions aren't available here, so straight lines between stops are shown.",
-  routeFailed: "The route couldn't be loaded, so straight lines between stops are shown.",
+  // Location card
   openInGoogleMaps: "Open in Google Maps",
   opensInNewTab: "(opens in a new tab)",
-  stopName: "Stop {letter}: {name}",
-  currentStep: "Current step",
-  previousStep: "Previous",
-  nextStep: "Next",
-  stepCounter: "Step {index} of {total}",
-  stepsTotal: { one: "1 step", other: "{count} steps" },
-  stepOf: "Step {index} of {total}: {instruction}",
-  legFromTo: "{from} to {to}",
-  arrive: "Arrive at {name}",
-  straightStep: "Head {direction} from {from} to {to}",
-
-  // Location card
   staticMapAlt: "Map of {place}",
   thumbnailUnavailable: "Map preview unavailable",
 

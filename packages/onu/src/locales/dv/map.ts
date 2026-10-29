@@ -110,26 +110,9 @@ export const map = {
   stoppedFollowing: "ފަހަތުން ދިއުން ހުއްޓުނީ",
   noMarkers: "އަދި ދައްކާނެ އެއްޗެއް ނެތް.",
 
-  // Navigation
-  navigationLabel: "މަގުގެ މެޕް",
-  directions: "މަގު ދެއްކުން",
-  findingRoute: "މަގު ހޯދަނީ…",
-  straightLineNotice: "މިތަނުގައި މަގު ދެއްކުމުގެ ޚިދުމަތް ނެތުމުން، ހުއްޓުންތަކުގެ ދެމެދު ސީދާ ރޮނގު ދައްކަނީ.",
-  routeFailed: "މަގު ލޯޑް ނުކުރެވުނުތީ، ހުއްޓުންތަކުގެ ދެމެދު ސީދާ ރޮނގު ދައްކަނީ.",
+  // Location card
   openInGoogleMaps: "ގޫގުލް މެޕްސްގައި ހުޅުވާ",
   opensInNewTab: "(އައު ޓެބެއްގައި ހުޅުވޭނެ)",
-  stopName: "ހުއްޓުން {letter}: {name}",
-  currentStep: "މިހާރުގެ ފިޔަވަޅު",
-  previousStep: "ކުރީގެ",
-  nextStep: "ދެން",
-  stepCounter: "ފިޔަވަޅު {total} ގެ ތެރެއިން {index}",
-  stepsTotal: "ފިޔަވަޅު {count}",
-  stepOf: "ފިޔަވަޅު {total} ގެ ތެރެއިން {index}: {instruction}",
-  legFromTo: "{from} އިން {to} އަށް",
-  arrive: "{name} އަށް ވާސިލުވުން",
-  straightStep: "{from} އިން {to} އަށް {direction} ފަރާތަށް",
-
-  // Location card
   staticMapAlt: "{place} ގެ މެޕް",
   thumbnailUnavailable: "މެޕް ދެއްކޭކަށް ނެތް",
 

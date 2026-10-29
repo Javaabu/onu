@@ -869,12 +869,6 @@
     "import": "@javaabu/onu/maps",
     "figmaUrl": null
   },
-  "maps/map-navigation": {
-    "title": "MapNavigation",
-    "component": "MapNavigation",
-    "import": "@javaabu/onu/maps",
-    "figmaUrl": null
-  },
   "maps/map-picker": {
     "title": "MapPicker",
     "component": "MapPicker",
