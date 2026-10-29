@@ -104,6 +104,24 @@ Bar only:
 | `orientation` | `"vertical" \| "horizontal"` | `"vertical"`      | Columns or bars   |
 | `radius`      | `number`                     | `4` (`0` stacked) | Bar corner radius |
 
+## Comparison
+
+`comparison={{ previousKey: "previous" }}` sets the current period (the first series) against the previous one, step by step: headline totals with the change, the previous period dashed (or as muted bars), and a **Change** column in the table. Use it when the steps are categories such as days of the week or week numbers; the fields are listed under [TimeSeriesChart comparison](./time-series-chart#comparison).
+
+```tsx
+<CategoryChart
+  variant="bar"
+  title="Electricity costs, Q3"
+  data={[
+    { month: "Jul", current: 182000, previous: 171500 },
+    { month: "Aug", current: 176400, previous: 180200 },
+  ]}
+  categoryKey="month"
+  valueFormat="currency"
+  comparison={{ previousKey: "previous", currentLabel: "2026", previousLabel: "2025", positiveIsGood: false }}
+/>
+```
+
 ## Number formats
 
 `valueFormat` sets how values appear in ticks, tooltips, the table and the screen-reader summary. Numbers always use `useOnu().locale.numberLocale`.
@@ -136,6 +154,7 @@ The variant-specific props are listed under [Lines and areas](#lines-and-areas) 
 | `series`               | `string[]`                                                   | keys of `config`     | Series to draw                                        |
 | `stacked`              | `boolean`                                                    | `false`              | Stack areas or bars                                   |
 | `gradient`             | `boolean`                                                    | `true`               | Gradient area and bar fills; `false` for flat fills   |
+| `comparison`           | `ChartComparison`                                            |                      | This period against the previous one ([Comparison](#comparison)) |
 | `valueFormat`          | `ValueFormat`                                                | `"number"`           | See above                                             |
 | `categoryFormat`       | `(value) => string`                                          |                      | Formats categories                                    |
 | `categoryLabel`        | `ReactNode`                                                  | "Category"           | Table column header for categories                    |
@@ -153,7 +172,7 @@ The variant-specific props are listed under [Lines and areas](#lines-and-areas) 
 | `className`            | `string`                                                     |                      | Classes for the `<figure>`                            |
 | `classNames`           | `{ root, header, title, description, toggle, chart, table }` |                      | Classes per part                                      |
 
-`ref` points at the `<figure>`. Every Onu chart (`PieChart`, `TimeSeriesChart`, `PeriodComparisonChart`, `MapChart`) shares the props from `title` to `classNames` that are not specific to categories.
+`ref` points at the `<figure>`. Every Onu chart (`PieChart`, `TimeSeriesChart`, `MapChart`) shares the props from `title` to `classNames` that are not specific to categories.
 
 ## Gradient fills
 
@@ -167,7 +186,7 @@ Pass `gradient={false}` for flat fills:
 <CategoryChart variant="bar" gradient={false} … />
 ```
 
-Every Onu chart with areas or bars takes the same `gradient` prop (`CategoryChart` and `TimeSeriesChart` areas and bars, `PeriodComparisonChart`, `Sparkline`, and `sparklineGradient` on `StatTile`). To change the default for a whole area, wrap it in `ChartStyleProvider`; a chart's own `gradient` prop still wins:
+Every Onu chart with areas or bars takes the same `gradient` prop (`CategoryChart` and `TimeSeriesChart` areas and bars, `Sparkline`, and `sparklineGradient` on `StatTile`). To change the default for a whole area, wrap it in `ChartStyleProvider`; a chart's own `gradient` prop still wins:
 
 ```tsx
 import { ChartStyleProvider } from "@javaabu/onu/charts"

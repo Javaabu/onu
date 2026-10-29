@@ -1,14 +1,6 @@
 import * as React from "react"
 import { Button, Icon, PageTitle, SegmentedControl, toast, useOnu } from "@javaabu/onu"
-import {
-  CategoryChart,
-  MapChart,
-  PeriodComparisonChart,
-  PieChart,
-  StatTile,
-  StatTiles,
-  TimeSeriesChart,
-} from "@javaabu/onu/charts"
+import { CategoryChart, MapChart, PieChart, StatTile, StatTiles, TimeSeriesChart } from "@javaabu/onu/charts"
 
 import { useTr } from "../_shared/i18n"
 import { routes } from "../_shared/routes"
@@ -219,7 +211,7 @@ export default function ReportsPage() {
             brush
             height={280}
           />
-          <PeriodComparisonChart
+          <CategoryChart
             title={tr("This period against the previous one", "މި މުއްދަތާއި ކުރީގެ މުއްދަތު")}
             description={
               period === "30"
@@ -231,8 +223,11 @@ export default function ReportsPage() {
             variant="bar"
             data={comparison}
             categoryKey="bucket"
-            currentLabel={tr("This period", "މި މުއްދަތު")}
-            previousLabel={tr("Previous period", "ކުރީގެ މުއްދަތު")}
+            comparison={{
+              previousKey: "previous",
+              currentLabel: tr("This period", "މި މުއްދަތު"),
+              previousLabel: tr("Previous period", "ކުރީގެ މުއްދަތު"),
+            }}
             height={260}
           />
         </Section>

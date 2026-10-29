@@ -9,6 +9,7 @@ import {
   numericValue,
   seriesRange,
   type ChartBaseProps,
+  type ChartComparison,
   type ChartDatum,
   type DataTableModel,
   type SeriesInfo,
@@ -18,7 +19,7 @@ import { chart as en_chart } from "../locales/en/chart"
 
 registerEnglish({ chart: en_chart })
 
-/** Props shared by category charts (bar, line, period comparison). */
+/** Props shared by category charts (line, area, bar). */
 export interface CartesianChartProps extends ChartBaseProps {
   /** One object per category, e.g. `{ month: "Jan", revenue: 1200, expenses: 800 }`. */
   data: ChartDatum[]
@@ -43,6 +44,13 @@ export interface CartesianChartProps extends ChartBaseProps {
    * nearest `ChartStyleProvider`. Solid in forced-colours mode.
    */
   gradient?: boolean
+  /**
+   * Compare the current period (the first series) with the previous one (`previousKey`), step by
+   * step (days of the week, weeks, months): the previous period is dashed (muted bars with
+   * `variant="bar"`), headline totals above the chart show the change, and the table gets a
+   * "Change" column. Series are not stacked.
+   */
+  comparison?: ChartComparison
 }
 
 /** Screen-reader summary of a category chart: type, size and each series' range. */

@@ -11,7 +11,6 @@ export const chart = {
   typePie: "Pie chart",
   typeDonut: "Donut chart",
   typeTimeSeries: "Time-series chart",
-  typePeriodComparison: "Period comparison chart",
   typeSparkline: "Sparkline",
   typeMap: "Map chart",
   summary: {

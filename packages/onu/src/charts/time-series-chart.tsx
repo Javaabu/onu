@@ -47,12 +47,15 @@ import {
 } from "./_gradient"
 import {
   ChartFrame,
+  comparisonParts,
+  comparisonSeries,
   resolveSeries,
   seriesConfig,
   SVG_LTR,
   useChartAnimation,
   useTooltipTrigger,
   type ChartBaseProps,
+  type ChartComparison,
   type ChartDatum,
 } from "./_shared"
 import { useChartFormat, type ValueFormat } from "./format"
@@ -97,6 +100,12 @@ export interface TimeSeriesChartProps extends ChartBaseProps {
    * nearest `ChartStyleProvider`. Solid in forced-colours mode.
    */
   gradient?: boolean
+  /**
+   * Compare the current period (the first series) with the previous one (`previousKey`): the
+   * previous period is dashed (muted bars with `variant="bar"`), headline totals above the
+   * chart show the change, and the table gets a "Change" column. Series are not stacked.
+   */
+  comparison?: ChartComparison
 }
 
 /** Converts a date-like value to a timestamp (ms), or `null`. */
@@ -193,6 +202,7 @@ export function TimeSeriesChart({
   showLegend,
   showGrid = true,
   gradient: gradientProp,
+  comparison,
   animate,
   height = 300,
   classNames,
@@ -203,7 +213,9 @@ export function TimeSeriesChart({
   const fmt = useChartFormat(valueFormat)
   const isAnimationActive = useChartAnimation(animate)
   const trigger = useTooltipTrigger()
-  const series = React.useMemo(() => resolveSeries(config, seriesKeys), [config, seriesKeys])
+  const resolved = React.useMemo(() => resolveSeries(config, seriesKeys), [config, seriesKeys])
+  const series = comparison ? comparisonSeries(config, resolved, comparison, t) : resolved
+  const previousKey = comparison?.previousKey
   const chartConfig = React.useMemo(() => seriesConfig(config, series), [config, series])
   const rtl = dir === "rtl"
   const axes = rtlAxes(rtl)
@@ -234,15 +246,7 @@ export function TimeSeriesChart({
 
   const first = rows[0]?.[TIME_KEY]
   const last = rows[rows.length - 1]?.[TIME_KEY]
-  const summary = [
-    cartesianSummary(t, t("chart.typeTimeSeries"), series, rows, fmt.value),
-    rows.length
-      ? t("chart.timeRange", { start: formatTime(first, fullPattern), end: formatTime(last, fullPattern) })
-      : "",
-  ]
-    .filter(Boolean)
-    .join(" ")
-  const table = cartesianTable(
+  const seriesTable = cartesianTable(
     t,
     rows,
     TIME_KEY,
@@ -251,23 +255,48 @@ export function TimeSeriesChart({
     (value) => formatTime(value, fullPattern),
     t("chart.date"),
   )
+  const compared = comparison
+    ? comparisonParts({
+        comparison,
+        data: rows,
+        series: [series[0]!, series[1]!],
+        table: seriesTable,
+        format: fmt.value,
+        percent: fmt.percent,
+        t,
+      })
+    : null
+  const table = compared?.table ?? seriesTable
+  const summary = [
+    cartesianSummary(t, t("chart.typeTimeSeries"), series, rows, fmt.value),
+    rows.length
+      ? t("chart.timeRange", { start: formatTime(first, fullPattern), end: formatTime(last, fullPattern) })
+      : "",
+    compared?.summary,
+  ]
+    .filter(Boolean)
+    .join(" ")
 
   const visible = zoomed && range ? displayRows.slice(range.start, range.end + 1) : null
   const visibleTimes = visible?.map((r) => r[TIME_KEY] as number)
 
   const requested = variantProp ?? (area ? "area" : "line")
+  // The two periods of a comparison overlap; they never stack.
+  const stack = stacked && !comparison
   // Stacked lines read as stacked areas: each band is one series' share of the total.
-  const variant = stacked && requested === "line" ? "area" : requested
+  const variant = stack && requested === "line" ? "area" : requested
   const Chart = variant === "bar" ? RechartsBarChart : variant === "area" ? RechartsAreaChart : RechartsLineChart
-  const stackId = stacked ? "stack" : undefined
+  const stackId = stack ? "stack" : undefined
   // Bars are centred on their time, so pad the axis by half a step to keep the first and last whole.
   const halfStep = variant === "bar" ? smallestStep(rows) / 2 : 0
   const gradient = useChartGradient(gradientProp) && variant !== "line"
   const gradientId = useGradientId()
   const fills =
     variant === "bar"
-      ? barSeriesFills({ gradient, gradientId, series, data: displayRows, base: stacked ? 0.8 : undefined })
-      : areaSeriesFills({ gradient, gradientId, series, data: displayRows, stacked })
+      ? barSeriesFills({ gradient, gradientId, series, data: displayRows, base: stack ? 0.8 : undefined })
+      : areaSeriesFills({ gradient, gradientId, series, data: displayRows, stacked: stack })
+  // Previous-period bars come first, so each current bar sits at the end of its pair.
+  const drawn = previousKey && variant === "bar" ? [...series].reverse() : series
 
   return (
     <ChartFrame
@@ -277,6 +306,7 @@ export function TimeSeriesChart({
       classNames={classNames}
       autoSummary={summary}
       table={table}
+      lead={compared?.lead}
       isEmpty={!rows.length || !series.length}
       actions={
         <>
@@ -352,15 +382,18 @@ export function TimeSeriesChart({
             {legend ? (
               <ChartLegend itemSorter={null} verticalAlign="top" content={<ChartLegendContent verticalAlign="top" />} />
             ) : null}
-            {series.map((s, i) => {
+            {drawn.map((s) => {
+              const i = series.indexOf(s)
+              const previous = s.key === previousKey
               if (variant === "bar") {
-                const top = !stacked || i === series.length - 1
+                const top = !stack || i === series.length - 1
                 return (
                   <Bar
                     key={s.key}
                     dataKey={s.key}
                     name={s.key}
                     fill={fills.fill[i]}
+                    fillOpacity={previous ? 0.35 : undefined}
                     stackId={stackId}
                     radius={top ? [4, 4, 0, 0] : 0}
                     maxBarSize={48}
@@ -376,13 +409,20 @@ export function TimeSeriesChart({
                 type: "monotone" as const,
                 stroke: `var(--color-${s.key})`,
                 strokeWidth: 2,
+                strokeDasharray: previous ? "5 4" : undefined,
                 connectNulls,
                 isAnimationActive,
                 dot: false as const,
                 activeDot: { r: 4 },
               }
               return variant === "area" ? (
-                <Area key={s.key} {...common} fill={fills.fill[i]} fillOpacity={fills.fillOpacity} stackId={stackId} />
+                <Area
+                  key={s.key}
+                  {...common}
+                  fill={fills.fill[i]}
+                  fillOpacity={previous ? 0 : fills.fillOpacity}
+                  stackId={stackId}
+                />
               ) : (
                 <Line key={s.key} {...common} />
               )

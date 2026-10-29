@@ -16,9 +16,11 @@ export {
   ChartAnimationProvider,
   ChartDataTable,
   chartColor,
+  rowChange,
   useChartAnimation,
   type ChartAnimationProviderProps,
   type ChartBaseProps,
+  type ChartComparison,
   type ChartDatum,
   type ChartFrameClassNames,
   type ChartView,
@@ -29,7 +31,6 @@ export type { CartesianChartProps } from "./_cartesian"
 export * from "./category-chart"
 export * from "./pie-chart"
 export * from "./time-series-chart"
-export * from "./period-comparison-chart"
 export * from "./sparkline"
 export * from "./delta-indicator"
 export * from "./stat-tile"

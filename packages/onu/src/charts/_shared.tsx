@@ -10,6 +10,9 @@ import { Button } from "../ui/button"
 import type { ChartConfig } from "../ui/chart"
 import { Skeleton } from "../ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
+import type { Translate } from "../i18n/types"
+import { DeltaIndicator } from "./delta-indicator"
+import { aggregate, computeDelta } from "./format"
 import { registerEnglish } from "../i18n/english"
 import { chart as en_chart } from "../locales/en/chart"
 
@@ -372,4 +375,150 @@ export function ChartDataTable({
       </Table>
     </div>
   )
+}
+
+/**
+ * Compares the current period with the previous one (`TimeSeriesChart` and `CategoryChart`):
+ * the chart's first series is the current period and `previousKey` the previous one.
+ */
+export interface ChartComparison {
+  /** Key of the previous period's value in each row, e.g. `"previous"`. */
+  previousKey: string
+  /** Default the current series' `config` label, else "This period". */
+  currentLabel?: React.ReactNode
+  /** Default the `config` label of `previousKey`, else "Previous period". */
+  previousLabel?: React.ReactNode
+  /** How the headline figures are computed. Default `"sum"`. */
+  aggregate?: "sum" | "average" | "last"
+  /** Whether an increase is good. Default `true`. */
+  positiveIsGood?: boolean
+  /** Hide the headline totals above the chart. */
+  hideTotals?: boolean
+}
+
+/** Per-row change between the current and previous value, as a ratio (`null` when not computable). */
+export function rowChange(datum: ChartDatum, currentKey: string, previousKey: string): number | null {
+  const current = numericValue(datum, currentKey)
+  const previous = numericValue(datum, previousKey)
+  if (current === null || previous === null) return null
+  return computeDelta(current, previous).ratio
+}
+
+/**
+ * The two series of a comparison: the current period (the first series that is not
+ * `previousKey`, else `"current"`) in the first chart colour, and the previous one muted.
+ */
+export function comparisonSeries(
+  config: ChartConfig = {},
+  series: SeriesInfo[],
+  comparison: ChartComparison,
+  t: Translate,
+): [SeriesInfo, SeriesInfo] {
+  const { previousKey } = comparison
+  const currentKey = series.find((s) => s.key !== previousKey)?.key ?? "current"
+  const info = (key: string, label: React.ReactNode, color: string): SeriesInfo => ({
+    key,
+    label,
+    text: nodeText(label, key),
+    color,
+  })
+  return [
+    info(
+      currentKey,
+      comparison.currentLabel ?? config[currentKey]?.label ?? t("chart.currentPeriod"),
+      config[currentKey]?.color ?? chartColor(0),
+    ),
+    info(
+      previousKey,
+      comparison.previousLabel ?? config[previousKey]?.label ?? t("chart.previousPeriod"),
+      config[previousKey]?.color ?? "var(--muted-foreground)",
+    ),
+  ]
+}
+
+/**
+ * What a comparison adds to a chart: the headline totals with a `DeltaIndicator` (`lead`),
+ * the totals and change in the screen-reader summary, and a "Change" column in the table.
+ */
+export function comparisonParts({
+  comparison,
+  data,
+  series: [current, previous],
+  table,
+  format,
+  percent,
+  t,
+}: {
+  comparison: ChartComparison
+  data: ChartDatum[]
+  series: [SeriesInfo, SeriesInfo]
+  /** The chart's table, with one row per item of `data`. */
+  table: DataTableModel
+  format: (value: number) => string
+  percent: (ratio: number) => string
+  t: Translate
+}) {
+  const { aggregate: mode = "sum", positiveIsGood = true, hideTotals = false } = comparison
+  const currentTotal = aggregate(
+    data.map((d) => numericValue(d, current.key)),
+    mode,
+  )
+  const previousTotal = aggregate(
+    data.map((d) => numericValue(d, previous.key)),
+    mode,
+  )
+  const delta = computeDelta(currentTotal, previousTotal)
+  const deltaText =
+    delta.direction === "flat"
+      ? t("chart.noChange")
+      : delta.ratio === null
+        ? ""
+        : t(delta.direction === "up" ? "chart.increase" : "chart.decrease", { value: percent(Math.abs(delta.ratio)) })
+  const summary = [`${current.text}: ${format(currentTotal)}. ${previous.text}: ${format(previousTotal)}.`, deltaText]
+    .filter(Boolean)
+    .join(" ")
+
+  const withChange: DataTableModel = {
+    columns: [...table.columns, t("chart.change")],
+    rows: table.rows.map((row, index) => {
+      const change = data[index] ? rowChange(data[index], current.key, previous.key) : null
+      return {
+        ...row,
+        cells: [
+          ...row.cells,
+          change === null ? (
+            t("chart.noValue")
+          ) : (
+            <DeltaIndicator key="delta" value={change} positiveIsGood={positiveIsGood} className="justify-end" />
+          ),
+        ],
+      }
+    }),
+  }
+
+  const lead = hideTotals ? null : (
+    <div data-slot="period-totals" className="gap-x-6 gap-y-2 flex flex-wrap items-end">
+      <div className="gap-0.5 grid">
+        <span className="text-xs text-muted-foreground">{current.label}</span>
+        <span data-slot="period-current-total" className="text-2xl font-semibold leading-none tabular-nums">
+          {format(currentTotal)}
+        </span>
+      </div>
+      <div className="gap-0.5 grid">
+        <span className="text-xs text-muted-foreground">{previous.label}</span>
+        <span data-slot="period-previous-total" className="text-lg leading-none text-muted-foreground tabular-nums">
+          {format(previousTotal)}
+        </span>
+      </div>
+      <DeltaIndicator
+        variant="badge"
+        current={currentTotal}
+        previous={previousTotal}
+        positiveIsGood={positiveIsGood}
+        className="mb-0.5"
+      />
+    </div>
+  )
+
+  return { lead, summary, table: withChange }
 }

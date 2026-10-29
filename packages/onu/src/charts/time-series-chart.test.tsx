@@ -253,3 +253,65 @@ describe("TimeSeriesChart", () => {
     await expectNoA11yViolations(container)
   })
 })
+
+describe("TimeSeriesChart comparison", () => {
+  const weeks = [
+    { date: "2026-03-02", applications: 120, lastYear: 100 },
+    { date: "2026-03-09", applications: 80, lastYear: 100 },
+  ]
+  const weekConfig = { applications: { label: "This year" }, lastYear: { label: "Last year" } }
+
+  it("dashes the previous period, shows totals and adds a change column", async () => {
+    const user = userEvent.setup()
+    const { container } = renderWithOnu(
+      <TimeSeriesChart
+        title="Applications"
+        data={weeks}
+        config={weekConfig}
+        comparison={{ previousKey: "lastYear" }}
+        animate={false}
+      />,
+    )
+    expect(container.querySelector('[data-slot="period-current-total"]')).toHaveTextContent("200")
+    expect(container.querySelector('[data-slot="period-previous-total"]')).toHaveTextContent("200")
+    const lines = container.querySelectorAll(".recharts-line-curve")
+    expect(lines).toHaveLength(2)
+    expect(lines[1]).toHaveAttribute("stroke-dasharray", "5 4")
+    expect(container.querySelector('[data-slot="chart-summary"]')).toHaveTextContent(
+      "This year: 200. Last year: 200. No change",
+    )
+    await user.click(screen.getByRole("button", { name: "View as table" }))
+    expect(screen.getByRole("columnheader", { name: "Change" })).toBeInTheDocument()
+    expect(within(screen.getAllByRole("row")[1]!).getAllByRole("cell")[2]).toHaveTextContent("Up 20%")
+  })
+
+  it("draws muted previous bars, does not stack, and can hide totals", () => {
+    const { container } = renderWithOnu(
+      <TimeSeriesChart
+        title="Applications"
+        variant="bar"
+        stacked
+        data={weeks}
+        config={weekConfig}
+        comparison={{ previousKey: "lastYear", hideTotals: true, positiveIsGood: false }}
+        animate={false}
+      />,
+    )
+    const bars = container.querySelectorAll(".recharts-bar")
+    expect(bars).toHaveLength(2)
+    expect(bars[0]!.querySelector(".recharts-bar-rectangle path")).toHaveAttribute("fill-opacity", "0.35")
+    expect(container.querySelector('[data-slot="period-totals"]')).toBeNull()
+  })
+
+  it("has no axe violations", async () => {
+    const { container } = renderWithOnu(
+      <TimeSeriesChart
+        title="Applications"
+        data={weeks}
+        config={weekConfig}
+        comparison={{ previousKey: "lastYear" }}
+      />,
+    )
+    await expectNoA11yViolations(container)
+  })
+})

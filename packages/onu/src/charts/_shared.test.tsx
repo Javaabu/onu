@@ -6,7 +6,6 @@ import { mockMatchMedia, mockRecharts } from "../../test/recharts-mock"
 import { renderWithOnu } from "../../test/utils"
 import { ChartAnimationProvider, useChartAnimation } from "./_shared"
 import { CategoryChart } from "./category-chart"
-import { PeriodComparisonChart } from "./period-comparison-chart"
 import { PieChart } from "./pie-chart"
 import { Sparkline } from "./sparkline"
 import { TimeSeriesChart } from "./time-series-chart"
@@ -87,27 +86,28 @@ const charts: { name: string; render: () => React.ReactElement; elements: string
     elements: ["Bar", "Tooltip"],
   },
   {
-    name: "PeriodComparisonChart",
+    name: "CategoryChart (comparison)",
     render: () => (
-      <PeriodComparisonChart
+      <CategoryChart
         title="Applications"
         data={[
           { day: "Sun", current: 120, previous: 100 },
           { day: "Mon", current: 80, previous: 90 },
         ]}
         categoryKey="day"
+        comparison={{ previousKey: "previous" }}
       />
     ),
     elements: ["Line", "Tooltip"],
   },
   {
-    name: "PeriodComparisonChart (bar)",
+    name: "TimeSeriesChart (comparison bar)",
     render: () => (
-      <PeriodComparisonChart
+      <TimeSeriesChart
         title="Applications"
-        data={[{ day: "Sun", current: 120, previous: 100 }]}
-        categoryKey="day"
+        data={[{ date: "2026-01-01", current: 120, previous: 100 }]}
         variant="bar"
+        comparison={{ previousKey: "previous" }}
       />
     ),
     elements: ["Bar", "Tooltip"],

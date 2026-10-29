@@ -228,7 +228,7 @@ What each build-list group is based on. "In-house" means composed from shadcn pr
 | Files and media | `avatar`, `progress`, `carousel`, `dialog`, `aspect-ratio` | `react-dropzone`, `react-easy-crop`, `embla-carousel-react`, `yet-another-react-lightbox`, Media Chrome (media player) | Upload progress, media lister, attachment preview (with language versions), click-to-load embed |
 | Rich content | none (shadcn has no editor) | [Tiptap](https://tiptap.dev) (ProseMirror) for the WYSIWYG and block editors; `@tiptap/static-renderer` for the block renderer; Shiki for code highlighting. Only MIT-licensed Tiptap packages may be used, never paid Pro/Cloud extensions | Translations editor, custom attribute fields |
 | Maps | none | **Google Maps (default)** via `@vis.gl/react-google-maps`; `terra-draw` + its Google Maps adapter (radius/polygon/route drawing); `@googlemaps/markerclusterer`; deck.gl `GoogleMapsOverlay` (heatmap, replay trails); `@turf/turf`. MapLibre via `react-map-gl` as an optional secondary adapter | Location card, info panel, legend swatch, replay controls, route stop editor |
-| Charts | `chart` | `recharts`; map chart as a choropleth on Google Maps (deck.gl `GeoJsonLayer`) | Stat tiles, period comparison |
+| Charts | `chart` | `recharts`; map chart as a choropleth on Google Maps (deck.gl `GeoJsonLayer`) | Stat tiles, period comparison (`comparison` on the time-series and category charts) |
 | Listing pages | `table`, data-table pattern, `pagination`, `dropdown-menu`, `checkbox`, `empty`, `toggle-group` | TanStack Table, TanStack Virtual, `@dnd-kit`, React Aria `Tree` | Kanban, filter panel/chips/tabs, bulk actions, view switcher, load more |
 | Overlays | `dialog`, `alert-dialog`, `sheet`, `drawer`, `popover`, `tooltip`, `hover-card`, `dropdown-menu`, `context-menu`, `command` | `vaul`, `cmdk`, `yet-another-react-lightbox` | none |
 | Loading | `spinner`, `skeleton`, `progress` | none | Loading overlay, page progress bar |
@@ -649,7 +649,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Map chart
 - [ ] Stat tiles
 - [ ] Time-series chart
-- [ ] Period comparison chart
+- ~~Period comparison chart~~ *(Folded into Time-series chart and Category chart: `comparison`.)*
 - [ ] Sparkline
 
 ### Listing pages

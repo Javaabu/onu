@@ -11,12 +11,6 @@
     "import": "@javaabu/onu/charts",
     "figmaUrl": null
   },
-  "charts/period-comparison-chart": {
-    "title": "PeriodComparisonChart",
-    "component": "PeriodComparisonChart",
-    "import": "@javaabu/onu/charts",
-    "figmaUrl": null
-  },
   "charts/pie-chart": {
     "title": "PieChart",
     "component": "PieChart",

@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { mockMatchMedia, mockRecharts } from "../../test/recharts-mock"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../test/utils"
-import { useChartAnimation, useTooltipTrigger } from "./_shared"
+import { rowChange, useChartAnimation, useTooltipTrigger } from "./_shared"
 import { CategoryChart, type CategoryChartVariant } from "./category-chart"
 
 vi.mock("recharts", async (importOriginal) => mockRecharts(await importOriginal()))
@@ -504,6 +504,169 @@ describe('CategoryChart variant="line" and "area"', () => {
   it("has no axe violations", async () => {
     const { container } = renderWithOnu(
       <CategoryChart title="Catch" data={fish} categoryKey="month" config={fishConfig} animate={false} />,
+    )
+    await expectNoA11yViolations(container)
+  })
+})
+
+const periods = [
+  { day: "Sun", current: 120, previous: 100 },
+  { day: "Mon", current: 80, previous: 100 },
+  { day: "Tue", current: null, previous: 50 },
+]
+const compare = { previousKey: "previous" }
+
+describe("rowChange", () => {
+  it("returns the ratio or null", () => {
+    expect(rowChange(periods[0]!, "current", "previous")).toBeCloseTo(0.2)
+    expect(rowChange(periods[2]!, "current", "previous")).toBeNull()
+    expect(rowChange({ current: 5, previous: 0 }, "current", "previous")).toBeNull()
+  })
+})
+
+describe("CategoryChart comparison", () => {
+  it("shows totals, the delta with an icon and sign, and both series", () => {
+    const { container } = renderWithOnu(
+      <CategoryChart title="Applications" data={periods} categoryKey="day" comparison={compare} animate={false} />,
+    )
+    expect(container.querySelector('[data-slot="period-current-total"]')).toHaveTextContent("200")
+    expect(container.querySelector('[data-slot="period-previous-total"]')).toHaveTextContent("250")
+    const delta = container.querySelector('[data-slot="period-totals"] [data-slot="delta-indicator"]')!
+    expect(delta).toHaveAttribute("data-direction", "down")
+    expect(delta).toHaveAttribute("data-sentiment", "negative")
+    expect(delta).toHaveTextContent("−20%")
+    expect(delta.querySelector('[data-icon-name="arrow-down"]')).not.toBeNull()
+    const lines = container.querySelectorAll(".recharts-line-curve")
+    expect(lines).toHaveLength(2)
+    expect(lines[0]).not.toHaveAttribute("stroke-dasharray")
+    expect(lines[1]).toHaveAttribute("stroke-dasharray", "5 4")
+    expect(container.querySelector('[data-slot="chart-summary"]')).toHaveTextContent(
+      "This period: 200. Previous period: 250. Down 20%",
+    )
+  })
+
+  it("treats a fall as good when positiveIsGood is false", () => {
+    const { container } = renderWithOnu(
+      <CategoryChart
+        title="Costs"
+        data={periods}
+        categoryKey="day"
+        comparison={{ ...compare, positiveIsGood: false }}
+        animate={false}
+      />,
+    )
+    expect(container.querySelector('[data-slot="period-totals"] [data-slot="delta-indicator"]')).toHaveAttribute(
+      "data-sentiment",
+      "positive",
+    )
+  })
+
+  it("draws the previous period as muted bars first, with custom labels, and never stacks", () => {
+    const { container } = renderWithOnu(
+      <CategoryChart
+        title="Costs"
+        variant="bar"
+        stacked
+        data={periods}
+        categoryKey="day"
+        comparison={{ ...compare, currentLabel: "2026", previousLabel: "2025" }}
+        valueFormat="currency"
+        animate={false}
+      />,
+    )
+    const bars = container.querySelectorAll(".recharts-bar")
+    expect(bars).toHaveLength(2)
+    expect(bars[0]!.querySelector(".recharts-bar-rectangle path")).toHaveAttribute("fill-opacity", "0.35")
+    expect(container.querySelector(".recharts-legend-wrapper")).toHaveTextContent("20252026")
+    expect(strip(container.querySelector('[data-slot="period-current-total"]')!.textContent)).toBe("MVR 200.00")
+  })
+
+  it("takes the current series and labels from config", () => {
+    const { container } = renderWithOnu(
+      <CategoryChart
+        title="Arrivals"
+        data={[{ month: "Jan", arrivals: 10, lastYear: 8 }]}
+        categoryKey="month"
+        config={{ arrivals: { label: "2026" }, lastYear: { label: "2025" } }}
+        comparison={{ previousKey: "lastYear" }}
+        animate={false}
+      />,
+    )
+    expect(container.querySelector('[data-slot="period-current-total"]')).toHaveTextContent("10")
+    expect(container.querySelector('[data-slot="period-totals"]')).toHaveTextContent("2026")
+    expect(container.querySelector('[data-slot="period-totals"]')).toHaveTextContent("2025")
+  })
+
+  it("averages and can hide totals", () => {
+    const { container, rerender } = renderWithOnu(
+      <CategoryChart
+        title="Applications"
+        data={periods}
+        categoryKey="day"
+        comparison={{ ...compare, aggregate: "average" }}
+      />,
+    )
+    expect(container.querySelector('[data-slot="period-current-total"]')).toHaveTextContent("100")
+    rerender(
+      <CategoryChart
+        title="Applications"
+        data={periods}
+        categoryKey="day"
+        comparison={{ ...compare, hideTotals: true }}
+      />,
+    )
+    expect(container.querySelector('[data-slot="period-totals"]')).toBeNull()
+  })
+
+  it("says 'No change' for equal totals", () => {
+    const { container } = renderWithOnu(
+      <CategoryChart
+        title="Flat"
+        data={[{ day: "Sun", current: 5, previous: 5 }]}
+        categoryKey="day"
+        comparison={compare}
+      />,
+    )
+    expect(container.querySelector('[data-slot="chart-summary"]')).toHaveTextContent("No change")
+  })
+
+  it("adds a change column to the table", async () => {
+    const user = userEvent.setup()
+    renderWithOnu(<CategoryChart title="Applications" data={periods} categoryKey="day" comparison={compare} />)
+    await user.click(screen.getByRole("button", { name: "View as table" }))
+    expect(screen.getByRole("columnheader", { name: "Change" })).toBeInTheDocument()
+    const rows = screen.getAllByRole("row")
+    expect(within(rows[1]!).getAllByRole("cell")[2]).toHaveTextContent("Up 20%")
+    expect(within(rows[3]!).getAllByRole("cell")[0]).toHaveTextContent("No data")
+    expect(within(rows[3]!).getAllByRole("cell")[2]).toHaveTextContent("No data")
+  })
+
+  it("leaves charts without comparison unchanged", () => {
+    const { container } = renderWithOnu(
+      <CategoryChart
+        title="Applications"
+        data={periods}
+        categoryKey="day"
+        config={{ current: {}, previous: {} }}
+        animate={false}
+      />,
+    )
+    expect(container.querySelector('[data-slot="period-totals"]')).toBeNull()
+    expect(container.querySelector(".recharts-line-curve[stroke-dasharray]")).toBeNull()
+  })
+
+  it("uses Dhivehi defaults", () => {
+    renderWithOnu(
+      <CategoryChart title="ހުށަހެޅުން" data={periods} categoryKey="day" comparison={compare} animate={false} />,
+      { locale: "dv" },
+    )
+    expect(screen.getAllByText("މި މުއްދަތު").length).toBeGreaterThan(0)
+    expect(screen.getAllByText("ކުރީގެ މުއްދަތު").length).toBeGreaterThan(0)
+  })
+
+  it("has no axe violations", async () => {
+    const { container } = renderWithOnu(
+      <CategoryChart title="Applications" data={periods} categoryKey="day" comparison={compare} animate={false} />,
     )
     await expectNoA11yViolations(container)
   })

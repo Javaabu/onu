@@ -6,7 +6,6 @@ import { mockRecharts } from "../../test/recharts-mock"
 import { renderWithOnu } from "../../test/utils"
 import { areaGradient, barDirections, barGradient, ChartStyleProvider, useChartGradient } from "./_gradient"
 import { CategoryChart } from "./category-chart"
-import { PeriodComparisonChart } from "./period-comparison-chart"
 import { PieChart } from "./pie-chart"
 import { Sparkline } from "./sparkline"
 import { StatTile } from "./stat-tile"
@@ -161,24 +160,46 @@ describe("chart gradients", () => {
     expect(fills(bars!, ".recharts-bar-rectangle path")[0]).toMatch(/^url\(#onu-fill-/)
   })
 
-  it("washes the current period and fills period bars", () => {
+  it("fills both periods of a comparison", () => {
     const rows = [
       { day: "Sun", current: 120, previous: 98 },
       { day: "Mon", current: 140, previous: 120 },
     ]
+    const comparison = { previousKey: "previous" }
     const { container } = renderWithOnu(
       <>
-        <PeriodComparisonChart title="Lines" data={rows} categoryKey="day" animate={false} />
-        <PeriodComparisonChart title="Bars" data={rows} categoryKey="day" variant="bar" animate={false} />
-        <PeriodComparisonChart title="Solid" data={rows} categoryKey="day" gradient={false} animate={false} />
+        <CategoryChart
+          title="Areas"
+          data={rows}
+          categoryKey="day"
+          variant="area"
+          comparison={comparison}
+          animate={false}
+        />
+        <CategoryChart
+          title="Bars"
+          data={rows}
+          categoryKey="day"
+          variant="bar"
+          comparison={comparison}
+          animate={false}
+        />
+        <CategoryChart
+          title="Solid"
+          data={rows}
+          categoryKey="day"
+          variant="bar"
+          comparison={comparison}
+          gradient={false}
+          animate={false}
+        />
       </>,
     )
-    const [lines, bars, solid] = screen.getAllByRole("figure")
-    expect(fills(lines!, ".recharts-area-area")).toEqual([`url(#${gradients(lines!)[0]!.id})`])
-    expect(lines!.querySelectorAll(".recharts-line")).toHaveLength(2)
+    const [areas, bars, solid] = screen.getAllByRole("figure")
+    expect(fills(areas!, ".recharts-area-area")[0]).toBe(`url(#${gradients(areas!)[0]!.id})`)
     expect(gradients(bars!)).toHaveLength(2)
-    expect(solid!.querySelectorAll(".recharts-area")).toHaveLength(0)
-    expect(gradients(container)).toHaveLength(3)
+    expect(gradients(solid!)).toHaveLength(0)
+    expect(gradients(container)).toHaveLength(4)
   })
 
   it("fills sparkline and stat tile areas", () => {

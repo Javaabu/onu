@@ -31,7 +31,16 @@ import {
   useChartGradient,
   useGradientId,
 } from "./_gradient"
-import { ChartFrame, resolveSeries, seriesConfig, SVG_LTR, useChartAnimation, useTooltipTrigger } from "./_shared"
+import {
+  ChartFrame,
+  comparisonParts,
+  comparisonSeries,
+  resolveSeries,
+  seriesConfig,
+  SVG_LTR,
+  useChartAnimation,
+  useTooltipTrigger,
+} from "./_shared"
 import { useChartFormat } from "./format"
 import { registerEnglish } from "../i18n/english"
 import { chart as en_chart } from "../locales/en/chart"
@@ -102,7 +111,7 @@ export function CategoryChart({
   showLegend,
   showGrid = true,
   variant = "line",
-  stacked = false,
+  stacked: stackedProp = false,
   curve = "monotone",
   dots,
   connectNulls = false,
@@ -110,6 +119,7 @@ export function CategoryChart({
   orientation = "vertical",
   radius,
   gradient: gradientProp,
+  comparison,
   animate,
   height = 300,
   classNames,
@@ -119,7 +129,11 @@ export function CategoryChart({
   const fmt = useChartFormat(valueFormat)
   const isAnimationActive = useChartAnimation(animate)
   const trigger = useTooltipTrigger()
-  const series = React.useMemo(() => resolveSeries(config, seriesKeys), [config, seriesKeys])
+  const resolved = React.useMemo(() => resolveSeries(config, seriesKeys), [config, seriesKeys])
+  const series = comparison ? comparisonSeries(config, resolved, comparison, t) : resolved
+  const previousKey = comparison?.previousKey
+  // The two periods of a comparison overlap; they never stack.
+  const stacked = stackedProp && !comparison
   const chartConfig = React.useMemo(() => seriesConfig(config, series), [config, series])
   const rtl = dir === "rtl"
   const axes = rtlAxes(rtl)
@@ -134,9 +148,10 @@ export function CategoryChart({
   const fills = bar
     ? barSeriesFills({ gradient, gradientId, series, data, horizontal, rtl, base: stacked ? 0.8 : undefined })
     : areaSeriesFills({ gradient, gradientId, series, data, stacked })
+  // Previous-period bars come first, so each current bar sits at the end of its pair.
+  const drawn = previousKey && bar ? [...series].reverse() : series
 
-  const summary = cartesianSummary(t, t(TYPE_KEY[variant]), series, data, fmt.value)
-  const table = cartesianTable(
+  const seriesTable = cartesianTable(
     t,
     data,
     categoryKey,
@@ -145,6 +160,21 @@ export function CategoryChart({
     categoryFormat,
     categoryLabel ?? t("chart.category"),
   )
+  const compared = comparison
+    ? comparisonParts({
+        comparison,
+        data,
+        series: [series[0]!, series[1]!],
+        table: seriesTable,
+        format: fmt.value,
+        percent: fmt.percent,
+        t,
+      })
+    : null
+  const table = compared?.table ?? seriesTable
+  const summary = [cartesianSummary(t, t(TYPE_KEY[variant]), series, data, fmt.value), compared?.summary]
+    .filter(Boolean)
+    .join(" ")
 
   const categoryTick = (value: unknown) => categoryFormat(value)
   const valueTick = (value: number) => fmt.axis(value)
@@ -159,6 +189,7 @@ export function CategoryChart({
       classNames={classNames}
       autoSummary={summary}
       table={table}
+      lead={compared?.lead}
       isEmpty={!data.length || !series.length}
     >
       {({ titleId, summaryId }) => (
@@ -231,7 +262,9 @@ export function CategoryChart({
               }
             />
             {legend ? <ChartLegend itemSorter={null} content={<ChartLegendContent />} /> : null}
-            {series.map((s, i) => {
+            {drawn.map((s) => {
+              const i = series.indexOf(s)
+              const previous = s.key === previousKey
               if (bar) {
                 return (
                   <Bar
@@ -239,6 +272,7 @@ export function CategoryChart({
                     dataKey={s.key}
                     name={s.key}
                     fill={fills.fill[i]}
+                    fillOpacity={previous ? 0.35 : undefined}
                     stackId={stacked ? "stack" : undefined}
                     radius={barRadius}
                     isAnimationActive={isAnimationActive}
@@ -253,7 +287,7 @@ export function CategoryChart({
                 type: curve,
                 stroke: `var(--color-${s.key})`,
                 strokeWidth: 2,
-                strokeDasharray: dashedSeries?.includes(s.key) ? "5 4" : undefined,
+                strokeDasharray: previous || dashedSeries?.includes(s.key) ? "5 4" : undefined,
                 connectNulls,
                 isAnimationActive,
                 dot: showDots ? { r: 3, fill: `var(--color-${s.key})`, strokeWidth: 0 } : false,
@@ -264,7 +298,7 @@ export function CategoryChart({
                   key={s.key}
                   {...common}
                   fill={fills.fill[i]}
-                  fillOpacity={fills.fillOpacity}
+                  fillOpacity={previous ? 0 : fills.fillOpacity}
                   stackId={stacked ? "stack" : undefined}
                 />
               ) : (

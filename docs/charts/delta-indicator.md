@@ -3,7 +3,7 @@ title: DeltaIndicator
 sidebar_position: 8
 ---
 
-A change indicator: an arrow icon, a signed percentage and a semantic colour. Used by [StatTile](./stat-tile) and [PeriodComparisonChart](./period-comparison-chart), and handy in tables.
+A change indicator: an arrow icon, a signed percentage and a semantic colour. Used by [StatTile](./stat-tile) and the [comparison](./time-series-chart#comparison) of `TimeSeriesChart` and `CategoryChart`, and handy in tables.
 
 ```tsx
 import { DeltaIndicator } from "@javaabu/onu/charts"

@@ -1,7 +1,14 @@
 import { CategoryChart, type ChartConfig } from "@javaabu/onu/charts"
 
 import { DemoPage, DemoSection } from "../../components/demo"
-import { arrivalsByMonth, fishCatch, revenueByIsland, revenueByIslandDv } from "./_data"
+import {
+  arrivalsByMonth,
+  fishCatch,
+  monthlyCosts,
+  revenueByIsland,
+  revenueByIslandDv,
+  weeklyApplications,
+} from "./_data"
 
 export const meta = {
   title: "Category chart",
@@ -174,6 +181,42 @@ export default function CategoryChartDemo() {
             series={["arrivals"]}
             config={{ arrivals: { label: "ފަތުރުވެރިން" } }}
             valueFormat="compact"
+          />
+        </div>
+      </DemoSection>
+      <DemoSection title="Comparison" description="This period against the previous one." className="block">
+        <CategoryChart
+          title="Applications this week"
+          description="Compared with the previous week."
+          data={weeklyApplications}
+          categoryKey="day"
+          comparison={{ previousKey: "previous", currentLabel: "This week", previousLabel: "Last week" }}
+        />
+      </DemoSection>
+      <DemoSection
+        title="Comparison bars, lower is better"
+        description="positiveIsGood: false: a fall in costs is shown in green."
+        className="gap-6 lg:grid-cols-2 grid"
+      >
+        <CategoryChart
+          title="Electricity costs, Q3"
+          variant="bar"
+          data={monthlyCosts}
+          categoryKey="month"
+          valueFormat="currency"
+          comparison={{ previousKey: "previous", currentLabel: "2026", previousLabel: "2025", positiveIsGood: false }}
+          height={240}
+        />
+        <div lang="dv">
+          <CategoryChart
+            title="ދުވާލަކަށް ލިބޭ ހުށަހެޅުންތައް"
+            data={weeklyApplications.map((d, i) => ({
+              ...d,
+              day: ["އާދީއްތަ", "ހޯމަ", "އަންގާރަ", "ބުދަ", "ބުރާސްފަތި", "ހުކުރު", "ހޮނިހިރު"][i],
+            }))}
+            categoryKey="day"
+            comparison={{ previousKey: "previous", aggregate: "average" }}
+            height={240}
           />
         </div>
       </DemoSection>

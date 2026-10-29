@@ -81,6 +81,26 @@ export default function TimeSeriesChartDemo() {
           height={240}
         />
       </DemoSection>
+      <DemoSection
+        title="Comparison"
+        description="This year against last year, with totals and the change per month."
+        className="block"
+      >
+        <TimeSeriesChart
+          title="Applications, this year and last"
+          data={[
+            { date: "2026-03-01", applications: 4120, lastYear: 3800 },
+            { date: "2026-04-01", applications: 5380, lastYear: 4710 },
+            { date: "2026-05-01", applications: 4970, lastYear: 5020 },
+            { date: "2026-06-01", applications: 5610, lastYear: 4890 },
+            { date: "2026-07-01", applications: 6040, lastYear: 5150 },
+          ]}
+          config={{ applications: { label: "2026" }, lastYear: { label: "2025" } }}
+          interval="month"
+          comparison={{ previousKey: "lastYear" }}
+          height={240}
+        />
+      </DemoSection>
       <DemoSection title="Monthly, MVR" className="block">
         <TimeSeriesChart
           title="Tourism tax collected"
