@@ -7,7 +7,7 @@ export {
   type ComboboxPresentationProps,
 } from "./_combobox"
 export type { SelectionProps, SingleSelectionProps, MultipleSelectionProps } from "./_selection"
-export type { RadioVariant, RadioSize } from "./_radio-context"
+export type { RadioVariant, RadioSize, RadioImageAspect } from "./_radio-context"
 export { Select, type SelectProps } from "./select"
 export * from "./searchable-select"
 export * from "./api-select"
@@ -20,4 +20,3 @@ export * from "./segmented-control"
 export * from "./range-slider"
 export * from "./rating"
 export * from "./account-switcher"
-export * from "./image-select"

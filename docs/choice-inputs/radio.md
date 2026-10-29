@@ -27,12 +27,13 @@ All Radix radio item props (`value`, `disabled`, `id`), plus:
 | `label`       | `ReactNode`                               |         | Visible label             |
 | `description` | `ReactNode`                               |         | Secondary text            |
 | `media`       | `ReactNode`                               |         | Card: icon, logo or image |
+| `image`       | `{ src, alt }`                            |         | Image variant: the picture that fills the tile |
 | `aside`       | `ReactNode`                               |         | Card: content at the end  |
-| `variant`     | `"default" \| "card"`                     | group's |                           |
+| `variant`     | `"default" \| "card" \| "image"`          | group's |                           |
 | `size`        | `"default" \| "lg"`                       | group's |                           |
 | `classNames`  | `{ root, label, description, indicator }` |         |                           |
 
-`radioCardVariants` is exported for custom cards.
+`radioCardVariants` and `radioImageVariants` are exported for custom cards and tiles.
 
 ## Accessibility
 

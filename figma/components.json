@@ -65,12 +65,6 @@
     "import": "@javaabu/onu",
     "figmaUrl": null
   },
-  "choice-inputs/image-select": {
-    "title": "Image select",
-    "component": "ImageSelect",
-    "import": "@javaabu/onu",
-    "figmaUrl": null
-  },
   "choice-inputs/radio": {
     "title": "Radio",
     "component": "Radio",

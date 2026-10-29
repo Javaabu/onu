@@ -9,6 +9,7 @@ import { useFormField, useFormFieldControl } from "../form/form-field"
 import {
   RadioGroupStyleContext,
   type RadioGroupContextValue,
+  type RadioImageAspect,
   type RadioSize,
   type RadioVariant,
 } from "./_radio-context"
@@ -17,7 +18,7 @@ import { Radio } from "./radio"
 
 export const radioGroupVariants = cva("relative w-full", {
   variants: {
-    variant: { default: "", card: "" },
+    variant: { default: "", card: "", image: "gap-2 grid" },
     orientation: { vertical: "", horizontal: "" },
   },
   compoundVariants: [
@@ -36,6 +37,8 @@ export const radioGroupVariants = cva("relative w-full", {
 export interface RadioGroupOption extends ChoiceOption {
   /** Card variant: icon, logo or image. */
   media?: React.ReactNode
+  /** Image variant: the picture that fills the tile. `alt` may be `""` when the label says it all (R14.10). */
+  image?: { src: string; alt: string }
   /** Card variant: content at the end, e.g. a price. */
   aside?: React.ReactNode
 }
@@ -43,10 +46,14 @@ export interface RadioGroupOption extends ChoiceOption {
 export interface RadioGroupProps extends Omit<React.ComponentProps<typeof RadioGroupPrimitive.Root>, "orientation"> {
   /** Options as an array. Alternatively pass `Radio` (or shadcn `RadioGroupItem`) children. */
   options?: ReadonlyArray<RadioGroupOption | ChoiceOptionInput>
-  /** `default` radios with labels, or selectable `card`s. */
+  /** `default` radios with labels, selectable `card`s, or a grid of `image` tiles. */
   variant?: RadioVariant
-  /** `vertical` (default) or `horizontal`; horizontal wraps on narrow screens. Arrow keys follow it (and RTL). */
+  /** `vertical` (default) or `horizontal`; horizontal wraps on narrow screens. Arrow keys follow it (and RTL). Not used by `image`, whose grid takes all arrow keys. */
   orientation?: "vertical" | "horizontal"
+  /** Image variant: minimum tile width; the grid fits as many columns as the container allows. Default `8rem`. */
+  minItemWidth?: string
+  /** Image variant: the shape of each image. Default `square`. */
+  aspectRatio?: RadioImageAspect
   /** `lg` gives larger controls and cards (kiosks). */
   size?: RadioSize
   classNames?: RadioGroupContextValue["classNames"]
@@ -62,8 +69,11 @@ export function RadioGroup({
   variant = "default",
   orientation = "vertical",
   size = "default",
+  minItemWidth = "8rem",
+  aspectRatio = "square",
   className,
   classNames,
+  style,
   children,
   ...props
 }: RadioGroupProps) {
@@ -73,21 +83,27 @@ export function RadioGroup({
   >
   const invalid = control["aria-invalid"] === true || control["aria-invalid"] === "true"
   const context = React.useMemo<RadioGroupContextValue>(
-    () => ({ variant, size, invalid, classNames }),
-    [variant, size, invalid, classNames],
+    () => ({ variant, size, invalid, aspectRatio, classNames }),
+    [variant, size, invalid, aspectRatio, classNames],
   )
   const items = normalizeOptions(options as ReadonlyArray<ChoiceOptionInput> | undefined) as RadioGroupOption[]
   // A radiogroup is not labelable by <label for>, so name it by the FormField label's id.
   const labelledBy = control["aria-labelledby"] ?? (field && !control["aria-label"] ? field.labelId : undefined)
+  const image = variant === "image"
 
   return (
     <RadioGroupStyleContext.Provider value={context}>
       <RadioGroupPrimitive.Root
         data-slot="radio-group"
         data-variant={variant}
-        orientation={orientation}
+        orientation={image ? undefined : orientation}
         {...control}
         aria-labelledby={labelledBy}
+        style={
+          image
+            ? { gridTemplateColumns: `repeat(auto-fill, minmax(min(100%, ${minItemWidth}), 1fr))`, ...style }
+            : style
+        }
         className={cn(radioGroupVariants({ variant, orientation }), className)}
       >
         {items.map((o) => (
@@ -98,6 +114,7 @@ export function RadioGroup({
             description={o.description}
             disabled={o.disabled}
             media={o.media ?? o.icon}
+            image={o.image}
             aside={o.aside}
           />
         ))}

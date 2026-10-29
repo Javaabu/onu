@@ -1,3 +1,4 @@
+import * as React from "react"
 import { screen, configure } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
@@ -85,6 +86,93 @@ describe("RadioGroup", () => {
 
   it.each(directions)("passes axe in %s (dv)", async (dir) => {
     renderWithOnu(<RadioGroup aria-label="ޖިންސު" options={["އަންހެން", "ފިރިހެން"]} />, { locale: "dv", dir })
+    await expectNoA11yViolations()
+  })
+})
+
+const themes = [
+  { value: "lagoon", label: "Lagoon", image: { src: "/lagoon.jpg", alt: "" }, description: "Light blue" },
+  { value: "reef", label: "Reef", image: { src: "/reef.jpg", alt: "Coral reef" } },
+  { value: "sunset", label: "Sunset", image: { src: "/sunset.jpg", alt: "" }, disabled: true },
+]
+
+describe("RadioGroup variant=image", () => {
+  it("is a radio group of image tiles", async () => {
+    const onValueChange = vi.fn()
+    renderWithOnu(
+      <RadioGroup variant="image" aria-label="Theme" options={themes} onValueChange={onValueChange} name="theme" />,
+    )
+    const group = screen.getByRole("radiogroup", { name: "Theme" })
+    expect(group).toHaveAttribute("data-variant", "image")
+    expect(group).not.toHaveAttribute("aria-orientation")
+    expect(group.style.gridTemplateColumns).toBe("repeat(auto-fill, minmax(min(100%, 8rem), 1fr))")
+    await userEvent.click(screen.getByRole("radio", { name: "Reef" }))
+    expect(onValueChange).toHaveBeenCalledWith("reef")
+    expect(screen.getByRole("radio", { name: "Reef" })).toBeChecked()
+    expect(screen.getByRole("radio", { name: "Lagoon" })).toHaveAccessibleDescription("Light blue")
+    expect(screen.getByRole("radio", { name: "Sunset" })).toBeDisabled()
+    expect(screen.getByAltText("Coral reef")).toHaveAttribute("loading", "lazy")
+  })
+
+  it.each(directions)("moves with arrow keys in %s", async (dir) => {
+    renderWithOnu(<RadioGroup variant="image" aria-label="Theme" options={themes} defaultValue="lagoon" />, { dir })
+    screen.getByRole("radio", { name: "Lagoon" }).focus()
+    await userEvent.keyboard(dir === "rtl" ? "{ArrowLeft}" : "{ArrowRight}")
+    expect(screen.getByRole("radio", { name: "Reef" })).toHaveFocus()
+    await userEvent.keyboard("{ArrowUp}")
+    expect(screen.getByRole("radio", { name: "Lagoon" })).toHaveFocus()
+  })
+
+  it("is controlled, takes a tile width, a numeric aspect ratio and visually hidden labels", async () => {
+    function Controlled() {
+      const [value, setValue] = React.useState("lagoon")
+      return (
+        <RadioGroup
+          variant="image"
+          aria-label="Theme"
+          options={themes}
+          value={value}
+          onValueChange={setValue}
+          aspectRatio={1.5}
+          minItemWidth="6rem"
+          className="x"
+          classNames={{ item: "item-x", label: "sr-only" }}
+        />
+      )
+    }
+    renderWithOnu(<Controlled />)
+    expect(screen.getByRole("radio", { name: "Lagoon" })).toBeChecked()
+    expect(screen.getByRole("radio", { name: "Reef" })).toHaveClass("item-x")
+    expect(screen.getByText("Reef")).toHaveClass("sr-only")
+    const group = screen.getByRole("radiogroup")
+    expect(group).toHaveClass("x")
+    expect(group.style.gridTemplateColumns).toContain("6rem")
+    expect(group.querySelector<HTMLElement>("[data-slot=radio-image-media]")?.style.aspectRatio).toMatch(/^1\.5/)
+    await userEvent.click(screen.getByRole("radio", { name: "Reef" }))
+    expect(screen.getByRole("radio", { name: "Reef" })).toBeChecked()
+  })
+
+  it("is labelled by a FormField", async () => {
+    renderWithOnu(
+      <FormField label="Cover" name="cover" required error="Pick one">
+        <RadioGroup variant="image" options={themes} aspectRatio="video" />
+      </FormField>,
+    )
+    expect(screen.getByRole("radiogroup", { name: /Cover/ })).toBeInTheDocument()
+    expect(screen.getByRole("radio", { name: "Lagoon" })).toHaveAttribute("aria-invalid", "true")
+    await expectNoA11yViolations()
+  })
+
+  it.each(directions)("passes axe in %s (dv)", async (dir) => {
+    renderWithOnu(
+      <RadioGroup
+        variant="image"
+        aria-label="ތީމް"
+        options={[{ value: "1", label: "ފެހި", image: { src: "/x.jpg", alt: "" } }]}
+        aspectRatio="portrait"
+      />,
+      { locale: "dv", dir },
+    )
     await expectNoA11yViolations()
   })
 })
