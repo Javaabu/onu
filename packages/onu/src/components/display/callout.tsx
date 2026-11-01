@@ -182,7 +182,7 @@ export function Callout({
           type="button"
           variant="ghost"
           size="icon-xs"
-          data-slot="callout-dismiss"
+          data-part="callout-dismiss"
           onClick={dismiss}
           aria-label={t("display.dismiss")}
           className={cn("top-2 end-2 touch:size-11 touch:top-0 touch:end-0 absolute", classNames?.dismiss)}

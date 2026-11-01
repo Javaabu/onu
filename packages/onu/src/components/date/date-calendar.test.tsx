@@ -12,7 +12,7 @@ vi.setConfig({ testTimeout: 30_000 })
 
 const TODAY = new Date(2026, 2, 12) // Thursday 12 March 2026
 
-const caption = () => document.querySelector<HTMLElement>("[data-slot=calendar-caption]")!
+const caption = () => document.querySelector<HTMLElement>("[data-part=calendar-caption]")!
 const dayButton = (day: number, month = "March", year = 2026) =>
   screen.getByRole("button", { name: new RegExp(`${month} ${day}(st|nd|rd|th), ${year}$`) })
 

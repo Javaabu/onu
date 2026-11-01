@@ -189,7 +189,7 @@ describe("AppSidebar", () => {
     renderSidebar(<AppSidebar groups={groups} />)
     const sidebar = document.querySelector("[data-slot=sidebar]")!
     expect(sidebar).toHaveAttribute("data-state", "expanded")
-    await userEvent.click(document.querySelector<HTMLElement>("[data-slot=sidebar-trigger]")!)
+    await userEvent.click(document.querySelector<HTMLElement>("[data-part=sidebar-trigger]")!)
     expect(sidebar).toHaveAttribute("data-state", "collapsed")
     await userEvent.keyboard("{Control>}b{/Control}")
     expect(sidebar).toHaveAttribute("data-state", "expanded")
@@ -198,7 +198,7 @@ describe("AppSidebar", () => {
   it("focuses the phone drawer itself, so a field at the top doesn't bring up the keyboard", async () => {
     mockMobile()
     renderSidebar(<AppSidebar groups={groups} header={<input aria-label="Filter" />} />)
-    await userEvent.click(document.querySelector<HTMLElement>("[data-slot=sidebar-trigger]")!)
+    await userEvent.click(document.querySelector<HTMLElement>("[data-part=sidebar-trigger]")!)
     const dialog = await screen.findByRole("dialog", { name: "Sidebar" })
     expect(dialog).toHaveFocus()
     await userEvent.tab()
@@ -209,7 +209,7 @@ describe("AppSidebar", () => {
     mockMobile()
     renderSidebar(<AppSidebar groups={groups} currentHref="/" />)
     expect(screen.queryByRole("dialog")).toBeNull()
-    await userEvent.click(document.querySelector<HTMLElement>("[data-slot=sidebar-trigger]")!)
+    await userEvent.click(document.querySelector<HTMLElement>("[data-part=sidebar-trigger]")!)
     const dialog = await screen.findByRole("dialog", { name: "Sidebar" })
     await userEvent.click(within(dialog).getByRole("link", { name: /Applications/ }))
     expect(screen.queryByRole("dialog")).toBeNull()

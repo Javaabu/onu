@@ -130,7 +130,7 @@ export function BottomSheetHeader({
         <Button
           variant="ghost"
           size="icon-sm"
-          data-slot="bottom-sheet-expand"
+          data-part="bottom-sheet-expand"
           aria-expanded={expandButton.expanded}
           onClick={expandButton.onToggle}
           className={classNames?.expand}
@@ -141,7 +141,7 @@ export function BottomSheetHeader({
       ) : null}
       {closeButton ? (
         <DrawerClose asChild>
-          <Button variant="ghost" size="icon-sm" data-slot="bottom-sheet-close" className={classNames?.close}>
+          <Button variant="ghost" size="icon-sm" data-part="bottom-sheet-close" className={classNames?.close}>
             <Icon name="close" />
             <span className="sr-only">{t("overlay.close")}</span>
           </Button>

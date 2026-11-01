@@ -92,7 +92,7 @@ export function SensitiveInput({
             {masked && revealable ? (
               <InputGroupButton
                 size="icon-xs"
-                data-slot="sensitive-reveal"
+                data-part="sensitive-reveal"
                 aria-label={t("input.reveal")}
                 aria-pressed={revealed}
                 title={t("input.reveal")}

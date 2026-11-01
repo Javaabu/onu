@@ -309,7 +309,7 @@ function ShowMoreButton({
       type="button"
       variant="link"
       size="sm"
-      data-slot="search-results-more"
+      data-part="search-results-more"
       // aria-disabled rather than disabled, so focus stays on the button while loading.
       aria-disabled={loading || undefined}
       aria-busy={loading || undefined}

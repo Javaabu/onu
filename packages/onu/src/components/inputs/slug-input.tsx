@@ -140,7 +140,7 @@ export function SlugInput({
             {props.readOnly ? null : (
               <InputGroupButton
                 size="icon-xs"
-                data-slot="slug-toggle"
+                data-part="slug-toggle"
                 aria-label={t("input.slugAuto")}
                 aria-pressed={auto}
                 title={t("input.slugAuto")}

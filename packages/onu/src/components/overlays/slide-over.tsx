@@ -105,7 +105,7 @@ export function SlideOverHeader({
           <Button
             variant="ghost"
             size="icon-sm"
-            data-slot="slide-over-close"
+            data-part="slide-over-close"
             className={cn("top-3 end-3 absolute", classNames?.close)}
           >
             <Icon name="close" />

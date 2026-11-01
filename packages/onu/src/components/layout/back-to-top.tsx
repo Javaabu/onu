@@ -79,7 +79,7 @@ export function BackToTop({
   const label = t("layout.backToTop")
   return (
     <Button
-      data-slot="back-to-top"
+      data-part="back-to-top"
       data-position={position}
       variant="outline"
       size={showLabel ? "default" : "icon"}

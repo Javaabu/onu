@@ -115,7 +115,7 @@ export function PopoverPanel({
                 <Button
                   variant="ghost"
                   size="icon-xs"
-                  data-slot="popover-panel-close"
+                  data-part="popover-panel-close"
                   className={cn("-top-1 -end-1 absolute", classNames?.close)}
                 >
                   <Icon name="close" />

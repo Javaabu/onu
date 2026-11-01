@@ -180,7 +180,7 @@ function CarouselPrevious({
 
   return (
     <Button
-      data-slot="carousel-previous"
+      data-part="carousel-previous"
       variant={variant}
       size={size}
       className={cn(
@@ -212,7 +212,7 @@ function CarouselNext({
 
   return (
     <Button
-      data-slot="carousel-next"
+      data-part="carousel-next"
       variant={variant}
       size={size}
       className={cn(

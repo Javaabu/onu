@@ -339,7 +339,7 @@ export function CommandPalette({
               size="icon-sm"
               className="sm:hidden"
               onClick={() => setOpen(false)}
-              data-slot="command-palette-close"
+              data-part="command-palette-close"
             >
               <Icon name="close" />
               <span className="sr-only">{t("overlay.close")}</span>

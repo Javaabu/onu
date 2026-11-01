@@ -58,7 +58,7 @@ describe("AppLayout", () => {
     const onSidebarOpenChange = vi.fn()
     renderWithOnu(<Shell sidebarOpen onSidebarOpenChange={onSidebarOpenChange} skipLink={false} />)
     expect(screen.queryByRole("link", { name: "Skip to content" })).toBeNull()
-    await userEvent.click(document.querySelector<HTMLElement>("[data-slot=sidebar-trigger]")!)
+    await userEvent.click(document.querySelector<HTMLElement>("[data-part=sidebar-trigger]")!)
     expect(onSidebarOpenChange).toHaveBeenCalledWith(false)
   })
 
@@ -102,7 +102,7 @@ describe("AppLayout", () => {
   it.each(directions)("works in %s with Dhivehi", async (dir) => {
     renderWithOnu(<Shell defaultSidebarOpen={false} />, { locale: "dv", dir })
     expect(screen.getByRole("link", { name: "ކޮންޓެންޓަށް ފުންމާލާ" })).toBeInTheDocument()
-    expect(document.querySelector("[data-slot=sidebar-trigger]")).toHaveAccessibleName("ސައިޑްބާރު ދައްކާ/ފޮރުވާ")
+    expect(document.querySelector("[data-part=sidebar-trigger]")).toHaveAccessibleName("ސައިޑްބާރު ދައްކާ/ފޮރުވާ")
     await expectNoA11yViolations()
   })
 })

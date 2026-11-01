@@ -119,7 +119,7 @@ export function NotificationCenter({
       variant="ghost"
       size="icon"
       aria-label={triggerLabel}
-      data-slot="notification-center-trigger"
+      data-part="notification-center-trigger"
       className={cn("touch:size-11 relative", classNames?.trigger, className)}
     >
       <Icon name="bell" />

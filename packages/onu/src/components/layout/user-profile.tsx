@@ -97,7 +97,7 @@ export function UserProfile({
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          data-slot="user-profile"
+          data-part="user-profile"
           aria-label={t("layout.accountMenu", { name })}
           className={cn(
             compact

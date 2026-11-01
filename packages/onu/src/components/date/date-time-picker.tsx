@@ -130,7 +130,7 @@ export function DateTimePicker({
               variant="secondary"
               size="sm"
               className="touch:h-11 rounded-full"
-              data-slot="time-chip"
+              data-part="time-chip"
               aria-label={t("date.changeTime", { time: timeText })}
               onClick={() => setView("time")}
             >

@@ -30,14 +30,14 @@ const SHELL_HEADER = [
   "[&_[data-slot=button][data-variant=ghost]:hover]:bg-[color:var(--shell-hover,rgb(194_193_192/0.2))] dark:[&_[data-slot=button][data-variant=ghost]:hover]:bg-[color:var(--shell-hover,rgb(91_87_107/0.2))]",
   "[&_[data-slot=button][data-size^=icon]]:size-9 touch:[&_[data-slot=button][data-size^=icon]]:size-11",
   // The account avatar: Proton's rounded square on the weak shell grey.
-  "[&_[data-slot=user-profile]_[data-slot=user-avatar]]:rounded-lg [&_[data-slot=user-profile]_[data-slot=user-avatar]>*]:rounded-lg [&_[data-slot=user-profile]_[data-slot=user-avatar]>*]:font-semibold [&_[data-slot=user-profile]_[data-slot=user-avatar]>*]:text-foreground",
-  "[&_[data-slot=user-profile]_[data-slot=user-avatar]>*]:bg-[color:var(--shell-weak,#eae7e4)] dark:[&_[data-slot=user-profile]_[data-slot=user-avatar]>*]:bg-[color:var(--shell-weak,#3f3b4c)]",
+  "[&_[data-part=user-profile]_[data-slot=user-avatar]]:rounded-lg [&_[data-part=user-profile]_[data-slot=user-avatar]>*]:rounded-lg [&_[data-part=user-profile]_[data-slot=user-avatar]>*]:font-semibold [&_[data-part=user-profile]_[data-slot=user-avatar]>*]:text-foreground",
+  "[&_[data-part=user-profile]_[data-slot=user-avatar]>*]:bg-[color:var(--shell-weak,#eae7e4)] dark:[&_[data-part=user-profile]_[data-slot=user-avatar]>*]:bg-[color:var(--shell-weak,#3f3b4c)]",
   // The account button: the avatar alone on narrow screens, no chevron.
-  "max-md:[&_[data-slot=user-profile-text]]:hidden [&_[data-slot=user-profile-chevron]]:hidden max-md:[&_[data-slot=user-profile]]:min-h-9 max-md:[&_[data-slot=user-profile]]:p-0.5",
+  "max-md:[&_[data-slot=user-profile-text]]:hidden [&_[data-slot=user-profile-chevron]]:hidden max-md:[&_[data-part=user-profile]]:min-h-9 max-md:[&_[data-part=user-profile]]:p-0.5",
 ].join(" ")
 
 export const appHeaderVariants = cva(
-  "gap-2 px-4 supports-backdrop-filter:backdrop-blur z-30 flex h-[calc(var(--onu-header-height,3.5rem)+env(safe-area-inset-top))] w-full shrink-0 items-center bg-background/95 pt-[env(safe-area-inset-top)] [--onu-header-height:3.5rem] supports-backdrop-filter:bg-background/80 [&_[data-slot=user-profile]]:w-auto",
+  "gap-2 px-4 supports-backdrop-filter:backdrop-blur z-30 flex h-[calc(var(--onu-header-height,3.5rem)+env(safe-area-inset-top))] w-full shrink-0 items-center bg-background/95 pt-[env(safe-area-inset-top)] [--onu-header-height:3.5rem] supports-backdrop-filter:bg-background/80 [&_[data-part=user-profile]]:w-auto",
   {
     variants: {
       variant: {

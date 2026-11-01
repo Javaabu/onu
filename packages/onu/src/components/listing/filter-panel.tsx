@@ -300,7 +300,7 @@ function FilterPopoverPanel({
     <Button
       ref={triggerRef}
       variant="outline"
-      data-slot="filter-panel-trigger"
+      data-part="filter-panel-trigger"
       aria-label={count ? t("listing.filtersCount", { count }) : undefined}
       aria-haspopup="dialog"
       aria-expanded={open}

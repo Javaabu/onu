@@ -323,7 +323,7 @@ export function NumberInput(allProps: NumberInputProps) {
         size="icon-sm"
         variant="ghost"
         tabIndex={-1}
-        data-slot="number-input-decrement"
+        data-part="number-input-decrement"
         aria-label={t("input.decrement")}
         disabled={inactive}
         aria-disabled={(value !== null && min !== undefined && value <= min) || undefined}
@@ -338,7 +338,7 @@ export function NumberInput(allProps: NumberInputProps) {
         size="icon-sm"
         variant="ghost"
         tabIndex={-1}
-        data-slot="number-input-increment"
+        data-part="number-input-increment"
         aria-label={t("input.increment")}
         disabled={inactive}
         aria-disabled={(value !== null && max !== undefined && value >= max) || undefined}

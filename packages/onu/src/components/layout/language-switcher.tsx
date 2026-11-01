@@ -108,7 +108,7 @@ export function LanguageSwitcher({
             variant="ghost"
             size={size === "sm" ? "sm" : "default"}
             disabled={disabled}
-            data-slot="language-switcher"
+            data-part="language-switcher"
             aria-label={`${label}: ${currentLanguage?.name ?? current}`}
             className={cn("touch:min-h-11", className)}
           >

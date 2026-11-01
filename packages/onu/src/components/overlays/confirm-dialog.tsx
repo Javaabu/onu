@@ -230,7 +230,7 @@ export function ConfirmDialog({
           </AlertDialogCancel>
           <Button
             type="button"
-            data-slot="confirm-dialog-confirm"
+            data-part="confirm-dialog-confirm"
             variant={destructive ? "destructive" : "default"}
             disabled={!matches || pending}
             onClick={() => void handleConfirm()}

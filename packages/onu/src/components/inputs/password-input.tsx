@@ -106,7 +106,7 @@ export function PasswordInput({
         {toggleable ? (
           <InputGroupButton
             size="icon-xs"
-            data-slot="password-toggle"
+            data-part="password-toggle"
             aria-label={t("input.showPassword")}
             aria-pressed={visible}
             title={t("input.showPassword")}

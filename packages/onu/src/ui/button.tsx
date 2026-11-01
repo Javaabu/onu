@@ -55,11 +55,12 @@ function Button({
 
   return (
     <Comp
-      data-slot="button"
       data-variant={variant}
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
+      // onu: stays "button" so the touch-target rule in base.css always matches; callers use data-part.
+      data-slot="button"
     />
   )
 }

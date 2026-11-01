@@ -124,7 +124,7 @@ export function ModalHeader({ className, classNames, closeButton = true, childre
           <Button
             variant="ghost"
             size="icon-sm"
-            data-slot="modal-close"
+            data-part="modal-close"
             className={cn("top-3 end-3 absolute", classNames?.close)}
           >
             <Icon name="close" />

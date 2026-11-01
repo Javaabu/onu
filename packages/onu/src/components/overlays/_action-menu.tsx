@@ -189,7 +189,7 @@ export function DropdownActionMenu({
             <Button
               variant="ghost"
               size="icon-sm"
-              data-slot="action-menu-trigger"
+              data-part="action-menu-trigger"
               aria-label={triggerLabel}
               className={cn("touch:size-11", classNames?.trigger)}
             >
