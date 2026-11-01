@@ -24,7 +24,7 @@ export function ContactForm({ t }: { t: Messages }) {
         setSent(true)
       }}
     >
-      {sent && <Callout variant="success" title={t.sent} />}
+      {sent && <Callout tone="success" title={t.sent} />}
       <FormField label={t.name} name="name" required>
         <TextInput autoComplete="name" />
       </FormField>

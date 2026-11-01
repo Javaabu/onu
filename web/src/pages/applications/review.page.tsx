@@ -262,7 +262,7 @@ export default function ApplicationReviewPage() {
               {decided ? (
                 <div className="gap-4 grid">
                   <Callout
-                    variant={status === "approved" ? "success" : status === "rejected" ? "destructive" : "warning"}
+                    tone={status === "approved" ? "success" : status === "rejected" ? "danger" : "warning"}
                     title={timeline[0]?.title}
                     description={tr(
                       "The applicant has been notified by SMS and email.",

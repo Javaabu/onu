@@ -122,7 +122,7 @@ export default function JobDetailPage() {
             {reference ? (
               <Callout
                 className="mt-6"
-                variant="success"
+                tone="success"
                 title={tr("Application received", "އެޕްލިކޭޝަން ލިބިއްޖެ")}
                 description={
                   <div className="gap-3 grid">

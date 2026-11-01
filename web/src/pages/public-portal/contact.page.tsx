@@ -102,7 +102,7 @@ export default function ContactPage() {
           {sent ? (
             <Callout
               className="mt-6"
-              variant="success"
+              tone="success"
               title={tr("Message sent", "މެސެޖް ފޮނުވިއްޖެ")}
               description={tr(
                 `Your ticket number is ${sent}. We have emailed you a copy.`,

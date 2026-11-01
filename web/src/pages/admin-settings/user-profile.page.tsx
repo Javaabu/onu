@@ -314,7 +314,7 @@ export default function UserProfilePage() {
             {twoFactor === "off" ? (
               <div className="gap-4 grid">
                 <Callout
-                  variant="warning"
+                  tone="warning"
                   title={tr("Required for administrators", "އެޑްމިނިސްޓްރޭޓަރުންނަށް މަޖުބޫރު")}
                   description={tr(
                     "Your organisation requires two-factor authentication from 1 November.",

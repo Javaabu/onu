@@ -4,6 +4,7 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { Icon } from "../../icons/icon"
+import { toneSurface, type Tone } from "../../lib/tone"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Alert, AlertDescription, AlertTitle } from "../../ui/alert"
@@ -16,16 +17,15 @@ registerEnglish({ display: en_display })
 
 export const calloutVariants = cva("", {
   variants: {
-    variant: {
-      default: "bg-card text-card-foreground *:[svg]:text-muted-foreground",
-      info: "border-info/30 bg-info/5 text-foreground *:[svg]:text-info",
-      success: "border-success/30 bg-success/5 text-foreground *:[svg]:text-success",
-      warning: "border-warning/40 bg-warning/10 text-foreground *:[svg]:text-warning",
-      destructive:
-        "border-destructive/30 bg-destructive/5 text-foreground *:data-[slot=alert-title]:text-destructive *:[svg]:text-destructive",
+    tone: {
+      neutral: cn(toneSurface.neutral, "*:[svg]:text-muted-foreground"),
+      info: cn(toneSurface.info, "*:[svg]:text-info"),
+      success: cn(toneSurface.success, "*:[svg]:text-success"),
+      warning: cn(toneSurface.warning, "*:[svg]:text-warning"),
+      danger: cn(toneSurface.danger, "*:data-[slot=alert-title]:text-destructive *:[svg]:text-destructive"),
     },
   },
-  defaultVariants: { variant: "default" },
+  defaultVariants: { tone: "neutral" },
 })
 
 /** Classes for the inline appearances (`plain`, `subtle`, `bordered`). */
@@ -33,12 +33,12 @@ export const calloutInlineVariants = cva(
   "gap-2 text-sm [&>svg]:mt-0.5 [&>svg]:size-4 flex items-start text-pretty [&>svg]:shrink-0",
   {
     variants: {
-      variant: {
-        default: "text-muted-foreground",
+      tone: {
+        neutral: "text-muted-foreground",
         info: "text-muted-foreground [&>svg]:text-info",
         success: "text-muted-foreground [&>svg]:text-success",
         warning: "text-foreground [&>svg]:text-warning",
-        destructive: "text-destructive",
+        danger: "text-destructive",
       },
       appearance: {
         plain: "",
@@ -47,25 +47,24 @@ export const calloutInlineVariants = cva(
       },
     },
     compoundVariants: [
-      { appearance: "bordered", variant: "info", className: "border-info" },
-      { appearance: "bordered", variant: "success", className: "border-success" },
-      { appearance: "bordered", variant: "warning", className: "border-warning" },
-      { appearance: "bordered", variant: "destructive", className: "border-destructive" },
-      { appearance: "bordered", variant: "default", className: "border-border" },
+      { appearance: "bordered", tone: "info", className: "border-info" },
+      { appearance: "bordered", tone: "success", className: "border-success" },
+      { appearance: "bordered", tone: "warning", className: "border-warning" },
+      { appearance: "bordered", tone: "danger", className: "border-destructive" },
+      { appearance: "bordered", tone: "neutral", className: "border-border" },
     ],
-    defaultVariants: { variant: "default", appearance: "plain" },
+    defaultVariants: { tone: "neutral", appearance: "plain" },
   },
 )
 
-type CalloutVariant = NonNullable<VariantProps<typeof calloutVariants>["variant"]>
 type InlineAppearance = NonNullable<VariantProps<typeof calloutInlineVariants>["appearance"]>
 
-const ICONS: Record<CalloutVariant, string> = {
-  default: "info",
+const ICONS: Record<Tone, string> = {
+  neutral: "info",
   info: "info",
   success: "success",
   warning: "warning",
-  destructive: "error",
+  danger: "error",
 }
 
 export interface CalloutProps extends Omit<React.ComponentProps<"div">, "title">, VariantProps<typeof calloutVariants> {
@@ -80,7 +79,7 @@ export interface CalloutProps extends Omit<React.ComponentProps<"div">, "title">
   description?: React.ReactNode
   /** Buttons or links shown under the description. */
   actions?: React.ReactNode
-  /** Semantic icon name, a node, or `false` for none. Defaults to the variant's icon. */
+  /** Semantic icon name, a node, or `false` for none. Defaults to the tone's icon. */
   icon?: string | React.ReactNode | false
   /** Shows a dismiss (×) button. */
   dismissible?: boolean
@@ -103,7 +102,7 @@ export interface CalloutProps extends Omit<React.ComponentProps<"div">, "title">
  * use `role="note"`. Pass `role` to override.
  */
 export function Callout({
-  variant,
+  tone,
   appearance = "box",
   title,
   description,
@@ -121,7 +120,7 @@ export function Callout({
 }: CalloutProps) {
   const { t } = useTranslation()
   const [open, setOpen] = useControllableState(openProp, true, onOpenChange)
-  const v = variant ?? "default"
+  const v = tone ?? "neutral"
   if (!open) return null
 
   const dismiss = () => {
@@ -143,9 +142,9 @@ export function Callout({
       <div
         role={role ?? "note"}
         data-slot="callout"
-        data-variant={v}
+        data-tone={v}
         data-appearance={appearance}
-        className={cn(calloutInlineVariants({ variant: v, appearance }), className)}
+        className={cn(calloutInlineVariants({ tone: v, appearance }), className)}
         {...props}
       >
         {iconNode}
@@ -157,9 +156,9 @@ export function Callout({
   return (
     <Alert
       data-slot="callout"
-      data-variant={v}
-      role={role ?? (v === "warning" || v === "destructive" ? "alert" : "status")}
-      className={cn(calloutVariants({ variant }), dismissible && "pe-10", className)}
+      data-tone={v}
+      role={role ?? (v === "warning" || v === "danger" ? "alert" : "status")}
+      className={cn(calloutVariants({ tone }), dismissible && "pe-10", className)}
       {...props}
     >
       {iconNode}

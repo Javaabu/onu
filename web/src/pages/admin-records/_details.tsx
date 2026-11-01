@@ -142,7 +142,7 @@ export function TrashedNotice({ record }: { record: Application }) {
   if (!record.deletedAt) return null
   return (
     <Callout
-      variant="warning"
+      tone="warning"
       title={tr("This application is in the trash", "މި އެޕްލިކޭޝަން ހުރީ ކުނިފޮށީގައި")}
       description={tr(`Deleted on ${labels.date(record.deletedAt)}.`, `ފޮހެލީ ${labels.date(record.deletedAt)}.`)}
       actions={

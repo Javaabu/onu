@@ -264,7 +264,7 @@ export default function ExportPage() {
             {file ? (
               <>
                 <Callout
-                  variant="success"
+                  tone="success"
                   title={tr("Your file is ready", "ފައިލް ތައްޔާރު")}
                   description={tr(
                     `${file.rows} applications, ${columns.length} columns.`,

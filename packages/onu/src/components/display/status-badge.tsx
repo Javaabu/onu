@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import type { Tone } from "../../lib/tone"
 import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "radix-ui"
 
@@ -12,7 +13,7 @@ import { display as en_display } from "../../locales/en/display"
 
 registerEnglish({ display: en_display })
 
-export type StatusTone = "success" | "warning" | "danger" | "info" | "neutral" | "pending"
+export type StatusTone = Tone | "pending"
 
 /**
  * Ant Design's bordered preset-colour tags: info blue (submitted), pending cyan

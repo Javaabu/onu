@@ -295,7 +295,7 @@ export default function ApplicationWizardPage() {
               />
             </div>
           </FormGroup>
-          <Callout appearance="plain" variant="info">
+          <Callout appearance="plain" tone="info">
             {tr("Fee for this application:", "މި އެޕްލިކޭޝަންގެ ފީ:")}{" "}
             <strong className="tabular-nums">{money(fee)}</strong>
           </Callout>
@@ -431,7 +431,7 @@ export default function ApplicationWizardPage() {
         />
         {submitted ? (
           <Callout
-            variant="success"
+            tone="success"
             title={tr("Application submitted", "އެޕްލިކޭޝަން ހުށަހެޅިއްޖެ")}
             description={tr(
               `Your reference is ${submitted}. Pay the fee of ${money(fee)} to start the review.`,

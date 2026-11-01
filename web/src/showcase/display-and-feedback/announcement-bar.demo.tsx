@@ -18,11 +18,11 @@ export default function AnnouncementBarDemo() {
         <AnnouncementBar icon="megaphone" href="#apply" linkText="Apply now">
           Housing scheme applications close on 30 June.
         </AnnouncementBar>
-        <AnnouncementBar variant="neutral" href="#hours" linkText="See hours">
+        <AnnouncementBar tone="neutral" href="#hours" linkText="See hours">
           Ramazan service hours: 9:00–13:30.
         </AnnouncementBar>
-        <AnnouncementBar variant="info">New: track your application on the mobile app.</AnnouncementBar>
-        <AnnouncementBar variant="warning" dismissible={false} icon="wrench">
+        <AnnouncementBar tone="info">New: track your application on the mobile app.</AnnouncementBar>
+        <AnnouncementBar tone="warning" dismissible={false} icon="wrench">
           Scheduled maintenance tonight from 23:00 to 01:00.
         </AnnouncementBar>
         <AnnouncementBar icon="megaphone">

@@ -16,12 +16,12 @@ const base: NotificationItem[] = [
     title: "Application approved",
     description: "Your building permit for Hulhumalé was approved.",
     time: new Date("2026-10-07T09:00:00Z"),
-    variant: "success",
+    tone: "success",
     icon: "success",
     href: "/applications/1",
   },
   { id: "2", title: "Payment received", description: "MVR 1,250.00", time: "2026-10-05T10:00:00Z", read: true },
-  { id: "3", title: "Document requested", time: 1759800000000, variant: "warning" },
+  { id: "3", title: "Document requested", time: 1759800000000, tone: "warning" },
 ]
 
 const original = window.matchMedia

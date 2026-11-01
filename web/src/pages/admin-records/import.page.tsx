@@ -228,7 +228,7 @@ export default function ImportPage() {
 
         {result ? (
           <Callout
-            variant={result.imported ? "success" : "warning"}
+            tone={result.imported ? "success" : "warning"}
             title={
               result.imported
                 ? tr(`${result.imported} applications imported`, `${result.imported} އެޕްލިކޭޝަން އިމްޕޯޓްކުރެވިއްޖެ`)
@@ -331,7 +331,7 @@ export default function ImportPage() {
                   },
                   content: (
                     <div className="gap-4 grid">
-                      {mapError ? <Callout variant="destructive" title={mapError} /> : null}
+                      {mapError ? <Callout tone="danger" title={mapError} /> : null}
                       <div className="gap-4 sm:grid-cols-2 grid">
                         {csv?.headers.map((h) => (
                           <FormField
@@ -367,7 +367,7 @@ export default function ImportPage() {
                   content: (
                     <div className="gap-4 grid">
                       <Callout
-                        variant={invalid.length ? "warning" : "success"}
+                        tone={invalid.length ? "warning" : "success"}
                         title={tr(
                           `${valid.length} rows ready, ${invalid.length} with errors`,
                           `${valid.length} ލައިން ތައްޔާރު، ${invalid.length} ލައިނުގައި މައްސަލަ`,

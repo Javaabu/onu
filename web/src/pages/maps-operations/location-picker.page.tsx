@@ -111,7 +111,7 @@ export default function LocationPickerPage() {
 
         {recordId && values.location ? (
           <Callout
-            variant="success"
+            tone="success"
             title={tr("Location saved", "ތަން ސޭވްކުރެވިއްޖެ")}
             description={tr(
               "The other tabs are now available. Keep editing below, or add opening hours next.",

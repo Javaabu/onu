@@ -103,7 +103,7 @@ export default function MyPaymentsPage() {
 
         {outstanding.length ? (
           <Callout
-            variant={outstanding.some((p) => p.status === "overdue") ? "destructive" : "warning"}
+            tone={outstanding.some((p) => p.status === "overdue") ? "danger" : "warning"}
             title={tr(`${money(outstandingTotal)} to pay`, `${money(outstandingTotal)} ދައްކަން ޖެހޭ`)}
             description={tr(
               `${outstanding.length} invoices, 1 overdue. Pay by BML Transfer or card.`,

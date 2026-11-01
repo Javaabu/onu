@@ -92,7 +92,7 @@ export default function CheckoutPage() {
 
         {declined ? (
           <Callout
-            variant="destructive"
+            tone="danger"
             title={tr("Payment declined", "ފައިސާ ދެއްކުން ނާކާމިޔާބު")}
             description={tr(
               "Your bank declined the card. No money was taken. Try again or pay by transfer.",
@@ -105,7 +105,7 @@ export default function CheckoutPage() {
           <Card headingLevel={2} title={tr("Payment method", "ފައިސާ ދައްކާ ގޮތް")}>
             {transferSent ? (
               <Callout
-                variant="success"
+                tone="success"
                 title={tr("Transfer submitted for verification", "ޓްރާންސްފަރ ޗެކްކުރުމަށް ހުށަހެޅިއްޖެ")}
                 description={tr(
                   "We'll email your receipt once the Ministry confirms the transfer.",
@@ -156,7 +156,7 @@ export default function CheckoutPage() {
 
                 {method === "bml-transfer" ? (
                   <div className="gap-5 grid">
-                    <Callout appearance="bordered" variant="info">
+                    <Callout appearance="bordered" tone="info">
                       {tr(
                         "Transfer the exact amount from any BML account, then upload the slip.",
                         "ބީއެމްއެލްގެ ކޮންމެ އެކައުންޓަކުން ފީގެ ޢަދަދު ޓްރާންސްފަރކޮށް، ސްލިޕް އަޕްލޯޑްކުރައްވާ.",
@@ -230,7 +230,7 @@ export default function CheckoutPage() {
                   </div>
                 ) : method === "bml-connect" ? (
                   <div className="gap-4 grid">
-                    <Callout appearance="bordered" variant="info" icon="lock">
+                    <Callout appearance="bordered" tone="info" icon="lock">
                       {tr(
                         "You'll go to BML Connect's secure page to pay by Visa, Mastercard or American Express.",
                         "ވިސާ، މާސްޓަކާޑް ނުވަތަ އެމެކްސް ކާޑުން ފައިސާ ދެއްކުމަށް ބީއެމްއެލް ކަނެކްޓްގެ ރައްކާތެރި ސަފްހާއަށް ދާނެ.",

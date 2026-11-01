@@ -24,8 +24,8 @@ export default function Dashboard() {
                 }
             />
             <div className="gap-6 p-4 md:p-6 flex flex-col">
-                {flash.success && <Callout variant="success" title={flash.success} />}
-                <Callout variant="info" title={t.welcome} description={t.welcomeBody} />
+                {flash.success && <Callout tone="success" title={flash.success} />}
+                <Callout tone="info" title={t.welcome} description={t.welcomeBody} />
                 <Card title={t.recent}>
                     <ul className="gap-3 flex flex-col">
                         {applications.map((application) => (

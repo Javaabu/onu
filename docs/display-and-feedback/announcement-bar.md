@@ -19,7 +19,7 @@ Change the `id` to show a new announcement to people who dismissed the old one.
 | Prop            | Type                                            | Default               | Description                         |
 | --------------- | ----------------------------------------------- | --------------------- | ----------------------------------- |
 | `id`            | `string`                                        |                       | Persist the dismissal under this id |
-| `variant`       | `'primary' \| 'neutral' \| 'info' \| 'warning'` | `'primary'`           | Colours                             |
+| `tone` | `'primary' \| 'neutral' \| 'info' \| 'success' \| 'warning' \| 'danger'` | `'primary'`           | Colours                             |
 | `href`          | `string`                                        |                       | Link after the message              |
 | `linkText`      | `ReactNode`                                     |                       | Link text                           |
 | `icon`          | `string \| ReactNode`                           |                       | Icon before the message             |

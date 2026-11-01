@@ -201,7 +201,7 @@ export default function DocumentChecklistPage() {
 
         {sent ? (
           <Callout
-            variant="success"
+            tone="success"
             title={tr("Documents sent for review", "ލިޔެކިޔުން ރިވިއުއަށް ފޮނުވިއްޖެ")}
             description={tr(
               "We'll let you know if anything else is needed.",
