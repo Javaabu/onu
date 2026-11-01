@@ -68,8 +68,7 @@ export function useThaanaInput<T extends HTMLElement>(
       c.detach()
       controller.current = null
     }
-    // Re-attach only when the element or keyboard settings change.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Re-attach only when the element or keyboard settings change.
   }, [ref, keymap, paste, shortcutKey])
 
   const toggle = React.useCallback(() => setEnabled(!enabled), [enabled, setEnabled])

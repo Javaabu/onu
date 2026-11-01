@@ -149,8 +149,7 @@ export function BlockRenderer({
       // Content that doesn't fit the schema renders nothing rather than crashing the page.
       return null
     }
-    // `doc` is derived from `content`.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `doc` is derived from `content`.
   }, [content, nodes, marks, extensions, codeBlock, calloutClass, imageClass, linkClass, t])
 
   const isEmpty = !doc || !doc.content?.length

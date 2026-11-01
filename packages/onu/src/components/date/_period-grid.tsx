@@ -172,6 +172,7 @@ export function PeriodGrid({
       key={item.key}
       role="gridcell"
       aria-selected={!!item.selected}
+      // eslint-disable-next-line no-restricted-syntax -- A clock face is not mirrored: this centres a cell on its physical left/top.
       className={cn(clock && "absolute -translate-x-1/2 -translate-y-1/2")}
       style={style}
     >

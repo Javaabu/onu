@@ -165,8 +165,7 @@ export function SignaturePad({
       pad.off()
       padRef.current = null
     }
-    // Pen settings are applied below without recreating the pad.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Pen settings are applied below without recreating the pad.
   }, [mode, emit, t])
 
   React.useEffect(() => {

@@ -380,6 +380,7 @@ function PlaceholderMarker({
     <MarkerPin tone={color} label={label} selected={selected} />
   )
   const className = cn(
+    // eslint-disable-next-line no-restricted-syntax -- A map is not mirrored: this centres the marker on its physical `left`.
     "absolute z-20 -translate-x-1/2 rounded-full outline-none",
     arrow ? "-translate-y-1/2" : "-translate-y-full",
     selected && "z-25",

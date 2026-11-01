@@ -131,7 +131,7 @@ function MapPickerInner(props: MapPickerProps) {
   const hasValue = value !== null
   React.useEffect(() => {
     if (!hasValue) mapRef.current?.panTo(center, zoom)
-  }, [center.lat, center.lng, zoom, hasValue]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [center.lat, center.lng, zoom, hasValue]) // eslint-disable-line react-hooks/exhaustive-deps -- `center` is often a new object; its coordinates are what matter.
 
   const showClear = !disabled && (clearable ?? !required) && value !== null
 

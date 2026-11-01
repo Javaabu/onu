@@ -6,10 +6,12 @@ import tseslint from "typescript-eslint"
 
 /**
  * Physical left/right Tailwind utilities break RTL (R11.2). Use logical ones:
- * ms-/me-, ps-/pe-, start-/end-, text-start/end, rounded-s/e, border-s/e.
+ * ms-/me-, ps-/pe-, start-/end-, text-start/end, rounded-s/e, border-s/e, slide-in-from-start.
+ * A class on Radix's data-[side=left|right] variant is not a hit: that side is physical by design.
+ * translate-x- has no logical form, so it is a hit only when the string has no rtl: partner for it.
  */
 const PHYSICAL =
-  /(^|\s|:)(-?m[lr]-|p[lr]-|-?left-|-?right-|text-(left|right)\b|rounded-[tb]?[lr](-|\b)|border-[lr](-|\b)|float-(left|right)|scroll-[mp][lr]-)/
+  /(^|\s|(?<!data-\[side=\w+\]):)(-?m[lr]-|p[lr]-|-?left-|-?right-|text-(left|right)\b|rounded-[tb]?[lr](-|\b)|border-[lr](-|\b)|float-(left|right)|scroll-[mp][lr]-|origin-((top|bottom)-)?(left|right)\b|slide-(in-from|out-to)-(left|right)\b)|^(?![\s\S]*rtl:\S*translate-x-)(?:[\s\S]*\s|[\s\S]*:)?-?translate-x-(?!0\b)/
 const physicalMessage =
   "Use logical Tailwind utilities (ms-/me-, ps-/pe-, start-/end-, text-start/end, rounded-s/e, border-s/e) so RTL works (R11.2)."
 
@@ -52,10 +54,14 @@ export default tseslint.config(
     },
   },
   {
-    // Vendored shadcn/ui code: keep upstream as-is; RTL handled by the sync transform.
+    // These two key physical classes on a data-side they map themselves.
+    files: ["packages/onu/src/ui/sheet.tsx", "packages/onu/src/ui/sidebar.tsx"],
+    rules: { "no-restricted-syntax": "off" },
+  },
+  {
+    // shadcn/ui code that Onu owns: its upstream patterns stay, but it uses logical utilities like the rest.
     files: ["packages/onu/src/ui/**"],
     rules: {
-      "no-restricted-syntax": "off",
       "jsx-a11y/anchor-has-content": "off",
       "jsx-a11y/heading-has-content": "off",
       "jsx-a11y/no-noninteractive-tabindex": "off",
