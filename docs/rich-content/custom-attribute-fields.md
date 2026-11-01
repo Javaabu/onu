@@ -5,6 +5,10 @@ sidebar_position: 6
 
 Renders form fields from a schema, for custom attributes, settings or product specs, using Onu's inputs. Values go in and out as one object, input names follow Laravel's `attributes[key]` convention, and server errors map back to the right field.
 
+:::info
+Part of the `@javaabu/onu/editor` entry; install its packages from [Peer dependencies per entry](../installation-and-setup#peer-dependencies-per-entry).
+:::
+
 ```tsx
 import { CustomAttributeFields, type AttributeField } from "@javaabu/onu/editor"
 

@@ -5,6 +5,10 @@ sidebar_position: 2
 
 A block-based editor (page builder) on Tiptap. Type <kbd>/</kbd> for a menu of blocks, add a block below with **+**, and reorder blocks with the grip. Content is Tiptap JSON, rendered anywhere with [`BlockRenderer`](./block-renderer).
 
+```bash
+pnpm add @tiptap/core @tiptap/react @tiptap/pm @tiptap/starter-kit @tiptap/extension-image @tiptap/extension-table @tiptap/extension-text-align @tiptap/extension-placeholder @tiptap/static-renderer @tiptap/suggestion shiki
+```
+
 Blocks: text, headings 1–3, bulleted and numbered lists, quote, image, table, divider, callout, code and embed (YouTube or Vimeo).
 
 ```tsx

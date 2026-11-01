@@ -5,6 +5,10 @@ sidebar_position: 7
 
 KPI tiles: a label, a formatted value, a delta (arrow + sign + semantic colour), an optional icon and sparkline, and a loading skeleton. `StatTiles` lays them out in a responsive grid.
 
+:::info
+Charts live in the `@javaabu/onu/charts` entry and need the optional peer dependency `recharts` (v3): `pnpm add recharts`.
+:::
+
 ```tsx
 import { StatTile, StatTiles } from "@javaabu/onu/charts"
 

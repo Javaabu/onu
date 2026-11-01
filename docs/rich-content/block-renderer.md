@@ -5,6 +5,10 @@ sidebar_position: 3
 
 Renders block editor (or WYSIWYG) JSON to React **without** loading the editor. It uses `@tiptap/static-renderer` with the same node definitions as the editors, so a page looks the same while editing and when published.
 
+:::info
+Part of the `@javaabu/onu/editor` entry; install its packages from [Peer dependencies per entry](../installation-and-setup#peer-dependencies-per-entry).
+:::
+
 ```tsx
 import { BlockRenderer } from '@javaabu/onu/editor';
 

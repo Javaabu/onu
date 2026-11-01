@@ -6,8 +6,10 @@ sidebar_position: 8
 A circular avatar picker: shows the photo (or initials), opens a crop step after picking (using [`ImageCropper`](./image-cropper)), and offers Change and Remove. It lives in the optional media entry because it uses `react-easy-crop`.
 
 ```bash
-pnpm add react-easy-crop
+pnpm add react-easy-crop signature_pad yet-another-react-lightbox media-chrome
 ```
+
+`@javaabu/onu/media` imports all of these statically, so install them even if you only use `AvatarUpload`.
 
 ```tsx
 import { AvatarUpload } from "@javaabu/onu/media"

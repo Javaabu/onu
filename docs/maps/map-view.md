@@ -5,6 +5,10 @@ sidebar_position: 2
 
 The base map. Put markers, shapes and layers inside it. `MapMarker`, `MapCircleShape`, `MapPolygonShape` and `MapPolylineShape` are the building blocks the other map components use.
 
+:::info
+Maps live in the `@javaabu/onu/maps` entry; install its packages from [Peer dependencies per entry](../installation-and-setup#peer-dependencies-per-entry).
+:::
+
 ```tsx
 import { MapView, MapMarker, MapPolygonShape } from "@javaabu/onu/maps"
 
