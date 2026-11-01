@@ -5,7 +5,7 @@ sidebar_position: 1.1
 
 This package requires:
 
-- [React](https://react.dev) 18.3+ or 19
+- [React](https://react.dev) 19
 - [Tailwind CSS](https://tailwindcss.com) 4
 
 Onu supports every browser Tailwind CSS 4 supports: Chrome and Edge 111+, Safari 16.4+, Firefox 128+, and their mobile versions.

@@ -5,7 +5,7 @@ sidebar_position: 1.2
 
 # Installation
 
-First install the NPM package
+Onu needs React 19. First install the NPM package
 
 ```bash
 npm install @javaabu/onu --save
