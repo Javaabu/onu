@@ -22,9 +22,9 @@ export interface RepeatingGroupRow<T> {
 export interface RepeatingGroupProps<T> extends Omit<React.ComponentProps<"div">, "children" | "onChange"> {
   /** The rows: `fields` from react-hook-form's `useFieldArray`, or a plain array. */
   items?: T[]
-  /** Plain controlled array: the current rows (use with `onChange` and `createItem`). */
+  /** Plain controlled array: the current rows (use with `onValueChange` and `createItem`). */
   value?: T[]
-  onChange?: (value: T[]) => void
+  onValueChange?: (value: T[]) => void
   /** Creates a new row for plain arrays. */
   createItem?: () => T
   /** Called by the Add button (react-hook-form: `() => append({...})`). */
@@ -89,7 +89,7 @@ type Focus = { index: number; target: "first" | "up" | "down" | "add" }
 export function RepeatingGroup<T>({
   items: itemsProp,
   value,
-  onChange,
+  onValueChange,
   createItem,
   onAdd,
   onRemove,
@@ -117,7 +117,7 @@ export function RepeatingGroup<T>({
   const [focusRequest, setFocusRequest] = React.useState<Focus | null>(null)
   const [announcement, setAnnouncement] = React.useState("")
   const labelId = React.useId()
-  const canReorder = reorderable ?? (!!onMove || (!!value && !!onChange))
+  const canReorder = reorderable ?? (!!onMove || (!!value && !!onValueChange))
   const canAdd = !disabled && items.length < max
   const canRemove = !disabled && items.length > min
 
@@ -142,7 +142,7 @@ export function RepeatingGroup<T>({
     if (!canAdd) return
     setFocusRequest({ index: items.length, target: "first" })
     if (onAdd) onAdd()
-    else if (onChange && createItem) onChange([...items, createItem()])
+    else if (onValueChange && createItem) onValueChange([...items, createItem()])
     setAnnouncement(t("form.itemAdded", { index: items.length + 1 }))
   }
 
@@ -153,7 +153,7 @@ export function RepeatingGroup<T>({
       remaining === 0 ? { index: 0, target: "add" } : { index: Math.min(index, remaining - 1), target: "first" },
     )
     if (onRemove) onRemove(index)
-    else if (onChange) onChange(items.filter((_, i) => i !== index))
+    else if (onValueChange) onValueChange(items.filter((_, i) => i !== index))
     setAnnouncement(t("form.itemRemoved", { index: index + 1 }))
   }
 
@@ -161,7 +161,7 @@ export function RepeatingGroup<T>({
     if (to < 0 || to >= items.length) return
     setFocusRequest({ index: to, target: to < from ? "up" : "down" })
     if (onMove) onMove(from, to)
-    else if (onChange) onChange(moveItem(items, from, to))
+    else if (onValueChange) onValueChange(moveItem(items, from, to))
     setAnnouncement(t("form.itemMoved", { index: to + 1 }))
   }
 

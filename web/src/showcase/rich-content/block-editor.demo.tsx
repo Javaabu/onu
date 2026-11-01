@@ -34,7 +34,7 @@ export default function BlockEditorDemo() {
           </TabsList>
           <TabsContent value="edit" className="pt-2">
             <FormField label="Page content" hideLabel>
-              <BlockEditor value={doc} onChange={setDoc} onImageUpload={fakeUpload} name="content" />
+              <BlockEditor value={doc} onValueChange={setDoc} onImageUpload={fakeUpload} name="content" />
             </FormField>
           </TabsContent>
           <TabsContent value="preview" className="pt-2">

@@ -37,7 +37,7 @@ describe("MapPicker", () => {
     const onChange = vi.fn()
     const { container } = renderWithOnu(
       <FormField label="Location" name="location">
-        <MapPicker search={false} center={{ lat: 4.1755, lng: 73.5093 }} zoom={12} onChange={onChange} />
+        <MapPicker search={false} center={{ lat: 4.1755, lng: 73.5093 }} zoom={12} onValueChange={onChange} />
       </FormField>,
     )
     expect(screen.getByRole("group", { name: "Location" })).toBeInTheDocument()
@@ -57,7 +57,7 @@ describe("MapPicker", () => {
       const [value, setValue] = React.useState<LatLng | null>({ lat: 4.2, lng: 73.5 })
       return (
         <>
-          <MapPicker value={value} onChange={setValue} search={false} label="Site" />
+          <MapPicker value={value} onValueChange={setValue} search={false} label="Site" />
           <output>{value ? `${value.lat},${value.lng}` : "none"}</output>
         </>
       )
@@ -83,7 +83,7 @@ describe("MapPicker", () => {
 
   it("drags the marker", () => {
     const onChange = vi.fn()
-    renderWithOnu(<MapPicker defaultValue={{ lat: 4.1755, lng: 73.5093 }} search={false} onChange={onChange} />)
+    renderWithOnu(<MapPicker defaultValue={{ lat: 4.1755, lng: 73.5093 }} search={false} onValueChange={onChange} />)
     const pin = screen.getByRole("button", { name: "Selected location" })
     fireEvent.pointerDown(pin, { button: 0 })
     fireEvent.pointerMove(pin, { clientX: 400, clientY: 150 })
@@ -93,7 +93,7 @@ describe("MapPicker", () => {
 
   it("searches places with debounce, keyboard selection and abort of stale requests", async () => {
     const onChange = vi.fn()
-    renderWithOnu(<MapPicker search={search} onChange={onChange} />)
+    renderWithOnu(<MapPicker search={search} onValueChange={onChange} />)
     const box = screen.getByRole("combobox", { name: "Search places" })
     await userEvent.type(box, "ma")
     expect(await screen.findByRole("option", { name: /Maafushi/ })).toBeInTheDocument()
@@ -138,7 +138,7 @@ describe("MapPicker", () => {
       )
     Object.defineProperty(navigator, "geolocation", { value: { getCurrentPosition }, configurable: true })
     const onChange = vi.fn()
-    renderWithOnu(<MapPicker search={false} onChange={onChange} />)
+    renderWithOnu(<MapPicker search={false} onValueChange={onChange} />)
     await userEvent.click(screen.getByRole("button", { name: "Use my location" }))
     expect(onChange).toHaveBeenCalledWith({ lat: 4.2, lng: 73.54 })
     await userEvent.click(screen.getByRole("button", { name: "Use my location" }))
@@ -154,7 +154,7 @@ describe("MapPicker", () => {
         locate={false}
         coordinates={false}
         disabled
-        onChange={onChange}
+        onValueChange={onChange}
       />,
     )
     expect(screen.queryByLabelText("Latitude")).not.toBeInTheDocument()
@@ -167,7 +167,7 @@ describe("MapPicker", () => {
   it("offers Clear without coordinate fields", async () => {
     const onChange = vi.fn()
     renderWithOnu(
-      <MapPicker defaultValue={{ lat: 1, lng: 2 }} search={false} coordinates={false} onChange={onChange} />,
+      <MapPicker defaultValue={{ lat: 1, lng: 2 }} search={false} coordinates={false} onValueChange={onChange} />,
     )
     await userEvent.click(screen.getByRole("button", { name: "Clear" }))
     expect(onChange).toHaveBeenCalledWith(null)

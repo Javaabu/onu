@@ -18,7 +18,7 @@ export interface MapPolygonProps {
   /** GeoJSON FeatureCollection of Polygons. `null` when empty. */
   value?: PolygonCollection | null
   defaultValue?: PolygonCollection | null
-  onChange?: (value: PolygonCollection | null) => void
+  onValueChange?: (value: PolygonCollection | null) => void
   /** Submits the GeoJSON as a JSON string. */
   name?: string
   id?: string
@@ -45,7 +45,7 @@ function MapPolygonInner(props: MapPolygonProps) {
   const {
     value: valueProp,
     defaultValue = null,
-    onChange,
+    onValueChange,
     multiple = true,
     tone,
     label,
@@ -58,7 +58,7 @@ function MapPolygonInner(props: MapPolygonProps) {
   const { t, locale } = useTranslation()
   const field = useFormField()
   const control = useFormFieldControl({ name: props.name, disabled: props.disabled, required: props.required })
-  const [value, setValue] = useControllableState<PolygonCollection | null>(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState<PolygonCollection | null>(valueProp, defaultValue, onValueChange)
   const [shapes, setShapes] = useShapesValue(value, setValue, polygonsToShapes, toPolygons)
   const totalArea = shapes.reduce((sum, s) => sum + polygonArea(s.path), 0)
 

@@ -16,7 +16,7 @@ export function LocaleSwitcher() {
       <LanguageSwitcher
         variant="toggle"
         size="sm"
-        onChange={(code) => {
+        onValueChange={(code) => {
           document.cookie = `${LOCALE_COOKIE}=${code}; path=/; max-age=31536000; samesite=lax`
           startTransition(() => router.refresh())
         }}

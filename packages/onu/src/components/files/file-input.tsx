@@ -93,8 +93,6 @@ export interface FileInputProps<R = unknown>
   value?: FileInputEntry<R>[]
   /** Initial files (uncontrolled), e.g. a record's saved attachments. */
   defaultValue?: FileInputEntry<R>[]
-  /** Without an uploader: called with the picked `File`s whenever they change. */
-  onChange?: (files: File[]) => void
   /** Called with the whole value when files are added, finish uploading or are removed. */
   onValueChange?: (value: FileInputEntry<R>[]) => void
   /** Called with every accepted batch of files (picked, dropped or pasted). */
@@ -171,7 +169,6 @@ export function FileInput<R = unknown>({
   appearance = "input",
   value,
   defaultValue,
-  onChange,
   onValueChange,
   onFilesAdded,
   onReject,
@@ -311,7 +308,6 @@ export function FileInput<R = unknown>({
   function setEntries(next: FileInputEntry<R>[]) {
     entriesRef.current = next
     setEntriesState(next)
-    if (!uploads) onChange?.(next.filter(isLocalFile))
   }
 
   /** Adds files that passed validation: uploads them, or adds them to the value. */

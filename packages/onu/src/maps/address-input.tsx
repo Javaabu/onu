@@ -49,7 +49,7 @@ export type AddressPart = "atoll" | "island" | "road" | "house" | "location"
 export interface AddressInputProps {
   value?: MaldivesAddress
   defaultValue?: MaldivesAddress
-  onChange?: (value: MaldivesAddress) => void
+  onValueChange?: (value: MaldivesAddress) => void
   /** Field names become `name[atoll]`, `name[island]`, `name[road]`, `name[house]`, `name[location][lat|lng]`. */
   name?: string
   /** Islands to choose from. Without it the island is a text field. */
@@ -80,7 +80,7 @@ export interface AddressInputProps {
 export function AddressInput({
   value: valueProp,
   defaultValue = {},
-  onChange,
+  onValueChange,
   name,
   islands,
   pin = false,
@@ -98,7 +98,7 @@ export function AddressInput({
   const { t, locale } = useTranslation()
   const formDisabled = useFormDisabled()
   const disabled = disabledProp ?? formDisabled
-  const [value, setValue] = useControllableState<MaldivesAddress>(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState<MaldivesAddress>(valueProp, defaultValue, onValueChange)
   const id = React.useId()
   const fieldName = (part: string) => (name ? `${name}[${part}]` : undefined)
   const set = (patch: Partial<MaldivesAddress>) => setValue({ ...value, ...patch })
@@ -131,7 +131,7 @@ export function AddressInput({
         >
           <AddressSelect
             value={value.atoll ?? ""}
-            onChange={(code) => {
+            onValueChange={(code) => {
               const keepIsland = !islands || islands.some((i) => i.value === value.island && i.atoll === code)
               set({ atoll: code || undefined, island: keepIsland ? value.island : undefined })
             }}
@@ -151,7 +151,7 @@ export function AddressInput({
           {islands ? (
             <AddressSelect
               value={value.island ?? ""}
-              onChange={(v) => {
+              onValueChange={(v) => {
                 const chosen = islands.find((i) => i.value === v)
                 set({ island: v || undefined, atoll: chosen?.atoll ?? value.atoll })
               }}
@@ -209,7 +209,7 @@ export function AddressInput({
         >
           <MapPicker
             value={value.location ?? null}
-            onChange={(location) => set({ location })}
+            onValueChange={(location) => set({ location })}
             center={pinCenter}
             zoom={island ? 14 : atoll ? 10 : 11}
             search={search}
@@ -224,13 +224,13 @@ export function AddressInput({
 
 function AddressSelect({
   value,
-  onChange,
+  onValueChange,
   placeholder,
   options,
   ...props
 }: {
   value: string
-  onChange: (value: string) => void
+  onValueChange: (value: string) => void
   placeholder: string
   options: { value: string; label: string }[]
   id?: string
@@ -239,7 +239,7 @@ function AddressSelect({
   // Picks up id, name and ARIA wiring from the surrounding FormField.
   const control = useFormFieldControl(props)
   return (
-    <NativeSelect className="w-full" value={value} onChange={(e) => onChange(e.target.value)} {...control}>
+    <NativeSelect className="w-full" value={value} onChange={(e) => onValueChange(e.target.value)} {...control}>
       <NativeSelectOption value="">{placeholder}</NativeSelectOption>
       {options.map((o) => (
         <NativeSelectOption key={o.value} value={o.value}>

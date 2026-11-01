@@ -319,7 +319,7 @@ export default function ApplicationWizardPage() {
               accept=".pdf,image/*"
               maxSize={2 * 1024 * 1024}
               value={values.id_copy}
-              onChange={(f) => set("id_copy", f)}
+              onValueChange={(f) => set("id_copy", f as File[])}
             />
           </FormField>
           <FormField
@@ -328,14 +328,14 @@ export default function ApplicationWizardPage() {
             help={tr("JPG or PNG, white background.", "JPG ނުވަތަ PNG، ހުދު ފަސްބިމާއެކު.")}
             required
           >
-            <FileInput accept="image/*" value={values.photo} onChange={(f) => set("photo", f)} />
+            <FileInput accept="image/*" value={values.photo} onValueChange={(f) => set("photo", f as File[])} />
           </FormField>
           <FormField
             label={tr("Lease agreement (optional)", "ކުލި އެއްބަސްވުން (ލާޒިމެއް ނޫން)")}
             name="lease"
             help={tr("If the premises are rented.", "ތަން ކުއްޔަށް ހިފާފައިވާނަމަ.")}
           >
-            <FileInput accept=".pdf" multiple value={values.lease} onChange={(f) => set("lease", f)} />
+            <FileInput accept=".pdf" multiple value={values.lease} onValueChange={(f) => set("lease", f as File[])} />
           </FormField>
         </div>
       ),

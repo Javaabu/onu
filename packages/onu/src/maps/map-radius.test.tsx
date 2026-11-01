@@ -14,7 +14,7 @@ describe("MapRadius", () => {
     const onChange = vi.fn()
     const { container } = renderWithOnu(
       <FormField label="Delivery area" name="area">
-        <MapRadius onChange={onChange} defaultRadius={300} center={centre} />
+        <MapRadius onValueChange={onChange} defaultRadius={300} center={centre} />
       </FormField>,
     )
     expect(screen.getByRole("group", { name: "Delivery area" })).toBeInTheDocument()
@@ -36,7 +36,7 @@ describe("MapRadius", () => {
       const [value, setValue] = React.useState<MapRadiusValue | null>({ center: centre, radius: 500 })
       return (
         <>
-          <MapRadius value={value} onChange={setValue} min={100} max={1000} />
+          <MapRadius value={value} onValueChange={setValue} min={100} max={1000} />
           <output>{value ? value.radius : "none"}</output>
         </>
       )
@@ -58,7 +58,7 @@ describe("MapRadius", () => {
   it("moves the centre with coordinates and drags handles", async () => {
     const onChange = vi.fn()
     const { container } = renderWithOnu(
-      <MapRadius defaultValue={{ center: centre, radius: 200 }} onChange={onChange} max={400} />,
+      <MapRadius defaultValue={{ center: centre, radius: 200 }} onValueChange={onChange} max={400} />,
     )
     const lat = screen.getByLabelText("Latitude")
     await userEvent.clear(lat)

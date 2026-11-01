@@ -20,7 +20,7 @@ function Plain(props: Partial<RepeatingGroupProps<Row>> & { initial?: Row[] }) {
     <RepeatingGroup<Row>
       label="Family members"
       value={rows}
-      onChange={setRows}
+      onValueChange={setRows}
       createItem={() => ({ name: "" })}
       {...rest}
     >

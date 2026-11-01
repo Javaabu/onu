@@ -44,7 +44,7 @@ describe("ReportingPeriodPicker", () => {
   it("picks a month", async () => {
     const onChange = vi.fn()
     const { user, container } = setup(
-      <ReportingPeriodPicker aria-label="Period" name="period" today={TODAY} onChange={onChange} />,
+      <ReportingPeriodPicker aria-label="Period" name="period" today={TODAY} onValueChange={onChange} />,
     )
     expect(screen.getByRole("combobox")).toHaveTextContent("Select a period")
     await user.click(screen.getByRole("combobox"))
@@ -61,7 +61,7 @@ describe("ReportingPeriodPicker", () => {
   it("picks a quarter of the financial year", async () => {
     const onChange = vi.fn()
     const { user } = setup(
-      <ReportingPeriodPicker aria-label="Period" fiscalYearStartMonth={6} today={TODAY} onChange={onChange} />,
+      <ReportingPeriodPicker aria-label="Period" fiscalYearStartMonth={6} today={TODAY} onValueChange={onChange} />,
     )
     await user.click(screen.getByRole("combobox"))
     await user.click(radio("Quarterly"))
@@ -96,7 +96,7 @@ describe("ReportingPeriodPicker", () => {
         fiscalYearStartMonth={6}
         defaultType="yearly"
         today={TODAY}
-        onChange={onChange}
+        onValueChange={onChange}
       />,
     )
     await user.click(screen.getByRole("combobox"))
@@ -125,7 +125,7 @@ describe("ReportingPeriodPicker", () => {
 
   it("picks a custom range", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<ReportingPeriodPicker aria-label="Period" today={TODAY} onChange={onChange} />)
+    const { user } = setup(<ReportingPeriodPicker aria-label="Period" today={TODAY} onValueChange={onChange} />)
     await user.click(screen.getByRole("combobox"))
     await user.click(radio("Custom range"))
     await user.click(button(/March 3rd, 2026/))
@@ -138,7 +138,7 @@ describe("ReportingPeriodPicker", () => {
   it("keeps half a custom range as a one-day range on Done", async () => {
     const onChange = vi.fn()
     const { user } = setup(
-      <ReportingPeriodPicker aria-label="Period" types={["custom"]} today={TODAY} onChange={onChange} />,
+      <ReportingPeriodPicker aria-label="Period" types={["custom"]} today={TODAY} onValueChange={onChange} />,
     )
     await user.click(screen.getByRole("combobox"))
     await user.click(button(/March 3rd, 2026/))
@@ -155,7 +155,7 @@ describe("ReportingPeriodPicker", () => {
         min={new Date(2026, 0, 1)}
         max={new Date(2026, 5, 30)}
         defaultValue={{ type: "quarterly", from: new Date(2026, 0, 1), to: end(2026, 2, 31) }}
-        onChange={onChange}
+        onValueChange={onChange}
       />,
     )
     await user.click(screen.getByRole("combobox"))

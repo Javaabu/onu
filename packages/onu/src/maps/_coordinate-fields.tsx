@@ -15,7 +15,7 @@ registerEnglish({ map: en_map })
 
 export interface CoordinateFieldsProps {
   value: LatLng | null
-  onChange: (value: LatLng) => void
+  onValueChange: (value: LatLng) => void
   disabled?: boolean
   required?: boolean
   /** Id of the latitude input (the field's id inside a FormField). */
@@ -46,7 +46,7 @@ function parse(text: string, axis: Axis): number | null {
  */
 export function CoordinateFields({
   value,
-  onChange,
+  onValueChange,
   disabled,
   required,
   id,
@@ -74,7 +74,7 @@ export function CoordinateFields({
     if (lat !== null && lng !== null) {
       const p = { lat, lng }
       setShownFor(p)
-      onChange(p)
+      onValueChange(p)
     }
   }
 

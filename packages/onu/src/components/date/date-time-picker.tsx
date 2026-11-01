@@ -28,7 +28,7 @@ export interface DateTimePickerProps extends PickerFieldProps {
   /** Selected date and time (controlled). `null` is empty. */
   value?: Date | null
   defaultValue?: Date | null
-  onChange?: (value: Date | null) => void
+  onValueChange?: (value: Date | null) => void
   /** date-fns display format. Defaults to `dd/MM/yyyy h:mm a` (or `HH:mm`). */
   format?: string
   hourCycle?: 12 | 24
@@ -51,7 +51,7 @@ const MIDNIGHT: TimeValue = { hours: 0, minutes: 0 }
 export function DateTimePicker({
   value: valueProp,
   defaultValue = null,
-  onChange,
+  onValueChange,
   format,
   hourCycle: hourCycleProp,
   minuteStep,
@@ -67,7 +67,7 @@ export function DateTimePicker({
 }: DateTimePickerProps) {
   const { locale, t } = useOnu()
   const hourCycle = hourCycleProp ?? locale.hourCycle
-  const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState(valueProp, defaultValue, onValueChange)
   const [view, setView] = React.useState<"calendar" | "time">("calendar")
   const [pendingTime, setPendingTime] = React.useState<TimeValue | null>(null)
   const [focusTarget, setFocusTarget] = React.useState<"calendar" | "chip">("calendar")
@@ -159,7 +159,7 @@ export function DateTimePicker({
           </Button>
           <TimePanel
             value={value || pendingTime ? time : null}
-            onChange={setTime}
+            onValueChange={setTime}
             hourCycle={hourCycle}
             minuteStep={minuteStep}
             initialFocus

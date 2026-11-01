@@ -25,7 +25,7 @@ Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provide
 
 | Prop                                  | Type                                    | Default        | Description                |
 | ------------------------------------- | --------------------------------------- | -------------- | -------------------------- |
-| `value` / `defaultValue` / `onChange` | `RouteFeature \| null`                  |                | GeoJSON LineString feature |
+| `value` / `defaultValue` / `onValueChange` | `RouteFeature \| null`                  |                | GeoJSON LineString feature |
 | `onDistanceChange`                    | `(meters: number) => void`              |                | Length after each change   |
 | `name`                                | `string`                                | from FormField | Hidden input with the JSON |
 | `tone`, `center`, `zoom`, `label`     |                                         |                | Appearance and map setup; without `center`/`zoom` the map fits the route |

@@ -27,9 +27,9 @@ The value is an HTML string or Tiptap JSON. The output format follows the shape 
 
 ```tsx
 const [html, setHtml] = useState('<p>Hello</p>');
-<WysiwygEditor value={html} onChange={setHtml} />
+<WysiwygEditor value={html} onValueChange={setHtml} />
 
-<WysiwygEditor format="json" onChange={(json) => save(json)} />
+<WysiwygEditor format="json" onValueChange={(json) => save(json)} />
 ```
 
 An empty document is `""` in HTML. With `name` (or inside a `FormField` with a `name`), a hidden input carries the value for plain form posts; JSON is posted as a string, and an empty document posts `""`, so Laravel's `required` rule works.
@@ -78,7 +78,7 @@ The image dialog takes a URL and alt text. Pass `onImageUpload` to add an **Uplo
 | ------------------- | --------------------------------- | ----------------- | -------------------------------------------------------------------------- |
 | `value`             | `string \| JSONContent`           |                   | Controlled content                                                         |
 | `defaultValue`      | `string \| JSONContent`           |                   | Initial content                                                            |
-| `onChange`          | `(value, editor) => void`         |                   | Called on every change                                                     |
+| `onValueChange`          | `(value, editor) => void`         |                   | Called on every change                                                     |
 | `format`            | `'html' \| 'json'`                | from the value    | Output format                                                              |
 | `name`              | `string`                          |                   | Hidden input name for form posts                                           |
 | `placeholder`       | `string`                          | "Start writing…"  | Shown when empty                                                           |

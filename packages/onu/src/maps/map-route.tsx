@@ -27,7 +27,7 @@ export interface MapRouteProps {
   /** GeoJSON LineString feature. `null` when no route is drawn. */
   value?: RouteFeature | null
   defaultValue?: RouteFeature | null
-  onChange?: (value: RouteFeature | null) => void
+  onValueChange?: (value: RouteFeature | null) => void
   /** Called with the route length in metres whenever it changes. */
   onDistanceChange?: (meters: number) => void
   /** Submits the GeoJSON as a JSON string. */
@@ -55,7 +55,7 @@ function MapRouteInner(props: MapRouteProps) {
   const {
     value: valueProp,
     defaultValue = null,
-    onChange,
+    onValueChange,
     onDistanceChange,
     tone,
     label,
@@ -69,7 +69,7 @@ function MapRouteInner(props: MapRouteProps) {
   const field = useFormField()
   const control = useFormFieldControl({ name: props.name, disabled: props.disabled, required: props.required })
   const [value, setValue] = useControllableState<RouteFeature | null>(valueProp, defaultValue, (v) => {
-    onChange?.(v)
+    onValueChange?.(v)
     onDistanceChange?.(pathLength(lineStringToPath(v)))
   })
   const fromShapes = (shapes: DrawShape[], previous: RouteFeature | null): RouteFeature | null => {

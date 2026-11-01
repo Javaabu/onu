@@ -25,7 +25,9 @@ afterEach(() => vi.useRealTimers())
 describe("ImageInput", () => {
   it("picks an image and shows a preview with replace and remove", async () => {
     const onChange = vi.fn()
-    const { container } = renderWithOnu(<ImageInput alt="Shop front" aria-label="Shop photo" onChange={onChange} />)
+    const { container } = renderWithOnu(
+      <ImageInput alt="Shop front" aria-label="Shop photo" onValueChange={onChange} />,
+    )
     const choose = screen.getByRole("button", { name: "Choose an image" })
     const click = vi.spyOn(input(container), "click")
     await userEvent.click(choose)
@@ -74,7 +76,7 @@ describe("ImageInput", () => {
       const [value, setValue] = React.useState<File | string | null>("/a.png")
       return (
         <FormField label="Cover" name="cover" error="Required" disabled>
-          <ImageInput alt="Cover" value={value} onChange={setValue} placeholder="Add a cover" />
+          <ImageInput alt="Cover" value={value} onValueChange={setValue} placeholder="Add a cover" />
         </FormField>
       )
     }

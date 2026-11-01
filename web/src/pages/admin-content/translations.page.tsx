@@ -100,7 +100,7 @@ export default function TranslationsPage() {
           <TranslationsEditor
             key={group}
             value={visible}
-            onChange={(next) => setEntries((all) => all.map((e) => next.find((n) => n.key === e.key) ?? e))}
+            onValueChange={(next) => setEntries((all) => all.map((e) => next.find((n) => n.key === e.key) ?? e))}
             locales={locales}
             onSave={async ({ value, key }) => {
               await wait(500)

@@ -17,13 +17,13 @@ const withCustom: FilterDefinition[] = [
     type: "custom",
     key: "min_balance",
     label: "Minimum balance (MVR)",
-    render: ({ id, value, onChange }) => (
+    render: ({ id, value, onValueChange }) => (
       <TextInput
         id={id}
         inputMode="decimal"
         endAddon="MVR"
         value={(value as string) ?? ""}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onValueChange(e.target.value)}
       />
     ),
     format: (v) => `MVR ${String(v)}+`,

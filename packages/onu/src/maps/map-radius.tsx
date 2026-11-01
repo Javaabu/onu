@@ -31,7 +31,7 @@ export interface MapRadiusValue {
 export interface MapRadiusProps {
   value?: MapRadiusValue | null
   defaultValue?: MapRadiusValue | null
-  onChange?: (value: MapRadiusValue | null) => void
+  onValueChange?: (value: MapRadiusValue | null) => void
   /** Submits `name[lat]`, `name[lng]` and `name[radius]` (metres). */
   name?: string
   id?: string
@@ -62,7 +62,7 @@ function MapRadiusInner(props: MapRadiusProps) {
   const {
     value: valueProp,
     defaultValue = null,
-    onChange,
+    onValueChange,
     defaultRadius = 500,
     min = 10,
     max = 50_000,
@@ -84,7 +84,7 @@ function MapRadiusInner(props: MapRadiusProps) {
     required: props.required,
   })
   const disabled = !!control.disabled
-  const [value, setValue] = useControllableState<MapRadiusValue | null>(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState<MapRadiusValue | null>(valueProp, defaultValue, onValueChange)
   const [radiusText, setRadiusText] = React.useState<string | null>(null)
   const mapRef = React.useRef<MapHandle>(null)
   const { announce, region } = useAnnouncer()
@@ -130,7 +130,7 @@ function MapRadiusInner(props: MapRadiusProps) {
             radius={value.radius}
             tone={tone}
             editable={!disabled}
-            onChange={(next) => commit(next)}
+            onValueChange={(next) => commit(next)}
           />
         ) : null}
       </MapView>
@@ -139,7 +139,7 @@ function MapRadiusInner(props: MapRadiusProps) {
         <CoordinateFields
           id={control.id as string | undefined}
           value={value?.center ?? null}
-          onChange={(p) => {
+          onValueChange={(p) => {
             commit({ center: p, radius })
             mapRef.current?.panTo(p)
           }}

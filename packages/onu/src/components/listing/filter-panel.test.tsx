@@ -246,12 +246,12 @@ describe("FilterPanel", () => {
         type: "custom",
         key: "min",
         label: "Minimum balance",
-        render: ({ value, onChange, id }) => (
+        render: ({ value, onValueChange, id }) => (
           <input
             id={id}
             aria-label="Minimum"
             value={(value as string) ?? ""}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => onValueChange(e.target.value)}
           />
         ),
         format: (v) => `MVR ${v as string}`,

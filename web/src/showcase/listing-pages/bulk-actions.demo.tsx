@@ -12,8 +12,8 @@ const actions: BulkAction<unknown>[] = [
     label: "Move to island",
     icon: "map-pin",
     defaultValue: "Malé",
-    form: ({ id, value, onChange }) => (
-      <NativeSelect id={id} size="sm" value={String(value)} onChange={(e) => onChange(e.target.value)}>
+    form: ({ id, value, onValueChange }) => (
+      <NativeSelect id={id} size="sm" value={String(value)} onChange={(e) => onValueChange(e.target.value)}>
         {["Malé", "Hulhumalé", "Addu City"].map((i) => (
           <NativeSelectOption key={i}>{i}</NativeSelectOption>
         ))}

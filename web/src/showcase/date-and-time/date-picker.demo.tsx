@@ -22,7 +22,7 @@ export default function DatePickerDemo() {
           <DatePicker />
         </FormField>
         <FormField label="Joined on" help={`Value: ${value ? value.toDateString() : "empty"}`}>
-          <DatePicker value={value} onChange={setValue} />
+          <DatePicker value={value} onValueChange={setValue} />
         </FormField>
       </DemoSection>
 

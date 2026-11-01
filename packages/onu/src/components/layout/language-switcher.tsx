@@ -32,7 +32,7 @@ export interface LanguageOption {
 export interface LanguageSwitcherProps {
   /** Selected language code. Defaults to the active `OnuProvider` locale. */
   value?: string
-  onChange?: (code: string) => void
+  onValueChange?: (code: string) => void
   /** Languages to offer. Defaults to the built-in locales (English, ދިވެހި). */
   languages?: LanguageOption[]
   /** `select` (native select), `toggle` (segmented buttons) or `menu` (globe button + menu). */
@@ -53,11 +53,11 @@ const DEFAULT_LANGUAGES: LanguageOption[] = BUILT_IN_LOCALES.map((l) => ({
 
 /**
  * Switches between languages using their native names (each option carries its
- * own `lang` and `dir`, R14.12). Call `onChange` to update `OnuProvider locale`.
+ * own `lang` and `dir`, R14.12). Call `onValueChange` to update `OnuProvider locale`.
  */
 export function LanguageSwitcher({
   value,
-  onChange,
+  onValueChange,
   languages = DEFAULT_LANGUAGES,
   variant = "select",
   size = "default",
@@ -79,7 +79,7 @@ export function LanguageSwitcher({
         variant="outline"
         size={size}
         value={current}
-        onValueChange={(v) => v && onChange?.(v)}
+        onValueChange={(v) => v && onValueChange?.(v)}
         aria-label={label}
         disabled={disabled}
         data-slot="language-switcher"
@@ -119,7 +119,7 @@ export function LanguageSwitcher({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-40 w-auto">
-          <DropdownMenuRadioGroup value={current} onValueChange={(v) => onChange?.(v)}>
+          <DropdownMenuRadioGroup value={current} onValueChange={(v) => onValueChange?.(v)}>
             {languages.map((language) => (
               <DropdownMenuRadioItem
                 key={language.code}
@@ -149,7 +149,7 @@ export function LanguageSwitcher({
         size={size}
         value={current}
         disabled={disabled}
-        onChange={(e) => onChange?.(e.target.value)}
+        onChange={(e) => onValueChange?.(e.target.value)}
         className="touch:[&_select]:h-11"
       >
         {languages.map((language) => (

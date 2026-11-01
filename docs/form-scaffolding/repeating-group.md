@@ -16,7 +16,7 @@ const [members, setMembers] = useState([{ name: "" }])
   label="Family members"
   name="members"
   value={members}
-  onChange={setMembers}
+  onValueChange={setMembers}
   createItem={() => ({ name: "" })}
   max={5}
 >
@@ -62,7 +62,7 @@ const { fields, append, remove, move } = useFieldArray({ control: form.control, 
 | `children`    | `({ item, index, name, remove, canRemove }) => ReactNode` |                | Renders one row's fields                   |
 | `items`       | `T[]`                                                     |                | Rows from `useFieldArray` (`fields`)       |
 | `value`       | `T[]`                                                     |                | Rows of a plain controlled array           |
-| `onChange`    | `(value: T[]) => void`                                    |                | Plain array updates (add, remove, reorder) |
+| `onValueChange`    | `(value: T[]) => void`                                    |                | Plain array updates (add, remove, reorder) |
 | `createItem`  | `() => T`                                                 |                | New row for plain arrays                   |
 | `onAdd`       | `() => void`                                              |                | Add handler (react-hook-form `append`)     |
 | `onRemove`    | `(index) => void`                                         |                | Remove handler (react-hook-form `remove`)  |

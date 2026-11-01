@@ -35,7 +35,7 @@ export interface RouteStop {
 export interface RouteStopEditorProps {
   value?: RouteStop[]
   defaultValue?: RouteStop[]
-  onChange?: (stops: RouteStop[]) => void
+  onValueChange?: (stops: RouteStop[]) => void
   /** Submits `name[0][label]`, `name[0][lat]`, `name[0][lng]`, … in order. */
   name?: string
   /** Maximum number of stops. */
@@ -180,7 +180,7 @@ function StopRow({
         </div>
         {expanded && !disabled ? (
           <div id={panelId} className="ps-9">
-            <CoordinateFields value={stop.position} onChange={onPosition} />
+            <CoordinateFields value={stop.position} onValueChange={onPosition} />
           </div>
         ) : null}
       </div>
@@ -191,7 +191,7 @@ function StopRow({
 function RouteStopEditorInner({
   value: valueProp,
   defaultValue = [],
-  onChange,
+  onValueChange,
   name,
   max,
   disabled: disabledProp,
@@ -210,7 +210,7 @@ function RouteStopEditorInner({
   const field = useFormField()
   const formDisabled = useFormDisabled()
   const disabled = disabledProp ?? field?.disabled ?? formDisabled
-  const [stops, setStops] = useControllableState<RouteStop[]>(valueProp, defaultValue, onChange)
+  const [stops, setStops] = useControllableState<RouteStop[]>(valueProp, defaultValue, onValueChange)
   const [expandedId, setExpandedId] = React.useState<string | null>(null)
   const mapRef = React.useRef<MapHandle>(null)
   const { announce, region } = useAnnouncer()

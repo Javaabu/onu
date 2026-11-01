@@ -36,7 +36,7 @@ const ANY = "__any__"
 interface ControlProps<D extends FilterDefinition, V extends FilterValue = FilterValue> {
   definition: D
   value: V | undefined
-  onChange: (value: V | undefined) => void
+  onValueChange: (value: V | undefined) => void
   id: string
   labelId: string
   /** One-line controls (the inline query form): short multi-selects use the dropdown, not a row of checkboxes. */
@@ -44,7 +44,14 @@ interface ControlProps<D extends FilterDefinition, V extends FilterValue = Filte
 }
 
 /** Multi or single select. Short lists show checkboxes; long or searchable lists use a searchable popover. */
-function SelectControl({ definition, value, onChange, id, labelId, compact }: ControlProps<SelectFilterDefinition>) {
+function SelectControl({
+  definition,
+  value,
+  onValueChange,
+  id,
+  labelId,
+  compact,
+}: ControlProps<SelectFilterDefinition>) {
   const { t } = useTranslation()
   const multiple = definition.multiple !== false
   const searchable = definition.searchable ?? definition.options.length > 7
@@ -53,12 +60,12 @@ function SelectControl({ definition, value, onChange, id, labelId, compact }: Co
 
   const toggle = (option: string) => {
     if (!multiple) {
-      onChange(selected[0] === option ? undefined : option)
+      onValueChange(selected[0] === option ? undefined : option)
       setOpen(false)
       return
     }
     const next = selected.includes(option) ? selected.filter((v) => v !== option) : [...selected, option]
-    onChange(next.length ? next : undefined)
+    onValueChange(next.length ? next : undefined)
   }
 
   if (!compact && !searchable && multiple && definition.options.length <= 6) {
@@ -85,7 +92,7 @@ function SelectControl({ definition, value, onChange, id, labelId, compact }: Co
 
   if (!searchable && !multiple) {
     return (
-      <Select value={selected[0] ?? ANY} onValueChange={(v) => onChange(v === ANY ? undefined : v)}>
+      <Select value={selected[0] ?? ANY} onValueChange={(v) => onValueChange(v === ANY ? undefined : v)}>
         <SelectTrigger id={id} aria-labelledby={labelId} className="touch:min-h-11 w-full">
           <SelectValue />
         </SelectTrigger>
@@ -164,12 +171,12 @@ function SelectControl({ definition, value, onChange, id, labelId, compact }: Co
 
 function DatePickerButton({
   value,
-  onChange,
+  onValueChange,
   label,
   id,
 }: {
   value: string | undefined
-  onChange: (value: string | undefined) => void
+  onValueChange: (value: string | undefined) => void
   label: string
   id: string
 }) {
@@ -204,7 +211,7 @@ function DatePickerButton({
             weekStartsOn={locale.weekStartsOn}
             dir={dir}
             onSelect={(d) => {
-              onChange(d ? formatDate(d, "yyyy-MM-dd") : undefined)
+              onValueChange(d ? formatDate(d, "yyyy-MM-dd") : undefined)
               setOpen(false)
             }}
           />
@@ -214,14 +221,14 @@ function DatePickerButton({
   )
 }
 
-function DateRangeControl({ definition, value, onChange, id, labelId }: ControlProps<DateRangeFilterDefinition>) {
+function DateRangeControl({ definition, value, onValueChange, id, labelId }: ControlProps<DateRangeFilterDefinition>) {
   const { t } = useTranslation()
   const range = (value && typeof value === "object" && !Array.isArray(value) ? value : {}) as DateRangeFilterValue
   const fields = definition.fields
   const set = (patch: Partial<DateRangeFilterValue>) => {
     const next = { ...range, ...patch }
     if (fields?.length && !next.field) next.field = fields[0]?.value
-    onChange(next.from || next.to ? next : undefined)
+    onValueChange(next.from || next.to ? next : undefined)
   }
   return (
     <div className="gap-2 flex flex-wrap" role="group" aria-labelledby={labelId}>
@@ -230,7 +237,7 @@ function DateRangeControl({ definition, value, onChange, id, labelId }: ControlP
           <span id={`${id}-field-label`} className="text-xs text-muted-foreground">
             {t("listing.dateField")}
           </span>
-          <Select value={range.field ?? fields[0]?.value} onValueChange={(field) => onChange({ ...range, field })}>
+          <Select value={range.field ?? fields[0]?.value} onValueChange={(field) => onValueChange({ ...range, field })}>
             <SelectTrigger aria-labelledby={`${id}-field-label`} className="touch:min-h-11 w-full">
               <SelectValue />
             </SelectTrigger>
@@ -248,19 +255,24 @@ function DateRangeControl({ definition, value, onChange, id, labelId }: ControlP
         id={`${id}-from`}
         label={t("listing.dateFrom")}
         value={range.from}
-        onChange={(from) => set({ from })}
+        onValueChange={(from) => set({ from })}
       />
-      <DatePickerButton id={`${id}-to`} label={t("listing.dateTo")} value={range.to} onChange={(to) => set({ to })} />
+      <DatePickerButton
+        id={`${id}-to`}
+        label={t("listing.dateTo")}
+        value={range.to}
+        onValueChange={(to) => set({ to })}
+      />
     </div>
   )
 }
 
-function BooleanControl({ definition, value, onChange, id, labelId }: ControlProps<BooleanFilterDefinition>) {
+function BooleanControl({ definition, value, onValueChange, id, labelId }: ControlProps<BooleanFilterDefinition>) {
   const { t } = useTranslation()
   return (
     <Select
       value={value === "1" || value === "0" ? value : ANY}
-      onValueChange={(v) => onChange(v === ANY ? undefined : v)}
+      onValueChange={(v) => onValueChange(v === ANY ? undefined : v)}
     >
       <SelectTrigger id={id} aria-labelledby={labelId} className="touch:min-h-11 w-full">
         <SelectValue />
@@ -274,7 +286,7 @@ function BooleanControl({ definition, value, onChange, id, labelId }: ControlPro
   )
 }
 
-function TextControl({ definition, value, onChange, id, labelId }: ControlProps<TextFilterDefinition>) {
+function TextControl({ definition, value, onValueChange, id, labelId }: ControlProps<TextFilterDefinition>) {
   return (
     <TextInput
       id={id}
@@ -282,13 +294,13 @@ function TextControl({ definition, value, onChange, id, labelId }: ControlProps<
       placeholder={definition.placeholder}
       thaana={definition.thaana}
       value={typeof value === "string" ? value : ""}
-      onChange={(e) => onChange(e.target.value || undefined)}
+      onChange={(e) => onValueChange(e.target.value || undefined)}
       className="touch:min-h-11"
     />
   )
 }
 
-function TrashedControl({ value, onChange, id, labelId }: ControlProps<FilterDefinition>) {
+function TrashedControl({ value, onValueChange, id, labelId }: ControlProps<FilterDefinition>) {
   const { t } = useTranslation()
   const current = value === "with" || value === "only" ? value : "hide"
   return (
@@ -298,7 +310,7 @@ function TrashedControl({ value, onChange, id, labelId }: ControlProps<FilterDef
       variant="outline"
       aria-labelledby={labelId}
       value={current}
-      onValueChange={(v) => v && onChange(v === "hide" ? undefined : v)}
+      onValueChange={(v) => v && onValueChange(v === "hide" ? undefined : v)}
       className="w-full"
     >
       {(
@@ -322,7 +334,7 @@ export function FilterControl(props: ControlProps<FilterDefinition>) {
   if (definition.render) {
     const renderProps: FilterRenderProps = {
       value: props.value,
-      onChange: props.onChange,
+      onValueChange: props.onValueChange,
       id: props.id,
       definition,
     }

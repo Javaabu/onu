@@ -30,7 +30,7 @@ export default function AdditionalFilesUploadDemo() {
           <AdditionalFilesUpload
             existing={existing}
             value={value}
-            onChange={setValue}
+            onValueChange={setValue}
             maxFiles={6}
             name="attachments"
           />

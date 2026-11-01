@@ -54,7 +54,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                                     size="sm"
                                     value={locale}
                                     // The locale lives in the session, so the server renders the next page in it.
-                                    onChange={(code) =>
+                                    onValueChange={(code) =>
                                         router.post("/locale", { locale: code }, { preserveScroll: true })
                                     }
                                 />

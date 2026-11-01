@@ -24,10 +24,10 @@ Inside a [`FormField`](../form-scaffolding/form-field) the input gets its `id`, 
 ```tsx
 const [files, setFiles] = React.useState<File[]>([])
 
-<FileInput multiple value={files} onChange={setFiles} onReject={(rejections) => console.log(rejections)} />
+<FileInput multiple value={files} onValueChange={setFiles} onReject={(rejections) => console.log(rejections)} />
 ```
 
-`onChange` receives the picked `File`s. When the value also holds files already on the server (see [Existing files](#existing-files)) or you use an uploader, use `onValueChange`, which receives the whole value.
+`onValueChange` receives the whole value: picked `File`s and, if there are any, files already on the server (see [Existing files](#existing-files)) or uploaded.
 
 ## Several files
 
@@ -121,7 +121,7 @@ const [documents, setDocuments] = useState<FileInputEntry[]>(application.documen
 ```
 
 - **With an uploader**, a finished upload is added to the value as `{ id, name, size, type, file, response }`. Uploads still in progress are not in the value. Removing a finished upload, or the parent dropping it from `value`, removes it from the list. Without `multiple`, a finished upload replaces the value.
-- **Without an uploader**, picked `File`s are added to the value next to the existing entries (`onChange` still receives just the `File`s), and they are submitted by the file input under `name`.
+- **Without an uploader**, picked `File`s are added to the value next to the existing entries, and they are submitted by the file input under `name`.
 - Existing files count toward `maxFiles`, and a `required` input is not required while it holds existing files.
 
 ## Validation
@@ -137,7 +137,6 @@ The helpers are exported too: `validateFile`, `validateFiles`, `matchesAccept`, 
 | `appearance`                             | `"input" \| "dropzone"`                                                                           | `"input"`   | Compact trigger, or a large drop area                                               |
 | `value`                                  | `FileInputEntry[]`                                                                                |             | Files the field holds (controlled): `File`s and `{ id, name, … }` stored files      |
 | `defaultValue`                           | `FileInputEntry[]`                                                                                | `[]`        | Initial files (uncontrolled)                                                        |
-| `onChange`                               | `(files: File[]) => void`                                                                         |             | Without an uploader: the picked files after a pick or a removal                     |
 | `onValueChange`                          | `(value: FileInputEntry[]) => void`                                                               |             | The whole value when files are added, finish uploading or are removed               |
 | `onFilesAdded`                           | `(files: File[]) => void`                                                                         |             | Every accepted batch (picked, dropped or pasted)                                    |
 | `onReject`                               | `(rejections: FileRejection[]) => void`                                                           |             | Files that failed validation                                                        |

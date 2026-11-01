@@ -12,20 +12,20 @@ function App() {
   const [locale, setLocale] = React.useState<"en" | "dv">("en")
   return (
     <OnuProvider locale={locale}>
-      <LanguageSwitcher onChange={(code) => setLocale(code as "en" | "dv")} />
+      <LanguageSwitcher onValueChange={(code) => setLocale(code as "en" | "dv")} />
     </OnuProvider>
   )
 }
 ```
 
-With Laravel, call your locale route in `onChange` (e.g. `router.post('/locale', { locale: code })`).
+With Laravel, call your locale route in `onValueChange` (e.g. `router.post('/locale', { locale: code })`).
 
 ## Props
 
 | Prop        | Type                             | Default            | Description                               |
 | ----------- | -------------------------------- | ------------------ | ----------------------------------------- |
 | `value`     | `string`                         | active locale code | Selected language                         |
-| `onChange`  | `(code: string) => void`         |                    | Called with the chosen code               |
+| `onValueChange`  | `(code: string) => void`         |                    | Called with the chosen code               |
 | `languages` | `{ code, name, dir? }[]`         | built-in locales   | Languages to offer                        |
 | `variant`   | `'select' \| 'toggle' \| 'menu'` | `'select'`         | Presentation                              |
 | `size`      | `'sm' \| 'default'`              | `'default'`        | Size                                      |

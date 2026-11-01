@@ -50,8 +50,8 @@ vi.setConfig({ testTimeout: 30_000 })
 
 describe("BlockEditor", () => {
   it("renders an accessible block editor with JSON output", async () => {
-    const onChange = vi.fn()
-    const { editor, textbox, container } = await setup({ onChange, className: "root-x" })
+    const onValueChange = vi.fn()
+    const { editor, textbox, container } = await setup({ onValueChange, className: "root-x" })
     expect(container.querySelector("[data-slot=block-editor]")).toHaveClass("root-x")
     expect(textbox).toHaveAttribute("aria-multiline", "true")
     expect(screen.getByRole("toolbar", { name: "Formatting" })).toBeInTheDocument()
@@ -61,7 +61,7 @@ describe("BlockEditor", () => {
     act(() => {
       editor.commands.insertContent("Hello")
     })
-    expect(onChange.mock.lastCall?.[0]).toMatchObject({
+    expect(onValueChange.mock.lastCall?.[0]).toMatchObject({
       type: "doc",
       content: [{ type: "paragraph", content: [{ type: "text", text: "Hello" }] }],
     })
@@ -78,7 +78,7 @@ describe("BlockEditor", () => {
       const [value, setValue] = React.useState(first)
       return (
         <>
-          <BlockEditor aria-label="Page" name="content" value={value} onChange={setValue} />
+          <BlockEditor aria-label="Page" name="content" value={value} onValueChange={setValue} />
           <button type="button" onClick={() => setValue(second)}>
             Swap
           </button>
@@ -329,8 +329,8 @@ describe("BlockEditor", () => {
   })
 
   it("gives tables the direction of their first strong text while typing", async () => {
-    const onChange = vi.fn()
-    const { editor, textbox } = await setup({ onChange })
+    const onValueChange = vi.fn()
+    const { editor, textbox } = await setup({ onValueChange })
     act(() => {
       editor.chain().focus().insertTable({ rows: 2, cols: 3, withHeaderRow: true }).run()
     })
@@ -346,7 +346,7 @@ describe("BlockEditor", () => {
     })
     expect(wrapper()).toHaveAttribute("dir", "rtl")
     // The JSON keeps no direction (it is worked out again on render), so content stays editable both ways.
-    const table = (onChange.mock.lastCall?.[0] as JSONContent).content!.find((n) => n.type === "table")!
+    const table = (onValueChange.mock.lastCall?.[0] as JSONContent).content!.find((n) => n.type === "table")!
     expect(table.attrs?.dir ?? null).toBeNull()
   })
 

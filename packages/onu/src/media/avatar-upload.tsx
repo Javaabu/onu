@@ -51,8 +51,8 @@ export interface AvatarUploadProps
   /** The avatar: a picked `File`, an existing image URL, or `null` (controlled). */
   value?: File | string | null
   defaultValue?: File | string | null
-  onChange?: (file: File | null) => void
-  onReject?: (rejection: FileRejection) => void
+  onValueChange?: (file: File | null) => void
+  onReject?: (rejections: FileRejection[]) => void
   /** Person's name: used for initials and the image's alt text. */
   personName: string
   /** Largest allowed size in bytes (checked before cropping). */
@@ -70,7 +70,7 @@ export interface AvatarUploadProps
 export function AvatarUpload({
   value,
   defaultValue,
-  onChange,
+  onValueChange,
   onReject,
   personName,
   accept = "image/*",
@@ -92,7 +92,7 @@ export function AvatarUpload({
   const [image, setImage] = useControllableState<File | string | null>(
     value,
     defaultValue ?? null,
-    onChange as ((v: File | string | null) => void) | undefined,
+    onValueChange as ((v: File | string | null) => void) | undefined,
   )
   const [pending, setPending] = React.useState<File | null>(null)
   const [saving, setSaving] = React.useState(false)
@@ -117,7 +117,7 @@ export function AvatarUpload({
     if (code) {
       const r = { file, code }
       setRejection(r)
-      onReject?.(r)
+      onReject?.([r])
       return
     }
     setRejection(null)

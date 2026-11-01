@@ -18,7 +18,7 @@ import { LanguageSwitcher, Logo, SiteFooter } from "@javaabu/onu"
   ]}
   social={[{ label: "Email", href: "mailto:hello@javaabu.com", icon: "mail" }]}
   legalLinks={[{ label: "Privacy", href: "/privacy" }]}
-  languageSwitcher={<LanguageSwitcher size="sm" onChange={setLocale} />}
+  languageSwitcher={<LanguageSwitcher size="sm" onValueChange={setLocale} />}
 />
 ```
 

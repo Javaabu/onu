@@ -40,7 +40,7 @@ function Controlled({ onChange }: { onChange?: (s: RouteStop[]) => void }) {
     <FormField label="Shuttle stops">
       <RouteStopEditor
         value={value}
-        onChange={(s) => {
+        onValueChange={(s) => {
           onChange?.(s)
           setValue(s)
         }}

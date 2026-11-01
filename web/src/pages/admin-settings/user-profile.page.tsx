@@ -172,7 +172,7 @@ export default function UserProfilePage() {
                       personName={displayName}
                       size="xl"
                       maxSize={5 * 1024 * 1024}
-                      onChange={() => toast.success(tr("Photo updated", "ފޮޓޯ ބަދަލުކުރެވިއްޖެ"))}
+                      onValueChange={() => toast.success(tr("Photo updated", "ފޮޓޯ ބަދަލުކުރެވިއްޖެ"))}
                     />
                   </FormField>
                   <FormGroup columns={2}>

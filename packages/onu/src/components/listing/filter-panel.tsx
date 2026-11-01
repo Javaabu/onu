@@ -139,7 +139,7 @@ function FilterQueryForm({
               <FilterControl
                 definition={definition}
                 value={draft[definition.key]}
-                onChange={(next) => setDraftValue(definition.key, next)}
+                onValueChange={(next) => setDraftValue(definition.key, next)}
                 id={id}
                 labelId={labelId}
                 compact
@@ -259,7 +259,7 @@ function FilterPopoverPanel({
             <FilterControl
               definition={definition}
               value={current}
-              onChange={(next) => setDraftValue(definition.key, next)}
+              onValueChange={(next) => setDraftValue(definition.key, next)}
               id={id}
               labelId={labelId}
             />

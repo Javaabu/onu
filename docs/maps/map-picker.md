@@ -17,7 +17,7 @@ Controlled:
 
 ```tsx
 const [value, setValue] = React.useState<LatLng | null>(null)
-<MapPicker value={value} onChange={setValue} />
+<MapPicker value={value} onValueChange={setValue} />
 ```
 
 ## Search
@@ -40,7 +40,7 @@ Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provide
 
 | Prop                                  | Type                                     | Default        | Description                                 |
 | ------------------------------------- | ---------------------------------------- | -------------- | ------------------------------------------- |
-| `value` / `defaultValue` / `onChange` | `LatLng \| null`                         |                | The picked point                            |
+| `value` / `defaultValue` / `onValueChange` | `LatLng \| null`                         |                | The picked point                            |
 | `name`                                | `string`                                 | from FormField | Hidden inputs `name[lat]`, `name[lng]`      |
 | `search`                              | `boolean \| PlaceSearch`                 | `true`         | Place search                                |
 | `thaana`                              | `boolean \| ThaanaOptions`               |                | Thaana typing in the search box             |

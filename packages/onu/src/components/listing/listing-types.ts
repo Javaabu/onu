@@ -38,7 +38,7 @@ export interface FilterOption {
 
 export interface FilterRenderProps<V extends FilterValue = FilterValue> {
   value: V | undefined
-  onChange: (value: V | undefined) => void
+  onValueChange: (value: V | undefined) => void
   /** Id for the control, already wired to the filter's label. */
   id: string
   definition: FilterDefinition

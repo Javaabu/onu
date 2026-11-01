@@ -18,7 +18,7 @@ const schema: AttributeField[] = [
 ]
 
 export const Example = (
-  <CustomAttributeFields schema={schema} name="attributes" columns={2} value={values} onChange={setValues} />
+  <CustomAttributeFields schema={schema} name="attributes" columns={2} value={values} onValueChange={setValues} />
 )
 ```
 
@@ -57,7 +57,7 @@ Laravel's 422 errors work as they come, either through a surrounding `FormErrors
 | `schema`       | `AttributeField[]`      |              | Fields, in order                         |
 | `value`        | `AttributeValues`       |              | Controlled values                        |
 | `defaultValue` | `AttributeValues`       |              | Initial values                           |
-| `onChange`     | `(values) => void`      |              | Called with all values                   |
+| `onValueChange`     | `(values) => void`      |              | Called with all values                   |
 | `name`         | `string`                |              | Wraps input names: `name[key]`           |
 | `errors`       | `FormErrors`            |              | Server errors keyed by dot notation      |
 | `columns`      | `1 \| 2`                | `1`          | Two columns from medium container widths |

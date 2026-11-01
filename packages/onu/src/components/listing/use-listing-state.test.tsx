@@ -139,12 +139,12 @@ describe("useListingState", () => {
     expect(result.current).toMatchObject({ view: "table", page: 1 })
   })
 
-  it("calls onChange after changes but not on mount", () => {
-    const onChange = vi.fn()
-    const { result } = renderHook(() => useListingState({ url: false, onChange }))
-    expect(onChange).not.toHaveBeenCalled()
+  it("calls onValueChange after changes but not on mount", () => {
+    const onValueChange = vi.fn()
+    const { result } = renderHook(() => useListingState({ url: false, onValueChange }))
+    expect(onValueChange).not.toHaveBeenCalled()
     act(() => result.current.setPage(2))
-    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ page: 2 }))
+    expect(onValueChange).toHaveBeenCalledWith(expect.objectContaining({ page: 2 }))
   })
 
   it("keeps search, filters, sort and page in the URL with replaceState (§25.6 browser behaviour)", () => {

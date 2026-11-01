@@ -46,7 +46,7 @@ function Language({ variant = "select" }: { variant?: "select" | "menu" }) {
     <LanguageSwitcher
       variant={variant}
       value={settings.locale}
-      onChange={(code) => update({ locale: code as "en" | "dv" })}
+      onValueChange={(code) => update({ locale: code as "en" | "dv" })}
       size="sm"
     />
   )

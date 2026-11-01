@@ -39,9 +39,9 @@ export interface ImageInputProps
   value?: File | string | null
   defaultValue?: File | string | null
   /** Called with the new file, or `null` when removed. */
-  onChange?: (file: File | null) => void
+  onValueChange?: (file: File | null) => void
   /** Called when a picked file fails validation. */
-  onReject?: (rejection: FileRejection) => void
+  onReject?: (rejections: FileRejection[]) => void
   /** Alt text for the preview (required, R14.10). */
   alt: string
   /** Largest allowed size in bytes. */
@@ -59,7 +59,7 @@ export interface ImageInputProps
 export function ImageInput({
   value,
   defaultValue,
-  onChange,
+  onValueChange,
   onReject,
   alt,
   accept = "image/*",
@@ -79,7 +79,7 @@ export function ImageInput({
   const [image, setImage] = useControllableState<File | string | null>(
     value,
     defaultValue ?? null,
-    onChange as ((v: File | string | null) => void) | undefined,
+    onValueChange as ((v: File | string | null) => void) | undefined,
   )
   const [initial] = React.useState(() => (typeof (value ?? defaultValue) === "string" ? (value ?? defaultValue) : null))
   const [rejection, setRejection] = React.useState<FileRejection | null>(null)
@@ -109,7 +109,7 @@ export function ImageInput({
     if (code) {
       const r = { file, code }
       setRejection(r)
-      onReject?.(r)
+      onReject?.([r])
       syncInputFiles(local.current, image instanceof File ? [image] : [])
       return
     }

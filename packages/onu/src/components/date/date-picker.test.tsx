@@ -131,7 +131,7 @@ describe("DatePicker — days view (§25.1)", () => {
 
   it("selects a clicked day, closes, and shows the date in the field", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<DatePicker aria-label="Date" today={TODAY} onChange={onChange} />)
+    const { user } = setup(<DatePicker aria-label="Date" today={TODAY} onValueChange={onChange} />)
     await user.click(trigger())
     await user.click(day(/March 20th, 2026/))
     expect(onChange).toHaveBeenCalledWith(new Date(2026, 2, 20))
@@ -158,7 +158,7 @@ describe("DatePicker — days view (§25.1)", () => {
         min={new Date(2026, 2, 5)}
         max={new Date(2026, 2, 25)}
         disabledDates={{ dayOfWeek: [5] }}
-        onChange={onChange}
+        onValueChange={onChange}
       />,
     )
     await user.click(trigger())
@@ -175,7 +175,7 @@ describe("DatePicker — days view (§25.1)", () => {
 
   it("does not select anything just by opening", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<DatePicker aria-label="Date" today={TODAY} onChange={onChange} />)
+    const { user } = setup(<DatePicker aria-label="Date" today={TODAY} onValueChange={onChange} />)
     await user.click(trigger())
     await user.keyboard("{Escape}")
     expect(onChange).not.toHaveBeenCalled()
@@ -260,7 +260,7 @@ describe("DatePicker — zooming out (§25.1)", () => {
 describe("DatePicker — footer (§25.1)", () => {
   it("Clear empties the field and closes the picker", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<DatePicker aria-label="Date" defaultValue={TODAY} onChange={onChange} />)
+    const { user } = setup(<DatePicker aria-label="Date" defaultValue={TODAY} onValueChange={onChange} />)
     await user.click(trigger())
     await user.click(within(dialog()).getByRole("button", { name: "Clear" }))
     expect(onChange).toHaveBeenCalledWith(null)
@@ -358,7 +358,7 @@ describe("DatePicker — keyboard (§25.1)", () => {
 
   it.each(["{Enter}", " "])("%s selects the highlighted day", async (key) => {
     const onChange = vi.fn()
-    const { user } = setup(<DatePicker aria-label="Date" today={TODAY} onChange={onChange} />)
+    const { user } = setup(<DatePicker aria-label="Date" today={TODAY} onValueChange={onChange} />)
     await user.click(trigger())
     await user.keyboard(`{ArrowRight}${key}`)
     expect(onChange).toHaveBeenCalledWith(new Date(2026, 2, 13))
@@ -366,7 +366,7 @@ describe("DatePicker — keyboard (§25.1)", () => {
 
   it("Escape closes without changing anything and returns focus to the field", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<DatePicker aria-label="Date" defaultValue={TODAY} onChange={onChange} />)
+    const { user } = setup(<DatePicker aria-label="Date" defaultValue={TODAY} onValueChange={onChange} />)
     await user.click(trigger())
     await user.keyboard("{ArrowRight}{Escape}")
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
@@ -395,7 +395,7 @@ describe("DatePicker — integration", () => {
       const [value, setValue] = React.useState<Date | null>(new Date(2026, 0, 1))
       return (
         <>
-          <DatePicker aria-label="Date" value={value} onChange={setValue} today={TODAY} />
+          <DatePicker aria-label="Date" value={value} onValueChange={setValue} today={TODAY} />
           <output>{value ? value.toDateString() : "none"}</output>
         </>
       )
@@ -533,7 +533,7 @@ describe('DatePicker — mode="multiple"', () => {
   it("toggles days, keeps them sorted and stays open", async () => {
     const onChange = vi.fn()
     const { user, container } = setup(
-      <DatePicker mode="multiple" aria-label="Training days" name="days" today={TODAY} onChange={onChange} />,
+      <DatePicker mode="multiple" aria-label="Training days" name="days" today={TODAY} onValueChange={onChange} />,
     )
     expect(screen.getByRole("combobox")).toHaveTextContent("Select dates")
     expect(container.querySelector('input[name="days"]')).toHaveValue("")
@@ -572,7 +572,7 @@ describe('DatePicker — mode="multiple"', () => {
         maxSelected={1}
         defaultValue={[new Date(2026, 2, 2)]}
         format="dd/MM"
-        onChange={onChange}
+        onValueChange={onChange}
       />,
     )
     expect(screen.getByRole("combobox")).toHaveTextContent("02/03")
@@ -604,7 +604,7 @@ describe('DatePicker — mode="week"', () => {
   it("selects the whole week of the clicked day", async () => {
     const onChange = vi.fn()
     const { user, container } = setup(
-      <DatePicker mode="week" aria-label="Week" name="week" today={TODAY} onChange={onChange} />,
+      <DatePicker mode="week" aria-label="Week" name="week" today={TODAY} onValueChange={onChange} />,
     )
     expect(screen.getByRole("combobox")).toHaveTextContent("Select a week")
     await user.click(screen.getByRole("combobox"))
@@ -665,7 +665,7 @@ describe('DatePicker — mode="month"', () => {
   it("opens on the 12 months of the year and picks one", async () => {
     const onChange = vi.fn()
     const { user, container } = setup(
-      <DatePicker mode="month" aria-label="Payroll month" name="month" today={TODAY} onChange={onChange} />,
+      <DatePicker mode="month" aria-label="Payroll month" name="month" today={TODAY} onValueChange={onChange} />,
     )
     expect(screen.getByRole("combobox")).toHaveTextContent("Select a month")
     await user.click(screen.getByRole("combobox"))
@@ -711,7 +711,7 @@ describe('DatePicker — mode="month"', () => {
 
   it("clears on optional fields", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<DatePicker mode="month" aria-label="Month" defaultValue={TODAY} onChange={onChange} />)
+    const { user } = setup(<DatePicker mode="month" aria-label="Month" defaultValue={TODAY} onValueChange={onChange} />)
     await user.click(screen.getByRole("combobox"))
     await user.click(within(dialog()).getByRole("button", { name: "Clear" }))
     expect(onChange).toHaveBeenCalledWith(null)
@@ -734,7 +734,7 @@ describe('DatePicker — mode="year"', () => {
     const onChange = vi.fn()
     const { user, container } = renderWithOnu(
       <FormField label="Financial year" name="year">
-        <DatePicker mode="year" today={TODAY} onChange={onChange} />
+        <DatePicker mode="year" today={TODAY} onValueChange={onChange} />
       </FormField>,
     ) as ReturnType<typeof renderWithOnu> & { user?: never }
     const u = userEvent.setup()
@@ -753,7 +753,7 @@ describe('DatePicker — mode="year"', () => {
 describe("DatePicker mode", () => {
   it('picks several dates with mode="multiple"', async () => {
     const onChange = vi.fn()
-    const { user } = setup(<DatePicker mode="multiple" aria-label="Dates" today={TODAY} onChange={onChange} />)
+    const { user } = setup(<DatePicker mode="multiple" aria-label="Dates" today={TODAY} onValueChange={onChange} />)
     await user.click(screen.getByRole("combobox"))
     await user.click(day(/March 20th/))
     await user.click(day(/March 5th/))
@@ -764,7 +764,13 @@ describe("DatePicker mode", () => {
   it('picks a week with mode="week" and honours disabledDates', async () => {
     const onChange = vi.fn()
     const { user } = setup(
-      <DatePicker mode="week" aria-label="Week" today={TODAY} disabledDates={{ dayOfWeek: [5] }} onChange={onChange} />,
+      <DatePicker
+        mode="week"
+        aria-label="Week"
+        today={TODAY}
+        disabledDates={{ dayOfWeek: [5] }}
+        onValueChange={onChange}
+      />,
     )
     await user.click(screen.getByRole("combobox"))
     expect(day(/Friday, March 20th/)).toBeDisabled()

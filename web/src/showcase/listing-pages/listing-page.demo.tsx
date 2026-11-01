@@ -49,12 +49,12 @@ function UsersIndex() {
       label: "Change status",
       icon: "edit",
       defaultValue: "active",
-      form: ({ id, value, onChange }) => (
+      form: ({ id, value, onValueChange }) => (
         <select
           id={id}
           className="h-7 px-2 text-sm rounded-md border bg-background"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onValueChange(e.target.value)}
         >
           {Object.entries(statusLabel).map(([v, l]) => (
             <option key={v} value={v}>

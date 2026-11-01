@@ -19,7 +19,7 @@ import { TimePicker } from "@javaabu/onu"
 The value is a `Date` (its date part is kept; changing the hour never changes the date) or `null`. An empty field gets its first time on `referenceDate` (default today). With `name`, a hidden input posts `HH:mm`.
 
 ```tsx
-<TimePicker value={time} onChange={setTime} />
+<TimePicker value={time} onValueChange={setTime} />
 <TimePicker hourCycle={24} minuteStep={15} />
 ```
 
@@ -32,7 +32,7 @@ The value is a `Date` (its date part is kept; changing the hour never changes th
 | Prop                     | Type                            | Default          | Description                               |
 | ------------------------ | ------------------------------- | ---------------- | ----------------------------------------- |
 | `value` / `defaultValue` | `Date \| null`                  |                  | Selected time                             |
-| `onChange`               | `(value: Date \| null) => void` |                  |                                           |
+| `onValueChange`               | `(value: Date \| null) => void` |                  |                                           |
 | `hourCycle`              | `12 \| 24`                      | locale           | 12-hour with AM/PM, or 24-hour            |
 | `minuteStep`             | `number`                        | `5`              | Minutes between cells in the minute grid  |
 | `format`                 | `string`                        | `h:mm a`/`HH:mm` | date-fns display format                   |
@@ -48,7 +48,7 @@ Plus the shared picker field props (`name`, `placeholder`, `required`, `clearabl
 import { TimePanel, type TimeValue } from "@javaabu/onu"
 
 const [time, setTime] = React.useState<TimeValue | null>({ hours: 9, minutes: 30 })
-<TimePanel value={time} onChange={setTime} />
+<TimePanel value={time} onValueChange={setTime} />
 ```
 
 ### TimePanel props
@@ -56,7 +56,7 @@ const [time, setTime] = React.useState<TimeValue | null>({ hours: 9, minutes: 30
 | Prop                                    | Type                                 | Default      | Description                 |
 | --------------------------------------- | ------------------------------------ | ------------ | --------------------------- |
 | `value`                                 | `{ hours, minutes } \| null`         |              | `null` shows "--"           |
-| `onChange`                              | `(value: TimeValue) => void`         |              |                             |
+| `onValueChange`                              | `(value: TimeValue) => void`         |              |                             |
 | `hourCycle`                             | `12 \| 24`                           | locale       |                             |
 | `minuteStep`                            | `number`                             | `5`          | Minute grid step            |
 | `view` / `defaultView` / `onViewChange` | `"steppers" \| "hours" \| "minutes"` | `"steppers"` | Which part is shown         |

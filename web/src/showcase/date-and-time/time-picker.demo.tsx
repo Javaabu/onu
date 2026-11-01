@@ -18,7 +18,7 @@ export default function TimePickerDemo() {
     <DemoPage>
       <DemoSection title="12-hour" className="max-w-md gap-4 grid">
         <FormField label="Prayer room opens at" help="Click the hour or the minute for a grid. A and P switch AM/PM.">
-          <TimePicker value={value} onChange={setValue} />
+          <TimePicker value={value} onValueChange={setValue} />
         </FormField>
         <FormField label="Ferry departs" help="15-minute grid">
           <TimePicker minuteStep={15} />
@@ -47,7 +47,7 @@ export default function TimePickerDemo() {
         title="Inline time panel"
         description="TimePanel: the panel inside the picker, for a card or a custom popover."
       >
-        <TimePanel value={time} onChange={setTime} className="rounded-lg border" />
+        <TimePanel value={time} onValueChange={setTime} className="rounded-lg border" />
       </DemoSection>
       <DemoSection title="ދިވެހި" className="max-w-md gap-4 grid">
         <OnuProvider locale={dv} syncDocument={false}>

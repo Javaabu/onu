@@ -29,7 +29,7 @@ export default function AddressInputDemo() {
         <AddressInput
           name="address"
           value={value}
-          onChange={setValue}
+          onValueChange={setValue}
           islands={ISLANDS}
           pin
           search={searchIslands}

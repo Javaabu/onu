@@ -44,7 +44,7 @@ export interface PublishBoxProps extends Omit<React.ComponentProps<"div">, "titl
   renderDateInput?: (props: {
     id: string
     value: Date | null
-    onChange: (date: Date | null) => void
+    onValueChange: (date: Date | null) => void
   }) => React.ReactNode
   previewHref?: string
   onPreview?: () => void
@@ -216,7 +216,7 @@ export function PublishBox({
           t("display.publishDate"),
           onPublishAtChange ? (
             renderDateInput ? (
-              renderDateInput({ id: `${id}-date`, value: date, onChange: onPublishAtChange })
+              renderDateInput({ id: `${id}-date`, value: date, onValueChange: onPublishAtChange })
             ) : (
               <Input
                 id={`${id}-date`}

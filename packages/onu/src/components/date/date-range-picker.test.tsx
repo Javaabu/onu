@@ -36,7 +36,7 @@ describe("DateRangePicker (§25.4)", () => {
 
   it("allows open-ended ranges", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<DateRangePicker today={TODAY} onChange={onChange} />)
+    const { user } = setup(<DateRangePicker today={TODAY} onValueChange={onChange} />)
     await user.click(screen.getByRole("combobox", { name: /From/ }))
     await user.click(button(/March 1st, 2026/))
     expect(onChange).toHaveBeenLastCalledWith({ from: new Date(2026, 2, 1), to: null })
@@ -45,7 +45,7 @@ describe("DateRangePicker (§25.4)", () => {
 
   it("treats a To date without a time as the end of that day", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<DateRangePicker today={TODAY} onChange={onChange} />)
+    const { user } = setup(<DateRangePicker today={TODAY} onValueChange={onChange} />)
     await user.click(screen.getByRole("combobox", { name: /To/ }))
     await user.click(button(/March 31st, 2026/))
     expect(onChange).toHaveBeenLastCalledWith({ from: null, to: new Date(2026, 2, 31, 23, 59, 59, 999) })
@@ -64,7 +64,7 @@ describe("DateRangePicker (§25.4)", () => {
   it("picks times too with withTime; To defaults to the end of the day", async () => {
     const onChange = vi.fn()
     const { user, container } = setup(
-      <DateRangePicker today={TODAY} withTime name="period" onChange={onChange} hourCycle={24} />,
+      <DateRangePicker today={TODAY} withTime name="period" onValueChange={onChange} hourCycle={24} />,
     )
     await user.click(screen.getByRole("combobox", { name: /To/ }))
     await user.click(button(/March 31st, 2026/))
@@ -92,7 +92,7 @@ describe("DateRangePicker (§25.4)", () => {
   it("is controlled and posts name[from] and name[to]", async () => {
     function Controlled() {
       const [value, setValue] = React.useState({ from: new Date(2026, 0, 1) as Date | null, to: null as Date | null })
-      return <DateRangePicker name="period" value={value} onChange={setValue} today={TODAY} />
+      return <DateRangePicker name="period" value={value} onValueChange={setValue} today={TODAY} />
     }
     const { user, container } = setup(<Controlled />)
     expect(container.querySelector('input[name="period[from]"]')).toHaveValue("2026-01-01")

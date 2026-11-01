@@ -11,7 +11,7 @@ vi.setConfig({ testTimeout: 30_000 })
 describe("LanguageSwitcher", () => {
   it("renders a labelled select with native names and lang attributes", async () => {
     const onChange = vi.fn()
-    renderWithOnu(<LanguageSwitcher onChange={onChange} className="extra" />)
+    renderWithOnu(<LanguageSwitcher onValueChange={onChange} className="extra" />)
     const select = screen.getByRole("combobox", { name: "Language" })
     expect(select).toHaveValue("en")
     const dv = screen.getByRole("option", { name: "ދިވެހި" })
@@ -25,7 +25,7 @@ describe("LanguageSwitcher", () => {
 
   it("renders as toggle buttons", async () => {
     const onChange = vi.fn()
-    renderWithOnu(<LanguageSwitcher variant="toggle" value="dv" onChange={onChange} />)
+    renderWithOnu(<LanguageSwitcher variant="toggle" value="dv" onValueChange={onChange} />)
     expect(screen.getByRole("radiogroup", { name: "Language" })).toBeInTheDocument()
     const dv = screen.getByRole("radio", { name: "ދިވެހި" })
     expect(dv).toHaveAttribute("aria-checked", "true")
@@ -40,7 +40,7 @@ describe("LanguageSwitcher", () => {
       <LanguageSwitcher
         variant="menu"
         size="sm"
-        onChange={onChange}
+        onValueChange={onChange}
         languages={[
           { code: "en", name: "English" },
           { code: "ar", name: "العربية", dir: "rtl" },

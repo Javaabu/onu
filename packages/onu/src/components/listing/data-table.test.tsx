@@ -207,8 +207,8 @@ describe("DataTable", () => {
       id: "status",
       label: "Change status",
       defaultValue: "active",
-      form: ({ id, value, onChange }) => (
-        <select id={id} value={value} onChange={(e) => onChange(e.target.value)}>
+      form: ({ id, value, onValueChange }) => (
+        <select id={id} value={value} onChange={(e) => onValueChange(e.target.value)}>
           <option value="active">Active</option>
           <option value="banned">Banned</option>
         </select>

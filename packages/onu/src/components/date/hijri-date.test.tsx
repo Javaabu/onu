@@ -73,7 +73,7 @@ describe("HijriDatePicker", () => {
   it("opens on the Hijri month, marks today and the weekend, and picks a day", async () => {
     const onChange = vi.fn()
     const { user } = setup(
-      <HijriDatePicker aria-label="Date" today={TODAY} onChange={onChange} showGregorian={false} />,
+      <HijriDatePicker aria-label="Date" today={TODAY} onValueChange={onChange} showGregorian={false} />,
     )
     expect(screen.getByRole("combobox")).toHaveTextContent("Select a Hijri date")
     await user.click(screen.getByRole("combobox"))
@@ -122,7 +122,7 @@ describe("HijriDatePicker", () => {
   it("supports the keyboard in LTR and RTL", async () => {
     for (const dir of directions) {
       const onChange = vi.fn()
-      const { user, unmount } = setup(<HijriDatePicker aria-label="Date" today={TODAY} onChange={onChange} />, {
+      const { user, unmount } = setup(<HijriDatePicker aria-label="Date" today={TODAY} onValueChange={onChange} />, {
         dir,
       })
       await user.click(screen.getByRole("combobox"))
@@ -147,7 +147,7 @@ describe("HijriDatePicker", () => {
   it("does not pick days outside min/max", async () => {
     const onChange = vi.fn()
     const { user } = setup(
-      <HijriDatePicker aria-label="Date" today={TODAY} min={new Date(2026, 2, 10)} onChange={onChange} />,
+      <HijriDatePicker aria-label="Date" today={TODAY} min={new Date(2026, 2, 10)} onValueChange={onChange} />,
     )
     await user.click(screen.getByRole("combobox"))
     const early = within(screen.getByRole("dialog")).getByRole("button", { name: /^1 Ramadan/ })

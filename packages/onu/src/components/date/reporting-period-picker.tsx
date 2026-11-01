@@ -30,7 +30,7 @@ export interface ReportingPeriod {
 export interface ReportingPeriodPickerProps extends PickerFieldProps {
   value?: ReportingPeriod | null
   defaultValue?: ReportingPeriod | null
-  onChange?: (value: ReportingPeriod | null) => void
+  onValueChange?: (value: ReportingPeriod | null) => void
   /** Which kinds to offer, in order. Default: all four. */
   types?: ReportingPeriodType[]
   /** Kind shown first when the field is empty. */
@@ -68,7 +68,7 @@ export function fiscalYear(startMonth: number) {
 export function ReportingPeriodPicker({
   value: valueProp,
   defaultValue = null,
-  onChange,
+  onValueChange,
   types = ALL_TYPES,
   defaultType,
   fiscalYearStartMonth = 0,
@@ -82,7 +82,7 @@ export function ReportingPeriodPicker({
   const { locale, t } = useOnu()
   const today = todayProp ?? new Date()
   const fy = fiscalYear(fiscalYearStartMonth)
-  const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState(valueProp, defaultValue, onValueChange)
   const [type, setType] = React.useState<ReportingPeriodType>(value?.type ?? defaultType ?? types[0] ?? "monthly")
   const [year, setYear] = React.useState(() => fy.yearOf(value?.from ?? today))
   const [pending, setPendingState] = React.useState<DateRangeValue | null>(null)

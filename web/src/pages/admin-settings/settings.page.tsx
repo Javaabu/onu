@@ -257,7 +257,7 @@ export default function SettingsPage() {
                 accept="image/png,image/svg+xml"
                 maxSize={1024 * 1024}
                 value={branding.values.logo}
-                onChange={(f) => branding.set("logo", f)}
+                onValueChange={(f) => branding.set("logo", f)}
               />
             </FormField>
           </div>

@@ -10,7 +10,7 @@ import { MapPolygon, type PolygonCollection } from "@javaabu/onu/maps"
 
 const [zones, setZones] = React.useState<PolygonCollection | null>(null)
 <FormField label="Collection zones" name="zones">
-  <MapPolygon value={zones} onChange={setZones} />
+  <MapPolygon value={zones} onValueChange={setZones} />
 </FormField>
 ```
 
@@ -31,7 +31,7 @@ Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provide
 
 | Prop                                  | Type                                    | Default        | Description                      |
 | ------------------------------------- | --------------------------------------- | -------------- | -------------------------------- |
-| `value` / `defaultValue` / `onChange` | `PolygonCollection \| null`             |                | GeoJSON; `null` when empty       |
+| `value` / `defaultValue` / `onValueChange` | `PolygonCollection \| null`             |                | GeoJSON; `null` when empty       |
 | `multiple`                            | `boolean`                               | `true`         | Allow several polygons           |
 | `name`                                | `string`                                | from FormField | Hidden input with the JSON       |
 | `tone`                                | `MapTone`                               | `"primary"`    | Colour                           |

@@ -65,7 +65,7 @@ export interface BlockEditorProps extends Omit<React.ComponentProps<"div">, "onC
   /** Initial content when uncontrolled (JSON, or HTML to import). */
   defaultValue?: EditorValue
   /** Called with the document JSON on every change. */
-  onChange?: (value: JSONContent, editor: Editor) => void
+  onValueChange?: (value: JSONContent, editor: Editor) => void
   /** Name of a hidden input carrying the JSON, for plain form posts. */
   name?: string
   placeholder?: string
@@ -97,7 +97,7 @@ export interface BlockEditorProps extends Omit<React.ComponentProps<"div">, "onC
 export function BlockEditor({
   value,
   defaultValue,
-  onChange,
+  onValueChange,
   name,
   placeholder,
   readOnly = false,
@@ -175,7 +175,7 @@ export function BlockEditor({
   } = useOnuEditor({
     value,
     defaultValue,
-    onChange: onChange as ((value: EditorValue, editor: Editor) => void) | undefined,
+    onValueChange: onValueChange as ((value: EditorValue, editor: Editor) => void) | undefined,
     format: "json",
     placeholder: ({ type, level }) => {
       if (type === "heading") return t("editor.heading", { level: level ?? 1 })

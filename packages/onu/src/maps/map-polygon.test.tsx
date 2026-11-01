@@ -62,7 +62,7 @@ describe("MapPolygon", () => {
 
   it("creates a polygon entirely with the keyboard", async () => {
     const onChange = vi.fn()
-    renderWithOnu(<MapPolygon onChange={onChange} />)
+    renderWithOnu(<MapPolygon onValueChange={onChange} />)
     expect(screen.getByText(/No areas yet/)).toBeInTheDocument()
     await typePoint("4.17", "73.50")
     expect(screen.getByText("Point 1 added")).toBeInTheDocument()
@@ -81,7 +81,7 @@ describe("MapPolygon", () => {
 
   it("draws by clicking the map and edits by dragging points", async () => {
     const onChange = vi.fn()
-    const { container } = renderWithOnu(<MapPolygon onChange={onChange} multiple />)
+    const { container } = renderWithOnu(<MapPolygon onValueChange={onChange} multiple />)
     const draw = screen.getByRole("button", { name: "Draw area" })
     await userEvent.click(draw)
     expect(draw).toHaveAttribute("aria-pressed", "true")
@@ -108,7 +108,7 @@ describe("MapPolygon", () => {
 
   it("syncs a controlled value from outside", () => {
     function Controlled({ value }: { value: PolygonCollection | null }) {
-      return <MapPolygon value={value} onChange={() => {}} />
+      return <MapPolygon value={value} onValueChange={() => {}} />
     }
     const { rerender } = renderWithOnu(<Controlled value={null} />)
     expect(screen.getByText(/No areas yet/)).toBeInTheDocument()
@@ -164,7 +164,7 @@ describe("MapRoute", () => {
     const onDistanceChange = vi.fn()
     const { container } = renderWithOnu(
       <FormField label="Patrol" name="route">
-        <MapRoute defaultValue={route} onChange={onChange} onDistanceChange={onDistanceChange} />
+        <MapRoute defaultValue={route} onValueChange={onChange} onDistanceChange={onDistanceChange} />
       </FormField>,
     )
     expect(screen.getByRole("button", { name: /^Route/ })).toHaveTextContent(/Distance 2\.\d+ km/)
@@ -185,7 +185,7 @@ describe("MapRoute", () => {
 
   it("draws a route from scratch and clears it", async () => {
     const onChange = vi.fn()
-    renderWithOnu(<MapRoute onChange={onChange} />)
+    renderWithOnu(<MapRoute onValueChange={onChange} />)
     expect(screen.getByText(/No route yet/)).toBeInTheDocument()
     await typePoint("4.17", "73.5")
     await typePoint("4.18", "73.5")

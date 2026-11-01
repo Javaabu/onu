@@ -13,7 +13,7 @@ import { BlockEditor, BlockRenderer } from '@javaabu/onu/editor';
 const [doc, setDoc] = useState<JSONContent>();
 
 <FormField label="Content" name="content">
-  <BlockEditor value={doc} onChange={setDoc} />
+  <BlockEditor value={doc} onValueChange={setDoc} />
 </FormField>
 
 <BlockRenderer content={doc} />
@@ -41,7 +41,7 @@ Ids: `paragraph`, `heading1`, `heading2`, `heading3`, `bulletList`, `orderedList
 | --------------- | --------------------------------- | --------------------- | -------------------------------------------- |
 | `value`         | `JSONContent`                     |                       | Controlled document                          |
 | `defaultValue`  | `JSONContent \| string`           |                       | Initial document (JSON or HTML to import)    |
-| `onChange`      | `(json, editor) => void`          |                       | Called on every change                       |
+| `onValueChange`      | `(json, editor) => void`          |                       | Called on every change                       |
 | `name`          | `string`                          |                       | Hidden input with the JSON (empty doc: `""`) |
 | `placeholder`   | `string`                          | "Type “/” for blocks" | Placeholder on empty paragraphs              |
 | `blockTypes`    | `BlockTypeId[]`                   | all                   | Blocks in the "/" and "+" menus              |

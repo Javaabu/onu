@@ -32,7 +32,7 @@ With `thaana` the input types Thaana from a Latin keyboard and is `dir="rtl"` `l
 | `defaultValue`   | `string`                             | `""`    | Uncontrolled initial value                                  |
 | `onSave`         | `(value) => unknown`                 |         | Save; return a promise for a saving state, throw for errors |
 | `onCancel`       | `() => void`                         |         | After Escape / Cancel                                       |
-| `onChange`       | `(value) => void`                    |         | Every edit                                                  |
+| `onValueChange`       | `(value) => void`                    |         | Every edit                                                  |
 | `validate`       | `(value) => string \| null`          |         | Return a message to block saving                            |
 | `placeholder`    | `string`                             | "Empty" | Shown when empty                                            |
 | `multiline`      | `boolean`                            | `false` | Use a textarea                                              |

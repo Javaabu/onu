@@ -45,7 +45,7 @@ describe("AddressInput", () => {
         <AddressInput
           islands={islands}
           value={value}
-          onChange={(v) => {
+          onValueChange={(v) => {
             onChange(v)
             setValue(v)
           }}
@@ -75,7 +75,7 @@ describe("AddressInput", () => {
 
   it("uses a text field for the island without a list, with Thaana", async () => {
     const onChange = vi.fn()
-    renderWithOnu(<AddressInput thaana onChange={onChange} />)
+    renderWithOnu(<AddressInput thaana onValueChange={onChange} />)
     const island = screen.getByLabelText("Island")
     expect(island).toHaveAttribute("lang", "dv")
     await userEvent.type(island, "x")
@@ -91,7 +91,7 @@ describe("AddressInput", () => {
         pin
         islands={islands}
         defaultValue={{ atoll: "K", island: "maafushi" }}
-        onChange={onChange}
+        onValueChange={onChange}
       />,
     )
     expect(container.querySelector("[data-slot=map-placeholder]")!.textContent).toContain("3.9420°")

@@ -314,7 +314,7 @@ describe("Google Maps adapter", () => {
           selected
         />
         <MapMarker position={{ lat: 1, lng: 1 }} title="Boat" heading={30} />
-        <MapCircleShape center={{ lat: 1, lng: 1 }} radius={100} editable onChange={onCircle} />
+        <MapCircleShape center={{ lat: 1, lng: 1 }} radius={100} editable onValueChange={onCircle} />
         <MapPolygonShape path={[{ lat: 0, lng: 0 }]} tone="chart-2" onClick={onClick} />
         <MapPolygonShape path={[{ lat: 0, lng: 0 }]} selected />
         <MapPolylineShape path={[{ lat: 0, lng: 0 }]} dashed />
@@ -362,7 +362,7 @@ describe("Google Maps adapter", () => {
         <D
           kind="polygon"
           shapes={shapes}
-          onChange={onChange}
+          onValueChange={onChange}
           onFinish={onFinish}
           onSelect={onSelect}
           mode={mode}
@@ -465,7 +465,7 @@ describe("Google Maps adapter", () => {
               ],
             },
           ]}
-          onChange={onChange}
+          onValueChange={onChange}
           mode="draw"
         />
       )
@@ -519,7 +519,7 @@ describe("Google Maps adapter", () => {
     function Draw({ tone }: { tone: "primary" | "chart-2" }) {
       const { adapter } = useMapEngine()
       const D = adapter.Draw
-      return <D kind="polygon" shapes={shapes} onChange={() => {}} mode="view" tone={tone} />
+      return <D kind="polygon" shapes={shapes} onValueChange={() => {}} mode="view" tone={tone} />
     }
     const { rerender } = renderGoogle(
       <MapView>
@@ -541,7 +541,7 @@ describe("Google Maps adapter", () => {
     function Draw() {
       const { adapter } = useMapEngine()
       const D = adapter.Draw
-      return <D kind="polygon" shapes={[]} onChange={() => {}} mode="draw" />
+      return <D kind="polygon" shapes={[]} onValueChange={() => {}} mode="draw" />
     }
     h.map.getProjection.mockReturnValue(undefined)
     const { unmount } = renderGoogle(

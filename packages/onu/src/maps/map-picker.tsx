@@ -28,7 +28,7 @@ export interface MapPickerProps {
   /** Controlled value. `null` = nothing picked. */
   value?: LatLng | null
   defaultValue?: LatLng | null
-  onChange?: (value: LatLng | null) => void
+  onValueChange?: (value: LatLng | null) => void
   /** Submits `name[lat]` and `name[lng]` hidden inputs. */
   name?: string
   id?: string
@@ -66,7 +66,7 @@ function MapPickerInner(props: MapPickerProps) {
   const {
     value: valueProp,
     defaultValue = null,
-    onChange,
+    onValueChange,
     label,
     center = MALE,
     zoom = 11,
@@ -94,7 +94,7 @@ function MapPickerInner(props: MapPickerProps) {
   const { adapter } = useMapEngine()
   const engineSearch = adapter.usePlaceSearch()
   const searchFn = typeof search === "function" ? search : search ? engineSearch : null
-  const [value, setValue] = useControllableState<LatLng | null>(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState<LatLng | null>(valueProp, defaultValue, onValueChange)
   const mapRef = React.useRef<MapHandle>(null)
   const { announce, region } = useAnnouncer()
   const [locateState, setLocateState] = React.useState<LocateState>("idle")
@@ -194,7 +194,7 @@ function MapPickerInner(props: MapPickerProps) {
           <CoordinateFields
             id={control.id as string | undefined}
             value={value}
-            onChange={(p) => pick(p, true)}
+            onValueChange={(p) => pick(p, true)}
             disabled={disabled}
             required={required}
             aria-describedby={control["aria-describedby"] as string | undefined}

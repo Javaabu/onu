@@ -42,7 +42,7 @@ export interface DatePickerSingleProps extends PickerFieldProps, DayGridProps {
   /** Selected date (controlled). `null` is empty. */
   value?: Date | null
   defaultValue?: Date | null
-  onChange?: (value: Date | null) => void
+  onValueChange?: (value: Date | null) => void
   /** date-fns display format. Defaults to `dd/MM/yyyy`. */
   format?: string
   showWeekNumber?: boolean
@@ -54,7 +54,7 @@ export interface DatePickerMultipleProps extends PickerFieldProps, DayGridProps 
   /** Selected dates (controlled), kept in ascending order. */
   value?: Date[]
   defaultValue?: Date[]
-  onChange?: (value: Date[]) => void
+  onValueChange?: (value: Date[]) => void
   /** date-fns format for each date in the field. Defaults to `d MMM yyyy`. */
   format?: string
   /** Show the dates in the field up to this many, then "N dates selected". Default 2. */
@@ -70,7 +70,7 @@ export interface DatePickerWeekProps extends PickerFieldProps, DayGridProps {
   value?: Date | null
   defaultValue?: Date | null
   /** Called with the first day of the week. */
-  onChange?: (value: Date | null) => void
+  onValueChange?: (value: Date | null) => void
   /** Custom field text. Defaults to "Week 11, 2026 (8 Mar – 14 Mar)". */
   formatWeek?: (start: Date, end: Date) => string
 }
@@ -82,14 +82,14 @@ export interface DatePickerPeriodProps extends PickerFieldProps {
   value?: Date | null
   defaultValue?: Date | null
   /** Called with the first day of the month (or year). */
-  onChange?: (value: Date | null) => void
+  onValueChange?: (value: Date | null) => void
   /** date-fns display format. Defaults to `MMMM yyyy` (or `yyyy` for years). */
   format?: string
   min?: Date
   max?: Date
 }
 
-/** `mode` picks what the field holds; `value` and `onChange` follow it. */
+/** `mode` picks what the field holds; `value` and `onValueChange` follow it. */
 export type DatePickerProps =
   DatePickerSingleProps | DatePickerMultipleProps | DatePickerWeekProps | DatePickerPeriodProps
 
@@ -124,7 +124,7 @@ function SingleDate({
   mode: _mode,
   value: valueProp,
   defaultValue = null,
-  onChange,
+  onValueChange,
   format,
   min,
   max,
@@ -137,7 +137,7 @@ function SingleDate({
   ...props
 }: DatePickerSingleProps) {
   const { locale, t } = useOnu()
-  const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState(valueProp, defaultValue, onValueChange)
   const display = value ? formatDate(value, format ?? DEFAULT_DATE_FORMAT, locale.dateFns) : null
 
   return (
@@ -179,7 +179,7 @@ function MultipleDates({
   mode: _mode,
   value: valueProp,
   defaultValue = NONE,
-  onChange,
+  onValueChange,
   format = "d MMM yyyy",
   maxShown = 2,
   maxSelected,
@@ -193,7 +193,7 @@ function MultipleDates({
   ...props
 }: DatePickerMultipleProps) {
   const { locale, t } = useOnu()
-  const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState(valueProp, defaultValue, onValueChange)
   const count = value.length
   const summary = t("date.datesSelected", { count })
   const display =
@@ -238,7 +238,7 @@ function WeekDates({
   mode: _mode,
   value: valueProp,
   defaultValue = null,
-  onChange,
+  onValueChange,
   weekStartsOn: weekStartsOnProp,
   formatWeek,
   min,
@@ -252,7 +252,7 @@ function WeekDates({
   const { locale, t } = useOnu()
   const weekStartsOn = weekStartsOnProp ?? locale.weekStartsOn
   const options = { weekStartsOn, locale: locale.dateFns }
-  const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState(valueProp, defaultValue, onValueChange)
 
   const start = value ? startOfWeek(value, options) : null
   const end = start ? endOfWeek(start, options) : null
@@ -314,7 +314,7 @@ function PeriodDates({
   granularity,
   value: valueProp,
   defaultValue = null,
-  onChange,
+  onValueChange,
   format,
   min,
   max,
@@ -323,7 +323,7 @@ function PeriodDates({
   ...props
 }: DatePickerPeriodProps & { granularity: "month" | "year" }) {
   const { locale, t } = useOnu()
-  const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState(valueProp, defaultValue, onValueChange)
   const month = granularity === "month"
   const display = value ? formatDate(value, format ?? (month ? "LLLL yyyy" : "yyyy"), locale.dateFns) : null
 

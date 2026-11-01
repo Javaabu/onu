@@ -17,7 +17,7 @@ import { AvatarUpload } from "@javaabu/onu/media"
 </FormField>
 ```
 
-The cropped image is a square JPEG, 512px by default (`cropOptions`), returned as a `File` through `onChange` and kept on the hidden file input for plain form submits. If cropping fails (for example a cross-origin image), the original file is used.
+The cropped image is a square JPEG, 512px by default (`cropOptions`), returned as a `File` through `onValueChange` and kept on the hidden file input for plain form submits. If cropping fails (for example a cross-origin image), the original file is used.
 
 ## Props
 
@@ -26,8 +26,8 @@ The cropped image is a square JPEG, 512px by default (`cropOptions`), returned a
 | `personName`   | `string`                             | (required)  | Used for the initials and the alt text  |
 | `value`        | `File \| string \| null`             |             | Controlled value                        |
 | `defaultValue` | `File \| string \| null`             |             | Initial value                           |
-| `onChange`     | `(file: File \| null) => void`       |             | New (cropped) file, or `null`           |
-| `onReject`     | `(rejection) => void`                |             | A picked file failed validation         |
+| `onValueChange`     | `(file: File \| null) => void`       |             | New (cropped) file, or `null`           |
+| `onReject`     | `(rejections) => void`               |             | A picked file failed validation         |
 | `accept`       | `string`                             | `"image/*"` | Accepted types                          |
 | `maxSize`      | `number`                             |             | Largest size in bytes (before cropping) |
 | `crop`         | `boolean`                            | `true`      | Show the crop step                      |

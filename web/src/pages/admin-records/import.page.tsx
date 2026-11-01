@@ -285,8 +285,8 @@ export default function ImportPage() {
                           appearance="dropzone"
                           accept=".csv,text/csv"
                           maxSize={5 * 1024 * 1024}
-                          onChange={async (next) => {
-                            const file = next[0]
+                          onValueChange={async (next) => {
+                            const file = next[0] as File | undefined
                             if (file) load(file.name, await file.text())
                             else setCsv(null)
                           }}

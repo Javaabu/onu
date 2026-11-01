@@ -16,7 +16,7 @@ export interface TimePickerProps extends PickerFieldProps {
   /** Selected time as a `Date` (its date part is kept as-is). `null` is empty. */
   value?: Date | null
   defaultValue?: Date | null
-  onChange?: (value: Date | null) => void
+  onValueChange?: (value: Date | null) => void
   /** 12-hour (AM/PM) or 24-hour. Defaults to the locale's hour cycle. */
   hourCycle?: 12 | 24
   /** Minutes between cells in the minute grid. Default 5. */
@@ -34,7 +34,7 @@ export interface TimePickerProps extends PickerFieldProps {
 export function TimePicker({
   value: valueProp,
   defaultValue = null,
-  onChange,
+  onValueChange,
   hourCycle: hourCycleProp,
   minuteStep,
   format,
@@ -44,7 +44,7 @@ export function TimePicker({
 }: TimePickerProps) {
   const { locale, t } = useOnu()
   const hourCycle = hourCycleProp ?? locale.hourCycle
-  const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState(valueProp, defaultValue, onValueChange)
   const pattern = format ?? defaultTimeFormat(hourCycle)
   const display = value ? formatDate(value, pattern, locale.dateFns) : null
 
@@ -62,7 +62,7 @@ export function TimePicker({
     >
       <TimePanel
         value={value ? getTimeValue(value) : null}
-        onChange={(time) => setValue(withTime(value ?? referenceDate ?? props.today ?? new Date(), time))}
+        onValueChange={(time) => setValue(withTime(value ?? referenceDate ?? props.today ?? new Date(), time))}
         hourCycle={hourCycle}
         minuteStep={minuteStep}
         initialFocus
