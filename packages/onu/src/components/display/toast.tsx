@@ -73,6 +73,8 @@ export function Toaster({ position = "bottom-end", theme, className, toastOption
         classNames: {
           toast: cn("font-sans", locale.code === "dv" && "font-thaana"),
           description: "text-muted-foreground!",
+          // Sonner's own rule sets 20×20 px, unlayered, so these need `!` to win.
+          closeButton: "size-6! touch:size-11!",
           ...toastOptions?.classNames,
         },
       }}
