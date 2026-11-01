@@ -303,7 +303,7 @@ export function CommandPalette({
     <ModalRoot open={open} onOpenChange={setOpen}>
       {trigger ? <ModalTrigger asChild>{trigger}</ModalTrigger> : null}
       <ModalContent
-        size="md"
+        size="default"
         mobile="fullscreen"
         data-slot="command-palette"
         className={cn("sm:top-[12vh] sm:translate-y-0 sm:data-open:slide-in-from-top-2", className)}

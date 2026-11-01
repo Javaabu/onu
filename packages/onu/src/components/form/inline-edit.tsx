@@ -41,7 +41,7 @@ export interface InlineEditProps extends Omit<
   renderValue?: (value: string) => React.ReactNode
   /** Start in edit mode. */
   defaultEditing?: boolean
-  inputProps?: Omit<React.ComponentProps<"input">, "value" | "onChange" | "defaultValue">
+  inputProps?: Omit<React.ComponentProps<"input">, "value" | "onChange" | "defaultValue" | "size">
   classNames?: { display?: string; input?: string; actions?: string; error?: string }
 }
 

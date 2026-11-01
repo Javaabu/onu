@@ -65,7 +65,7 @@ export const userAvatarVariants = cva("", {
     size: {
       xs: "size-6 text-[0.625rem]",
       sm: "size-8 text-xs",
-      md: "size-10 text-sm",
+      default: "size-10 text-sm",
       lg: "size-12 text-base",
       xl: "size-16 text-lg",
     },
@@ -74,7 +74,7 @@ export const userAvatarVariants = cva("", {
       square: "rounded-lg after:rounded-lg",
     },
   },
-  defaultVariants: { size: "md", shape: "circle" },
+  defaultVariants: { size: "default", shape: "circle" },
 })
 
 export type Presence = "online" | "offline" | "busy" | "away"
@@ -93,7 +93,7 @@ const PRESENCE_LABELS: Record<Presence, string> = {
   away: "display.presenceAway",
 }
 
-const DOT_SIZES = { xs: "size-2", sm: "size-2.5", md: "size-3", lg: "size-3.5", xl: "size-4" } as const
+const DOT_SIZES = { xs: "size-2", sm: "size-2.5", default: "size-3", lg: "size-3.5", xl: "size-4" } as const
 
 export interface UserAvatarProps
   extends Omit<React.ComponentProps<typeof Avatar>, "size" | "children">, VariantProps<typeof userAvatarVariants> {
@@ -168,7 +168,7 @@ export function UserAvatar({
           data-status={status}
           className={cn(
             "bottom-0 end-0 absolute rounded-full ring-2 ring-background",
-            DOT_SIZES[size ?? "md"],
+            DOT_SIZES[size ?? "default"],
             PRESENCE_CLASSES[status],
             classNames?.status,
           )}

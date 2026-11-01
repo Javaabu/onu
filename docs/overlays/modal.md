@@ -41,7 +41,7 @@ Without a `trigger`, focus still returns to the element that had focus when the 
 
 ## Sizes and phones
 
-`size` sets the width from the `sm` breakpoint up: `sm`, `md` (default), `lg`, `xl` or `full`.
+`size` sets the width from the `sm` breakpoint up: `sm`, `default`, `lg`, `xl` or `full`.
 
 `mobile` sets the presentation below 640px:
 
@@ -100,7 +100,7 @@ import {
 | `open`         | `boolean`                                                      |           | Controlled open state                               |
 | `defaultOpen`  | `boolean`                                                      | `false`   | Initial state when uncontrolled                     |
 | `onOpenChange` | `(open: boolean) => void`                                      |           | Called when the modal opens or closes               |
-| `size`         | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'`                       | `'md'`    | Width from `sm` up                                  |
+| `size`         | `'sm' \| 'default' \| 'lg' \| 'xl' \| 'full'` | `'default'`    | Width from `sm` up                                  |
 | `mobile`       | `'sheet' \| 'fullscreen' \| 'dialog'`                          | `'sheet'` | Presentation on phones                              |
 | `closeButton`  | `boolean`                                                      | `true`    | Show the × button                                   |
 | `className`    | `string`                                                       |           | Classes for the panel                               |

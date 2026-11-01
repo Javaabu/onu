@@ -25,7 +25,7 @@ getInitials("އަޙްމަދު ޢަލީ") // "އަޢަ"
 | `name`       | `string`                                    |            | Used for initials and the accessible name                    |
 | `src`        | `string`                                    |            | Image URL; initials show while loading or if it fails        |
 | `alt`        | `string`                                    | `name`     | Image alt text                                               |
-| `size`       | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'`      | `'md'`     | 24, 32, 40, 48 or 64px                                       |
+| `size`       | `'xs' \| 'sm' \| 'default' \| 'lg' \| 'xl'` | `'default'`     | 24, 32, 40, 48 or 64px                                       |
 | `shape`      | `'circle' \| 'square'`                      | `'circle'` | Shape                                                        |
 | `status`     | `'online' \| 'offline' \| 'busy' \| 'away'` |            | Presence dot                                                 |
 | `decorative` | `boolean`                                   | `false`    | Hide from screen readers (when the name is shown next to it) |

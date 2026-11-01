@@ -48,7 +48,7 @@ describe("Modal", () => {
     const dialog = screen.getByRole("dialog", { name: "Edit staff member" })
     expect(dialog).toHaveAccessibleDescription("Changes are visible to HR.")
     expect(dialog).toHaveAttribute("data-slot", "modal-content")
-    expect(dialog).toHaveAttribute("data-size", "md")
+    expect(dialog).toHaveAttribute("data-size", "default")
     expect(dialog).toHaveAttribute("data-mobile", "sheet")
     expect(dialog.querySelector("[data-slot=modal-body]")).toContainElement(screen.getByLabelText("Full name"))
     expect(dialog.querySelector("[data-slot=modal-footer]")).toContainElement(
@@ -110,7 +110,7 @@ describe("Modal", () => {
     expect(dialog.querySelector("[data-slot=modal-body]")).toBeNull()
   })
 
-  it.each(["sm", "md", "lg", "xl", "full"] as const)("applies size %s", (size) => {
+  it.each(["sm", "default", "lg", "xl", "full"] as const)("applies size %s", (size) => {
     renderWithOnu(<Modal defaultOpen title="Sized" size={size} />)
     expect(screen.getByRole("dialog")).toHaveAttribute("data-size", size)
   })

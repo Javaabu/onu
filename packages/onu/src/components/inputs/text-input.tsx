@@ -9,7 +9,11 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "../../ui/input-gro
 import { useFormFieldControl } from "../form/form-field"
 import { ThaanaToggle } from "./thaana-toggle"
 
+const FIELD_SIZES = { sm: "h-7 text-xs", default: "h-8", lg: "h-10 text-base" } as const
+
 export interface TextInputProps extends Omit<React.ComponentProps<"input">, "size"> {
+  /** Field height, shared with `NumberInput` and `Select`. Default `default`. */
+  size?: keyof typeof FIELD_SIZES
   /** Type Thaana from a Latin keyboard (R13.3). `true` or keyboard options. Ignored for `type="email"` and `type="url"`. */
   thaana?: ThaanaProp
   /** Show a Thaana/Latin toggle button when `thaana` is on (R13.5). */
@@ -105,6 +109,7 @@ export function TextInput({
   urlProtocol = "https://",
   startAddon,
   endAddon,
+  size = "default",
   className,
   classNames,
   ref,
@@ -129,7 +134,7 @@ export function TextInput({
       <Input
         ref={merged}
         data-slot="input"
-        className={cn(classNames?.input, className)}
+        className={cn(FIELD_SIZES[size], classNames?.input, className)}
         {...fieldProps}
         {...controlProps}
       />
@@ -137,7 +142,10 @@ export function TextInput({
   }
 
   return (
-    <InputGroup className={cn(classNames?.root, className)} data-disabled={controlProps.disabled || undefined}>
+    <InputGroup
+      className={cn(FIELD_SIZES[size], classNames?.root, className)}
+      data-disabled={controlProps.disabled || undefined}
+    >
       {startAddon ? (
         <InputGroupAddon align="inline-start" className={classNames?.startAddon}>
           {startAddon}
