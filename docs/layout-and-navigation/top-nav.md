@@ -74,7 +74,7 @@ In the phone drawer, an item with `columns` is a collapsible section: a titled c
 | `logo`         | `ReactNode`                                                         |            | Top of the phone drawer                   |
 | `mobileFooter` | `ReactNode`                                                         |            | Bottom of the phone drawer (e.g. Sign in) |
 | `mobileSide`   | `'start' \| 'end'`                                                  | `'end'`    | Side the drawer slides in from            |
-| `navLabel`     | `string`                                                            | "Main"     | Accessible name of the navigation         |
+| `label`     | `string`                                                            | "Main"     | Accessible name of the navigation         |
 | `classNames`   | `{ list, link, content, trigger, sheet, panel, column, panelLink }` |            | Classes for each part                     |
 
 `TopNavItem` adds `columns?: TopNavColumn[]` (a mega menu panel) and `featured?: ReactNode` to `NavItem`. `classNames.link` styles top-level links; `panelLink` styles links in dropdowns and panels.

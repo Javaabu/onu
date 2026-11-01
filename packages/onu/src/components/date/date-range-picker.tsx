@@ -11,10 +11,10 @@ import { useFormField, useFormFieldControl } from "../form/form-field"
 import { DatePicker } from "./date-picker"
 import { DateTimePicker } from "./date-time-picker"
 import { DetachFromFormField, HiddenInput, type PickerFieldProps } from "./_picker-shell"
-import { useControllableState } from "./_use-controllable-state"
 import { toISODate, toISODateTime, type DateRangeValue } from "./_utils"
 import { registerEnglish } from "../../i18n/english"
 import { date as en_date } from "../../locales/en/date"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ date: en_date })
 
@@ -26,7 +26,7 @@ export interface DateRangePickerProps extends Omit<
   value?: DateRangeValue
   defaultValue?: DateRangeValue
   /** Without `withTime`, `to` is the end of its day (23:59:59.999). */
-  onChange?: (value: DateRangeValue) => void
+  onValueChange?: (value: DateRangeValue) => void
   /** Pick a time as well as a date for each end. */
   withTime?: boolean
   format?: string
@@ -56,7 +56,7 @@ const EMPTY: DateRangeValue = { from: null, to: null }
 export function DateRangePicker({
   value: valueProp,
   defaultValue = EMPTY,
-  onChange,
+  onValueChange,
   withTime = false,
   format,
   min,
@@ -79,7 +79,7 @@ export function DateRangePicker({
   const control = useFormFieldControl(props as Record<string, unknown>) as PickerFieldProps & {
     "aria-describedby"?: string
   }
-  const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState(valueProp, defaultValue, onValueChange)
   const uid = React.useId()
   const fromId = control.id ?? `${uid}-from`
   const toId = `${fromId}-to`
@@ -126,7 +126,7 @@ export function DateRangePicker({
       "aria-labelledby": field ? `${field.labelId} ${labelId}` : labelId,
       placeholder: placeholders?.[end] ?? t(withTime ? "date.selectDateTime" : "date.selectDate"),
       value: value[end],
-      onChange: (d: Date | null) => update({ [end]: d }),
+      onValueChange: (d: Date | null) => update({ [end]: d }),
     }
     return (
       <div data-slot={`date-range-${end}`} className={cn("gap-1.5 min-w-0 grid", classNames?.field)}>

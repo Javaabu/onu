@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { toArray } from "../../lib/utils"
 import { useOnu, type LabelLayout } from "../../providers/onu-provider"
 
 /** Field errors keyed by field name, using Laravel's dot notation (`items.0.name`). */
@@ -53,12 +54,7 @@ export function FormErrorsProvider({ errors, children }: { errors?: FormErrors |
 export function useFieldErrors(name?: string): string[] {
   const errors = React.useContext(FormErrorsContext)
   if (!name || !errors) return []
-  return toArray(errors[name] ?? errors[toDotNotation(name)])
-}
-
-export function toArray(value: string[] | string | null | undefined): string[] {
-  if (!value) return []
-  return Array.isArray(value) ? value.filter(Boolean) : [value]
+  return toArray(errors[name] ?? errors[toDotNotation(name)]).filter(Boolean)
 }
 
 /** `items[0][name]` → `items.0.name`, the key format Laravel uses for errors. */

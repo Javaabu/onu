@@ -8,10 +8,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "../../ui/input-otp"
 import { useFormFieldControl } from "../form/form-field"
-import { useControllableState } from "./_shared"
-import { useMergedRef } from "./text-input"
+import { useMergedRef } from "../../hooks/use-merged-ref"
 import { registerEnglish } from "../../i18n/english"
 import { input as en_input } from "../../locales/en/input"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ input: en_input })
 

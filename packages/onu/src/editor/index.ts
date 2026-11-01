@@ -5,16 +5,15 @@ export * from "./code-block"
 export * from "./translations-editor"
 export * from "./custom-attribute-fields"
 export * from "./thaana-keyboard"
+export { isSafeUrl, normalizeUrl } from "../lib/url"
 export {
   ALIGNMENTS,
   AutoDirection,
-  Callout,
+  CalloutNode,
   CALLOUT_VARIANTS,
   createSchemaExtensions,
   Embed,
   isSafeImageUrl,
-  isSafeUrl,
-  normalizeUrl,
   toEmbedUrl,
   type Alignment,
   type CalloutVariant,

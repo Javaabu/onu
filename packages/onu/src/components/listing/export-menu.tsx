@@ -89,7 +89,7 @@ export function ExportMenu({
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            data-slot="export-menu"
+            data-part="export-menu"
             disabled={disabled || busy !== null}
             aria-busy={busy !== null || undefined}
             className={cn("touch:min-h-11", classNames?.trigger, className)}

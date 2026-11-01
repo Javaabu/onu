@@ -10,13 +10,13 @@ import { Button } from "../../ui/button"
 import { Skeleton } from "../../ui/skeleton"
 import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group"
 import { TextInput } from "../inputs/text-input"
-import { useControllable } from "./_use-controllable"
 import { FileIcon } from "./file-icon"
 import { getFileKind } from "./file-utils"
 import { useFormatFileSize } from "./use-files"
 import { registerEnglish } from "../../i18n/english"
 import { common as en_common } from "../../locales/en/common"
 import { file as en_file } from "../../locales/en/file"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ common: en_common, file: en_file })
 
@@ -116,9 +116,9 @@ export function MediaLister({
 }: MediaListerProps) {
   const { t, locale } = useTranslation()
   const format = useFormatFileSize()
-  const [view, setView] = useControllable<MediaView>(viewProp, defaultView, onViewChange)
-  const [search, setSearch] = useControllable<string>(searchProp, defaultSearch, onSearchChange)
-  const [selected, setSelected] = useControllable<MediaId[]>(selectedProp, defaultSelected ?? [], onSelectedChange)
+  const [view, setView] = useControllableState<MediaView>(viewProp, defaultView, onViewChange)
+  const [search, setSearch] = useControllableState<string>(searchProp, defaultSearch, onSearchChange)
+  const [selected, setSelected] = useControllableState<MediaId[]>(selectedProp, defaultSelected ?? [], onSelectedChange)
   const sentinel = React.useRef<HTMLDivElement>(null)
   const listId = React.useId()
 

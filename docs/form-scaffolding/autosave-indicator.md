@@ -29,6 +29,7 @@ Or drive it yourself:
 | `error`       | `ReactNode`                                | "Couldn’t save changes" | Error text                                  |
 | `onRetry`     | `() => void`                               |                         | Shows a Retry button in the error state     |
 | `compact`     | `boolean`                                  | `false`                 | Icon only (text kept for screen readers)    |
+| `classNames` | `{ root, icon, label, retry }` |  | Classes for each part |
 
 ## useAutosave(value, options)
 

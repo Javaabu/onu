@@ -68,3 +68,14 @@ describe("Sparkline", () => {
     await expectNoA11yViolations(container)
   })
 })
+
+describe("Sparkline classNames", () => {
+  it("applies them to the root and chart", () => {
+    const { container } = renderWithOnu(
+      <Sparkline data={[1, 2, 3]} label="Arrivals" classNames={{ root: "r", chart: "c" }} />,
+    )
+    const root = container.querySelector('[data-slot="sparkline"]')
+    expect(root).toHaveClass("r")
+    expect(root?.querySelector(".c")).toBeInTheDocument()
+  })
+})

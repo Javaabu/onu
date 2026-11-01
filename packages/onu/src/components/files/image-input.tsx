@@ -8,12 +8,12 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { useFormField, useFormFieldControl } from "../form/form-field"
-import { useMergedRef } from "../inputs/text-input"
-import { useControllable } from "./_use-controllable"
+import { useMergedRef } from "../../hooks/use-merged-ref"
 import { syncInputFiles, validateFile, type FileRejection } from "./file-utils"
 import { useObjectUrl, useRejectionMessage } from "./use-files"
 import { registerEnglish } from "../../i18n/english"
 import { file as en_file } from "../../locales/en/file"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ file: en_file })
 
@@ -39,9 +39,9 @@ export interface ImageInputProps
   value?: File | string | null
   defaultValue?: File | string | null
   /** Called with the new file, or `null` when removed. */
-  onChange?: (file: File | null) => void
+  onValueChange?: (file: File | null) => void
   /** Called when a picked file fails validation. */
-  onReject?: (rejection: FileRejection) => void
+  onReject?: (rejections: FileRejection[]) => void
   /** Alt text for the preview (required, R14.10). */
   alt: string
   /** Largest allowed size in bytes. */
@@ -59,7 +59,7 @@ export interface ImageInputProps
 export function ImageInput({
   value,
   defaultValue,
-  onChange,
+  onValueChange,
   onReject,
   alt,
   accept = "image/*",
@@ -76,10 +76,10 @@ export function ImageInput({
   const { t } = useTranslation()
   const local = React.useRef<HTMLInputElement>(null)
   const merged = useMergedRef(local, ref)
-  const [image, setImage] = useControllable<File | string | null>(
+  const [image, setImage] = useControllableState<File | string | null>(
     value,
     defaultValue ?? null,
-    onChange as ((v: File | string | null) => void) | undefined,
+    onValueChange as ((v: File | string | null) => void) | undefined,
   )
   const [initial] = React.useState(() => (typeof (value ?? defaultValue) === "string" ? (value ?? defaultValue) : null))
   const [rejection, setRejection] = React.useState<FileRejection | null>(null)
@@ -109,7 +109,7 @@ export function ImageInput({
     if (code) {
       const r = { file, code }
       setRejection(r)
-      onReject?.(r)
+      onReject?.([r])
       syncInputFiles(local.current, image instanceof File ? [image] : [])
       return
     }

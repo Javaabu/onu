@@ -6,8 +6,10 @@ sidebar_position: 16
 An accessible audio and video player built on [Media Chrome](https://www.media-chrome.org): play/pause, seek, time, mute and volume, captions, playback speed and full screen, with keyboard shortcuts, translated labels and Onu theming. Part of the optional media entry.
 
 ```bash
-pnpm add media-chrome
+pnpm add react-easy-crop signature_pad yet-another-react-lightbox media-chrome
 ```
+
+`@javaabu/onu/media` imports all of these statically, so install them even if you only use `MediaPlayer`.
 
 ```tsx
 import { MediaPlayer } from "@javaabu/onu/media"

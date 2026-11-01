@@ -11,7 +11,6 @@ import type { ThaanaProp } from "../thaana/use-thaana-field"
 import { Button } from "../ui/button"
 import { Spinner } from "../ui/spinner"
 import { CoordinateFields } from "./_coordinate-fields"
-import { useControllableState } from "./_hooks"
 import { PlaceSearchBox } from "./_place-search"
 import { useMapEngine } from "./_context"
 import { formatLatLng, roundLatLng } from "./geo"
@@ -21,6 +20,7 @@ import type { LatLng, MapHandle, PlaceSearch } from "./types"
 import { registerEnglish } from "../i18n/english"
 import { common as en_common } from "../locales/en/common"
 import { map as en_map } from "../locales/en/map"
+import { useControllableState } from "../hooks/use-controllable-state"
 
 registerEnglish({ common: en_common, map: en_map })
 
@@ -28,7 +28,7 @@ export interface MapPickerProps {
   /** Controlled value. `null` = nothing picked. */
   value?: LatLng | null
   defaultValue?: LatLng | null
-  onChange?: (value: LatLng | null) => void
+  onValueChange?: (value: LatLng | null) => void
   /** Submits `name[lat]` and `name[lng]` hidden inputs. */
   name?: string
   id?: string
@@ -66,7 +66,7 @@ function MapPickerInner(props: MapPickerProps) {
   const {
     value: valueProp,
     defaultValue = null,
-    onChange,
+    onValueChange,
     label,
     center = MALE,
     zoom = 11,
@@ -94,7 +94,7 @@ function MapPickerInner(props: MapPickerProps) {
   const { adapter } = useMapEngine()
   const engineSearch = adapter.usePlaceSearch()
   const searchFn = typeof search === "function" ? search : search ? engineSearch : null
-  const [value, setValue] = useControllableState<LatLng | null>(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState<LatLng | null>(valueProp, defaultValue, onValueChange)
   const mapRef = React.useRef<MapHandle>(null)
   const { announce, region } = useAnnouncer()
   const [locateState, setLocateState] = React.useState<LocateState>("idle")
@@ -131,7 +131,7 @@ function MapPickerInner(props: MapPickerProps) {
   const hasValue = value !== null
   React.useEffect(() => {
     if (!hasValue) mapRef.current?.panTo(center, zoom)
-  }, [center.lat, center.lng, zoom, hasValue]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [center.lat, center.lng, zoom, hasValue]) // eslint-disable-line react-hooks/exhaustive-deps -- `center` is often a new object; its coordinates are what matter.
 
   const showClear = !disabled && (clearable ?? !required) && value !== null
 
@@ -194,7 +194,7 @@ function MapPickerInner(props: MapPickerProps) {
           <CoordinateFields
             id={control.id as string | undefined}
             value={value}
-            onChange={(p) => pick(p, true)}
+            onValueChange={(p) => pick(p, true)}
             disabled={disabled}
             required={required}
             aria-describedby={control["aria-describedby"] as string | undefined}

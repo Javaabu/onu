@@ -62,7 +62,7 @@ function Locked({ onVerify }: { onVerify: () => void }) {
             {tr("Back to sign in", "ސައިން އިން އަށް")}
           </LinkButton>
         </div>
-        <Callout appearance="bordered" variant="info" icon="mail" className="text-start">
+        <Callout appearance="bordered" tone="info" icon="mail" className="text-start">
           {tr("Never verified your email?", "އީމެއިލް ވެރިފައި ނުކުރައްވަނީތޯ؟")}{" "}
           <Button variant="link" className="p-0 h-auto" onClick={onVerify}>
             {tr("Verify it to unlock now", "ވެރިފައިކޮށް މިހާރުން ހުޅުއްވާ")}

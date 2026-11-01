@@ -39,15 +39,22 @@ export interface SkeletonTextProps extends SkeletonRootProps {
    * shorter last line, like a paragraph.
    */
   widths?: string[]
-  /** Line size, matching the text it stands in for. Default `md`. */
-  size?: "sm" | "md" | "lg"
+  /** Line size, matching the text it stands in for. Default `default`. */
+  size?: "sm" | "default" | "lg"
   classNames?: { line?: string }
 }
 
-const LINE_HEIGHT = { sm: "h-3", md: "h-4", lg: "h-6" } as const
+const LINE_HEIGHT = { sm: "h-3", default: "h-4", lg: "h-6" } as const
 
 /** Placeholder lines shaped like a paragraph while text loads. */
-export function SkeletonText({ lines = 3, widths, size = "md", className, classNames, ...props }: SkeletonTextProps) {
+export function SkeletonText({
+  lines = 3,
+  widths,
+  size = "default",
+  className,
+  classNames,
+  ...props
+}: SkeletonTextProps) {
   return (
     <SkeletonRoot slot="skeleton-text" className={cn("gap-2 flex flex-col", className)} {...props}>
       {Array.from({ length: lines }, (_, i) => {

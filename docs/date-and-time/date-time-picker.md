@@ -20,7 +20,7 @@ The field shows both parts, e.g. `12/03/2026 2:30 PM`. With `name`, a hidden inp
 | Prop                                                             | Type                            | Default             | Description                                               |
 | ---------------------------------------------------------------- | ------------------------------- | ------------------- | --------------------------------------------------------- |
 | `value` / `defaultValue`                                         | `Date \| null`                  |                     |                                                           |
-| `onChange`                                                       | `(value: Date \| null) => void` |                     |                                                           |
+| `onValueChange`                                                       | `(value: Date \| null) => void` |                     |                                                           |
 | `format`                                                         | `string`                        | `dd/MM/yyyy h:mm a` | date-fns display format                                   |
 | `hourCycle`                                                      | `12 \| 24`                      | locale              |                                                           |
 | `minuteStep`                                                     | `number`                        | `5`                 |                                                           |

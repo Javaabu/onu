@@ -35,9 +35,9 @@ With `strength`, `autoComplete` defaults to `"new-password"`; otherwise `"curren
 | `onVisibleChange` | `(visible: boolean) => void`                             |         | Called when the button is pressed               |
 | `capsLockWarning` | `boolean`                                                | `true`  | Warn when Caps Lock is on                       |
 | `strength`        | `boolean \| (pw: string) => 0–4`                         | `false` | Show a strength meter, optionally with a scorer |
-| `classNames`      | `{ wrapper, root, input, endAddon, capsLock, strength }` |         | Classes for each part                           |
+| `classNames`      | `{ wrapper, root, input, startAddon, endAddon, capsLock, strength }` |         | Classes for each part                           |
 
-All other `<input>` props are passed to the input, and `ref` points at it. `className` goes on the wrapper.
+Other [`TextInput`](./text-input) props (`size`, addons, `name`, …) work too, except `type`, `thaana` and `thaanaToggle`, and `ref` points at the input. `className` goes on the wrapper.
 
 Also exported: `scorePassword(password): 0 | 1 | 2 | 3 | 4`.
 

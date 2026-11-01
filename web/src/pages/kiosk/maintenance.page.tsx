@@ -268,7 +268,7 @@ export default function KioskMaintenancePage() {
                 )}
               />
               {offline ? (
-                <Callout appearance="plain" variant="warning">
+                <Callout appearance="plain" tone="warning">
                   {tr("Customers can't pay at this kiosk.", "މި ކިއޮސްކުން ފައިސާ ނުދެއްކޭނެ.")}
                 </Callout>
               ) : null}

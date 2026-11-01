@@ -380,6 +380,7 @@ function PlaceholderMarker({
     <MarkerPin tone={color} label={label} selected={selected} />
   )
   const className = cn(
+    // eslint-disable-next-line no-restricted-syntax -- A map is not mirrored: this centres the marker on its physical `left`.
     "absolute z-20 -translate-x-1/2 rounded-full outline-none",
     arrow ? "-translate-y-1/2" : "-translate-y-full",
     selected && "z-25",
@@ -495,7 +496,7 @@ function Handle({
   )
 }
 
-function PlaceholderCircle({ center, radius, tone = "primary", editable, onChange }: AdapterCircleProps) {
+function PlaceholderCircle({ center, radius, tone = "primary", editable, onValueChange }: AdapterCircleProps) {
   const { t } = useTranslation()
   const { toPoint, pixelsPerMeter } = useViewport()
   const [live, setLive] = React.useState<{ center: LatLng; radius: number } | null>(null)
@@ -525,7 +526,7 @@ function PlaceholderCircle({ center, radius, tone = "primary", editable, onChang
             onMove={(q) => setLive({ center: q, radius: r })}
             onEnd={(q) => {
               setLive(null)
-              onChange?.({ center: q, radius: r })
+              onValueChange?.({ center: q, radius: r })
             }}
           />
           <Handle
@@ -534,7 +535,7 @@ function PlaceholderCircle({ center, radius, tone = "primary", editable, onChang
             onMove={(q) => setLive({ center: c, radius: radiusFrom(q) })}
             onEnd={(q) => {
               setLive(null)
-              onChange?.({ center: c, radius: radiusFrom(q) })
+              onValueChange?.({ center: c, radius: radiusFrom(q) })
             }}
           />
         </>
@@ -543,7 +544,15 @@ function PlaceholderCircle({ center, radius, tone = "primary", editable, onChang
   )
 }
 
-function PlaceholderDraw({ shapes, onChange, mode, selectedId, onSelect, kind, tone = "primary" }: AdapterDrawProps) {
+function PlaceholderDraw({
+  shapes,
+  onValueChange,
+  mode,
+  selectedId,
+  onSelect,
+  kind,
+  tone = "primary",
+}: AdapterDrawProps) {
   const { t } = useTranslation()
   const { toLatLng, toPoint } = useViewport()
   const draftId = React.useRef<string | null>(null)
@@ -555,17 +564,19 @@ function PlaceholderDraw({ shapes, onChange, mode, selectedId, onSelect, kind, t
     const id = draftId.current
     const existing = id ? shapes.find((s) => s.id === id) : undefined
     if (existing) {
-      onChange(shapes.map((s) => (s.id === id ? { ...s, path: [...s.path, p] } : s)))
+      onValueChange(shapes.map((s) => (s.id === id ? { ...s, path: [...s.path, p] } : s)))
     } else {
       const newId = `shape-${Date.now().toString(36)}`
       draftId.current = newId
-      onChange([...shapes, { id: newId, path: [p] }])
+      onValueChange([...shapes, { id: newId, path: [p] }])
       onSelect?.(newId)
     }
   }
 
   const movePoint = (shapeId: string, index: number, p: LatLng) =>
-    onChange(shapes.map((s) => (s.id === shapeId ? { ...s, path: s.path.map((q, i) => (i === index ? p : q)) } : s)))
+    onValueChange(
+      shapes.map((s) => (s.id === shapeId ? { ...s, path: s.path.map((q, i) => (i === index ? p : q)) } : s)),
+    )
 
   return (
     <>

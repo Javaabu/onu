@@ -147,7 +147,7 @@ export default function LessonPlayerPage() {
           </div>
 
           <Tabs
-            listLabel={tr("Lesson", "ފިލާވަޅު")}
+            label={tr("Lesson", "ފިލާވަޅު")}
             variant="line"
             items={[
               {

@@ -24,6 +24,7 @@ Inside a [`Form`](./form) it follows the form's processing state automatically. 
 | Prop         | Type      | Default     | Description                        |
 | ------------ | --------- | ----------- | ---------------------------------- |
 | `processing` | `boolean` | from `Form` | Show the spinner and block submits |
+| `asChild` | `boolean` |  | Render your element as the button; the spinner goes before its content |
 
 All [`Button`](./button) props except `type` and `loading` are supported (`variant`, `size`, `startIcon`, `loadingText`, …).
 

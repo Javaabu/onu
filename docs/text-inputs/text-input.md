@@ -61,6 +61,7 @@ A URL without a scheme gets `urlProtocol` (default `https://`) when the user lea
 | -------------- | --------------------------------------- | ------- | --------------------------------------------------------- |
 | `thaana`       | `boolean \| ThaanaOptions`              | `false` | Type Thaana from a Latin keyboard (not for email and URL) |
 | `thaanaToggle` | `boolean`                               | `false` | Show a Thaana/Latin toggle button                         |
+| `size` | `"sm" \| "default" \| "lg"` | `"default"` | Field height: 28, 32 or 40 px |
 | `urlProtocol`  | `string \| false`                       | `"https://"` | `type="url"`: added on blur when the scheme is missing; `false` turns it off |
 | `startAddon`   | `ReactNode`                             |         | Content before the input                                  |
 | `endAddon`     | `ReactNode`                             |         | Content after the input                                   |

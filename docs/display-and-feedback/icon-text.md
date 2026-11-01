@@ -22,7 +22,7 @@ import { IconText } from "@javaabu/onu"
 | `iconPosition` | `'start' \| 'end'`                                                                       | `'start'`   | Icon side                                |
 | `iconLabel`    | `string`                                                                                 |             | Makes the icon meaningful (`role="img"`) |
 | `size`         | `'sm' \| 'md' \| 'lg'`                                                                   | `'md'`      | Text and icon size                       |
-| `tone`         | `'default' \| 'muted' \| 'primary' \| 'success' \| 'warning' \| 'destructive' \| 'info'` | `'default'` | Colour                                   |
+| `tone`         | `'neutral' \| 'muted' \| 'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'neutral'` | Colour                                   |
 | `asChild`      | `boolean`                                                                                | `false`     | Render your element (e.g. a link)        |
 | `classNames`   | `{ icon, text }`                                                                         |             | Classes for each part                    |
 
@@ -30,7 +30,7 @@ Variants are exported as `iconTextVariants`.
 
 ## Accessibility
 
-The icon is decorative unless `iconLabel` is set. Give it a label only when it adds meaning the text doesn't.
+This renders a `<span>` with no role of its own (or your element with `asChild`), so screen readers read its text. An icon named by a string is decorative and hidden from them unless `iconLabel` is set, which gives it that accessible name. Give it a label only when it adds meaning the text doesn't. `iconLabel` has no effect on an icon passed as a node, so name that node yourself.
 
 ## RTL
 

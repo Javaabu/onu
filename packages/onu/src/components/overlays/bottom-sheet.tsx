@@ -17,10 +17,10 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../../ui/drawer"
-import { useControllableState } from "./_use-controllable-state"
 import { useRestoreFocus } from "./_use-restore-focus"
 import { registerEnglish } from "../../i18n/english"
 import { overlay as en_overlay } from "../../locales/en/overlay"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ overlay: en_overlay })
 
@@ -130,7 +130,7 @@ export function BottomSheetHeader({
         <Button
           variant="ghost"
           size="icon-sm"
-          data-slot="bottom-sheet-expand"
+          data-part="bottom-sheet-expand"
           aria-expanded={expandButton.expanded}
           onClick={expandButton.onToggle}
           className={classNames?.expand}
@@ -141,7 +141,7 @@ export function BottomSheetHeader({
       ) : null}
       {closeButton ? (
         <DrawerClose asChild>
-          <Button variant="ghost" size="icon-sm" data-slot="bottom-sheet-close" className={classNames?.close}>
+          <Button variant="ghost" size="icon-sm" data-part="bottom-sheet-close" className={classNames?.close}>
             <Icon name="close" />
             <span className="sr-only">{t("overlay.close")}</span>
           </Button>

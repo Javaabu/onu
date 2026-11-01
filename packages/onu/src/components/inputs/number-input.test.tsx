@@ -260,7 +260,7 @@ describe("NumberInput stepper", () => {
     fireEvent.pointerDown(screen.getByRole("button", { name: "Increase" }), { button: 0 })
     fireEvent.pointerUp(window)
     expect(screen.getByRole("spinbutton")).toHaveValue("3")
-    expect(container.querySelector("[data-slot=input-group]")).toHaveClass("x-root", "h-12")
+    expect(container.querySelector("[data-slot=input-group]")).toHaveClass("x-root", "h-10")
     rerender(<NumberInput stepper aria-label="Qty" disabled />)
     expect(screen.getByRole("button", { name: "Increase" })).toBeDisabled()
     expect(screen.getByRole("button", { name: "Decrease" })).toBeDisabled()
@@ -324,11 +324,11 @@ describe("NumberInput units", () => {
       <NumberInput stepper aria-label="Weight" unit="kg" endAddon={<span>max</span>} defaultValue={2} />,
     )
     const end = container.querySelector("[data-slot=input-group-addon][data-align=inline-end]")!
-    expect(Array.from(end.children).map((el) => el.getAttribute("data-slot") ?? el.textContent)).toEqual([
-      "unit",
-      "max",
-      "number-input-increment",
-    ])
+    expect(
+      Array.from(end.children).map(
+        (el) => el.getAttribute("data-part") ?? el.getAttribute("data-slot") ?? el.textContent,
+      ),
+    ).toEqual(["unit", "max", "number-input-increment"])
     expect(container.querySelector("[data-slot=input-group-addon][data-align=inline-start]")!.children).toHaveLength(1)
   })
 

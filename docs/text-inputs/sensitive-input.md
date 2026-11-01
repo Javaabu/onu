@@ -47,7 +47,7 @@ It stays monospace unless you pass `mono={false}` (for links and other prose-lik
 | `endAddon`         | `ReactNode`                             |         | Extra content before the buttons                       |
 | `classNames`       | `{ root, input, startAddon, endAddon }` |         | Classes for each part                                  |
 
-All other `<input>` props are passed through. The input is always `readOnly`.
+Other [`TextInput`](./text-input) props (`size`, `startAddon`, `name`, …) work too. The input is always `readOnly`.
 
 Also exported: `maskSecret(value, visibleChars?, maskLength?, maskChar?)`.
 

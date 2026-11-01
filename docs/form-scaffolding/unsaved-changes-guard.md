@@ -83,4 +83,4 @@ useEffect(() => {
 
 ## Accessibility
 
-An alert dialog (focus trapped, Escape = stay). Focus returns to the element that had it before the dialog opened.
+The `dialog` is an alert dialog (`role="alertdialog"`) named by its title and described by its message. Focus is trapped inside, Escape chooses to stay, and focus returns to the element that had it before the dialog opened. The browser's own "Leave site?" prompt on close and reload is outside Onu, and the browser handles its accessibility.

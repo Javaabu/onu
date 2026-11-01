@@ -53,7 +53,7 @@ describe("CustomAttributeFields", () => {
     const onChange = vi.fn()
     const { container } = renderWithOnu(
       <form>
-        <CustomAttributeFields schema={schema} name="attributes" onChange={onChange} />
+        <CustomAttributeFields schema={schema} name="attributes" onValueChange={onChange} />
       </form>,
     )
     await user.type(screen.getByRole("textbox", { name: /Title/ }), "Villa")
@@ -91,7 +91,7 @@ describe("CustomAttributeFields", () => {
   it("picks from a select", async () => {
     const user = userEvent.setup()
     const onChange = vi.fn()
-    renderWithOnu(<CustomAttributeFields schema={schema.filter((f) => f.type === "select")} onChange={onChange} />)
+    renderWithOnu(<CustomAttributeFields schema={schema.filter((f) => f.type === "select")} onValueChange={onChange} />)
     await user.click(screen.getByRole("combobox", { name: "Atoll" }))
     await user.click(await screen.findByRole("option", { name: "Laamu" }))
     expect(onChange).toHaveBeenLastCalledWith({ atoll: "laamu" })
@@ -102,7 +102,11 @@ describe("CustomAttributeFields", () => {
     function Controlled() {
       const [values, setValues] = React.useState<AttributeValues>({ title: "A", furnished: true })
       return (
-        <CustomAttributeFields schema={schema.slice(0, 1).concat(schema[10]!)} value={values} onChange={setValues} />
+        <CustomAttributeFields
+          schema={schema.slice(0, 1).concat(schema[10]!)}
+          value={values}
+          onValueChange={setValues}
+        />
       )
     }
     renderWithOnu(<Controlled />)

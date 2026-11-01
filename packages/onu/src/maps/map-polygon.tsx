@@ -4,13 +4,13 @@ import type * as React from "react"
 
 import { useFormField, useFormFieldControl } from "../components/form/form-field"
 import { useTranslation } from "../providers/onu-provider"
-import { useControllableState } from "./_hooks"
 import { ShapeEditor, useShapesValue, type ShapeEditorClassNames } from "./_shape-editor"
 import { formatArea, polygonArea, polygonsToShapes, shapesToPolygons, type PolygonCollection } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import type { DrawShape, LatLng, MapTone } from "./types"
 import { registerEnglish } from "../i18n/english"
 import { map as en_map } from "../locales/en/map"
+import { useControllableState } from "../hooks/use-controllable-state"
 
 registerEnglish({ map: en_map })
 
@@ -18,7 +18,7 @@ export interface MapPolygonProps {
   /** GeoJSON FeatureCollection of Polygons. `null` when empty. */
   value?: PolygonCollection | null
   defaultValue?: PolygonCollection | null
-  onChange?: (value: PolygonCollection | null) => void
+  onValueChange?: (value: PolygonCollection | null) => void
   /** Submits the GeoJSON as a JSON string. */
   name?: string
   id?: string
@@ -45,7 +45,7 @@ function MapPolygonInner(props: MapPolygonProps) {
   const {
     value: valueProp,
     defaultValue = null,
-    onChange,
+    onValueChange,
     multiple = true,
     tone,
     label,
@@ -58,7 +58,7 @@ function MapPolygonInner(props: MapPolygonProps) {
   const { t, locale } = useTranslation()
   const field = useFormField()
   const control = useFormFieldControl({ name: props.name, disabled: props.disabled, required: props.required })
-  const [value, setValue] = useControllableState<PolygonCollection | null>(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState<PolygonCollection | null>(valueProp, defaultValue, onValueChange)
   const [shapes, setShapes] = useShapesValue(value, setValue, polygonsToShapes, toPolygons)
   const totalArea = shapes.reduce((sum, s) => sum + polygonArea(s.path), 0)
 

@@ -32,6 +32,7 @@ export interface SparklineProps extends Omit<React.ComponentProps<"div">, "child
   animate?: boolean
   /** Fade the area fill from the line to the baseline. Default `true`, or the nearest `ChartStyleProvider`. */
   gradient?: boolean
+  classNames?: { root?: string; chart?: string }
 }
 
 /** Pulls the numbers out of sparkline data. */
@@ -57,6 +58,7 @@ export function Sparkline({
   animate = false,
   gradient: gradientProp,
   className,
+  classNames,
   style,
   ...props
 }: SparklineProps) {
@@ -107,14 +109,14 @@ export function Sparkline({
       aria-label={summary}
       data-slot="sparkline"
       data-variant={variant}
-      className={cn("min-w-12 inline-block w-full", className)}
+      className={cn("min-w-12 inline-block w-full", classNames?.root, className)}
       style={{ height, ...style }}
       {...props}
     >
       {nums.length ? (
         <ChartContainer
           config={{ value: { label, color } }}
-          className={cn("aspect-auto size-full", SVG_LTR, gradient && GRADIENT_FALLBACK)}
+          className={cn("aspect-auto size-full", SVG_LTR, gradient && GRADIENT_FALLBACK, classNames?.chart)}
           data-fill={variant === "area" ? (gradient ? "gradient" : "solid") : undefined}
           aria-hidden="true"
         >

@@ -25,6 +25,7 @@ export interface AutosaveIndicatorProps extends Omit<React.ComponentProps<"div">
   onRetry?: () => void
   /** Hide the text and show only the icon (the status is still announced). */
   compact?: boolean
+  classNames?: { root?: string; icon?: string; label?: string; retry?: string }
 }
 
 const JUST_NOW_MS = 45_000
@@ -41,6 +42,7 @@ export function AutosaveIndicator({
   onRetry,
   compact = false,
   className,
+  classNames,
   ...props
 }: AutosaveIndicatorProps) {
   const { t, locale } = useOnu()
@@ -85,14 +87,15 @@ export function AutosaveIndicator({
         "gap-1.5 text-sm inline-flex items-center text-muted-foreground",
         status === "saved" && "text-success",
         status === "error" && "text-destructive",
+        classNames?.root,
         className,
       )}
       {...props}
     >
-      <Icon name={icon} className={cn("size-4 shrink-0", status === "saving" && "animate-spin")} />
-      <span className={cn(compact && "sr-only")}>{text}</span>
+      <Icon name={icon} className={cn("size-4 shrink-0", status === "saving" && "animate-spin", classNames?.icon)} />
+      <span className={cn(compact && "sr-only", classNames?.label)}>{text}</span>
       {status === "error" && onRetry ? (
-        <Button variant="link" size="sm" className="px-1 h-auto" onClick={onRetry}>
+        <Button variant="link" size="sm" className={cn("px-1 h-auto", classNames?.retry)} onClick={onRetry}>
           {t("common.retry")}
         </Button>
       ) : null}

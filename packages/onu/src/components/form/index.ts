@@ -1,7 +1,6 @@
 export {
   FormErrorsProvider,
   FormLayoutProvider,
-  toArray,
   toDotNotation,
   useFieldErrors,
   useFormDisabled,
@@ -28,4 +27,8 @@ export * from "./submit-button"
 export * from "./button"
 export * from "./link-button"
 export * from "./button-group"
-export * from "./auth-forms"
+export type { AuthFormProps, AuthFormValues } from "./_auth-shell"
+export * from "./sign-in-form"
+export * from "./register-form"
+export * from "./forgot-password-form"
+export * from "./reset-password-form"

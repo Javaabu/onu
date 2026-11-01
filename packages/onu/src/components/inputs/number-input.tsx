@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
+import { cva } from "class-variance-authority"
 
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
@@ -9,10 +9,10 @@ import { useOnu } from "../../providers/onu-provider"
 import { InputGroupButton } from "../../ui/input-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
 import { useFormFieldControl } from "../form/form-field"
-import { useControllableState } from "./_shared"
 import { TextInput, type TextInputProps } from "./text-input"
 import { registerEnglish } from "../../i18n/english"
 import { input as en_input } from "../../locales/en/input"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ input: en_input })
 
@@ -20,18 +20,18 @@ registerEnglish({ input: en_input })
 export const numberInputVariants = cva("", {
   variants: {
     size: {
-      sm: "h-8 w-28",
-      default: "h-10 w-36",
-      lg: "h-12 w-44 text-lg",
+      sm: "w-28",
+      default: "w-36",
+      lg: "w-44",
     },
   },
   defaultVariants: { size: "default" },
 })
 
 const stepperButtonSizes = {
-  sm: "size-7 touch:size-11",
-  default: "size-9 touch:size-11",
-  lg: "size-11",
+  sm: "size-5 touch:size-11",
+  default: "size-6 touch:size-11",
+  lg: "size-8 touch:size-11",
 } as const
 
 export interface NumberInputUnitOption {
@@ -85,7 +85,7 @@ export interface NumberInputFieldProps extends NumberInputBaseProps {
   onValueChange?: (value: number | null) => void
 }
 
-export interface NumberInputStepperProps extends NumberInputBaseProps, VariantProps<typeof numberInputVariants> {
+export interface NumberInputStepperProps extends NumberInputBaseProps {
   /**
    * Large − and + buttons at the sides; holding one repeats the step. The value
    * is never empty: it starts at, and falls back to, `min` (default `0`).
@@ -103,15 +103,14 @@ export interface NumberInputStepperProps extends NumberInputBaseProps, VariantPr
 export type NumberInputProps = NumberInputFieldProps | NumberInputStepperProps
 
 /** Every prop of both variants, for the implementation. */
-type NumberInputAllProps = NumberInputBaseProps &
-  VariantProps<typeof numberInputVariants> & {
-    stepper?: boolean
-    value?: number | null
-    defaultValue?: number | null
-    onValueChange?: (value: number | null) => void
-    repeatDelay?: number
-    repeatInterval?: number
-  }
+type NumberInputAllProps = NumberInputBaseProps & {
+  stepper?: boolean
+  value?: number | null
+  defaultValue?: number | null
+  onValueChange?: (value: number | null) => void
+  repeatDelay?: number
+  repeatInterval?: number
+}
 
 function decimalsOf(n: number | undefined) {
   if (n === undefined || !Number.isFinite(n)) return 0
@@ -314,16 +313,13 @@ export function NumberInput(allProps: NumberInputProps) {
   if (stepper) {
     // Buttons at a limit use aria-disabled, not disabled: a disabled descendant would grey out the whole group.
     const inactive = props.disabled || props.readOnly
-    const button = cn(
-      stepperButtonSizes[size ?? "default"],
-      "aria-disabled:pointer-events-none aria-disabled:opacity-40",
-    )
+    const button = cn(stepperButtonSizes[size], "aria-disabled:pointer-events-none aria-disabled:opacity-40")
     decrementButton = (
       <InputGroupButton
         size="icon-sm"
         variant="ghost"
         tabIndex={-1}
-        data-slot="number-input-decrement"
+        data-part="number-input-decrement"
         aria-label={t("input.decrement")}
         disabled={inactive}
         aria-disabled={(value !== null && min !== undefined && value <= min) || undefined}
@@ -338,7 +334,7 @@ export function NumberInput(allProps: NumberInputProps) {
         size="icon-sm"
         variant="ghost"
         tabIndex={-1}
-        data-slot="number-input-increment"
+        data-part="number-input-increment"
         aria-label={t("input.increment")}
         disabled={inactive}
         aria-disabled={(value !== null && max !== undefined && value >= max) || undefined}
@@ -401,6 +397,7 @@ export function NumberInput(allProps: NumberInputProps) {
   return (
     <>
       <TextInput
+        size={size}
         role="spinbutton"
         inputMode={mode}
         autoComplete="off"

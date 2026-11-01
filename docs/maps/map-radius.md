@@ -25,7 +25,7 @@ Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provide
 
 | Prop                                  | Type                                         | Default               | Description                          |
 | ------------------------------------- | -------------------------------------------- | --------------------- | ------------------------------------ |
-| `value` / `defaultValue` / `onChange` | `{ center: LatLng; radius: number } \| null` |                       | Centre and radius (m)                |
+| `value` / `defaultValue` / `onValueChange` | `{ center: LatLng; radius: number } \| null` |                       | Centre and radius (m)                |
 | `name`                                | `string`                                     | from FormField        | Hidden inputs                        |
 | `defaultRadius`                       | `number`                                     | `500`                 | Radius when a centre is first placed |
 | `min` / `max` / `step`                | `number`                                     | `10` / `50000` / `10` | Radius limits (m)                    |

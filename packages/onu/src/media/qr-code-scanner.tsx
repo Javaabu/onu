@@ -197,8 +197,7 @@ export function QrCodeScanner({
   React.useEffect(() => {
     if (autoStart) void Promise.resolve().then(start)
     return release
-    // Start once on mount; later changes are applied on the next start.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Start once on mount; later changes are applied on the next start.
   }, [])
 
   const toggleTorch = async () => {

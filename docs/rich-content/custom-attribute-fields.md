@@ -5,6 +5,10 @@ sidebar_position: 6
 
 Renders form fields from a schema, for custom attributes, settings or product specs, using Onu's inputs. Values go in and out as one object, input names follow Laravel's `attributes[key]` convention, and server errors map back to the right field.
 
+:::info
+Part of the `@javaabu/onu/editor` entry; install its packages from [Peer dependencies per entry](../installation-and-setup#peer-dependencies-per-entry).
+:::
+
 ```tsx
 import { CustomAttributeFields, type AttributeField } from "@javaabu/onu/editor"
 
@@ -18,7 +22,7 @@ const schema: AttributeField[] = [
 ]
 
 export const Example = (
-  <CustomAttributeFields schema={schema} name="attributes" columns={2} value={values} onChange={setValues} />
+  <CustomAttributeFields schema={schema} name="attributes" columns={2} value={values} onValueChange={setValues} />
 )
 ```
 
@@ -57,7 +61,7 @@ Laravel's 422 errors work as they come, either through a surrounding `FormErrors
 | `schema`       | `AttributeField[]`      |              | Fields, in order                         |
 | `value`        | `AttributeValues`       |              | Controlled values                        |
 | `defaultValue` | `AttributeValues`       |              | Initial values                           |
-| `onChange`     | `(values) => void`      |              | Called with all values                   |
+| `onValueChange`     | `(values) => void`      |              | Called with all values                   |
 | `name`         | `string`                |              | Wraps input names: `name[key]`           |
 | `errors`       | `FormErrors`            |              | Server errors keyed by dot notation      |
 | `columns`      | `1 \| 2`                | `1`          | Two columns from medium container widths |

@@ -5,6 +5,10 @@ sidebar_position: 4
 
 A line, area or bar chart on a real time axis, optionally stacked. Dates are formatted with the active locale (Dhivehi month names in `dv`), missing steps can be filled in as gaps, and a brush lets people zoom into a range.
 
+:::info
+Charts live in the `@javaabu/onu/charts` entry and need the optional peer dependency `recharts` (v3): `pnpm add recharts`.
+:::
+
 ```tsx
 import { TimeSeriesChart } from "@javaabu/onu/charts"
 
@@ -83,7 +87,7 @@ Areas fade from the series colour to almost clear at the baseline (stacked bands
 
 ## Props
 
-Also takes the common chart props (`title`, `description`, `config`, `series`, `valueFormat`, `showLegend`, `showGrid`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [CategoryChart](./category-chart).
+Also takes the common chart props (`title` (required), `description`, `hideTitle`, `id`, `config`, `series`, `valueFormat`, `showLegend`, `showGrid`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [CategoryChart](./category-chart).
 
 | Prop                | Type                                   | Default     | Description                             |
 | ------------------- | -------------------------------------- | ----------- | --------------------------------------- |

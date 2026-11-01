@@ -88,8 +88,6 @@ export const display = {
   viber: "Viber",
   telegram: "Telegram",
   email: "Email",
-  // Content card
-  readMore: "Read more",
   // Error pages
   errorCode: "Error {code}",
   error403Title: "Access denied",

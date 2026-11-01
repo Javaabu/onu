@@ -172,6 +172,14 @@ describe("DataTable", () => {
     expect(controller.selection).toEqual([])
   })
 
+  it("announces when the selection is cleared, and not before anything was selected", async () => {
+    renderWithOnu(<Users bulkActions={[deleteAction()]} />)
+    await userEvent.click(screen.getByRole("checkbox", { name: "Select Jane Doe" }))
+    expect(screen.queryByText("Selection cleared")).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole("button", { name: "Clear selection" }))
+    await waitFor(() => expect(screen.getByText("Selection cleared")).toBeInTheDocument())
+  })
+
   it("asks to confirm a destructive bulk action, runs it with a spinner, then shows success and clears (§25.6)", async () => {
     const deferred = Deferred()
     const run = vi.fn(() => deferred.promise.then(() => undefined))
@@ -207,8 +215,8 @@ describe("DataTable", () => {
       id: "status",
       label: "Change status",
       defaultValue: "active",
-      form: ({ id, value, onChange }) => (
-        <select id={id} value={value} onChange={(e) => onChange(e.target.value)}>
+      form: ({ id, value, onValueChange }) => (
+        <select id={id} value={value} onChange={(e) => onValueChange(e.target.value)}>
           <option value="active">Active</option>
           <option value="banned">Banned</option>
         </select>
@@ -435,5 +443,24 @@ describe("DataTable", () => {
     fireEvent.click(screen.getByRole("checkbox", { name: "Jane Doe ޚިޔާރުކުރޭ" }))
     expect(screen.getByText("1 ޚިޔާރުކުރެވިފައި")).toBeInTheDocument()
     await expectNoA11yViolations()
+  })
+})
+
+describe("DataTable rest props", () => {
+  it("passes rest props and ref to the root", () => {
+    const ref = React.createRef<HTMLDivElement>()
+    renderWithOnu(
+      <DataTable
+        columns={[{ id: "name", header: "Name" }]}
+        data={[{ id: "1", name: "Aisha" }]}
+        ref={ref}
+        data-testid="table"
+        id="people"
+      />,
+    )
+    const root = screen.getByTestId("table")
+    expect(root).toBe(ref.current)
+    expect(root).toHaveAttribute("data-slot", "data-table")
+    expect(root).toHaveAttribute("id", "people")
   })
 })

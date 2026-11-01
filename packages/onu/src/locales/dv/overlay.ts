@@ -10,7 +10,6 @@ export const overlay = {
   commandPalette: "ކޮމާންޑް ޕެލެޓް",
   commandPaletteDescription: "ސަފްހާއެއް ނުވަތަ ކޮމާންޑެއް ހޯއްދަވާ",
   commandPlaceholder: "ކޮމާންޑެއް ލިޔުއްވާ ނުވަތަ ހޯއްދަވާ…",
-  openCommandPalette: "ކޮމާންޑް ޕެލެޓް ހުޅުވާ",
   recent: "ފަހުން ބޭނުންކުރި",
   searching: "ހޯދަނީ…",
   searchFailed: "ހޯދުމުގައި މައްސަލައެއް ދިމާވެއްޖެ",

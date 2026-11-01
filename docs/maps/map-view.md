@@ -5,6 +5,10 @@ sidebar_position: 2
 
 The base map. Put markers, shapes and layers inside it. `MapMarker`, `MapCircleShape`, `MapPolygonShape` and `MapPolylineShape` are the building blocks the other map components use.
 
+:::info
+Maps live in the `@javaabu/onu/maps` entry; install its packages from [Peer dependencies per entry](../installation-and-setup#peer-dependencies-per-entry).
+:::
+
 ```tsx
 import { MapView, MapMarker, MapPolygonShape } from "@javaabu/onu/maps"
 
@@ -44,7 +48,7 @@ Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provide
 | `className`, `classNames` | `string`, `{ root, map }`                       |                 | Overrides                                       |
 
 `MapMarker`: `position`, `title` (accessible name), `label` (text in the pin), `tone`, `selected`, `heading` (arrow marker), `draggable`, `onDragEnd`, `onClick`, `zIndex`.
-`MapCircleShape`: `center`, `radius` (m), `tone`, `editable`, `onChange`. `MapPolygonShape`: `path`, `tone`, `selected`, `onClick`. `MapPolylineShape`: `path`, `tone`, `dashed`, `width`.
+`MapCircleShape`: `center`, `radius` (m), `tone`, `editable`, `onValueChange`. `MapPolygonShape`: `path`, `tone`, `selected`, `onClick`. `MapPolylineShape`: `path`, `tone`, `dashed`, `width`.
 
 Tones: `primary`, `muted`, `success`, `warning`, `destructive`, `info`, `chart-1` … `chart-8`.
 

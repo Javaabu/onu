@@ -69,14 +69,14 @@ export default function IndexTablePage() {
       label: tr("Change status", "ސްޓޭޓަސް ބަދަލުކުރޭ"),
       icon: "edit",
       defaultValue: "in_review",
-      form: ({ id, value, onChange }) => (
+      form: ({ id, value, onValueChange }) => (
         <Select
           id={id}
           size="sm"
           className="w-40"
           options={labels.options.statuses}
           value={value}
-          onValueChange={onChange}
+          onValueChange={onValueChange}
         />
       ),
       run: async (ids, value) => {
@@ -90,14 +90,14 @@ export default function IndexTablePage() {
       label: tr("Assign", "ޙަވާލުކުރޭ"),
       icon: "user",
       defaultValue: "shifa",
-      form: ({ id, value, onChange }) => (
+      form: ({ id, value, onValueChange }) => (
         <Select
           id={id}
           size="sm"
           className="w-44"
           options={labels.options.staff}
           value={value}
-          onValueChange={onChange}
+          onValueChange={onValueChange}
         />
       ),
       run: async (ids, value) => {

@@ -6,8 +6,10 @@ sidebar_position: 9
 Crops an image with [`react-easy-crop`](https://github.com/ValentinH/react-easy-crop): drag or pinch to move and zoom, arrow keys to nudge, a zoom slider, rotation, aspect-ratio presets, and Blob/File output. Part of the optional media entry.
 
 ```bash
-pnpm add react-easy-crop
+pnpm add react-easy-crop signature_pad yet-another-react-lightbox media-chrome
 ```
+
+`@javaabu/onu/media` imports all of these statically, so install them even if you only use `ImageCropper`.
 
 ```tsx
 import { ImageCropper, type ImageCropperHandle } from "@javaabu/onu/media"

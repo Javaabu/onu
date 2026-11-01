@@ -35,7 +35,7 @@ export const modalContentVariants = cva(
     variants: {
       size: {
         sm: "sm:max-w-sm",
-        md: "sm:max-w-lg",
+        default: "sm:max-w-lg",
         lg: "sm:max-w-2xl",
         xl: "sm:max-w-4xl",
         full: "sm:max-w-[calc(100%-2rem)] sm:h-[calc(100dvh-2rem)]",
@@ -50,7 +50,7 @@ export const modalContentVariants = cva(
         fullscreen: cn("inset-0 h-dvh", CENTRED_FROM_SM),
       },
     },
-    defaultVariants: { size: "md", mobile: "sheet" },
+    defaultVariants: { size: "default", mobile: "sheet" },
   },
 )
 
@@ -87,7 +87,7 @@ export function ModalContent({
       <DialogOverlay className={overlayClassName} />
       <DialogPrimitive.Content
         data-slot="modal-content"
-        data-size={size ?? "md"}
+        data-size={size ?? "default"}
         data-mobile={mobile ?? "sheet"}
         className={cn(modalContentVariants({ size, mobile }), className)}
         {...props}
@@ -124,7 +124,7 @@ export function ModalHeader({ className, classNames, closeButton = true, childre
           <Button
             variant="ghost"
             size="icon-sm"
-            data-slot="modal-close"
+            data-part="modal-close"
             className={cn("top-3 end-3 absolute", classNames?.close)}
           >
             <Icon name="close" />

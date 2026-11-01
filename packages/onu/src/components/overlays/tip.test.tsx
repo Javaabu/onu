@@ -12,6 +12,16 @@ vi.setConfig({ testTimeout: 20_000 })
 const touch = { pointerType: "touch", pointerId: 1, button: 0 }
 
 describe("Tip", () => {
+  it("resolves side=start to the physical side in RTL", () => {
+    renderWithOnu(
+      <Tip content="Print" side="start" open>
+        <Button>Go</Button>
+      </Tip>,
+      { dir: "rtl" },
+    )
+    expect(document.querySelector("[data-slot=tip-content]")).toHaveAttribute("data-side", "right")
+  })
+
   afterEach(() => vi.useRealTimers())
 
   it("shows on keyboard focus and hides on Escape", async () => {
@@ -126,5 +136,15 @@ describe("Tip", () => {
     expect(screen.getByRole("button", { name: "އިތުރު މަޢުލޫމާތު" })).toBeInTheDocument()
     expect(await screen.findByRole("tooltip")).toHaveTextContent("ޖީއެސްޓީ 8%")
     await expectNoA11yViolations()
+  })
+})
+
+describe("Tip classNames", () => {
+  it("applies them to the default trigger, its icon and the content", async () => {
+    renderWithOnu(<Tip content="Hint" defaultOpen classNames={{ trigger: "t", icon: "i", content: "c" }} />)
+    const trigger = document.querySelector('[data-slot="tip-trigger"]')
+    expect(trigger).toHaveClass("t")
+    expect(trigger?.querySelector("svg")).toHaveClass("i")
+    await waitFor(() => expect(document.querySelector('[data-slot="tip-content"]')).toHaveClass("c"))
   })
 })

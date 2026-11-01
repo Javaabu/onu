@@ -35,7 +35,7 @@ import { ApiSelect } from '@javaabu/onu';
 - **Paging**: when the response says there is a next page (`meta.last_page`, `last_page`, `next_page_url`, `links.next`, `next_cursor`), the next page loads as the list scrolls to the end.
 - **Preloading**: options load when the list opens, or immediately with `preload`.
 - **States**: loading, empty ("No results for …"), and an error with a **Retry** button. All are announced in a polite live region.
-- **Caching**: per endpoint + params + query, for `staleTime` (5 minutes). After creating a record elsewhere, call `invalidateApiOptions(url)` (or `queryClient.invalidateQueries({ queryKey: apiOptionsQueryKey(url) })` with your own client). Quick-create (`onCreate`) invalidates automatically.
+- **Caching**: per endpoint + params + query, for `staleTime` (5 minutes). After creating a record elsewhere, call `invalidateApiOptions(client, url)` with the client from `useOnuQueryClient()` (or `queryClient.invalidateQueries({ queryKey: apiOptionsQueryKey(url) })` with your own). Quick-create (`onCreate`) invalidates automatically.
 - **No requests without a URL or fetcher** you supply; CSRF and auth headers are yours to add (`headers`, `credentials`).
 
 ## Props
@@ -70,7 +70,7 @@ Values are strings (`id: 12` becomes `"12"`), so they round-trip through forms u
 
 ## Data layer
 
-The helpers behind it are exported for Autocomplete and your own components: `fetchApiOptions`, `parseApiResponse`, `parseApiItem`, `mapApiItem`, `detectHasMore`, `buildUrl`, `requestJson`, `useOnuQueryClient`, `getOnuQueryClient`, `invalidateApiOptions`, `apiOptionsQueryKey`.
+The helpers behind it are exported for Autocomplete and your own components: `fetchApiOptions`, `parseApiResponse`, `parseApiItem`, `mapApiItem`, `detectHasMore`, `buildUrl`, `requestJson`, `useOnuQueryClient`, `invalidateApiOptions`, `apiOptionsQueryKey`.
 
 ## Accessibility
 

@@ -12,6 +12,7 @@ export interface ButtonGroupProps extends React.ComponentProps<"div"> {
   attached?: boolean
   /** Accessible name for the group, e.g. "Text formatting". */
   label?: string
+  classNames?: { root?: string }
 }
 
 /** Groups related buttons. Built on shadcn's `ButtonGroup`; joined edges swap sides in RTL. */
@@ -20,10 +21,18 @@ export function ButtonGroup({
   attached = true,
   label,
   className,
+  classNames,
   ...props
 }: ButtonGroupProps) {
   if (attached) {
-    return <BaseButtonGroup orientation={orientation} aria-label={label} className={className} {...props} />
+    return (
+      <BaseButtonGroup
+        orientation={orientation}
+        aria-label={label}
+        className={cn(classNames?.root, className)}
+        {...props}
+      />
+    )
   }
   return (
     <div
@@ -35,6 +44,7 @@ export function ButtonGroup({
       className={cn(
         "gap-2 flex flex-wrap items-center",
         orientation === "vertical" && "flex-col items-stretch",
+        classNames?.root,
         className,
       )}
       {...props}

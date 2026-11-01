@@ -21,7 +21,9 @@ const existing: ExistingAttachment[] = [
 describe("AdditionalFilesUpload", () => {
   it("lists existing attachments with open and remove/restore", async () => {
     const onChange = vi.fn()
-    const { container } = renderWithOnu(<AdditionalFilesUpload existing={existing} onChange={onChange} name="files" />)
+    const { container } = renderWithOnu(
+      <AdditionalFilesUpload existing={existing} onValueChange={onChange} name="files" />,
+    )
     expect(screen.getByRole("list", { name: "Attachments" })).toBeInTheDocument()
     expect(screen.getByText("Signed copy")).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "Open Lease agreement.pdf" })).toHaveAttribute("href", "/files/1")
@@ -44,7 +46,7 @@ describe("AdditionalFilesUpload", () => {
   it("adds new files with a name and description (Thaana-capable)", async () => {
     const onChange = vi.fn()
     const { container } = renderWithOnu(
-      <AdditionalFilesUpload onChange={onChange} thaana name="docs" aria-label="Add supporting documents" />,
+      <AdditionalFilesUpload onValueChange={onChange} thaana name="docs" aria-label="Add supporting documents" />,
     )
     expect(screen.getByText("No attachments yet")).toBeInTheDocument()
     await user().upload(screen.getByLabelText("Add supporting documents"), [file("id-card.pdf"), file("photo.pdf")])
@@ -70,7 +72,7 @@ describe("AdditionalFilesUpload", () => {
         <AdditionalFilesUpload
           existing={existing}
           value={value}
-          onChange={setValue}
+          onValueChange={setValue}
           maxFiles={2}
           withName={false}
           withDescription={false}

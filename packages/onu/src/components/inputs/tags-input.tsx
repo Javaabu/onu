@@ -9,7 +9,6 @@ import { useTranslation } from "../../providers/onu-provider"
 import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
 import { Badge } from "../../ui/badge"
 import { useFormFieldControl } from "../form/form-field"
-import { useControllableState } from "./_shared"
 import {
   SuggestionList,
   suggestionsShown,
@@ -18,9 +17,10 @@ import {
   type SuggestionSource,
 } from "./_suggestions"
 import { ThaanaToggle } from "./thaana-toggle"
-import { useMergedRef } from "./text-input"
+import { useMergedRef } from "../../hooks/use-merged-ref"
 import { registerEnglish } from "../../i18n/english"
 import { input as en_input } from "../../locales/en/input"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ input: en_input })
 

@@ -26,7 +26,7 @@ export const meta = {
   description: "Dialog with a simple title/description/footer API. Bottom sheet or full screen on phones.",
 }
 
-const sizes: ModalSize[] = ["sm", "md", "lg", "xl", "full"]
+const sizes: ModalSize[] = ["sm", "default", "lg", "xl", "full"]
 
 export default function ModalDemo() {
   const [open, setOpen] = React.useState(false)

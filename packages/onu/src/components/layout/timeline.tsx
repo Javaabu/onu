@@ -171,12 +171,13 @@ export function Timeline({
   const [pending, setPending] = React.useState(false)
   const busy = loadingMore ?? pending
   const live = useNow(groupByDay && !now ? 60_000 : null)
-  const reference = toDate(now) ?? new Date(live)
+  const reference = toDate(now) ?? (live === null ? null : new Date(live))
   const label = ariaLabel ?? t("layout.timeline")
 
   const dayLabel = (date: Date) => {
-    if (isSameDay(date, reference)) return t("layout.today")
-    if (isSameDay(date, subDays(reference, 1))) return t("layout.yesterday")
+    // Until the first tick there is no "today": show the date, on the server and in the first client render.
+    if (reference && isSameDay(date, reference)) return t("layout.today")
+    if (reference && isSameDay(date, subDays(reference, 1))) return t("layout.yesterday")
     return formatDate(date, dayFormat, { locale: locale.dateFns })
   }
 
@@ -304,7 +305,7 @@ export function Timeline({
     )
   }
 
-  const groups = groupByDay ? groupTimelineByDay(items) : [{ key: "all", date: reference, items }]
+  const groups = groupByDay ? groupTimelineByDay(items) : [{ key: "all", date: new Date(0), items }]
 
   return (
     <section

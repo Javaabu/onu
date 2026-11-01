@@ -24,8 +24,8 @@ See [`REQUIREMENTS.md`](REQUIREMENTS.md) for the full specification and [`docs/`
 ## Install
 
 ```bash
-npm install @javaabu/onu
-# optional font pack (Inter, JetBrains Mono, Noto Sans Thaana; Faruma and MV Faseyha are bundled)
+npm install @javaabu/onu react-hook-form @tanstack/react-query
+# optional font pack (Inter, JetBrains Mono, Noto Sans Thaana; Faruma and MV Faseyha come with tailwind.css and styles.css)
 npm install @fontsource-variable/inter @fontsource-variable/jetbrains-mono @fontsource-variable/noto-sans-thaana
 ```
 
@@ -71,7 +71,6 @@ The package ships its docs for AI coding assistants: `node_modules/@javaabu/onu/
 | `packages/onu-mcp` | `@javaabu/onu-mcp`: MCP server with Onu's docs for AI assistants       |
 | `plugins/onu`      | Claude Code plugin (skill + MCP server)                                |
 | `web`              | Docs site: every component and the sample pages (`pnpm dev`)           |
-| `templates`        | Starter apps: Laravel + Inertia + React, and Next.js (App Router)      |
 | `docs`             | Developer documentation (Docusaurus format)                            |
 | `figma`            | Figma token sync and Code Connect mappings                             |
 | `tokens.json`      | Design tokens (DTCG), the source for CSS variables and Figma Variables |
@@ -83,20 +82,6 @@ pnpm test           # unit tests
 pnpm test:coverage  # with coverage thresholds
 pnpm lint && pnpm typecheck
 pnpm build          # build the package
-```
-
-## Starter templates
-
-Ready-to-copy apps wired up with Onu (provider, Tailwind, fonts, an English / Dhivehi switch):
-
-- [`templates/laravel-inertia-react`](templates/laravel-inertia-react): Laravel + Inertia + React + TypeScript with an admin shell (`AppLayout`, `AppSidebar`) and a form that shows Laravel validation errors, plus feature tests.
-- [`templates/nextjs`](templates/nextjs): Next.js App Router with Server Components rendering Onu, client components where needed, and a server-rendering check.
-
-CI builds both against the workspace copy of the library ([`templates.yml`](.github/workflows/templates.yml)). Each template's README shows how to use it on its own with the npm package.
-
-```bash
-pnpm build && pnpm build:templates
-pnpm --filter onu-template-nextjs test:ssr
 ```
 
 ## Contributing

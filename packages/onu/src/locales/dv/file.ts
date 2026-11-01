@@ -125,7 +125,7 @@ export const file = {
   // Media lister
   mediaLibrary: "މީޑިއާ ލައިބްރަރީ",
   searchMedia: "މީޑިއާ ހޯދާ",
-  clearSelection: "ހޮވާފައިވާ އެއްޗެހި ފޮހެލާ",
+  clearSelection: "ހޮވާފައިވާ އެއްޗެހި ސާފުކުރުން",
   selectedCount: { zero: "އެއްވެސް އެއްޗެއް ހޮވާފައެއް ނުވޭ", one: "{count} ހޮވިއްޖެ", other: "{count} ހޮވިއްޖެ" },
   view: "ދައްކާ ގޮތް",
   gridView: "ގްރިޑް ގޮތަށް",

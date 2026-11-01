@@ -28,7 +28,7 @@ export default function KioskPaymentFailedPage() {
         </div>
 
         <Callout
-          variant="destructive"
+          tone="danger"
           className="text-lg"
           title={tr("Your card was declined", "ކާޑު ގަބޫލެއް ނުކުރި")}
           description={tr(

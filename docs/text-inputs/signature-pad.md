@@ -5,11 +5,13 @@ sidebar_position: 20
 
 A signature pad built on [`signature_pad`](https://github.com/szimek/signature_pad). Draw with a finger, pen or mouse; undo the last stroke or clear; the result is a PNG data URL. The canvas resizes with its container (and the device pixel ratio) without losing the drawing. "Type your name" is offered as a keyboard and screen-reader alternative, and also produces a PNG.
 
-It is exported from the media entry point, and `signature_pad` is an optional peer dependency:
+It is exported from the media entry point, and needs these optional peer dependencies:
 
 ```bash
-npm install signature_pad
+pnpm add react-easy-crop signature_pad yet-another-react-lightbox media-chrome
 ```
+
+`@javaabu/onu/media` imports all of these statically, so install them even if you only use `SignaturePad`.
 
 ```tsx
 import { SignaturePad } from "@javaabu/onu/media"

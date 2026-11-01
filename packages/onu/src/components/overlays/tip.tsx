@@ -5,17 +5,23 @@ import type { Tooltip as TooltipPrimitive } from "radix-ui"
 
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
-import { useTranslation } from "../../providers/onu-provider"
+import { useDirection, useTranslation } from "../../providers/onu-provider"
+import { radixSide, type LogicalSide } from "./_side"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip"
-import { useControllableState } from "./_use-controllable-state"
 import { registerEnglish } from "../../i18n/english"
 import { overlay as en_overlay } from "../../locales/en/overlay"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ overlay: en_overlay })
 
 const LONG_PRESS_MS = 500
 
-export interface TipProps extends Omit<React.ComponentProps<typeof TooltipPrimitive.Content>, "content" | "children"> {
+export interface TipProps extends Omit<
+  React.ComponentProps<typeof TooltipPrimitive.Content>,
+  "content" | "children" | "side"
+> {
+  /** Side it opens on. `start` and `end` follow the reading direction. Default `top`. */
+  side?: LogicalSide
   /** The tooltip text. Keep it short and never put the only copy of important information here. */
   content: React.ReactNode
   /**
@@ -36,6 +42,8 @@ export interface TipProps extends Omit<React.ComponentProps<typeof TooltipPrimit
    */
   touch?: "tap" | "long-press"
   disabled?: boolean
+  /** `trigger` and `icon` style the default ⓘ button; a `children` trigger styles itself. */
+  classNames?: { trigger?: string; icon?: string; content?: string }
 }
 
 /**
@@ -52,10 +60,13 @@ export function Tip({
   delayDuration = 300,
   touch,
   disabled,
+  side,
   className,
+  classNames,
   ...props
 }: TipProps) {
   const { t } = useTranslation()
+  const dir = useDirection()
   const [open, setOpen] = useControllableState(openProp, defaultOpen, onOpenChange)
   const pointerType = React.useRef<string>("mouse")
   const timer = React.useRef<ReturnType<typeof setTimeout>>(undefined)
@@ -75,9 +86,10 @@ export function Tip({
       className={cn(
         "size-5 inline-flex items-center justify-center rounded-full align-middle text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
         "touch:size-11 touch:-m-3",
+        classNames?.trigger,
       )}
     >
-      <Icon name="info" className="size-4" />
+      <Icon name="info" className={cn("size-4", classNames?.icon)} />
       <span className="sr-only">{t("overlay.moreInfo")}</span>
     </button>
   )
@@ -130,8 +142,9 @@ export function Tip({
           data-slot="tip-content"
           sideOffset={4}
           collisionPadding={8}
-          className={cn("max-w-[min(20rem,calc(100vw-1rem))] text-balance", className)}
+          className={cn("max-w-[min(20rem,calc(100vw-1rem))] text-balance", classNames?.content, className)}
           {...props}
+          side={radixSide(side, dir)}
         >
           {content}
         </TooltipContent>

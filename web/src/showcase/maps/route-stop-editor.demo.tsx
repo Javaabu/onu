@@ -30,7 +30,7 @@ export default function RouteStopEditorDemo() {
         className="block"
       >
         <FormField label="Shuttle stops" name="stops">
-          <RouteStopEditor value={stops} onChange={setStops} name="stops" max={8} />
+          <RouteStopEditor value={stops} onValueChange={setStops} name="stops" max={8} />
         </FormField>
       </DemoSection>
       <DemoSection title="Empty, Thaana names" className="block">

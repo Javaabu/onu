@@ -51,7 +51,7 @@ export interface TranslationsEditorProps extends Omit<React.ComponentProps<"div"
   /** Initial entries when uncontrolled. */
   defaultValue?: TranslationEntry[]
   /** Called with all entries whenever a cell changes. */
-  onChange?: (entries: TranslationEntry[]) => void
+  onValueChange?: (entries: TranslationEntry[]) => void
   /** Language columns. Default English and Dhivehi. */
   locales?: TranslationLocale[]
   /**
@@ -82,7 +82,7 @@ const cellId = (key: string, locale: string) => `${key}\u0000${locale}`
 export function TranslationsEditor({
   value,
   defaultValue,
-  onChange,
+  onValueChange,
   locales: localesProp,
   onSave,
   saveOnBlur = true,
@@ -124,7 +124,7 @@ export function TranslationsEditor({
   const update = (key: string, locale: string, text: string) => {
     const next = entries.map((e) => (e.key === key ? { ...e, values: { ...e.values, [locale]: text } } : e))
     if (value === undefined) setInternal(next)
-    onChange?.(next)
+    onValueChange?.(next)
     setStatus((s) => {
       const { [cellId(key, locale)]: _drop, ...rest } = s
       return rest
@@ -258,7 +258,7 @@ export function TranslationsEditor({
                     readOnly={readOnly}
                     dirty={(entry.values[locale.code] ?? "") !== savedValue(entry.key, locale.code)}
                     status={status[cellId(entry.key, locale.code)]}
-                    onChange={(text) => update(entry.key, locale.code, text)}
+                    onValueChange={(text) => update(entry.key, locale.code, text)}
                     onSave={() => void save(entry, locale.code)}
                     saveOnBlur={saveOnBlur}
                     className={classNames?.cell}
@@ -292,7 +292,7 @@ function TranslationCell({
   readOnly,
   dirty,
   status,
-  onChange,
+  onValueChange,
   onSave,
   saveOnBlur,
   className,
@@ -304,7 +304,7 @@ function TranslationCell({
   readOnly: boolean
   dirty: boolean
   status?: SaveStatus
-  onChange: (text: string) => void
+  onValueChange: (text: string) => void
   onSave: () => void
   saveOnBlur: boolean
   className?: string
@@ -333,7 +333,7 @@ function TranslationCell({
         // A Thaana field sets its own dir/lang (R13.4).
         {...(thaana ? {} : { dir: "auto", lang: locale.code })}
         className={cn("min-h-9 resize-none", missing && "border-warning/60 bg-warning/5")}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) => onValueChange(event.target.value)}
         onBlur={() => {
           if (saveOnBlur && dirty) onSave()
         }}

@@ -13,9 +13,6 @@ export const listing = {
   sortAscending: "ކުޑައިން ބޮޑަށް",
   sortDescending: "ބޮޑުން ކުޑައަށް",
   sortedBy: "{column} އިން ތަރުތީބުކުރެވިފައި، {direction}",
-  sortByColumn: "{column} އިން ތަރުތީބުކުރޭ",
-  sortDirection: "ތަރުތީބު",
-  sortNone: "އަސްލު ތަރުތީބު",
 
   selectRow: "{name} ޚިޔާރުކުރޭ",
   selectAllOnPage: "މި ސަފްހާގެ ހުރިހާ ރޯއެއް ޚިޔާރުކުރޭ",
@@ -40,7 +37,7 @@ export const listing = {
   deleteRecordTitle: "{name} ފޮހެލަންތަ؟",
   deleteRecordDescription: "މިކަން އަނބުރާ ބަދަލެއް ނުކުރެވޭނެ.",
   restore: "އަނބުރާ ގެންނާ",
-  deletePermanently: "ދާއިމީގޮތުން ފޮހެލާ",
+  deletePermanently: "ދާއިމީގޮތުން ނައްތާލުން",
   deletePermanentlyTitle: "{name} ދާއިމީގޮތުން ފޮހެލަންތަ؟",
   deletePermanentlyDescription: "މިއީ ދާއިމީގޮތުން ފޮހެލުން. މިކަން އަނބުރާ ބަދަލެއް ނުކުރެވޭނެ.",
   moreActions: "އިތުރު ކަންކަން",
@@ -56,8 +53,6 @@ export const listing = {
   currentPage: "{page} ވަނަ ސަފްހާ، މިހާރު ހުރި ސަފްހާ",
   previous: "ކުރީގެ",
   next: "ދެން އޮތް",
-  firstPage: "ފުރަތަމަ ސަފްހާ",
-  lastPage: "އެންމެ ފަހު ސަފްހާ",
 
   loadMore: "އިތުރަށް ލޯޑުކުރޭ",
   loadingMore: "އިތުރަށް ލޯޑުވަނީ…",
@@ -108,7 +103,6 @@ export const listing = {
   dateRangeBoth: "{from} → {to}",
   dateRangeFrom: "{from} އިން ފެށިގެން",
   dateRangeTo: "{to} އަށް",
-  deletedRecords: "ފޮހެލާފައިވާ ރެކޯޑުތައް",
   trashedHide: "ފޮރުވާ",
   trashedInclude: "ހިމަނާ",
   trashedOnly: "އެކަނި",
@@ -116,7 +110,6 @@ export const listing = {
   filterReset: "ރީސެޓްކުރޭ",
 
   filterTabs: "ހާލަތުން ފިލްޓަރުކުރޭ",
-  tabWithCount: "{label} ({count})",
 
   view: "ދައްކާ ގޮތް",
   viewTable: "ޓޭބަލް",
@@ -132,7 +125,6 @@ export const listing = {
   exportCsv: "CSV",
   exportExcel: "Excel",
   exportPdf: "PDF",
-  exportAs: "{format} ގޮތަށް އެކްސްޕޯޓްކުރޭ",
   exported: "އެކްސްޕޯޓް ތައްޔާރު",
   exportGenerated: "ތައްޔާރުކުރީ {date}",
   exportRowCount: { one: "{count} ރޯ", other: "{count} ރޯ" },
@@ -156,8 +148,9 @@ export const listing = {
   reorder: "ތަރުތީބު ބަދަލުކުރޭ",
   moveTo: "ބަދަލުކުރާނީ…",
   moveToColumn: "{column} އަށް ބަދަލުކުރޭ",
-  moveUp: "މައްޗަށް",
-  moveDown: "ތިރިއަށް",
+  moveItemMenu: "{name} ބަދަލުކުރޭ",
+  moveItemUp: "{name} މައްޗަށް",
+  moveItemDown: "{name} ތިރިއަށް",
   moved: "{name} {column} އަށް ބަދަލުކުރެވިއްޖެ",
   movedToPosition: "{name} {total} ތެރެއިން {position} ވަނަ ތަނަށް ބަދަލުކުރެވިއްޖެ",
   dragInstructions:

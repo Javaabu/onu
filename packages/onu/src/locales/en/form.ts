@@ -48,6 +48,7 @@ export const form = {
   minItems: { one: "At least 1 item", other: "At least {count} items" },
   // Inline edit
   edit: "Edit {label}",
+  editValue: "Edit {label}: {value}",
   emptyValue: "Empty",
   saveEdit: "Save",
   cancelEdit: "Cancel",

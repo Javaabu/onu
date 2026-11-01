@@ -42,6 +42,7 @@ import { Pagination } from "@javaabu/onu"
 | `numbered`        | `boolean`                                            | `true`              | Numbered pages                        |
 | `showSummary`     | `boolean`                                            | `true`              | The "Showing …" text                  |
 | `noun`            | `{ one, other }`                                     | records             |                                       |
+| `disabled`        | `boolean`                                            | `false`             | Disable the controls                  |
 | `size`            | `"default" \| "sm"`                                  |                     | `paginationVariants`                  |
 | `classNames`      | `{ summary, controls, perPage, pages, button }`      |                     |                                       |
 

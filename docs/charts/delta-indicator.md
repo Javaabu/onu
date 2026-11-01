@@ -5,6 +5,10 @@ sidebar_position: 8
 
 A change indicator: an arrow icon, a signed percentage and a semantic colour. Used by [StatTile](./stat-tile) and the [comparison](./time-series-chart#comparison) of `TimeSeriesChart` and `CategoryChart`, and handy in tables.
 
+:::info
+Charts live in the `@javaabu/onu/charts` entry and need the optional peer dependency `recharts` (v3): `pnpm add recharts`.
+:::
+
 ```tsx
 import { DeltaIndicator } from "@javaabu/onu/charts"
 
@@ -24,6 +28,7 @@ import { DeltaIndicator } from "@javaabu/onu/charts"
 | `variant`        | `"text" \| "badge"` | `"text"` | Plain or with a tinted background                |
 | `context`        | `ReactNode`         |          | Muted text after the delta, e.g. "vs last month" |
 | `className`      | `string`            |          | Classes for the root `<span>`                    |
+| `classNames` | `{ root, icon, value, context }` |  | Classes for each part |
 
 `deltaIndicatorVariants` (cva) is exported. The root carries `data-direction` (`up | down | flat`) and `data-sentiment` (`positive | negative | neutral`).
 

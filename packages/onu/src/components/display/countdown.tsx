@@ -106,10 +106,11 @@ export function Countdown({
   const target = toDate(to)
   const [done, setDone] = React.useState(false)
   const now = useNow(target && !done ? 1000 : null)
-  const parts = target ? getCountdownParts(target, now) : null
-  const finished = !!parts && parts.total === 0
+  // Until the first tick the clock shows zeros, on the server and in the first client render.
+  const parts = target ? getCountdownParts(target, now ?? target.getTime()) : null
+  const finished = now !== null && !!parts && parts.total === 0
   if (finished && !done) setDone(true)
-  if (!finished && done && parts) setDone(false)
+  if (!finished && done && parts && now !== null) setDone(false)
 
   const completeRef = React.useRef(onComplete)
   React.useEffect(() => {

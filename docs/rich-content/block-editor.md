@@ -5,6 +5,10 @@ sidebar_position: 2
 
 A block-based editor (page builder) on Tiptap. Type <kbd>/</kbd> for a menu of blocks, add a block below with **+**, and reorder blocks with the grip. Content is Tiptap JSON, rendered anywhere with [`BlockRenderer`](./block-renderer).
 
+```bash
+pnpm add @tiptap/core @tiptap/react @tiptap/pm @tiptap/starter-kit @tiptap/extension-image @tiptap/extension-table @tiptap/extension-text-align @tiptap/extension-placeholder @tiptap/static-renderer @tiptap/suggestion shiki
+```
+
 Blocks: text, headings 1–3, bulleted and numbered lists, quote, image, table, divider, callout, code and embed (YouTube or Vimeo).
 
 ```tsx
@@ -13,7 +17,7 @@ import { BlockEditor, BlockRenderer } from '@javaabu/onu/editor';
 const [doc, setDoc] = useState<JSONContent>();
 
 <FormField label="Content" name="content">
-  <BlockEditor value={doc} onChange={setDoc} />
+  <BlockEditor value={doc} onValueChange={setDoc} />
 </FormField>
 
 <BlockRenderer content={doc} />
@@ -41,7 +45,7 @@ Ids: `paragraph`, `heading1`, `heading2`, `heading3`, `bulletList`, `orderedList
 | --------------- | --------------------------------- | --------------------- | -------------------------------------------- |
 | `value`         | `JSONContent`                     |                       | Controlled document                          |
 | `defaultValue`  | `JSONContent \| string`           |                       | Initial document (JSON or HTML to import)    |
-| `onChange`      | `(json, editor) => void`          |                       | Called on every change                       |
+| `onValueChange`      | `(json, editor) => void`          |                       | Called on every change                       |
 | `name`          | `string`                          |                       | Hidden input with the JSON (empty doc: `""`) |
 | `placeholder`   | `string`                          | "Type “/” for blocks" | Placeholder on empty paragraphs              |
 | `blockTypes`    | `BlockTypeId[]`                   | all                   | Blocks in the "/" and "+" menus              |
@@ -50,6 +54,7 @@ Ids: `paragraph`, `heading1`, `heading2`, `heading3`, `bulletList`, `orderedList
 | `onImageUpload` | `(file: File) => Promise<string>` |                       | Enables image upload                         |
 | `readOnly`      | `boolean`                         | `false`               | No editing, handles or toolbar               |
 | `disabled`      | `boolean`                         | `false`               | Disable editing                              |
+| `required`      | `boolean`                         | `false`               | Marks the field as required for assistive tech |
 | `extensions`    | `Extensions`                      |                       | Extra Tiptap extensions                      |
 | `size`          | `'sm' \| 'default' \| 'lg'`       | `'default'`           | Prose size                                   |
 | `classNames`    | `{ toolbar, content }`            |                       | Classes for each part                        |

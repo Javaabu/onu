@@ -43,7 +43,7 @@ describe("DateTimePicker (§25.3)", () => {
   it("changes the time of the selected date from the steppers", async () => {
     const onChange = vi.fn()
     const { user } = setup(
-      <DateTimePicker aria-label="Starts" defaultValue={new Date(2026, 2, 12, 14, 30)} onChange={onChange} />,
+      <DateTimePicker aria-label="Starts" defaultValue={new Date(2026, 2, 12, 14, 30)} onValueChange={onChange} />,
     )
     await user.click(screen.getByRole("combobox"))
     await user.click(button(/Change time/))
@@ -54,7 +54,7 @@ describe("DateTimePicker (§25.3)", () => {
   it("Clear time resets the time to 00:00 and keeps the date", async () => {
     const onChange = vi.fn()
     const { user } = setup(
-      <DateTimePicker aria-label="Starts" defaultValue={new Date(2026, 2, 12, 14, 30)} onChange={onChange} />,
+      <DateTimePicker aria-label="Starts" defaultValue={new Date(2026, 2, 12, 14, 30)} onValueChange={onChange} />,
     )
     await user.click(screen.getByRole("combobox"))
     await user.click(button("Clear time"))
@@ -64,7 +64,7 @@ describe("DateTimePicker (§25.3)", () => {
 
   it("picking a day without choosing a time sets the time to 00:00", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<DateTimePicker aria-label="Starts" today={TODAY} onChange={onChange} />)
+    const { user } = setup(<DateTimePicker aria-label="Starts" today={TODAY} onValueChange={onChange} />)
     await user.click(screen.getByRole("combobox"))
     await user.click(button(/March 20th, 2026/))
     expect(onChange).toHaveBeenLastCalledWith(new Date(2026, 2, 20, 0, 0))
@@ -74,7 +74,7 @@ describe("DateTimePicker (§25.3)", () => {
 
   it("keeps a time chosen before the day", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<DateTimePicker aria-label="Starts" today={TODAY} onChange={onChange} />)
+    const { user } = setup(<DateTimePicker aria-label="Starts" today={TODAY} onValueChange={onChange} />)
     await user.click(screen.getByRole("combobox"))
     await user.click(button(/Change time/))
     expect(within(dialog()).getByRole("spinbutton", { name: "Hour" })).toHaveTextContent("--")
@@ -110,7 +110,7 @@ describe("DateTimePicker (§25.3)", () => {
   it("Clear empties both date and time; reopening starts on the calendar", async () => {
     const onChange = vi.fn()
     const { user } = setup(
-      <DateTimePicker aria-label="Starts" defaultValue={new Date(2026, 2, 12, 14, 30)} onChange={onChange} />,
+      <DateTimePicker aria-label="Starts" defaultValue={new Date(2026, 2, 12, 14, 30)} onValueChange={onChange} />,
     )
     await user.click(screen.getByRole("combobox"))
     await user.click(button(/Change time/))
@@ -127,7 +127,7 @@ describe("DateTimePicker (§25.3)", () => {
       dir,
     })
     await user.click(screen.getByRole("combobox"))
-    expect(button("ވަގުތު ފޮހެލާ")).toBeInTheDocument()
+    expect(button("ވަގުތު ސާފުކުރުން")).toBeInTheDocument()
     await user.click(button(/ވަގުތު ބަދަލުކުރައްވާ/))
     expect(button("ކެލެންޑަރަށް އެނބުރި")).toBeInTheDocument()
     await expectNoA11yViolations()

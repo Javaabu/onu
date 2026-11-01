@@ -39,7 +39,7 @@ export default function RepeatingGroupDemo() {
           label="Line items"
           name="items"
           value={items}
-          onChange={setItems}
+          onValueChange={setItems}
           createItem={() => ({ item: "", qty: "1", price: "" })}
           min={1}
           max={5}
@@ -81,7 +81,7 @@ export default function RepeatingGroupDemo() {
             label="އާއިލާގެ މެމްބަރުން"
             name="members"
             value={members}
-            onChange={setMembers}
+            onValueChange={setMembers}
             createItem={() => ({ name: "", relation: "" })}
             itemLabel={(i) => `މެމްބަރު ${i + 1}`}
             addLabel="މެމްބަރެއް އިތުރުކުރޭ"
@@ -109,7 +109,7 @@ export default function RepeatingGroupDemo() {
       </DemoSection>
 
       <DemoSection title="Empty and disabled" className="max-w-2xl gap-6 grid">
-        <RepeatingGroup label="Attachments" value={[] as string[]} onChange={() => {}} createItem={() => ""}>
+        <RepeatingGroup label="Attachments" value={[] as string[]} onValueChange={() => {}} createItem={() => ""}>
           {() => null}
         </RepeatingGroup>
         <RepeatingGroup label="Locked" value={[{ id: 1 }]} disabled>

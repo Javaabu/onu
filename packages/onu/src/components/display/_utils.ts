@@ -14,38 +14,19 @@ export function toDate(value: DateInput): Date | null {
 
 /**
  * The current time, refreshed every `interval` ms (pass `null` to stop).
- * Starts from `initial` so server and first client render agree.
+ * Starts from `initial`, or `null` until the first tick on mount, so server and
+ * first client render agree; show a stable placeholder while it is `null`.
  */
-export function useNow(interval: number | null, initial?: number): number {
-  const [now, setNow] = React.useState(() => initial ?? Date.now())
+export function useNow(interval: number | null, initial?: number): number | null {
+  const [now, setNow] = React.useState<number | null>(initial ?? null)
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- the clock only exists after hydration
+  React.useEffect(() => setNow(Date.now()), [])
   React.useEffect(() => {
     if (interval === null) return
     const id = window.setInterval(() => setNow(Date.now()), interval)
     return () => window.clearInterval(id)
   }, [interval])
   return now
-}
-
-/** Copies text to the clipboard and exposes a `copied` flag that resets after `timeout` ms. */
-export function useCopyToClipboard(timeout = 2000) {
-  const [copied, setCopied] = React.useState(false)
-  const timer = React.useRef<number | undefined>(undefined)
-  React.useEffect(() => () => window.clearTimeout(timer.current), [])
-  const copy = React.useCallback(
-    async (text: string) => {
-      try {
-        await navigator.clipboard.writeText(text)
-      } catch {
-        return false
-      }
-      setCopied(true)
-      window.clearTimeout(timer.current)
-      timer.current = window.setTimeout(() => setCopied(false), timeout)
-      return true
-    },
-    [timeout],
-  )
-  return { copied, copy }
 }
 
 /** Reads and writes a JSON value in `localStorage`, tolerating unavailable storage. */

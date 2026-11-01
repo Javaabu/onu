@@ -6,8 +6,8 @@ import { ToggleGroup as ToggleGroupPrimitive } from "radix-ui"
 
 import { cn } from "../../lib/utils"
 import { useFormField, useFormFieldControl } from "../form/form-field"
-import { useControllableState } from "./_hooks"
 import { normalizeOptions, type ChoiceOptionInput } from "./options"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 export const segmentedControlVariants = cva(
   // Scrolls sideways instead of truncating labels when space runs out; the
@@ -41,6 +41,8 @@ export interface SegmentedControlProps
       "type" | "value" | "defaultValue" | "onValueChange" | "children"
     >,
     Omit<VariantProps<typeof segmentedControlVariants>, "fullWidth"> {
+  /** Field name; adds a hidden input so the value is submitted with a form. */
+  name?: string
   options: ReadonlyArray<ChoiceOptionInput>
   value?: string
   defaultValue?: string

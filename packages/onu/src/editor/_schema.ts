@@ -7,6 +7,8 @@ import { TableKit } from "@tiptap/extension-table"
 import TextAlign from "@tiptap/extension-text-align"
 import StarterKit from "@tiptap/starter-kit"
 
+import { isSafeUrl } from "../lib/url"
+
 /*
  * Node and mark definitions shared by the WYSIWYG editor, the block editor and
  * the block renderer, so content written in one renders the same in the others.
@@ -19,22 +21,7 @@ export type Alignment = (typeof ALIGNMENTS)[number]
 export const CALLOUT_VARIANTS = ["info", "success", "warning", "error"] as const
 export type CalloutVariant = (typeof CALLOUT_VARIANTS)[number]
 
-const SAFE_PROTOCOLS = /^(https?:|mailto:|tel:)/i
 const SAFE_IMAGE_DATA = /^data:image\/(png|jpe?g|gif|webp|avif);base64,/i
-
-/**
- * True for links that are safe to render: http(s), mailto, tel and relative
- * URLs. `javascript:`, `data:`, `vbscript:` and other schemes are rejected.
- */
-export function isSafeUrl(url: string | null | undefined): url is string {
-  if (!url) return false
-  // Browsers ignore control characters and whitespace inside a scheme.
-  // eslint-disable-next-line no-control-regex
-  const clean = url.trim().replace(/[\u0000-\u001F\u007F\s]/g, "")
-  if (!clean) return false
-  // With a scheme, only the allowed ones; without one, a relative URL (/path, #hash, ?query, page.html).
-  return /^[a-z][a-z0-9+.-]*:/i.test(clean) ? SAFE_PROTOCOLS.test(clean) : true
-}
 
 /** Like {@link isSafeUrl}, but also allows `blob:` and raster `data:image` URLs for images. */
 export function isSafeImageUrl(url: string | null | undefined): url is string {
@@ -42,15 +29,6 @@ export function isSafeImageUrl(url: string | null | undefined): url is string {
   const clean = url.trim()
   if (SAFE_IMAGE_DATA.test(clean) || /^blob:/i.test(clean)) return true
   return isSafeUrl(clean) && !/^(mailto|tel):/i.test(clean)
-}
-
-/** Normalises user input like `example.mv` to `https://example.mv`. Returns `null` when unsafe. */
-export function normalizeUrl(input: string): string | null {
-  const value = input.trim()
-  if (!value) return null
-  const withProtocol =
-    /^[a-z][a-z0-9+.-]*:/i.test(value) || /^[/#?.]/.test(value) ? value : `https://${value.replace(/^\/\//, "")}`
-  return isSafeUrl(withProtocol) ? withProtocol : null
 }
 
 /**
@@ -263,7 +241,7 @@ declare module "@tiptap/core" {
 }
 
 /** A highlighted note block with an `info`, `success`, `warning` or `error` variant. */
-export const Callout = Node.create({
+export const CalloutNode = Node.create({
   name: "callout",
   group: "block",
   content: "inline*",
@@ -401,6 +379,6 @@ export function createSchemaExtensions({ headingLevels = [1, 2, 3], blocks = tru
       alignments: [...ALIGNMENTS],
     }),
     AutoDirection,
-    ...(blocks ? [Callout, Embed] : []),
+    ...(blocks ? [CalloutNode, Embed] : []),
   ]
 }

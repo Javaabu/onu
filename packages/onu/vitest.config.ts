@@ -14,7 +14,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],
-      exclude: ["src/**/*.test.{ts,tsx}", "src/**/index.ts", "src/**/types.ts", "src/ui/**"],
+      exclude: ["src/**/*.test.{ts,tsx}", "src/**/index.ts", "src/**/types.ts"],
       reporter: ["text", "lcov", "json-summary"],
       thresholds: {
         lines: 90,
@@ -22,6 +22,7 @@ export default defineConfig({
         functions: 90,
         branches: 85,
         "src/thaana/**": { lines: 100, statements: 100, functions: 100, branches: 100 },
+        "src/ui/**": { lines: 70, statements: 70, functions: 70, branches: 70 },
       },
     },
   },

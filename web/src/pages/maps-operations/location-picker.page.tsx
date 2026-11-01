@@ -111,7 +111,7 @@ export default function LocationPickerPage() {
 
         {recordId && values.location ? (
           <Callout
-            variant="success"
+            tone="success"
             title={tr("Location saved", "ތަން ސޭވްކުރެވިއްޖެ")}
             description={tr(
               "The other tabs are now available. Keep editing below, or add opening hours next.",
@@ -187,7 +187,7 @@ export default function LocationPickerPage() {
                   islands={ISLANDS}
                   required
                   value={values.address}
-                  onChange={(address) =>
+                  onValueChange={(address) =>
                     setValues((v) => {
                       const next = ISLANDS.find((i) => i.value === address.island)
                       const islandChanged = address.island !== v.address.island
@@ -214,7 +214,7 @@ export default function LocationPickerPage() {
                   <MapPicker
                     key={values.address.island ?? "none"}
                     value={values.location}
-                    onChange={(p) => set("location", p)}
+                    onValueChange={(p) => set("location", p)}
                     center={island?.position ?? undefined}
                     zoom={island ? 15 : 11}
                     search={searchIslands}

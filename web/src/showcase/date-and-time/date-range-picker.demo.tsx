@@ -20,7 +20,7 @@ export default function DateRangePickerDemo() {
           label="Leave period"
           help={`From ${range.from?.toLocaleString() ?? "—"} to ${range.to?.toLocaleString() ?? "—"}`}
         >
-          <DateRangePicker value={range} onChange={setRange} name="leave" />
+          <DateRangePicker value={range} onValueChange={setRange} name="leave" />
         </FormField>
         <FormField label="Reversed range" help="Shows the error message under the fields.">
           <DateRangePicker defaultValue={{ from: new Date(2026, 2, 20), to: new Date(2026, 2, 10) }} />

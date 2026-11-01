@@ -6,9 +6,9 @@ import { Slider as SliderPrimitive } from "radix-ui"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { useFormField, useFormFieldControl } from "../form/form-field"
-import { useControllableState } from "./_hooks"
 import { registerEnglish } from "../../i18n/english"
 import { choice as en_choice } from "../../locales/en/choice"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ choice: en_choice })
 

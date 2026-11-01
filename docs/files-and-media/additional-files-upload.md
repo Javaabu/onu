@@ -14,7 +14,7 @@ const [value, setValue] = React.useState<AdditionalFilesValue>({ removed: [], ad
   <AdditionalFilesUpload
     existing={[{ id: 11, name: "Lease agreement.pdf", url: "/media/11", size: 482_000 }]}
     value={value}
-    onChange={setValue}
+    onValueChange={setValue}
     maxFiles={6}
     thaana
   />
@@ -34,7 +34,7 @@ Set `name` to also render native fields: `name[removed][]` (hidden ids), `name[a
 | `existing`                                 | `ExistingAttachment[]`                  | `[]`    | `{ id, name, url?, size?, type?, thumbnailUrl?, description? }` |
 | `value`                                    | `AdditionalFilesValue`                  |         | Controlled value                                                |
 | `defaultValue`                             | `AdditionalFilesValue`                  |         | Initial value                                                   |
-| `onChange`                                 | `(value) => void`                       |         | Called on every change                                          |
+| `onValueChange`                                 | `(value) => void`                       |         | Called on every change                                          |
 | `withName`                                 | `boolean`                               | `true`  | Ask for a display name per new file                             |
 | `withDescription`                          | `boolean`                               | `true`  | Ask for a description per new file                              |
 | `thaana`                                   | `boolean \| ThaanaOptions`              |         | Thaana typing in the name and description fields                |
@@ -43,6 +43,7 @@ Set `name` to also render native fields: `name[removed][]` (hidden ids), `name[a
 | `disabled`                                 | `boolean`                               |         | Disable all actions                                             |
 | `name`                                     | `string`                                |         | Prefix for native form fields                                   |
 | `classNames`                               | `{ list, item, fields, picker, empty }` |         | Classes for each part                                           |
+| `aria-label`                               | `string`                                |         | Name of the add-file picker; default from the locale            |
 
 ## Accessibility
 

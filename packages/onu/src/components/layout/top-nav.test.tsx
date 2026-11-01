@@ -59,7 +59,7 @@ describe("TopNav", () => {
   })
 
   it("closes the drawer after navigating", async () => {
-    renderWithOnu(<TopNav items={items} mobileSide="start" navLabel="Portal" />)
+    renderWithOnu(<TopNav items={items} mobileSide="start" label="Portal" />)
     await userEvent.click(screen.getByRole("button", { name: "Open menu" }))
     const dialog = await screen.findByRole("dialog")
     expect(dialog).toHaveAttribute("data-side", "left")

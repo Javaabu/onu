@@ -115,6 +115,8 @@ function CommandSeparator({ className, ...props }: React.ComponentProps<typeof C
   return (
     <CommandPrimitive.Separator
       data-slot="command-separator"
+      // onu: cmdk gives it role="separator", which isn't allowed inside its listbox; it is only a visual divider.
+      aria-hidden
       className={cn("-mx-1 h-px bg-border", className)}
       {...props}
     />

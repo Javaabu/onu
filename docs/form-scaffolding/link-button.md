@@ -33,6 +33,7 @@ import { Link } from "@inertiajs/react"
 | `endIcon`   | `SemanticIconName \| ReactElement` |           | Icon after the label                                                             |
 | `external`  | `boolean`                          | `false`   | Plain `<a target="_blank" rel="noopener noreferrer">` with an external-link icon |
 | `disabled`  | `boolean`                          | `false`   | Dimmed, `aria-disabled`, no `href`                                               |
+| `asChild` | `boolean` |  | Render your element as the link, with the `href`, classes and icons; with `disabled` only its content is shown |
 
 All `<a>` props are passed through; `ref` points at the anchor.
 

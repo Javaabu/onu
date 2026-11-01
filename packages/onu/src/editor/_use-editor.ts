@@ -14,7 +14,7 @@ import { ThaanaKeyboard } from "./thaana-keyboard"
 export interface UseOnuEditorOptions extends SchemaOptions {
   value?: EditorValue
   defaultValue?: EditorValue
-  onChange?: (value: EditorValue, editor: Editor) => void
+  onValueChange?: (value: EditorValue, editor: Editor) => void
   format?: EditorFormat
   placeholder?: string | ((node: { type: string; level?: number }) => string)
   /** Placeholder on every empty block (block editor) or only when the document is empty. */
@@ -42,7 +42,7 @@ export interface UseOnuEditorOptions extends SchemaOptions {
 export function useOnuEditor({
   value,
   defaultValue,
-  onChange,
+  onValueChange,
   format: formatProp,
   placeholder,
   placeholderOnEveryBlock = false,
@@ -68,9 +68,9 @@ export function useOnuEditor({
   const thaanaOptions = typeof thaana === "object" ? thaana : {}
 
   const [serialized, setSerialized] = React.useState(() => stringifyValue(initial))
-  const latest = React.useRef({ onChange, format, shortcuts, onReady })
+  const latest = React.useRef({ onValueChange, format, shortcuts, onReady })
   React.useEffect(() => {
-    latest.current = { onChange, format, shortcuts, onReady }
+    latest.current = { onValueChange, format, shortcuts, onReady }
   })
   // ARIA attributes for the contenteditable; ProseMirror reads them on every update.
   const attributes = React.useRef<Record<string, string>>({})
@@ -130,7 +130,7 @@ export function useOnuEditor({
       onUpdate: ({ editor: e }) => {
         const next = readValue(e, latest.current.format)
         setSerialized(e.isEmpty ? "" : stringifyValue(next))
-        latest.current.onChange?.(next, e)
+        latest.current.onValueChange?.(next, e)
       },
     },
     // Recreate only when the schema or keyboard setup changes.

@@ -26,7 +26,7 @@ export interface InlineEditProps extends Omit<
   onSave?: (value: string) => unknown
   onCancel?: () => void
   /** Called with every edit while typing. */
-  onChange?: (value: string) => void
+  onValueChange?: (value: string) => void
   placeholder?: string
   /** Use a textarea (Ctrl/Cmd+Enter saves). */
   multiline?: boolean
@@ -41,7 +41,7 @@ export interface InlineEditProps extends Omit<
   renderValue?: (value: string) => React.ReactNode
   /** Start in edit mode. */
   defaultEditing?: boolean
-  inputProps?: Omit<React.ComponentProps<"input">, "value" | "onChange" | "defaultValue">
+  inputProps?: Omit<React.ComponentProps<"input">, "value" | "onChange" | "defaultValue" | "size">
   classNames?: { display?: string; input?: string; actions?: string; error?: string }
 }
 
@@ -55,7 +55,7 @@ export function InlineEdit({
   defaultValue = "",
   onSave,
   onCancel,
-  onChange,
+  onValueChange,
   placeholder,
   multiline = false,
   thaana,
@@ -184,7 +184,7 @@ export function InlineEdit({
                 aria-describedby={cn(hintId, error && errorId)}
                 onChange={(e) => {
                   setDraft(e.target.value)
-                  onChange?.(e.target.value)
+                  onValueChange?.(e.target.value)
                 }}
                 onKeyDown={onKeyDown}
                 className={cn("min-w-48 flex-1", classNames?.input)}
@@ -203,7 +203,7 @@ export function InlineEdit({
                 aria-describedby={cn(hintId, error && errorId)}
                 onChange={(e) => {
                   setDraft(e.target.value)
-                  onChange?.(e.target.value)
+                  onValueChange?.(e.target.value)
                 }}
                 onKeyDown={onKeyDown}
                 className={cn("min-w-48 flex-1", classNames?.input)}
@@ -250,7 +250,7 @@ export function InlineEdit({
           data-slot="inline-edit-display"
           disabled={disabled}
           onClick={start}
-          aria-label={`${t("form.edit", { label })}: ${value || t("form.emptyValue")}`}
+          aria-label={t("form.editValue", { label, value: value || t("form.emptyValue") })}
           {...(thaana && value ? { lang: "dv", dir: "rtl" } : {})}
           className={cn(
             "group/inline-edit gap-2 px-1.5 py-1 min-h-8 touch:min-h-11 inline-flex max-w-full items-center rounded-md text-start outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50",

@@ -7,10 +7,11 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { InputGroupButton } from "../../ui/input-group"
-import { CopyButton, useControllableState } from "./_shared"
+import { CopyButton } from "./_shared"
 import { TextInput, type TextInputProps } from "./text-input"
 import { registerEnglish } from "../../i18n/english"
 import { input as en_input } from "../../locales/en/input"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ input: en_input })
 
@@ -92,7 +93,7 @@ export function SensitiveInput({
             {masked && revealable ? (
               <InputGroupButton
                 size="icon-xs"
-                data-slot="sensitive-reveal"
+                data-part="sensitive-reveal"
                 aria-label={t("input.reveal")}
                 aria-pressed={revealed}
                 title={t("input.reveal")}

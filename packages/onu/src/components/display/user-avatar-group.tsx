@@ -23,7 +23,7 @@ type Size = NonNullable<UserAvatarProps["size"]>
 const OVERLAP: Record<Size, string> = {
   xs: "-space-x-1",
   sm: "-space-x-1.5",
-  md: "-space-x-2",
+  default: "-space-x-2",
   lg: "-space-x-2.5",
   xl: "-space-x-3",
 }
@@ -31,7 +31,7 @@ const OVERLAP: Record<Size, string> = {
 const COUNT_SIZES: Record<Size, string> = {
   xs: "size-6 text-[0.625rem]",
   sm: "size-8 text-xs",
-  md: "size-10 text-xs",
+  default: "size-10 text-xs",
   lg: "size-12 text-sm",
   xl: "size-16 text-base",
 }
@@ -54,7 +54,7 @@ export interface UserAvatarGroupProps extends Omit<React.ComponentProps<"div">, 
 export function UserAvatarGroup({
   users,
   max = 4,
-  size = "md",
+  size = "default",
   shape,
   renderOverflow,
   className,

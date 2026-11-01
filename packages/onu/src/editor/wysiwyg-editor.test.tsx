@@ -47,24 +47,24 @@ describe("WysiwygEditor", () => {
   })
 
   it("is uncontrolled with HTML by default and gives every block dir=auto", async () => {
-    const onChange = vi.fn()
-    const { editor, textbox } = await setup({ defaultValue: "<p>Hello</p><p>ހެލޯ</p>", onChange })
+    const onValueChange = vi.fn()
+    const { editor, textbox } = await setup({ defaultValue: "<p>Hello</p><p>ހެލޯ</p>", onValueChange })
     expect(textbox.querySelectorAll("p[dir=auto]")).toHaveLength(2)
     act(() => {
       editor.commands.setContent("<p>Changed</p>", { emitUpdate: true })
     })
-    expect(onChange).toHaveBeenLastCalledWith('<p dir="auto">Changed</p>', editor)
+    expect(onValueChange).toHaveBeenLastCalledWith('<p dir="auto">Changed</p>', editor)
     act(() => {
       editor.commands.clearContent(true)
     })
-    expect(onChange).toHaveBeenLastCalledWith("", editor)
+    expect(onValueChange).toHaveBeenLastCalledWith("", editor)
   })
 
   it("resolves list and quote direction from their content while editing and in the HTML", async () => {
-    const onChange = vi.fn()
+    const onValueChange = vi.fn()
     const { editor, textbox } = await setup({
       defaultValue: "<ul><li><p>ހުޅުމާލެ</p></li></ul><blockquote><p>Quote</p></blockquote>",
-      onChange,
+      onValueChange,
     })
     expect(textbox.querySelector("ul")).toHaveAttribute("dir", "rtl")
     expect(textbox.querySelector("blockquote")).toHaveAttribute("dir", "ltr")
@@ -77,15 +77,15 @@ describe("WysiwygEditor", () => {
       editor.chain().focus("end").insertContent("ދިވެހި").run()
     })
     expect(textbox.querySelector("ol")).toHaveAttribute("dir", "rtl")
-    expect(onChange).toHaveBeenLastCalledWith(expect.stringContaining('<ol dir="rtl">'), editor)
+    expect(onValueChange).toHaveBeenLastCalledWith(expect.stringContaining('<ol dir="rtl">'), editor)
   })
 
   it("resolves table direction from the cells while editing and in the HTML", async () => {
-    const onChange = vi.fn()
+    const onValueChange = vi.fn()
     const { editor, textbox } = await setup({
       defaultValue:
         "<table><tbody><tr><th><p>ރަށް</p></th><th><p>Island</p></th></tr><tr><td><p>ހުޅުމާލެ</p></td><td><p>Hulhumalé</p></td></tr></tbody></table>",
-      onChange,
+      onValueChange,
     })
     const wrapper = () => textbox.querySelector<HTMLElement>(".tableWrapper")!
     // The live table view takes the direction on its wrapper; the table inherits it.
@@ -104,7 +104,7 @@ describe("WysiwygEditor", () => {
       editor.commands.insertContent("ދިވެހި")
     })
     expect(wrapper()).toHaveAttribute("dir", "rtl")
-    expect(onChange).toHaveBeenLastCalledWith(expect.stringContaining('<table dir="rtl"'), editor)
+    expect(onValueChange).toHaveBeenLastCalledWith(expect.stringContaining('<table dir="rtl"'), editor)
 
     // An explicit direction from pasted HTML wins and stays on the table.
     act(() => {
@@ -117,15 +117,15 @@ describe("WysiwygEditor", () => {
   })
 
   it("emits Tiptap JSON when given JSON", async () => {
-    const onChange = vi.fn()
+    const onValueChange = vi.fn()
     const { editor } = await setup({
       defaultValue: { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "Hi" }] }] },
-      onChange,
+      onValueChange,
     })
     act(() => {
       editor.commands.insertContent("!")
     })
-    expect(onChange.mock.lastCall?.[0]).toMatchObject({ type: "doc" })
+    expect(onValueChange.mock.lastCall?.[0]).toMatchObject({ type: "doc" })
   })
 
   it("follows a controlled value and writes it to a hidden input", async () => {
@@ -133,7 +133,7 @@ describe("WysiwygEditor", () => {
       const [value, setValue] = React.useState("<p>One</p>")
       return (
         <>
-          <WysiwygEditor aria-label="Story" name="body" value={value} onChange={(v) => setValue(v as string)} />
+          <WysiwygEditor aria-label="Story" name="body" value={value} onValueChange={(v) => setValue(v as string)} />
           <button type="button" onClick={() => setValue("<p>Two</p>")}>
             Set
           </button>
@@ -289,6 +289,18 @@ describe("WysiwygEditor", () => {
     await user.click(within(dialog).getByRole("button", { name: "Insert" }))
     expect(editor.getHTML()).toContain('src="https://example.mv/male.jpg"')
     expect(editor.getHTML()).toContain('alt="Malé skyline"')
+  })
+
+  it("gives the alt text field the editor's Thaana keyboard, but not the URL field", async () => {
+    const user = userEvent.setup()
+    await setup({ thaana: true })
+    await user.click(button("Image"))
+    const dialog = await screen.findByRole("dialog", { name: "Insert image" })
+    expect(within(dialog).getByLabelText(/Alternative text/)).toHaveAttribute("data-thaana")
+    expect(within(dialog).getByLabelText(/Image URL/)).not.toHaveAttribute("data-thaana")
+    // Close it and let focus return, because the dialog would otherwise focus the editor after it unmounts.
+    await user.keyboard("{Escape}")
+    await waitFor(() => expect(button("Image")).toHaveFocus())
   })
 
   it("uploads images through the upload callback and reports failures", async () => {

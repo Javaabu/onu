@@ -70,7 +70,7 @@ export default function CustomAttributeFieldsDemo() {
             name="attributes"
             columns={2}
             value={values}
-            onChange={setValues}
+            onValueChange={setValues}
             errors={showErrors ? errors : undefined}
           />
           <div>

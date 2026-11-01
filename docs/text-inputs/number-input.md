@@ -81,7 +81,7 @@ With a `name` (or inside a `FormField` with `name`), the raw number is submitted
 | `unitLabel`               | `string`                                                                         | "Unit"             | Accessible name of the unit select                         |
 | `unitPosition`            | `"start" \| "end"`                                                               | `"end"`            | Which side the unit sits on                                |
 | `stepper`                 | `boolean`                                                                        | `false`            | Large − and + buttons with press-and-hold repeat           |
-| `size`                    | `"sm" \| "default" \| "lg"`                                                      | `"default"`        | Stepper size (with `stepper`)                              |
+| `size`                    | `"sm" \| "default" \| "lg"`                                                      | `"default"`        | Field height: 28, 32 or 40 px                              |
 | `repeatDelay`             | `number`                                                                         | `400`              | ms before press-and-hold starts repeating (with `stepper`) |
 | `repeatInterval`          | `number`                                                                         | `80`               | ms between repeats (with `stepper`)                        |
 | `startAddon` / `endAddon` | `ReactNode`                                                                      |                    | Your own addons; the unit sits between them and the number |

@@ -36,6 +36,7 @@ Short rules for AI coding assistants (and people) writing UI with Onu. They sit 
 - Free-text fields that may hold Dhivehi take `thaana` (`<TextInput thaana />`, `<Textarea thaana />`; add `thaanaToggle` for the Thaana/Latin button). Never add `thaana` to email, password, URL, number, phone, OTP or code inputs; they stay LTR by design.
 - Use logical Tailwind utilities only: `ms-*`/`me-*`, `ps-*`/`pe-*`, `start-*`/`end-*`, `text-start`/`text-end`, `border-s`/`border-e`, `rounded-s-*`/`rounded-e-*`. Never `ml-*`, `mr-*`, `pl-*`, `pr-*`, `left-*`, `right-*`, `text-left` or `text-right`. Flip transforms with `rtl:`.
 - Sides are `side="start" | "end"`, not left/right.
+- Components that report a value use `onValueChange(value)`; `onChange` is only ever the native event.
 - Format dates, numbers and money with `useFormatDate`, `useFormatNumber` and `useFormatCurrency` (MVR), not `toLocaleString` or hand-built strings. Numbers use Western digits in Dhivehi too.
 - Built-in strings come from the locale. For your own strings use `useTranslation()` or your app's i18n, and override Onu's strings with `OnuProvider messages`.
 

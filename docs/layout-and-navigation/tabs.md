@@ -9,7 +9,7 @@ shadcn's `Tabs` (Radix, WAI-ARIA tabs), extended with an `items` API, icons, cou
 import { Tabs } from "@javaabu/onu"
 
 ;<Tabs
-  listLabel="Member"
+  label="Member"
   items={[
     { value: "details", label: "Details", icon: "info", content: <Details /> },
     { value: "documents", label: "Documents", count: 4, content: <Documents /> },
@@ -28,7 +28,7 @@ Status tabs that filter a list rather than show panels: "All 312 · Active 280 �
 <Tabs
   variant="line"
   countAppearance="pill"
-  listLabel="Filter by status"
+  label="Filter by status"
   controls="users-table"
   value={(state.filters.status as string) ?? "all"}
   onValueChange={(v) => state.setFilter("status", v === "all" ? undefined : v)}
@@ -60,7 +60,7 @@ For settings-style pages, `orientation="vertical"` with `narrow` puts the tab li
 />
 ```
 
-Use `textLabel` when `label` is not plain text, so the select has an option label. The list and the select are named by `listLabel` (default "Choose a section"). `variant` and `scrollable` do not apply in this layout.
+Use `textLabel` when an item's `label` is not plain text, so the select has an option label. The list and the select are named by the `label` prop (default "Choose a section"). `variant` and `scrollable` do not apply in this layout.
 
 ## Props
 
@@ -74,7 +74,7 @@ Use `textLabel` when `label` is not plain text, so the select has an option labe
 | `orientation`     | `'horizontal' \| 'vertical'`                | `'horizontal'` | Layout and arrow keys                                                          |
 | `scrollable`      | `boolean`                                   | `true`         | Let the list scroll when it does not fit                                       |
 | `narrow`          | `'select' \| 'scroll'`                      |                | Vertical only: settings layout, and what the list becomes in narrow containers |
-| `listLabel`       | `string`                                    |                | Accessible name of the tab list                                                |
+| `label`       | `string`                                    |                | Accessible name of the tab list                                                |
 | `controls`        | `string`                                    |                | Id of what the tabs filter: tabs without `content` set it as `aria-controls`   |
 | `countAppearance` | `'text' \| 'pill'`                          | `'text'`       | Counts as "(12)" or as a pill                                                  |
 | `classNames`      | `{ list, trigger, content, count, select }` |                | Classes for each part                                                          |
@@ -94,7 +94,7 @@ Counts are formatted with the active locale ("Activity (12)"). Other Radix `Tabs
 
 Screen readers announce the selected tab (§25.10). Counts are part of each tab's name ("Active (280)"), pills included.
 
-Filter tabs (items without `content`) render no `tabpanel`, so no tab points at a panel that does not exist: with `controls`, `aria-controls` names the listing they filter, and without it the attribute is left out. Give filter tabs a `listLabel` such as "Filter by status".
+Filter tabs (items without `content`) render no `tabpanel`, so no tab points at a panel that does not exist: with `controls`, `aria-controls` names the listing they filter, and without it the attribute is left out. Give filter tabs a `label` such as "Filter by status".
 
 With `narrow`, the list is a `tablist` with `aria-orientation="vertical"`, and the narrow-screen select is labelled for screen readers. Triggers and the select are 44px tall on touch screens. In `narrow="scroll"` the row is horizontal but keeps vertical arrow keys.
 

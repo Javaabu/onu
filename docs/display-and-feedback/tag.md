@@ -26,7 +26,7 @@ import { Tag } from "@javaabu/onu"
 | ------------- | ------------------------------------- | ----------- | ------------------------------------------------- |
 | `variant`     | `'default' \| 'primary' \| 'outline'` | `'default'` | Look                                              |
 | `color`       | `'blue' \| 'cyan' \| 'green' \| 'red' \| 'gold'` |  | Ant preset colour (overrides the variant's colours) |
-| `size`        | `'sm' \| 'md' \| 'lg'`                | `'md'`      | Size                                              |
+| `size`        | `'sm' \| 'default' \| 'lg'` | `'default'`      | Size                                              |
 | `icon`        | `string \| ReactNode`                 |             | Icon before the label                             |
 | `onClick`     | `(e) => void`                         |             | Makes the label a button                          |
 | `href`        | `string`                              |             | Makes the label a link                            |

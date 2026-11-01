@@ -45,7 +45,7 @@ export interface WysiwygEditorProps
   /** Initial content when uncontrolled. */
   defaultValue?: EditorValue
   /** Called with the new content (in `format`) on every change. */
-  onChange?: (value: EditorValue, editor: Editor) => void
+  onValueChange?: (value: EditorValue, editor: Editor) => void
   /** Output format. Defaults to the shape of `value`/`defaultValue`, else `"html"`. */
   format?: EditorFormat
   /** Name of a hidden input carrying the content, for plain form posts. */
@@ -82,7 +82,7 @@ export interface WysiwygEditorProps
 export function WysiwygEditor({
   value,
   defaultValue,
-  onChange,
+  onValueChange,
   format,
   name,
   placeholder,
@@ -128,7 +128,7 @@ export function WysiwygEditor({
   } = useOnuEditor({
     value,
     defaultValue,
-    onChange,
+    onValueChange,
     format,
     placeholder: placeholder ?? t("editor.placeholder"),
     readOnly,
@@ -221,6 +221,7 @@ export function WysiwygEditor({
             onOpenChange={(next) => setDialog(next ? "image" : null)}
             onCloseAutoFocus={afterDialog}
             onUpload={onImageUpload}
+            thaana={thaana}
             onSubmit={({ src, alt }) => editor.chain().setImage({ src, alt }).run()}
           />
         </>

@@ -6,8 +6,10 @@ sidebar_position: 12
 A full-screen image viewer built on [yet-another-react-lightbox](https://yet-another-react-lightbox.com): keyboard, swipe, pinch/double-tap/wheel zoom, captions and a counter, with a focus trap, focus return, translated labels and mirrored arrows in RTL. Part of the optional media entry. Use [`Gallery`](./gallery) for the thumbnail grid.
 
 ```bash
-pnpm add yet-another-react-lightbox
+pnpm add react-easy-crop signature_pad yet-another-react-lightbox media-chrome
 ```
+
+`@javaabu/onu/media` imports all of these statically, so install them even if you only use `Lightbox`.
 
 ```tsx
 import { Lightbox } from "@javaabu/onu/media"
@@ -35,10 +37,11 @@ The component imports the library's CSS (`yet-another-react-lightbox/styles.css`
 
 | Prop            | Type              | Default | Description                                                    |
 | --------------- | ----------------- | ------- | -------------------------------------------------------------- |
-| `open`          | `boolean`         |         | Whether the viewer is open                                     |
+| `open`          | `boolean`         |         | Controlled open state                                     |
+| `defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled |
 | `onOpenChange`  | `(open) => void`  |         | Called with `false` on close                                   |
 | `slides`        | `LightboxSlide[]` |         | `{ src, alt, title?, description?, width?, height?, srcSet? }` |
-| `index`         | `number`          | `0`     | Slide to show                                                  |
+| `index`         | `number`          |      | Slide to show. Without it, the viewer tracks the slide itself, starting from the first |
 | `onIndexChange` | `(index) => void` |         | The slide changed                                              |
 | `zoom`          | `boolean`         | `true`  | Zoom plugin                                                    |
 | `captions`      | `boolean`         | `true`  | Captions plugin                                                |
@@ -46,6 +49,7 @@ The component imports the library's CSS (`yet-another-react-lightbox/styles.css`
 | `loop`          | `boolean`         | `false` | Wrap around                                                    |
 | `plugins`       | `Plugin[]`        |         | Extra library plugins (thumbnails, slideshow, …)               |
 | `className`     | `string`          |         | Class on the viewer root                                       |
+| `classNames` | `{ root, icon, counter }` |  | Classes for each part |
 
 ## Accessibility
 

@@ -200,7 +200,7 @@ export default function MyDocumentsPage() {
                 accept=".pdf,image/*"
                 maxSize={5 * 1024 * 1024}
                 value={form.files}
-                onChange={(files) => setForm((f) => ({ ...f, files }))}
+                onValueChange={(files) => setForm((f) => ({ ...f, files: files as File[] }))}
               />
             </FormField>
           </FormErrorsProvider>

@@ -191,6 +191,8 @@
   --shell-weak: var(--onu-shell-weak);
   /* The grey page behind dashboard cards (Ant colorBgLayout). */
   --layout: var(--onu-layout);
+  /* The dim behind modal dialogs, sheets and drawers. */
+  --overlay: var(--onu-overlay);
 
   /* Ant preset colours for tags and status badges (tinted background, border, AA text). */
   --preset-blue: var(--onu-preset-blue);

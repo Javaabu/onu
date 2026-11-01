@@ -1,6 +1,6 @@
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
-import { toArray } from "./form-context"
+import { toArray } from "../../lib/utils"
 
 export interface FieldErrorsProps extends Omit<React.ComponentProps<"div">, "children"> {
   errors?: string | string[] | null
@@ -10,7 +10,7 @@ export interface FieldErrorsProps extends Omit<React.ComponentProps<"div">, "chi
 
 /** Error messages for one field, announced politely to screen readers (R14.7). */
 export function FieldErrors({ errors, firstOnly, className, ...props }: FieldErrorsProps) {
-  const list = toArray(errors)
+  const list = toArray(errors).filter(Boolean)
   const shown = firstOnly ? list.slice(0, 1) : list
   return (
     <div data-slot="field-errors" aria-live="polite" className={cn("text-sm text-destructive", className)} {...props}>

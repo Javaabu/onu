@@ -20,7 +20,7 @@ function Plain(props: Partial<RepeatingGroupProps<Row>> & { initial?: Row[] }) {
     <RepeatingGroup<Row>
       label="Family members"
       value={rows}
-      onChange={setRows}
+      onValueChange={setRows}
       createItem={() => ({ name: "" })}
       {...rest}
     >
@@ -39,6 +39,24 @@ function Plain(props: Partial<RepeatingGroupProps<Row>> & { initial?: Row[] }) {
 const names = () => screen.getAllByRole("textbox").map((el) => (el as HTMLInputElement).value)
 
 describe("RepeatingGroup (plain array)", () => {
+  it("keeps its own rows from defaultValue when uncontrolled", async () => {
+    const onValueChange = vi.fn()
+    renderWithOnu(
+      <RepeatingGroup<Row>
+        label="Rows"
+        defaultValue={[{ name: "First" }]}
+        createItem={() => ({ name: "Second" })}
+        onValueChange={onValueChange}
+      >
+        {({ item }) => <span>{item.name}</span>}
+      </RepeatingGroup>,
+    )
+    expect(screen.getByText("First")).toBeInTheDocument()
+    await userEvent.click(screen.getByRole("button", { name: /add/i }))
+    expect(screen.getByText("Second")).toBeInTheDocument()
+    expect(onValueChange).toHaveBeenCalledWith([{ name: "First" }, { name: "Second" }])
+  })
+
   it("renders rows with generated names and an accessible group", async () => {
     renderWithOnu(<Plain />)
     expect(screen.getByRole("group", { name: "Family members" })).toBeInTheDocument()

@@ -302,3 +302,19 @@ describe("TreeView", () => {
     expect(screen.getByRole("treegrid", { name: "ގަސް" })).toBeInTheDocument()
   })
 })
+
+describe("TreeView rest props", () => {
+  it("passes rest props and ref to the root", () => {
+    const ref = React.createRef<HTMLDivElement>()
+    const onScroll = vi.fn()
+    renderWithOnu(
+      <TreeView items={[{ id: "a", label: "A" }]} ref={ref} data-testid="tree" id="t" onScroll={onScroll} />,
+    )
+    const root = screen.getByTestId("tree")
+    expect(root).toBe(ref.current)
+    expect(root).toHaveAttribute("role", "treegrid")
+    expect(root).toHaveAttribute("id", "t")
+    fireEvent.scroll(root)
+    expect(onScroll).toHaveBeenCalledOnce()
+  })
+})

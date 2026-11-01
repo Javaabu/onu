@@ -217,9 +217,7 @@ describe("Onu kit generator", () => {
     expect(options("StatusBadge", "status")).toEqual(
       cvaKeys("packages/onu/src/components/display/status-badge.tsx", "tone").sort(),
     )
-    expect(options("Alert", "variant")).toEqual(
-      cvaKeys("packages/onu/src/components/display/callout.tsx", "variant").sort(),
-    )
+    expect(options("Alert", "tone")).toEqual(cvaKeys("packages/onu/src/components/display/callout.tsx", "tone").sort())
     expect(options("Avatar", "size")).toEqual(
       cvaKeys("packages/onu/src/components/display/user-avatar.tsx", "size").sort(),
     )

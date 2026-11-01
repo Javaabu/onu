@@ -28,6 +28,7 @@ import { Button, ButtonGroup } from "@javaabu/onu"
 | `attached`    | `boolean`                    | `true`       | Join the buttons              |
 | `orientation` | `'horizontal' \| 'vertical'` | `horizontal` | Direction                     |
 | `label`       | `string`                     |              | Accessible name for the group |
+| `classNames` | `{ root }` |  | Classes for the group |
 
 All `<div>` props are passed through.
 

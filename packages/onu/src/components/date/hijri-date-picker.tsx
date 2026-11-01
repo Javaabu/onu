@@ -10,11 +10,11 @@ import { CalendarHeader } from "./_calendar-header"
 import { addHijriMonths, fromHijri, hijriDaysInMonth, toHijri, type HijriParts } from "./_hijri"
 import { PeriodGrid } from "./_period-grid"
 import { HiddenInput, PickerShell, type PickerFieldProps } from "./_picker-shell"
-import { useControllableState } from "./_use-controllable-state"
 import { DEFAULT_DATE_FORMAT, formatDate, isOutOfRange, toISODate, yearBlockStart } from "./_utils"
 import { formatHijriParts, hijriMonthName, type HijriFormat } from "./hijri-date"
 import { registerEnglish } from "../../i18n/english"
 import { date as en_date } from "../../locales/en/date"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ date: en_date })
 
@@ -325,7 +325,7 @@ export interface HijriDatePickerProps extends PickerFieldProps {
   /** Selected date (Gregorian `Date`, controlled). `null` is empty. */
   value?: Date | null
   defaultValue?: Date | null
-  onChange?: (value: Date | null) => void
+  onValueChange?: (value: Date | null) => void
   /** Hijri display format. Default `short` ("23 Ramadan 1447"). */
   format?: HijriFormat
   /** Show the Gregorian date in the field too. Default true. */
@@ -344,7 +344,7 @@ export interface HijriDatePickerProps extends PickerFieldProps {
 export function HijriDatePicker({
   value: valueProp,
   defaultValue = null,
-  onChange,
+  onValueChange,
   format = "short",
   showGregorian = true,
   gregorianFormat = DEFAULT_DATE_FORMAT,
@@ -357,7 +357,7 @@ export function HijriDatePicker({
   ...props
 }: HijriDatePickerProps) {
   const { locale, t } = useOnu()
-  const [value, setValue] = useControllableState(valueProp, defaultValue, onChange)
+  const [value, setValue] = useControllableState(valueProp, defaultValue, onValueChange)
   const hijri = value ? formatHijriParts(toHijri(value), t, format) : null
   const display = value
     ? showGregorian

@@ -4,31 +4,12 @@ import * as React from "react"
 
 import { interpolateLatLng, latLngEquals } from "./geo"
 import type { LatLng } from "./types"
-
-/** Controlled when `value !== undefined`, otherwise internal state seeded by `defaultValue`. */
-export function useControllableState<T>(
-  value: T | undefined,
-  defaultValue: T,
-  onChange?: (value: T) => void,
-): [T, (next: T) => void] {
-  const [internal, setInternal] = React.useState<T>(defaultValue)
-  const controlled = value !== undefined
-  const current = controlled ? value : internal
-  const onChangeRef = useLatest(onChange)
-  const set = React.useCallback(
-    (next: T) => {
-      if (!controlled) setInternal(next)
-      onChangeRef.current?.(next)
-    },
-    [controlled, onChangeRef],
-  )
-  return [current, set]
-}
+import { useIsomorphicLayoutEffect } from "../hooks/use-isomorphic-layout-effect"
 
 /** A ref that always holds the latest value (for callbacks used in effects). */
 export function useLatest<T>(value: T) {
   const ref = React.useRef(value)
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     ref.current = value
   })
   return ref

@@ -34,7 +34,7 @@ Laravel / spatie-query-builder style: `?search=jane&sort=-name&page=2&per_page=5
 | `url`                     | `boolean`                    | `true`  | Mirror the state in the URL with `replaceState`              |
 | `paramPrefix`             | `string`                     | `""`    | Prefix for every URL parameter                               |
 | `paramNames`              | `Partial<ListingParamNames>` |         | Rename `search`, `sort`, `page`, `perPage`, `filter`, `view` |
-| `onChange`                | `(state) => void`            |         | Called after each change (not on mount)                      |
+| `onValueChange`                | `(state) => void`            |         | Called after each change (not on mount)                      |
 | `defaultSelection`        | `string[]`                   | `[]`    | Selected row ids (never in the URL)                          |
 | `defaultColumnVisibility` | `Record<string, boolean>`    | `{}`    | `{ email: false }` hides a column                            |
 

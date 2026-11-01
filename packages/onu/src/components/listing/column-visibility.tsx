@@ -55,7 +55,7 @@ export function ColumnVisibility({
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          data-slot="column-visibility"
+          data-part="column-visibility"
           aria-label={showLabel ? undefined : t("listing.toggleColumns")}
           className={cn("touch:min-h-11", classNames?.trigger, className)}
           {...props}

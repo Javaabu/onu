@@ -82,7 +82,7 @@ export default function NotificationsPage() {
         <Tabs
           variant="line"
           countAppearance="pill"
-          listLabel={tr("Show", "ދައްކާ")}
+          label={tr("Show", "ދައްކާ")}
           controls="inbox-list"
           value={filter}
           onValueChange={setFilter}
@@ -311,7 +311,7 @@ export default function NotificationsPage() {
         />
         <Tabs
           variant="line"
-          listLabel={tr("Notifications", "ނޮޓިފިކޭޝަން")}
+          label={tr("Notifications", "ނޮޓިފިކޭޝަން")}
           items={[
             { value: "inbox", label: tr("Inbox", "އިންބޮކްސް"), icon: "bell", count: unread, content: inboxPanel },
             {

@@ -92,7 +92,7 @@ For a classic filter bar that you render yourself (a `GET` form above a server-r
 | `boolean`    | Any / Yes / No select                                                                                                                   | `"1"` \| `"0"`           |
 | `text`       | A text box (`thaana` supported)                                                                                                         | `string`                 |
 | `trashed`    | Hide / Include / Only                                                                                                                   | `"with"` \| `"only"`     |
-| `custom`     | Your `render({ value, onChange, id, definition })`                                                                                      | anything                 |
+| `custom`     | Your `render({ value, onValueChange, id, definition })`                                                                                      | anything                 |
 
 Every definition also accepts `render` (replace the built-in control) and `format(value)` (the pill text).
 
@@ -104,6 +104,7 @@ Every definition also accepts `render` (replace the built-in control) and `forma
 | `value`                 | `FilterValues`                                             |                 | Applied filters                        |
 | `onApply`               | `(filters) => void`                                        |                 | Apply (and `{}` on Clear all)          |
 | `open` / `onOpenChange` | `boolean` / `(open) => void`                               |                 | Controlled open state                  |
+| `defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled |
 | `sheet`                 | `boolean`                                                  | below 768px     | Force the bottom sheet or the dropdown |
 | `trigger`               | `ReactNode`                                                | Filters + count | Button content                         |
 | `align`                 | `"start" \| "center" \| "end"`                             | `"start"`       | Dropdown alignment                     |
@@ -112,10 +113,11 @@ Every definition also accepts `render` (replace the built-in control) and `forma
 | `defaultExpanded`       | `boolean`                                                  | `false`         | Form: start expanded                   |
 | `formLabel`             | `string`                                                   | "Filters"       | Form: accessible name                  |
 | `classNames`            | `{ trigger, badge, content, body, filter, label, footer }` |                 | Classes for each part                  |
+| `className`             | `string`                                                   |                 | Added to the trigger (the form with `variant="form"`) |
 
 ## Accessibility
 
-The panel is a `dialog` named "Filters"; each filter's control is labelled by its name. The button's name includes the count ("Filters, 2 applied"). Focus returns to the button when the panel closes.
+The panel is a `dialog` named "Filters"; each filter's control is labelled by its name. The button's name includes the count ("Filters, 2 applied"). Changes to the applied filters are announced ("2 filters applied", "Filters cleared"). Focus returns to the button when the panel closes.
 
 | Key               | Action                                   |
 | ----------------- | ---------------------------------------- |

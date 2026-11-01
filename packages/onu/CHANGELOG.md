@@ -1,5 +1,352 @@
 # @javaabu/onu
 
+## 0.2.0
+
+### Minor Changes
+
+- 56ae1f7: More components accept rest props and `ref` on their root and a `classNames` slot map, and `BackToTop`, `ConditionalLink` and `LinkButton` gain `asChild`.
+- 18ad3c8: `Tip`, `PopoverPanel` and `ActionMenu` take `side="top" | "bottom" | "start" | "end"`; `left` and `right` are gone.
+- 2c8e899: `ActionMenu` takes `name` (the trigger becomes "Actions for {name}" and confirmations default to "Delete {name}?") and listing-style items (`destructive`, `permitted`, `separator`, `confirm: true`, async `onSelect`), so `RecordAction[]` works as `items`. `RowActions` is removed: use `<ActionMenu name={…} items={actions}>` (`trashActions` stays). ActionMenu now renders nothing when no item is visible, and its default ⋯ trigger is 44px on touch screens; the row ⋯ button's `data-slot` is `action-menu-trigger` (was `row-actions`). Behaviour changes: ActionMenu confirmations open once the menu has closed and return focus to the trigger, and without a `ConfirmProvider` they show a styled `ConfirmDialog` instead of `window.confirm`. Listing confirmations (row menus, record header actions, bulk actions) now render with `ConfirmDialog`: destructive ones show its warning icon, a failed action's error shows in the dialog, and the dialog's `data-slot` is `confirm-dialog` (was `listing-confirm`).
+- 2c8e899: `Autocomplete` takes `showToggleButton` (a chevron that opens the full list), `showCustomOption` ("Use “…”" for unmatched text), `autoHighlight`, `emptyMessage` and a controllable `open`/`defaultOpen`/`onOpenChange`; `onValueChange` now also gets the picked option (or `null` for typed text), `renderOption` gets `selected`, and suggestions may carry `keywords` (so `ChoiceOption`s fit). `EditableSelect` is removed: use `<Autocomplete showToggleButton showCustomOption autoHighlight suggestions={…}>`. Picking writes the suggestion's `value`, so map `ChoiceOption`s with `{ ...o, value: o.label }` to write the label; pass `emptyMessage` and `renderOption` for the old empty text and check mark. Behaviour changes: Autocomplete (and TagsInput suggestions) now match static lists with `Intl.Collator` like the select components, so "male" finds "Malé" and `keywords` match; Enter no longer picks a disabled suggestion.
+- 2c8e899: `Callout` takes an `appearance`: `"box"` (default, unchanged) or the inline `"plain"`, `"subtle"` and `"bordered"` notices, which use `role="note"` and leave out title, actions and dismiss. `Notice` and `NoticeProps` are removed: use `<Callout appearance="plain" variant="info">` (Notice's `tone` is `variant`, with `neutral` as `default`; its `variant` is `appearance`). `noticeVariants` is renamed `calloutInlineVariants`, keyed by `variant` and `appearance`. The `notice` data-slot and `data-tone` are gone: inline callouts have `data-slot="callout"` and `data-variant`.
+- 2c8e899: New `CategoryChart` in `@javaabu/onu/charts` draws category data as lines, areas or bars with `variant`: `"line"` (default), `"area"` or `"bar"`. Its props are a union on `variant`, so the line options (`curve`, `dots`, `connectNulls`, `dashedSeries`) and the bar options (`orientation`, `radius`) are only accepted for their own variant. `LineChart` and `BarChart` are removed: use `<CategoryChart variant="line">` (the default) or `<CategoryChart variant="bar">`, with the same props, data slots, summaries and data tables. `LineChart`'s `area` prop is gone: use `variant="area"`. `LineChartProps` and `BarChartProps` are now `CategoryChartLineProps` and `CategoryChartBarProps`, and `LineCurve` is `CategoryChartCurve`.
+- 2c8e899: `CommentThread` takes `variant` (`"thread"` or `"list"`), `replies` (show Reply buttons), `composerPosition` (`"bottom"` or `"top"`) and `labels` to change its strings. `variant="list"` is a flat, bordered list of internal notes: note strings, no Reply buttons and the box on top by default. `Notes`, `NotesProps` and `NoteData` are removed: use `<CommentThread variant="list" comments={…}>` with `CommentData` (author `id` is required). `onAdd` gets `(body, null)`, and as in the thread only the author may delete unless you pass `canDelete`. The `notes` and `note` data-slots are now `comment-thread` and `comment`.
+- 91ae81d: `ActionMenu` takes `openOn="context"`: the same `items` open as a context menu on `children` (right-click, long press on touch screens, or the Menu key / Shift+F10), with `asChild` to use the child as the area and `disabled` to turn it off. Confirmations, `name` and record actions now work in context menus too. `disabled` also disables the dropdown's trigger. `ContextActionMenu` and `ContextActionMenuProps` are removed: use `<ActionMenu openOn="context" items={items} asChild>{area}</ActionMenu>`. The area's `data-slot` is `action-menu-area` (was `context-action-menu-trigger`) and the menu's is `action-menu-content` (was `context-action-menu-content`). When no item is visible the area stays and right-click shows the browser's menu. The `ContextMenu` primitive parts are still exported.
+- 91ae81d: `DateCalendar` takes `events` (`DateCalendarEvent[]`: `{ id?, date, title, tone?, href? }`), shown as up to `maxDots` dots under each day and counted in the day's accessible name, and `readOnly`, which turns off selection so that clicking a day lists its events underneath in a polite live region (`showEventList={false}` hides the list). `size="sm"` makes it compact, and `onDayClick` now also gets the day's events: `(date, modifiers, events)`. `MiniCalendar`, `MiniCalendarProps`, `MiniCalendarEvent` and `MiniCalendarEventTone` are removed: use `<DateCalendar readOnly size="sm" events={events} />` with `DateCalendarEvent` and `DateCalendarEventTone`. Its `onDayClick(date, events)` is `onDayClick(date, modifiers, events)`, and `classNames.calendar` / `list` / `dot` are `className` / `classNames.eventList` / `classNames.dot`. The `mini-calendar*` data-slots are now `date-calendar`, `date-calendar-dot` and `date-calendar-events`. The `display.events` and `display.eventsOn` strings move to `date.events` and `date.eventsOn`.
+- 2c8e899: `DatePicker` takes a `mode`: `"single"` (default), `"multiple"`, `"week"`, `"month"` or `"year"`, with `value` and `onChange` typed for each. `MultipleDatePicker`, `WeekPicker`, `MonthPicker` and `YearPicker` are removed: use `<DatePicker mode="multiple">`, `mode="week"`, `mode="month"` or `mode="year"`. Week mode now accepts `disabledDates`. `DatePickerProps` is now a union of `DatePickerSingleProps`, `DatePickerMultipleProps`, `DatePickerWeekProps` and `DatePickerPeriodProps` (month and year).
+- 58942bd: `DocumentDownload` is folded into `AttachmentPreview`, with no alias left behind. `AttachmentPreview` gains `versions` (one download button per language version, named "Download {name} in {language}"), `description` (a line under the name) and the `description` and `versions` class-name keys. The `DocumentVersion` type now comes from `attachment-preview`; `DocumentDownloadProps` is removed. `title`/`titleText` become `name`, `href` becomes `downloadUrl` (or `url` to allow opening and previewing), and `fileName` becomes the `name`.
+
+  ```tsx
+  // Before
+  <DocumentDownload title="Public Services Act" versions={[{ lang: "dv", href: "/act-dv.pdf" }, { lang: "en", href: "/act-en.pdf" }]} />
+  <DocumentDownload title="Tender form" href="/tender.docx" fileName="tender-form.docx" size={56_000} />
+
+  // After
+  <AttachmentPreview name="Public Services Act" versions={[{ lang: "dv", href: "/act-dv.pdf" }, { lang: "en", href: "/act-en.pdf" }]} />
+  <AttachmentPreview name="tender-form.docx" description="Tender form" downloadUrl="/tender.docx" size={56_000} />
+  ```
+
+- 2c8e899: `InstantFileUpload` is removed: `FileInput` uploads files itself when given `upload` or `url`. Replace `<InstantFileUpload url="/api/uploads" … />` with `<FileInput url="/api/uploads" … />`; the `FileInput` props (`aria-label`, `buttonLabel`, `accept`, `maxSize`, `multiple`, …), `upload`, `uploadOptions`, `name`, `getValue`, `onUploaded`, `onError` and `onItemsChange` keep their names, `ref` still points at the `<input>`, and `classNames.progress` becomes `classNames.list`. `defaultUploadValue` is still exported. Compared with `InstantFileUpload`, `maxFiles` counts files already uploaded, a removal is announced ("a.pdf removed"), files can be dropped and pasted, and without `multiple` a new file replaces the uploaded one instead of being blocked until it is removed.
+- 59758bb: `EmailInput` and `UrlInput` are folded into `TextInput`, with no aliases left behind. `TextInput type="email"` and `type="url"` set the matching `inputMode` and `autoComplete`, turn off auto-capitalisation, autocorrect and spell check, are always `dir="ltr"`, and ignore `thaana` / `thaanaToggle`. A URL without a scheme gets `https://` on blur; the new `urlProtocol` prop (`string | false`, default `"https://"`) replaces `UrlInput`'s `defaultProtocol`. `normalizeUrl` is now exported from `text-input`. The `showIcon` prop is gone: pass the icon as `startAddon`. `EmailInputProps` and `UrlInputProps` are removed.
+
+  ```tsx
+  // Before
+  <EmailInput showIcon />
+  <UrlInput defaultProtocol={false} />
+
+  // After
+  <TextInput type="email" startAddon={<Icon name="mail" />} />
+  <TextInput type="url" urlProtocol={false} />
+  ```
+
+- 91ae81d: `DropzoneUploader` is merged into `FileInput` and removed. `FileInput` takes `appearance="dropzone"` for the large drop area, and both appearances now take dropped and pasted files (`pasteFromDocument` too), uploads with a progress list (`upload` / `url` / `uploadOptions`, `getValue`, `onUploaded`, `onError`, `onItemsChange`), files already on the server in `value` / `defaultValue` with `onValueChange`, hidden inputs for stored ids under `name`, `onFilesAdded`, and removal announcements. The `react-dropzone` dependency is dropped: the native file input now covers the drop zone too, so it is the zone's only tab stop and carries the label.
+
+  Replace
+
+  ```tsx
+  <DropzoneUploader url="/api/uploads" maxFiles={6} description="Images, up to 8 MB" />
+  <DropzoneUploader appearance="input" multiple={false} inputProps={{ "aria-label": "Slip" }} url="/api/uploads" />
+  ```
+
+  with
+
+  ```tsx
+  <FileInput appearance="dropzone" multiple url="/api/uploads" maxFiles={6} description="Images, up to 8 MB" />
+  <FileInput aria-label="Slip" url="/api/uploads" />
+  ```
+
+  - `multiple` defaults to `false` on `FileInput` (it was `true` on `DropzoneUploader`): add `multiple` to keep several files. The drop zone and an uploader always add files; without an uploader the compact input needs `append` to add instead of replace.
+  - `appearance="input"` is the default; `inputProps` go directly on `FileInput`, and `inputRef` becomes `ref` (which points at the `<input>`; the root `div` ref is gone).
+  - `DropzoneFile` → `FileInputEntry`, `DropzoneUploaderProps` → `FileInputProps`, `DropzoneInputProps` is removed, `dropzoneVariants` → `fileInputVariants({ appearance: "dropzone", size })`. `UploadedFile` and `defaultUploadValue` are unchanged.
+  - `classNames.zone` → `classNames.trigger` (and `classNames.root` for the compact input's root); `icon`, `title`, `description`, `button`, `list` and `errors` are unchanged.
+  - `data-slot="dropzone-uploader"` / `"instant-file-upload"` → `data-slot="file-input"` with `data-appearance`; `data-slot="dropzone"` → `data-slot="file-input-trigger"`.
+  - The "Browse files" button is now part of the input's label instead of a separate `<button>`; tests that query `getByRole("button", { name: "Browse files" })` should use `getByLabelText("Browse files")` (or the field's label).
+  - With an uploader, a `required` field no longer sets the native `required` attribute (the files go to the server, not the form); `aria-required` stays. Picking also stops once `maxFiles` is reached, as with `append`.
+
+- 2c8e899: `FileInput` takes `showLimits` (the limits hint and live count), and with `append` it stops picking once `maxFiles` is reached. `MultipleFileInput` is removed: use `<FileInput append showLimits>`.
+- 91ae81d: `Tabs` works as filter tabs above a listing: an item without `content` renders no panel, and `controls` (the listing's id) becomes its tab's `aria-controls` (without `controls` the attribute is left out, so no tab points at a missing panel). `countAppearance="pill"` shows counts as grey pills in the brand colour on the active tab. `FilterTabs`, `FilterTabsProps` and `FilterTab` are removed: use `<Tabs variant="line" countAppearance="pill" listLabel="Filter by status" controls={listId} items={tabs} value={…} onValueChange={…} />` with `TabItem` (`tabs` is now `items`, `classNames.tab` is `classNames.trigger`, and the list label is `listLabel`, no longer "Filter by status" by default). `ListingPage`'s `tabs` now takes `TabItem[]`. Other changes to `Tabs`: a count is a separate word in the tab's name ("Activity (12)", was "Activity(12)"), a horizontal `line` list draws its hairline under the whole row, and its scroller no longer adds bottom padding.
+- da4edb1: `FormContainer` is folded into `Card`, with no alias left behind. `Card` gains `width` (`sm`, `md`, `lg`, `xl`, `full`: full width up to that maximum and centred, and the footer buttons stack full width when the card is narrow), `media` (above the title), `centered` (a centred header without its bottom line, for auth pages), `variant="plain"` (no surface or padding), `headingLevel={1}` and the `media` class-name key. Card never imports the form module: wrap it in a `Form`, or render the form as the card with `asChild`. `FormContainerProps` and `formContainerVariants` are removed. The auth forms render on `Card` and accept its props (they were `FormContainer` props). Note that `Card`'s `headingLevel` defaults to `3`; `FormContainer`'s was `2`.
+
+  ```tsx
+  // Before
+  <FormContainer title="New staff member" width="lg" footer={<SubmitButton>Invite</SubmitButton>}>
+    …
+  </FormContainer>
+
+  // After
+  <Card title="New staff member" headingLevel={2} width="lg" footer={<SubmitButton>Invite</SubmitButton>}>
+    …
+  </Card>
+  ```
+
+- 700efb1: `ImageSelect` is folded into `RadioGroup` as `variant="image"`, with no alias left behind. Options take `image: { src, alt }` (so does `Radio`); `minItemWidth` (default `8rem`) and `aspectRatio` (`square`, `video`, `portrait` or a number) are new `RadioGroup` props for that variant, and all four arrow keys move between tiles. `ImageSelect`, `ImageSelectProps` and `ImageOption` are removed. Its `multiple` mode is gone (nothing used it), and `showLabels={false}` becomes `classNames={{ label: "sr-only" }}`. `radioImageVariants` and the `RadioImageAspect` type are exported.
+
+  ```tsx
+  // Before
+  <ImageSelect options={[{ value: "reef", label: "Reef", src: "/reef.jpg", alt: "" }]} aspectRatio="video" />
+
+  // After
+  <RadioGroup variant="image" options={[{ value: "reef", label: "Reef", image: { src: "/reef.jpg", alt: "" } }]} aspectRatio="video" />
+  ```
+
+- 2c8e899: `ListView` takes `layout`: `"list"` (default) or `"grid"` (a responsive grid of cards, with `minItemWidth`), matching the listing view values. `GridView` is removed: use `<ListView layout="grid">`.
+- 91ae81d: `NumberInput` takes a unit and a stepper. `UnitInput` is removed: use `<NumberInput unit="kg" />` or `<NumberInput units={[{ value: "m", label: "m" }, { value: "km", label: "km" }]} defaultUnit="km" unitName="distance_unit" />`; the unit props keep their names (`unit`, `units`, `unitValue`, `defaultUnit`, `onUnitChange`, `unitName`, `unitLabel`, `unitPosition`, `classNames.unit` / `classNames.unitTrigger`), so replacing the component name is enough, and `UnitOption` is now `NumberInputUnitOption`. `QuantityStepper` is removed: use `<NumberInput stepper value={qty} onValueChange={setQty} min={1} max={20} />`, with `size`, `repeatDelay`, `repeatInterval` and `classNames.decrement` / `classNames.increment` as before. With `stepper` the value is a `number` (never empty: `min` defaults to `0`, `defaultValue` to `min`, and clearing falls back to `min`); `quantityStepperVariants` is now `numberInputVariants`, and the buttons' `data-slot`s are `number-input-decrement` / `number-input-increment`. A unit and the stepper can be combined, and `startAddon` / `endAddon` sit beside the unit. The types are `NumberInputFieldProps` and `NumberInputStepperProps` (`NumberInputProps` is their union).
+- 49167c9: `PeriodComparisonChart` is folded into a `comparison` prop on `TimeSeriesChart` (steps are dates) and `CategoryChart` (steps are categories such as days of the week), with no alias left behind. The chart's first series is the current period and `comparison.previousKey` the previous one; the previous period is dashed (muted bars with `variant="bar"`), headline totals with a `DeltaIndicator` sit above the chart, and the data table gets a "Change" column. `currentLabel`, `previousLabel`, `aggregate`, `positiveIsGood` and `hideTotals` move into `comparison`. `PeriodComparisonChartProps` and the `chart.typePeriodComparison` string are removed; `rowChange` and the new `ChartComparison` type are exported from `@javaabu/onu/charts`.
+
+  ```tsx
+  // Before
+  <PeriodComparisonChart title="Costs" variant="bar" data={rows} categoryKey="month" currentLabel="2026" previousLabel="2025" positiveIsGood={false} />
+
+  // After
+  <CategoryChart
+    title="Costs"
+    variant="bar"
+    data={rows}
+    categoryKey="month"
+    comparison={{ previousKey: "previous", currentLabel: "2026", previousLabel: "2025", positiveIsGood: false }}
+  />
+  ```
+
+- 91ae81d: `SaveBar` takes `layout="floating"`: only the Save button, floating at the bottom of the screen while the form's main submit button (or `target`) is scrolled out of view, with `target`, `forceVisible` and the new `classNames.save`. `FloatingSubmit` is removed: use `<SaveBar layout="floating" saveLabel="Submit" />` inside the form, with `className` for the old `classNames.root` and `classNames.save` for `classNames.button`. Compared with `FloatingSubmit`, the button has the save icon and "Save" by default, can call `onSave` instead of submitting, finds the form named by `form` when it sits outside it, and, given `changes` or `dirty`, stays disabled until something changed and warns before leaving with unsaved changes.
+- 2c8e899: Searchable select now covers multi-select, quick-create and dependent selects. `SearchableSelect` accepts `onCreate`/`renderCreateDialog` and `parentValue`/`parentLabel` (with `options` as a map or function of the parent value), and with `multiple` it shows "Select all" and a clear button by default. `ApiSelect` accepts `parentValue`, `parentLabel` and `parentParam`. `MultiSelect` is removed: use `<SearchableSelect multiple>`. `QuickCreateSelect` is removed: use `<SearchableSelect onCreate>` (or `renderCreateDialog`). `DependentSelect` is removed: use `<SearchableSelect parentValue>` for local options, or `<ApiSelect parentValue url parentParam>` / `<ApiSelect parentValue fetcher>` for remote ones (`loadOptions(parent, ctx)` becomes a `fetcher` that reads the parent from scope).
+- 2c8e899: `ViewSwitcher` is removed: use `<SegmentedControl iconOnly size="sm" aria-label={t("listing.view")} options={useListingViewOptions()}>`. The new `useListingViewOptions(views?)` hook returns the built-in table, list, grid and board views with translated labels and icons; `ListingView` stays and `ViewOption` is removed. Icon-only segments show their label as a tooltip and are at least 44px wide on touch screens.
+- 2c8e899: `SensitiveInput` takes `masked` (default `true`; `false` shows the value as is, with no reveal button and the page direction unless `dir` is passed) and `mono` (default `true`). `CopyInput` is removed: use `<SensitiveInput masked={false}>`, adding `mono={false}` where the value is not a code (`CopyInput` was not monospace by default).
+- 2c8e899: The skeleton presets gain `SkeletonField`, shaped like a form field (`control`, `showLabel`, `help`, `labelLayout`, `label` for the screen-reader text) and following the stacked/inline label layout. `PlaceholderInput` is removed: use `<SkeletonField>` (its `label` boolean is `showLabel`, its `srLabel` is `label`, and the data-slot is `skeleton-field`).
+- 91ae81d: `SortableList` takes `columns` instead of `renderItem` for a table layout on shadcn `Table`: each row's drag handle (with `aria-keyshortcuts`, Alt+↑/↓) sits in the first column under a "Reorder" header, and `aria-label` names the table through a visually hidden caption. `SortableListColumn` is exported, `classNames` gains `table`, and list handles now carry `aria-keyshortcuts` too. `ReorderableTable`, `ReorderableTableProps` and `ReorderableColumn` are removed: use `<SortableList aria-label="Ferry route stops" items={rows} getName={…} onReorder={…} columns={columns} />` (`rows` is now `items`, `caption` is `aria-label`, and `classNames.row` is `classNames.item`). Table rows now also get Move up / Move down buttons beside the handle, the non-drag alternative SortableList already had (`moveButtons={false}` for just the handle). The table wrapper's `data-slot` is `sortable-list` with `data-layout="table"` (was `reorderable-table`), and rows are `sortable-item`.
+- 2c8e899: `Tabs` takes `narrow` (`"select"` or `"scroll"`): with `orientation="vertical"` it lays the list out beside the panel, settings-style, and turns it into a select or a horizontal scroller in narrow containers. `TabItem` gains `description`, `badge` and `textLabel`, and `classNames` gains `select`. `StackedTabs`, `StackedTabsProps` and `StackedTabItem` are removed: use `<Tabs orientation="vertical" narrow="select" items={…}>` with `TabItem` (`mobile` is now `narrow`).
+- 91ae81d: `Timeline` is also an activity feed. Entries take an `actor` (`{ name, avatar? }`): the avatar is the marker and the name starts the title. New props: `groupByDay` (Today / Yesterday / date headings, with `dayFormat`), `title` (an `h2` that names it), `emptyText`, and `hasMore` / `onLoadMore` / `loadingMore` for a "Load more" button. With any of these, or with no items, the root is a labelled `<section>` holding the lists. `timeFormat="relative"` now renders `RelativeDate` ("1 hour ago", exact time on hover and focus, kept up to date), `now` accepts a string or timestamp, `description` renders in a `<div>`, and `classNames` gains `group`, `heading`, `empty` and `loadMore`. `ActivityFeed`, `ActivityFeedProps`, `ActivityItem`, `ActivityGroup` and `groupActivityByDay` are removed: use `<Timeline groupByDay timeFormat="relative" title="Activity" items={items} hasMore={…} onLoadMore={…} />` with `TimelineItem` (an item's `action` is `title`, `timestamp` is `time`, `detail` is `description`), `TimelineGroup` and `groupTimelineByDay`, which keeps the items' order (pass them newest first). There is no default heading: pass `title` to get one. The `display.activity`, `display.today`, `display.yesterday`, `display.loadMore` and `display.noActivity` strings are replaced by `layout.today`, `layout.yesterday`, `layout.loadMore` and `layout.noActivity`.
+- 2c8e899: `TopNav` items take `columns` and `featured`: an item with columns opens a wide multi-column panel (a mega menu), and panel links take part in the active state and show badges. `classNames` gains `panel`, `column` and `panelLink`. `MegaMenu`, `MegaMenuProps` and `MegaMenuItem` are removed: use `<TopNav items={[{ …, columns: […] }]}>` with `TopNavItem`, and `classNames.panelLink` instead of `classNames.link`. `MegaMenuColumn` and `MegaMenuLink` are renamed `TopNavColumn` and `TopNavLink`. On phones, each titled column is its own collapsible section in TopNav's drawer.
+- a2d7f1e: Every component that reports a value now uses `onValueChange(value)`; `onChange` only ever means the native event. `FileInput` loses `onChange(files)` (use `onValueChange(entries)`), and `onReject` always takes an array.
+- c4de3d5: `react-hook-form` and `@tanstack/react-query` are now peer dependencies. `getOnuQueryClient` is gone: the fallback client belongs to each `OnuProvider`, and `invalidateApiOptions` takes the client first.
+- b76ac6f: The accessible name of a root region is `label` everywhere (`CommandPalette` and `OverlayMenu` `title`, `TopNav` `navLabel`, `Tabs` `listLabel`), and the minimum query length is `minChars` everywhere (`CommandPalette` `minQueryLength`, `PlaceSearchBox` `minLength`).
+- 324d0e8: Onu now requires React 19; React 18 is no longer in the peer range.
+- 7b4c01c: `AppSwitcher` and its `AppSwitcherProps` and `AppSwitcherApp` types are removed, with the `layout.apps` and `layout.switchApp` strings. `AppSidebar`'s `header` slot is unchanged; put an `ActionMenu` of the suite's apps next to the logo:
+
+  ```tsx
+  <AppSidebar
+    header={
+      <div className="gap-2 flex items-center justify-between">
+        <Logo src="/logo.svg" alt="" text="Atoll Records" />
+        <ActionMenu
+          align="start"
+          trigger={
+            <Button variant="ghost" size="icon" aria-label="Switch app">
+              <Icon name="grid" />
+            </Button>
+          }
+          items={[
+            { type: "label", label: "Atoll apps" },
+            { label: "Records", href: "/records", icon: "file-text" },
+            { label: "Calendar", href: "/calendar", icon: "calendar" },
+          ]}
+        />
+      </div>
+    }
+  />
+  ```
+
+- f78af77: Removed the unused `Combobox` primitive from `@javaabu/onu/primitives`, and with it the `@base-ui/react` dependency.
+- d4f949e: `CookieConsent`, `useCookieConsent`, `readCookieConsent`, `openCookiePreferences`, `COOKIE_CONSENT_STORAGE_KEY` and their types are removed, with the `display.cookie*` strings: no Maldivian requirement asks for a consent banner and no sample page used one. When a project needs one, compose `AnnouncementBar` and `Modal` with `Switch`es, and store the choice in the app:
+
+  ```tsx
+  <AnnouncementBar id="cookies" variant="neutral" href="/privacy" linkText="Cookie policy">
+    We use essential cookies to make this site work.{" "}
+    <Button size="sm" variant="link" onClick={() => setOpen(true)}>
+      Preferences
+    </Button>
+  </AnnouncementBar>
+
+  <Modal
+    open={open}
+    onOpenChange={setOpen}
+    title="Cookie preferences"
+    footer={<Button onClick={() => save(choices)}>Save preferences</Button>}
+  >
+    <Switch label="Strictly necessary" checked disabled />
+    <Switch label="Analytics" checked={choices.analytics} onCheckedChange={(analytics) => setChoices({ ...choices, analytics })} />
+  </Modal>
+  ```
+
+- b3c6e1a: `EditableDataGrid`, `EditableDataGridProps` and `EditableColumn` are removed, with the `listing.editCell`, `listing.cell*` and `listing.gridInstructions` strings. Use `RepeatingGroup` for editable rows (line items) and `InlineEdit` for a single cell in a `DataTable`; a spreadsheet-style grid needs a dedicated grid library.
+
+  ```tsx
+  <RepeatingGroup label="Items" name="items" value={items} onChange={setItems} createItem={() => ({ name: "", qty: 1 })}>
+    {({ item, name }) => (
+      <FormField label="Item" name={name("name")}>
+        <TextInput defaultValue={item.name} />
+      </FormField>
+    )}
+  </RepeatingGroup>
+
+  <DataTable
+    data={users}
+    columns={[
+      {
+        id: "name",
+        header: "Name",
+        cell: (u) => <InlineEdit label="Name" defaultValue={u.name} onSave={(name) => api.patch(`/users/${u.id}`, { name })} />,
+      },
+    ]}
+  />
+  ```
+
+- a354074: `EfaasButton`, `EfaasLogo`, `PaymentMethodSelector`, `BmlTransferLogo` and `BmlConnectLogo` are removed, with their types, `EFAAS_LOGO_VARIANTS` and the `auth.efaas*`, `choice.paymentMethod` and `choice.bml*` strings. Provider branding follows each provider's own guidelines and assets, so it belongs in the app.
+
+  `SignInForm`'s `efaas` slot is renamed `sso` (data slot `auth-sso`): `<SignInForm sso={<LinkButton href="/login/efaas" variant="outline" className="w-full">Sign in with eFaas</LinkButton>} />`. For a payment choice, use a card radio group:
+
+  ```tsx
+  <RadioGroup
+    variant="card"
+    options={[
+      { value: "bml-transfer", label: "Bank transfer", description: "…", media: <img src={bmlLogo} alt="" /> },
+      { value: "bml-connect", label: "Card", description: "…", media: <Icon name="credit-card" /> },
+    ]}
+  />
+  ```
+
+- dd65007: The `@javaabu/onu/query-builder` entry is removed, with `FilterConditionBuilder`, its types, the re-exported `formatQuery` and the `listing.*` condition-builder strings. `react-querybuilder` is no longer an optional peer dependency; uninstall it unless the app uses it directly. `FilterPanel` with `ApiSelect` and the date pickers is the Javaabu filtering pattern:
+
+  ```tsx
+  <FilterPanel
+    filters={[
+      {
+        type: "custom",
+        key: "island",
+        label: "Island",
+        render: ({ id, value, onChange }) => (
+          <ApiSelect id={id} url="/api/islands" multiple value={value} onChange={onChange} />
+        ),
+      },
+      { type: "date-range", key: "created", label: "Submitted" },
+    ]}
+    value={state.filters}
+    onApply={state.setFilters}
+  />
+  ```
+
+- 91ae81d: `FilterSubmit` (and `FilterSubmitProps`) is removed. Its Reset only called `onReset`, so end a server-rendered filter form with the buttons themselves: `<SubmitButton processing={loading} startIcon="filter">{t("listing.filterSubmit")}</SubmitButton>` and `<Button variant="ghost" onClick={onReset}>{t("listing.filterReset")}</Button>` (or a `LinkButton` to the unfiltered URL); `form`, `disabled` and `className` go on each button. `FilterPanel` (including `variant="form"`) already has its own Reset and Filter buttons and is unchanged; see "Server-rendered filter forms" on its docs page.
+- bd1eb80: `KeyboardKey`, `KeyboardKeyProps`, `KeyPlatform`, `detectPlatform` and `formatShortcut` are removed, with the `display.key*` strings. `ActionMenu` and `CommandPalette` keep formatting their own `shortcut` hints. To show keys in text, use the `Kbd` primitive:
+
+  ```tsx
+  import { Kbd, KbdGroup } from "@javaabu/onu/primitives"
+
+  ;<p>
+    Press{" "}
+    <KbdGroup>
+      <Kbd>Ctrl</Kbd>
+      <Kbd>K</Kbd>
+    </KbdGroup>{" "}
+    to search.
+  </p>
+  ```
+
+- 91ae81d: `LastEditedBy` and `LastEditedByProps` are removed: they were too app-specific for the design system. Compose `UserAvatar` and `RelativeDate` instead:
+
+  ```tsx
+  <div className="gap-2 text-sm flex items-center text-muted-foreground">
+    <UserAvatar name={user.name} src={user.avatar} size="xs" decorative />
+    <span>
+      Last edited by <span className="font-medium text-foreground">{user.name}</span> ·{" "}
+      <RelativeDate value={updatedAt} />
+    </span>
+  </div>
+  ```
+
+  The `display.lastEditedBy` string is removed.
+
+- 7e42f63: `MapNavigation`, `MapNavigationProps` and `NavigationStop` are removed from `@javaabu/onu/maps`, with the `map.*` navigation strings: turn-by-turn directions belong in the Google Maps app. Show the line with `MapRoute` and link out from a `LocationCard`, which has an "Open in Google Maps" link:
+
+  ```tsx
+  <MapRoute value={route} disabled label="Ferry route" />
+  <LocationCard title="Hulhumalé ferry terminal" position={{ lat: 4.2105, lng: 73.5401 }} />
+  ```
+
+- 7e27609: `MasonryGrid`, `MasonryGridProps`, `masonryGridVariants` and `masonryColumnClasses` are removed: masonry is a Tailwind recipe, not a component. `Gallery layout="masonry"` is unchanged. For other content, use CSS columns on a plain container:
+
+  ```tsx
+  <div className="sm:columns-2 lg:columns-3 gap-4 [&>*]:mb-4 columns-1 [&>*]:break-inside-avoid">
+    {posts.map((post) => (
+      <Card key={post.id} title={post.title}>
+        {post.excerpt}
+      </Card>
+    ))}
+  </div>
+  ```
+
+- 5a333a3: `MenuBar` and its `MenuBarProps`, `MenuBarMenu` and `MenuBarEntry` types are removed: desktop-application menus do not appear in web admin panels or portals. If a screen really needs one, compose the `Menubar` primitive:
+
+  ```tsx
+  import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from "@javaabu/onu/primitives"
+
+  ;<Menubar>
+    <MenubarMenu>
+      <MenubarTrigger>File</MenubarTrigger>
+      <MenubarContent>
+        <MenubarItem onSelect={save}>Save</MenubarItem>
+      </MenubarContent>
+    </MenubarMenu>
+  </Menubar>
+  ```
+
+- 91ae81d: `PrintButton`, `BackButton`, `PrintButtonProps` and `BackButtonProps` are removed: they were too app-specific for the design system. Use `Button` and `LinkButton`:
+
+  ```tsx
+  <Button variant="outline" startIcon="print" className="print:hidden" onClick={() => window.print()}>
+    Print
+  </Button>
+  <LinkButton variant="ghost" startIcon="back" href="/applications" className="print:hidden">
+    Back
+  </LinkButton>
+  <Button variant="ghost" startIcon="back" className="print:hidden" onClick={() => history.back()}>
+    Back
+  </Button>
+  ```
+
+  For an icon-only button, use `size="icon"` with an `aria-label` and `<Icon name="print" />` as the child. The `display.print` string is removed.
+
+- e48f431: The shadcn `resizable` primitive leaves `@javaabu/onu/primitives`: `ResizablePanelGroup`, `ResizablePanel` and `ResizableHandle` are removed, and `react-resizable-panels` is no longer a dependency. Nothing in Onu used them. An app that needs resizable panes can install `react-resizable-panels` and add shadcn's `resizable` component itself.
+- 91ae81d: `ThaanaInput` and `ThaanaTextarea` (and their `ThaanaInputProps` / `ThaanaTextareaProps` types) are removed: use `<TextInput thaana thaanaToggle />` and `<Textarea thaana thaanaToggle />`. Keyboard options go in `thaana` as before (`<TextInput thaana={{ keymap: "typewriter" }} thaanaToggle />`); drop `thaanaToggle` for Thaana typing without the toggle button. The docs page and demo are folded into `TextInput`, `Textarea` and the Thaana input guide. `ThaanaToggle` and `useThaanaInput` are unchanged.
+- 91ae81d: `UsageMeter` and `UsageMeterProps` are removed: they were too app-specific for the design system. Build the quota bar from `ProgressBar` and a link:
+
+  ```tsx
+  <div className="gap-2 pt-3 grid border-t border-shell-border">
+    <ProgressBar size="sm" label="Storage" value={1284} max={2000} showValue classNames={{ track: "bg-shell-weak" }} />
+    <div className="gap-2 text-xs flex items-center justify-between">
+      <ConditionalLink href="/billing" className="text-primary hover:underline">
+        Get more space
+      </ConditionalLink>
+      <span className="text-muted-foreground">v5.0.42</span>
+    </div>
+  </div>
+  ```
+
+  Pass `color="warning"` or `color="destructive"` to `ProgressBar` yourself when the quota is nearly full.
+
+- ebb8254: Shared helpers move to `src/lib` and `src/hooks` with one behaviour each: `toArray` and the `initials` media export are gone, `normalizeUrl` returns `string | null`, the editor's `Callout` node is now `CalloutNode`, `CommandPalette` debounces by 300 ms, and the auth forms use `PasswordInput`.
+- d3399b3: `Tag`, `SkeletonText`, `Modal` and `UserAvatar` rename size `md` to `default`. `NumberInput` is now `h-8` like every other field, and `TextInput` gains the same `size` prop.
+- 2d504ab: One severity scale, `tone`: `neutral`, `info`, `success`, `warning`, `danger`. `Callout`, `AnnouncementBar` and `NotificationCenter` items rename `variant` to `tone`, `destructive` and `error` become `danger`, and `default` becomes `neutral` (also on `IconText`). `AnnouncementBar` gains `success` and `danger`. `Button` keeps `variant="destructive"`.
+- 4d2b26b: `LanguageSwitcher` and `RepeatingGroup` gain `defaultValue`, `Callout`, `FilterPanel` and `Lightbox` gain `defaultOpen`, and `Lightbox` `open` and `onOpenChange` become optional with `index` controlled only when it is passed.
+
+### Patch Changes
+
+- 7b32cb8: `Label`, `HelpText`, `RequiredMarker` and `FieldErrors` are now documented on the `FormField` page, under "Building blocks", instead of a page each. The components are unchanged. A docs page can list the components it covers in its `covers` front matter; `docs/index.json` carries the list, and `onu_get_doc` finds the page by any of those names (`onu_get_doc("HelpText")` returns the FormField page).
+- 0f54e89: Docs: an installation page with requirements and per-entry peer dependencies, complete Props tables, and corrected stale text.
+- ca42386: Removed four optional peers nothing imports: `@tiptap/extension-link`, `@tiptap/extension-drag-handle-react`, `@tiptap/extension-code-block-lowlight` and `lowlight`.
+- e7503ac: The editors' image alt text field now follows the editor's `thaana` prop.
+- a439052: `ReportingPeriodPicker`: each period-type tab is now sized to its label, so a long label ("Custom range") no longer spills out of its tab, and the calendar and the quarter and year grids are centred under the tab row instead of sitting against its start edge.
+- c0b9a84: `DialogFooter`'s close button, the `useConfirm` `window.confirm` fallback and a `ValidationError` without a message no longer show hard-coded English.
+- f96bcc7: The move, switch account and inline edit labels are now whole translated sentences with a placeholder, instead of two strings joined together.
+- 9d44964: Remove unused locale keys, give Dhivehi separate words for clear and delete, and announce applied filters and cleared selections to screen readers.
+- cc03f37: `NavigationMenu` content slides in from the logical side, so its motion follows the reading direction in RTL.
+- 8302a59: New `--onu-overlay` token for the dim behind dialogs, sheets and drawers (`bg-overlay`). The app shell classes use the shell token utilities instead of hex fallbacks.
+- 148a695: Fix axe violations in three primitives: `Calendar` week numbers, the `role="list"` on `ItemGroup`, and `CommandSeparator` inside its listbox.
+- 1895bd4: The Inertia and Next.js guide no longer links to starter templates, which are gone from the repository.
+- 178e966: `SegmentedControl`'s `name` prop is now part of its type.
+- 1a13337: `Countdown`, `RelativeDate`, `Timeline`, `PublishBox` and `SidebarMenuSkeleton` render the same markup on the server and the client's first render. `SidebarMenuSkeleton` takes an `index` to vary its width.
+- 46ec8a5: The vertical `Carousel` arrows point the right way in RTL, and `KanbanBoard`'s column count is real screen reader text instead of an `aria-label` on a `span`.
+- 85509ba: Faruma and MV Faseyha now load from `tailwind.css` and `styles.css`, so Thaana text works without the optional font pack.
+- bf91ce2: The toast close button is now 24 px, and 44 px on touch screens.
+
 ## 0.1.0
 
 ### Minor Changes

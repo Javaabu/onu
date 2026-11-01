@@ -73,7 +73,7 @@ export interface CustomAttributeFieldsProps extends Omit<React.ComponentProps<"d
   /** Initial values when uncontrolled. */
   defaultValue?: AttributeValues
   /** Called with all values when any field changes. */
-  onChange?: (values: AttributeValues) => void
+  onValueChange?: (values: AttributeValues) => void
   /**
    * Wraps input names Laravel-style: `name="attributes"` gives `attributes[colour]`
    * and `attributes[sizes][]`. Server errors are looked up as `attributes.colour`.
@@ -122,7 +122,7 @@ export function CustomAttributeFields({
   schema,
   value,
   defaultValue,
-  onChange,
+  onValueChange,
   name,
   errors,
   columns = 1,
@@ -138,7 +138,7 @@ export function CustomAttributeFields({
   const set = (key: string, next: AttributeValue) => {
     const updated = { ...values, [key]: next }
     if (value === undefined) setInternal(updated)
-    onChange?.(updated)
+    onValueChange?.(updated)
   }
 
   const fields = (
@@ -169,7 +169,7 @@ export function CustomAttributeFields({
                 field={field}
                 name={inputName}
                 value={current}
-                onChange={(next) => set(field.name, next)}
+                onValueChange={(next) => set(field.name, next)}
                 className={classNames?.control}
               />
             </FormField>
@@ -186,13 +186,13 @@ function AttributeControl({
   field,
   name,
   value,
-  onChange,
+  onValueChange,
   className,
 }: {
   field: AttributeField
   name: string
   value: AttributeValue
-  onChange: (value: AttributeValue) => void
+  onValueChange: (value: AttributeValue) => void
   className?: string
 }) {
   const { t } = useTranslation()
@@ -211,7 +211,7 @@ function AttributeControl({
           thaana={field.thaana}
           {...(field.thaana ? {} : { dir: "auto" })}
           className={className}
-          onChange={(event) => onChange(event.target.value)}
+          onChange={(event) => onValueChange(event.target.value)}
         />
       )
 
@@ -224,7 +224,7 @@ function AttributeControl({
             disabled={disabled}
             aria-describedby={control["aria-describedby"] as string | undefined}
             aria-invalid={control["aria-invalid"] as boolean | undefined}
-            onCheckedChange={(checked) => onChange(checked)}
+            onCheckedChange={(checked) => onValueChange(checked)}
           />
           <span className="text-sm text-muted-foreground" aria-hidden="true">
             {value === true ? t("common.yes") : t("common.no")}
@@ -237,7 +237,7 @@ function AttributeControl({
     case "select":
       return (
         <>
-          <Select value={String(value ?? "")} onValueChange={(next) => onChange(next)} disabled={disabled}>
+          <Select value={String(value ?? "")} onValueChange={(next) => onValueChange(next)} disabled={disabled}>
             <SelectTrigger
               id={control.id as string}
               aria-describedby={control["aria-describedby"] as string | undefined}
@@ -265,7 +265,7 @@ function AttributeControl({
           <RadioGroup
             id={control.id as string}
             value={String(value ?? "")}
-            onValueChange={(next) => onChange(next)}
+            onValueChange={(next) => onValueChange(next)}
             disabled={disabled}
             aria-labelledby={formField?.labelId}
             aria-describedby={control["aria-describedby"] as string | undefined}
@@ -309,7 +309,9 @@ function AttributeControl({
                   checked={checked}
                   disabled={disabled || option.disabled}
                   onCheckedChange={(next) =>
-                    onChange(next === true ? [...selected, option.value] : selected.filter((v) => v !== option.value))
+                    onValueChange(
+                      next === true ? [...selected, option.value] : selected.filter((v) => v !== option.value),
+                    )
                   }
                 />
                 <Label htmlFor={id} className="font-normal">
@@ -345,8 +347,8 @@ function AttributeControl({
           className={cn(field.type === "color" && "w-16 p-1", className)}
           onChange={(event) => {
             const raw = event.target.value
-            if (field.type === "number") onChange(raw === "" ? null : Number(raw))
-            else onChange(raw)
+            if (field.type === "number") onValueChange(raw === "" ? null : Number(raw))
+            else onValueChange(raw)
           }}
         />
       )

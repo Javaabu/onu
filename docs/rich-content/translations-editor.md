@@ -5,6 +5,10 @@ sidebar_position: 5
 
 Edit translation keys side by side in English and Dhivehi (or any languages). The Dhivehi column types Thaana from a Latin keyboard. Search keys and text, show only keys with missing translations, and save each cell inline.
 
+:::info
+Part of the `@javaabu/onu/editor` entry; install its packages from [Peer dependencies per entry](../installation-and-setup#peer-dependencies-per-entry).
+:::
+
 ```tsx
 import { TranslationsEditor } from "@javaabu/onu/editor"
 
@@ -31,7 +35,7 @@ Rows that match "Missing only" stay visible while you type their translation, un
 | -------------------- | ---------------------------------------------------------- | ---------------- | ------------------------------------ |
 | `value`              | `TranslationEntry[]`                                       |                  | Controlled entries                   |
 | `defaultValue`       | `TranslationEntry[]`                                       |                  | Initial entries                      |
-| `onChange`           | `(entries) => void`                                        |                  | Called when any cell changes         |
+| `onValueChange`           | `(entries) => void`                                        |                  | Called when any cell changes         |
 | `locales`            | `{ code, label?, thaana? }[]`                              | English, Dhivehi | Language columns                     |
 | `onSave`             | `({ key, locale, value, entry }) => void \| Promise<void>` |                  | Saves one cell                       |
 | `saveOnBlur`         | `boolean`                                                  | `true`           | Save when a changed cell loses focus |

@@ -49,7 +49,7 @@ const TAG_VARIANT: Record<string, { fill: Color; stroke: Color; text: Color }> =
 const preset = (c: string) => ({ fill: `preset-${c}`, stroke: `preset-${c}-border`, text: `preset-${c}-foreground` })
 const TAG_SIZE: Record<string, { h: number; px: number; text: "xs" | "sm"; icon: number }> = {
   sm: { h: 5, px: 1.5, text: "xs", icon: 12 },
-  md: { h: 5.5, px: 1.75, text: "xs", icon: 12 },
+  default: { h: 5.5, px: 1.75, text: "xs", icon: 12 },
   lg: { h: 7, px: 2.5, text: "sm", icon: 14 },
 }
 
@@ -62,12 +62,12 @@ export const tag: KitComponent = {
   variants: {
     variant: ["default", "primary", "outline"],
     color: ["none", "blue", "cyan", "green", "red", "gold"],
-    size: ["md", "sm", "lg"],
+    size: ["default", "sm", "lg"],
     dir: DIRS,
   },
   filter: (v) =>
     (v.color === "none" || v.variant === "default") &&
-    (v.size === "md" || (v.color === "none" && v.dir === "ltr")) &&
+    (v.size === "default" || (v.color === "none" && v.dir === "ltr")) &&
     (v.dir === "ltr" || v.color === "none"),
   props: {
     children: { type: "TEXT", default: "Tag" },
@@ -123,7 +123,8 @@ export const statusBadge: KitComponent = {
   build(root, v, b) {
     const s = STATUS[v.status!]!
     const look = s.color ? preset(s.color) : TAG_VARIANT.default!
-    const size = TAG_SIZE[v.size!]!
+    // StatusBadge keeps "md" for its middle size; Tag calls the same size "default".
+    const size = TAG_SIZE[v.size === "md" ? "default" : v.size!]!
     b.style(root, {
       h: size.h,
       px: size.px,
@@ -144,7 +145,7 @@ const CALLOUT: Record<
   string,
   { fill: Color; fillOpacity: number; stroke: Color; strokeOpacity: number; icon: string; tone: Color }
 > = {
-  default: { fill: "card", fillOpacity: 1, stroke: "border", strokeOpacity: 1, icon: "info", tone: "muted-foreground" },
+  neutral: { fill: "card", fillOpacity: 1, stroke: "border", strokeOpacity: 1, icon: "info", tone: "muted-foreground" },
   info: { fill: "info", fillOpacity: 0.05, stroke: "info", strokeOpacity: 0.3, icon: "info", tone: "info" },
   success: {
     fill: "success",
@@ -162,7 +163,7 @@ const CALLOUT: Record<
     icon: "triangle-alert",
     tone: "warning",
   },
-  destructive: {
+  danger: {
     fill: "destructive",
     fillOpacity: 0.05,
     stroke: "destructive",
@@ -177,8 +178,8 @@ export const callout: KitComponent = {
   page: "Display",
   key: "display-and-feedback/callout",
   description:
-    '<Callout variant title description actions dismissible icon /> from "@javaabu/onu" (the Alert: shadcn Alert with Onu tones).',
-  variants: { variant: Object.keys(CALLOUT), dir: DIRS },
+    '<Callout tone title description actions dismissible icon /> from "@javaabu/onu" (the Alert: shadcn Alert with Onu tones).',
+  variants: { tone: Object.keys(CALLOUT), dir: DIRS },
   props: {
     title: { type: "TEXT", default: "Your application was received" },
     description: { type: "TEXT", default: "We will email you when it has been reviewed." },
@@ -187,7 +188,7 @@ export const callout: KitComponent = {
   },
   width: 1100,
   build(root, v, b) {
-    const look = CALLOUT[v.variant!]!
+    const look = CALLOUT[v.tone!]!
     b.style(root, {
       wPx: 480,
       px: 4,
@@ -203,7 +204,7 @@ export const callout: KitComponent = {
       b.text(tr(b, "Your application was received", "ތިޔަ އެޕްލިކޭޝަން ލިބިއްޖެ"), {
         prop: "title",
         weight: "Medium",
-        color: v.variant === "destructive" ? "destructive" : "foreground",
+        color: v.tone === "danger" ? "destructive" : "foreground",
         fillW: true,
       }),
       b.text(tr(b, "We will email you when it has been reviewed.", "ރިވިއު ކުރެވުމުން އީމެއިލް ކުރެވޭނެ."), {
@@ -232,7 +233,7 @@ export const card: KitComponent = {
   page: "Display",
   key: "layout-and-navigation/card",
   description: '<Card variant size title description actions footer interactive> from "@javaabu/onu".',
-  variants: { variant: ["default", "outline", "muted"], size: ["default", "sm"], dir: DIRS },
+  variants: { variant: ["default", "outline", "muted", "plain"], size: ["default", "sm"], dir: DIRS },
   filter: (v) => v.dir === "ltr" || (v.variant === "default" && v.size === "default"),
   props: {
     title: { type: "TEXT", default: "Card title" },
@@ -243,18 +244,20 @@ export const card: KitComponent = {
   width: 1300,
   build(root, v, b) {
     const sm = v.size === "sm"
+    // plain: no surface or padding, so the header, content and footer sit on the page.
+    const plain = v.variant === "plain"
     b.style(root, {
       dir: "V",
       wPx: 360,
-      py: sm ? 4 : 6,
-      gap: sm ? 4 : 6,
-      radius: "xl",
-      fill: v.variant === "muted" ? "muted" : v.variant === "outline" ? undefined : "card",
+      py: plain ? 0 : sm ? 4 : 6,
+      gap: plain ? 5 : sm ? 4 : 6,
+      radius: plain ? "none" : "xl",
+      fill: v.variant === "muted" ? "muted" : v.variant === "outline" || plain ? undefined : "card",
       fillOpacity: v.variant === "muted" ? 0.5 : 1,
-      stroke: v.variant === "muted" ? undefined : "border",
-      clip: true,
+      stroke: v.variant === "muted" || plain ? undefined : "border",
+      clip: !plain,
     })
-    const pad = sm ? 4 : 6
+    const pad = plain ? 0 : sm ? 4 : 6
     const header = b.row("header", { px: pad, gap: 2, fillW: true }, [
       b.col("heading", { gap: 1, grow: true }, [
         b.text(tr(b, "Card title", "ކާޑުގެ ސުރުޚީ"), {
@@ -295,7 +298,7 @@ export const card: KitComponent = {
 const AVATAR_SIZE: Record<string, { px: number; text: "xs" | "sm" | "base" | "lg" }> = {
   xs: { px: 24, text: "xs" },
   sm: { px: 32, text: "xs" },
-  md: { px: 40, text: "sm" },
+  default: { px: 40, text: "sm" },
   lg: { px: 48, text: "base" },
   xl: { px: 64, text: "lg" },
 }
@@ -313,7 +316,7 @@ export const userAvatar: KitComponent = {
   description:
     '<UserAvatar name src size shape status /> from "@javaabu/onu" (initials when there is no image). status=none: no presence dot.',
   variants: { size: Object.keys(AVATAR_SIZE), shape: ["circle", "square"], status: ["none", ...Object.keys(PRESENCE)] },
-  filter: (v) => v.status === "none" || (v.size === "md" && v.shape === "circle"),
+  filter: (v) => v.status === "none" || (v.size === "default" && v.shape === "circle"),
   props: { initials: { type: "TEXT", default: "AM" } },
   width: 900,
   build(root, v, b) {

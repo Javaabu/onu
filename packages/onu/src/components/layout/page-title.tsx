@@ -9,6 +9,7 @@ import { useAppLayout } from "./app-layout"
 import { Breadcrumbs, type BreadcrumbsItem } from "./breadcrumbs"
 import { registerEnglish } from "../../i18n/english"
 import { layout as en_layout } from "../../locales/en/layout"
+import { useIsomorphicLayoutEffect } from "../../hooks/use-isomorphic-layout-effect"
 
 registerEnglish({ layout: en_layout })
 
@@ -141,7 +142,7 @@ export function PageTitle({
 
   // The band shows the trail, so the layout drops its copy above the content (CSS hides it until then).
   const registerBand = band ? layout?.registerBand : undefined
-  React.useLayoutEffect(() => registerBand?.(), [registerBand])
+  useIsomorphicLayoutEffect(() => registerBand?.(), [registerBand])
 
   const linkList = links?.length ? (
     <ul

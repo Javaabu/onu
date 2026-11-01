@@ -12,7 +12,6 @@ export const chart = {
   typePie: "ޕައި ޗާޓް",
   typeDonut: "ޑޯނަޓް ޗާޓް",
   typeTimeSeries: "ޓައިމް ސީރީޒް ޗާޓް",
-  typeSparkline: "ސްޕާކްލައިން",
   typeMap: "ފަށްޓަރު ޗާޓް",
   summary: {
     other: "{type}، {series} ސީރީޒް، {count} ޑޭޓާ ޕޮއިންޓް.",

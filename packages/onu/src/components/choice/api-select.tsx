@@ -3,11 +3,12 @@
 import * as React from "react"
 import { useInfiniteQuery, useQueries, type QueryClient } from "@tanstack/react-query"
 
+import { useDebouncedValue } from "../../hooks/use-async-search"
 import { useTranslation } from "../../providers/onu-provider"
 import { useFormFieldControl } from "../form/form-field"
 import { ComboboxCore, type ComboboxPresentationProps } from "./_combobox"
 import { useQuickCreate, type QuickCreateProps } from "./_create"
-import { useDebouncedValue, useOnChange, useParentField, type ParentFieldProps } from "./_hooks"
+import { useOnChange, useParentField, type ParentFieldProps } from "./_hooks"
 import { useChoiceSelection, useOpenState, type SelectionProps } from "./_selection"
 import {
   apiOptionsQueryKey,
@@ -98,7 +99,7 @@ export function ApiSelect<TItem = unknown>(props: ApiSelectProps<TItem>) {
     descriptionKey,
     mapOption,
     // behaviour
-    debounce = 300,
+    debounce,
     minChars = 0,
     preload = false,
     initialOptions,

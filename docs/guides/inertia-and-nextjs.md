@@ -3,7 +3,7 @@ title: Inertia & Next.js
 sidebar_position: 13
 ---
 
-Onu is plain React, so it works in Vite apps, Laravel + Inertia (React) and Next.js.
+Onu is plain React (React 19), so it works in Vite apps, Laravel + Inertia (React) and Next.js.
 
 # Links
 
@@ -89,15 +89,6 @@ export default async function RootLayout({ children }) {
     );
 }
 ```
-
-# Starter templates
-
-The repository has two complete starters, built and tested in CI against the current library:
-
-- [`templates/nextjs`](https://github.com/Javaabu/onu/tree/main/templates/nextjs): the setup above, a page of Onu components rendered by a Server Component, an English / Dhivehi switch, a form backed by a Server Action, and a check that the server-rendered HTML contains Onu's markup.
-- [`templates/laravel-inertia-react`](https://github.com/Javaabu/onu/tree/main/templates/laravel-inertia-react): Laravel with Inertia, React and TypeScript, an `AppLayout` / `AppSidebar` admin shell, an English / Dhivehi switch stored in the session, and a form that shows Laravel's validation errors, with feature tests.
-
-Each template's README shows how to copy it and use the npm package.
 
 # Inertia validation errors
 

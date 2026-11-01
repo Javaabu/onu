@@ -6,7 +6,7 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
-import { useCopyToClipboard } from "./_utils"
+import { useCopyToClipboard } from "../../hooks/use-copy-to-clipboard"
 import { registerEnglish } from "../../i18n/english"
 import { common as en_common } from "../../locales/en/common"
 import { display as en_display } from "../../locales/en/display"
@@ -119,7 +119,8 @@ export function DescriptionListItem({
 }: DescriptionListItemProps) {
   const { t } = useTranslation()
   const { layout, striped } = React.useContext(DescriptionListContext)
-  const { copied, copy } = useCopyToClipboard()
+  const { status, copy } = useCopyToClipboard()
+  const copied = status === "copied"
   const empty = isEmptyValue(children)
   const text =
     copyValue ?? (typeof children === "string" || typeof children === "number" ? String(children) : undefined)
@@ -158,7 +159,7 @@ export function DescriptionListItem({
             type="button"
             variant="ghost"
             size="icon-xs"
-            data-slot="description-list-copy"
+            data-part="description-list-copy"
             className={cn("-my-0.5 touch:size-9 shrink-0", classNames?.copy)}
             aria-label={copied ? t("common.copied") : t("display.copyValue", { label: plainText(label) || text })}
             onClick={() => void copy(text)}

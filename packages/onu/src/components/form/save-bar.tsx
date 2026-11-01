@@ -13,6 +13,7 @@ import { useUnsavedChangesGuard } from "./unsaved-changes-guard"
 import { registerEnglish } from "../../i18n/english"
 import { common as en_common } from "../../locales/en/common"
 import { form as en_form } from "../../locales/en/form"
+import { useIsomorphicLayoutEffect } from "../../hooks/use-isomorphic-layout-effect"
 
 registerEnglish({ common: en_common, form: en_form })
 
@@ -132,7 +133,7 @@ export function describeChanges<T extends object>(
  * a desktop sidebar. Writes the column's inline offsets to CSS variables.
  */
 function useContentColumnInset(ref: React.RefObject<HTMLElement | null>, enabled: boolean) {
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const bar = ref.current
     if (!enabled || !bar || typeof window === "undefined") return
     const column = bar.closest<HTMLElement>('[data-slot="app-layout-main"], [data-slot="sidebar-inset"], main')

@@ -8,15 +8,16 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button, buttonVariants } from "../../ui/button"
 import { useFormField, useFormFieldControl } from "../form/form-field"
-import { useMergedRef } from "../inputs/text-input"
+import { useMergedRef } from "../../hooks/use-merged-ref"
 import { FileRow } from "./_file-row"
-import { useControllable } from "./_use-controllable"
 import type { ExistingAttachment } from "./additional-files-upload"
 import { fileKey, syncInputFiles, validateFiles, type FileRejection, type FileValidationOptions } from "./file-utils"
 import { UploadProgress } from "./upload-progress"
 import { useFormatFileSize, useRejectionMessage, useUploadQueue, type UploadItem, type UploadSource } from "./use-files"
 import { registerEnglish } from "../../i18n/english"
 import { file as en_file } from "../../locales/en/file"
+import { useIsomorphicLayoutEffect } from "../../hooks/use-isomorphic-layout-effect"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ file: en_file })
 
@@ -92,8 +93,6 @@ export interface FileInputProps<R = unknown>
   value?: FileInputEntry<R>[]
   /** Initial files (uncontrolled), e.g. a record's saved attachments. */
   defaultValue?: FileInputEntry<R>[]
-  /** Without an uploader: called with the picked `File`s whenever they change. */
-  onChange?: (files: File[]) => void
   /** Called with the whole value when files are added, finish uploading or are removed. */
   onValueChange?: (value: FileInputEntry<R>[]) => void
   /** Called with every accepted batch of files (picked, dropped or pasted). */
@@ -170,7 +169,6 @@ export function FileInput<R = unknown>({
   appearance = "input",
   value,
   defaultValue,
-  onChange,
   onValueChange,
   onFilesAdded,
   onReject,
@@ -212,7 +210,7 @@ export function FileInput<R = unknown>({
   const local = React.useRef<HTMLInputElement>(null)
   const merged = useMergedRef(local, ref)
   const rootRef = React.useRef<HTMLDivElement>(null)
-  const [entries, setEntriesState] = useControllable<FileInputEntry<R>[]>(
+  const [entries, setEntriesState] = useControllableState<FileInputEntry<R>[]>(
     value,
     defaultValue ?? (NO_ENTRIES as FileInputEntry<R>[]),
     onValueChange,
@@ -220,7 +218,7 @@ export function FileInput<R = unknown>({
   // Latest list for upload callbacks; updated as soon as it changes so two uploads finishing together both land.
   const entriesRef = React.useRef(entries)
   // Reset on every render, so a change the parent ignored does not linger.
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     entriesRef.current = entries
   })
   // Upload queue id → value id of the entry it became.
@@ -310,7 +308,6 @@ export function FileInput<R = unknown>({
   function setEntries(next: FileInputEntry<R>[]) {
     entriesRef.current = next
     setEntriesState(next)
-    if (!uploads) onChange?.(next.filter(isLocalFile))
   }
 
   /** Adds files that passed validation: uploads them, or adds them to the value. */

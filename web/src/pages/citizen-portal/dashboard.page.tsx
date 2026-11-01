@@ -66,7 +66,7 @@ export default function PortalDashboardPage() {
         />
 
         <Callout
-          variant="warning"
+          tone="warning"
           title={tr("1 application needs your attention", "1 އެޕްލިކޭޝަނަކަށް ތިބާގެ ޢަމަލެއް ބޭނުންވޭ")}
           description={tr(
             "Upload a lease agreement for APP-2026-00412 by 19 October.",

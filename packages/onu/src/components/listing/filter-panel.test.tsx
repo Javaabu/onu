@@ -60,6 +60,39 @@ const openPanel = async () => {
 }
 
 describe("FilterPanel", () => {
+  it("announces applied and cleared filters, but not the filters it starts with", async () => {
+    renderWithOnu(<Harness initial={{ status: ["active"] }} sheet={false} />)
+    expect(screen.queryByText("1 filter applied")).not.toBeInTheDocument()
+
+    let panel = await openPanel()
+    await userEvent.click(within(panel).getByRole("checkbox", { name: "Banned" }))
+    await userEvent.click(within(panel).getByRole("button", { name: "Apply" }))
+    await waitFor(() => expect(applied().status).toHaveLength(2))
+    await waitFor(() => expect(screen.getByText("1 filter applied")).toBeInTheDocument())
+
+    panel = await openPanel()
+    await userEvent.click(within(panel).getByRole("button", { name: "Clear all" }))
+    await waitFor(() => expect(screen.getByText("Filters cleared")).toBeInTheDocument())
+  })
+
+  it("announces filters from the query form too", async () => {
+    const Form = () => {
+      const [value, setValue] = React.useState<FilterValues>({ status: ["active"] })
+      return <FilterPanel variant="form" filters={userFilters} value={value} onApply={setValue} />
+    }
+    renderWithOnu(<Form />)
+    await userEvent.click(screen.getByRole("button", { name: "Reset" }))
+    await waitFor(() => expect(screen.getByText("Filters cleared")).toBeInTheDocument())
+  })
+
+  it("is closed by default and can start open with defaultOpen", () => {
+    const { unmount } = renderWithOnu(<FilterPanel filters={userFilters} value={{}} onApply={vi.fn()} sheet={false} />)
+    expect(screen.getByRole("button", { name: /Filters/ })).toHaveAttribute("aria-expanded", "false")
+    unmount()
+    renderWithOnu(<FilterPanel filters={userFilters} value={{}} onApply={vi.fn()} sheet={false} defaultOpen />)
+    expect(screen.getByRole("button", { name: /Filters/, hidden: true })).toHaveAttribute("aria-expanded", "true")
+  })
+
   it("opens a dropdown listing every filter with its control and footer buttons (§25.7)", async () => {
     renderWithOnu(<Harness />)
     const panel = await openPanel()
@@ -246,12 +279,12 @@ describe("FilterPanel", () => {
         type: "custom",
         key: "min",
         label: "Minimum balance",
-        render: ({ value, onChange, id }) => (
+        render: ({ value, onValueChange, id }) => (
           <input
             id={id}
             aria-label="Minimum"
             value={(value as string) ?? ""}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => onValueChange(e.target.value)}
           />
         ),
         format: (v) => `MVR ${v as string}`,

@@ -49,7 +49,7 @@ Checkboxes and switches keep their label-beside-control shape in both layouts (R
 | ------------ | ---------------------- | -------------- | ------------------------------------------ |
 | `lines`      | `number`               | `3`            | Number of lines                            |
 | `widths`     | `string[]`             | 100%, last 60% | Widths per line (cycled)                   |
-| `size`       | `'sm' \| 'md' \| 'lg'` | `'md'`         | Line height, to match the text it replaces |
+| `size`       | `'sm' \| 'default' \| 'lg'` | `'default'`         | Line height, to match the text it replaces |
 | `classNames` | `{ line }`             |                | Classes for each line                      |
 
 ### SkeletonCard

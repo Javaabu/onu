@@ -34,7 +34,7 @@ The value is a `Date` (local midnight) or `null`. Use it controlled or uncontrol
 
 ```tsx
 const [date, setDate] = React.useState<Date | null>(null)
-<DatePicker value={date} onChange={setDate} />
+<DatePicker value={date} onValueChange={setDate} />
 <DatePicker defaultValue={new Date(2026, 2, 12)} />
 ```
 
@@ -56,7 +56,7 @@ With a `name` (directly or from the `FormField`), a hidden input posts `yyyy-MM-
 | --------------------------------------- | ------------------------------------------------------- | --------------- | ------------------------------------------------- |
 | `mode`                                  | `"single" \| "multiple" \| "week" \| "month" \| "year"` | `"single"`      | What the field holds; see the sections below      |
 | `value` / `defaultValue`                | `Date \| null`                                          |                 | Selected date                                     |
-| `onChange`                              | `(value: Date \| null) => void`                         |                 | Called on select and on Clear                     |
+| `onValueChange`                              | `(value: Date \| null) => void`                         |                 | Called on select and on Clear                     |
 | `format`                                | `string`                                                | `"dd/MM/yyyy"`  | date-fns display format                           |
 | `placeholder`                           | `string`                                                | "Select a date" | Shown when empty                                  |
 | `min` / `max`                           | `Date`                                                  |                 | Earliest / latest selectable day                  |
@@ -65,6 +65,7 @@ With a `name` (directly or from the `FormField`), a hidden input posts `yyyy-MM-
 | `weekendDays`                           | `number[]`                                              | `[5, 6]`        | Days styled as weekend                            |
 | `showWeekNumber`                        | `boolean`                                               | `false`         | Week number column                                |
 | `name`                                  | `string`                                                |                 | Hidden input with `yyyy-MM-dd`                    |
+| `id`                                    | `string`                                                |                 | Id of the field button (`FormField` sets it)      |
 | `required`                              | `boolean`                                               |                 | Hides Clear, sets `aria-required`                 |
 | `clearable`                             | `boolean`                                               | `!required`     | Show Clear                                        |
 | `disabled`                              | `boolean`                                               |                 | Field does nothing when clicked                   |
@@ -75,6 +76,7 @@ With a `name` (directly or from the `FormField`), a hidden input posts `yyyy-MM-
 | `className`                             | `string`                                                |                 | Classes for the field                             |
 | `classNames`                            | `{ trigger, value, icon, content, footer }`             |                 | Classes for each part                             |
 | `ref`                                   | `Ref<HTMLButtonElement>`                                |                 | The field button                                  |
+| `aria-label` / `aria-labelledby` / `aria-describedby` / `aria-invalid` / `aria-required` | |              | Passed to the field button (`FormField` sets them) |
 
 Every other picker in this group shares the field props from `required` down (`PickerFieldProps`). The table is for `mode="single"`; the other modes change the value and a few props, below.
 
@@ -93,7 +95,7 @@ The value is a sorted `Date[]`. The field lists up to `maxShown` dates ("5 Mar 2
 | Prop                     | Type                      | Default      | Description                              |
 | ------------------------ | ------------------------- | ------------ | ---------------------------------------- |
 | `value` / `defaultValue` | `Date[]`                  | `[]`         |                                          |
-| `onChange`               | `(value: Date[]) => void` |              |                                          |
+| `onValueChange`               | `(value: Date[]) => void` |              |                                          |
 | `format`                 | `string`                  | `d MMM yyyy` | Format of each date in the field         |
 | `maxShown`               | `number`                  | `2`          | Dates listed before switching to a count |
 | `maxSelected`            | `number`                  |              | Most dates that can be picked            |
@@ -113,7 +115,7 @@ The value is the first day of the week (`Date`), following the locale's week sta
 | Prop                     | Type                                 | Default | Description           |
 | ------------------------ | ------------------------------------ | ------- | --------------------- |
 | `value` / `defaultValue` | `Date \| null`                       |         | First day of the week |
-| `onChange`               | `(value: Date \| null) => void`      |         |                       |
+| `onValueChange`               | `(value: Date \| null) => void`      |         |                       |
 | `formatWeek`             | `(start: Date, end: Date) => string` |         | Custom field text     |
 
 `showWeekNumber` and `format` don't apply; week numbers are always shown.

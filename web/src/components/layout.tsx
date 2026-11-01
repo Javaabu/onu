@@ -197,7 +197,7 @@ function HeaderActions() {
         variant="menu"
         size="sm"
         value={settings.locale}
-        onChange={(code) => update({ locale: code as "en" | "dv" })}
+        onValueChange={(code) => update({ locale: code as "en" | "dv" })}
       />
       <ThemeToggle size="sm" />
       <CustomizeButton />

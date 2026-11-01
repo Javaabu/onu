@@ -4,29 +4,8 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
-import { getInitials, UserAvatar } from "./user-avatar"
+import { UserAvatar } from "./user-avatar"
 import { UserAvatarGroup } from "./user-avatar-group"
-
-describe("getInitials", () => {
-  it.each([
-    ["Ahmed Ali", "AA"],
-    ["aishath shiuna mohamed", "AM"],
-    ["Mariyam", "M"],
-    ["  Ibrahim  (Ibbe)  Rasheed ", "IR"],
-    ["Mr. Hassan Manik", "MM"],
-    ["އަޙްމަދު ޢަލީ", "އަޢަ"],
-    ["މަރިޔަމް", "މަ"],
-    ["", ""],
-    [null, ""],
-    ["123 !!", ""],
-  ])("%s → %s", (name, expected) => {
-    expect(getInitials(name)).toBe(expected)
-  })
-
-  it("respects max", () => {
-    expect(getInitials("Ahmed Ali", 1)).toBe("A")
-  })
-})
 
 describe("UserAvatar", () => {
   it("shows initials when there is no image, named by the person", () => {

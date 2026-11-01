@@ -16,6 +16,7 @@ import {
 } from "./file-utils"
 import { registerEnglish } from "../../i18n/english"
 import { file as en_file } from "../../locales/en/file"
+import { useIsomorphicLayoutEffect } from "../../hooks/use-isomorphic-layout-effect"
 
 registerEnglish({ file: en_file })
 
@@ -154,7 +155,7 @@ export function useUploadQueue<R = unknown>(options: UseUploadQueueOptions<R>) {
   const changed = React.useEffectEvent((next: UploadItem<R>[]) => onItemsChange?.(next))
   // Latest callbacks for async upload results (updated after render, read later in promise callbacks).
   const callbacks = React.useRef({ onUploaded, onError })
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     callbacks.current = { onUploaded, onError }
   })
 

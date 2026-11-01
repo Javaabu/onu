@@ -81,7 +81,7 @@ export default function ServicesDirectoryPage() {
           value={category}
           onValueChange={setCategory}
           controls="service-results"
-          listLabel={tr("Service categories", "ޚިދުމަތުގެ ބައިތައް")}
+          label={tr("Service categories", "ޚިދުމަތުގެ ބައިތައް")}
         />
 
         <div className="mt-4 gap-x-6 gap-y-3 flex flex-wrap items-center justify-between">

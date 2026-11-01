@@ -37,8 +37,6 @@ function Calendar({
       showOutsideDays={showOutsideDays}
       className={cn(
         "p-2 [--cell-radius:var(--radius-md)] [--cell-size:--spacing(7)] group/calendar bg-background in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent",
-        String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
-        String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         className
       )}
       captionLayout={captionLayout}
@@ -173,7 +171,8 @@ function Calendar({
         DayButton: ({ ...props }) => (
           <CalendarDayButton locale={locale} {...props} />
         ),
-        WeekNumber: ({ children, ...props }) => {
+        // onu: `week` isn't a DOM attribute, and `scope` is invalid on a td (axe); the role still names the row.
+        WeekNumber: ({ children, week: _week, scope: _scope, ...props }) => {
           return (
             <td {...props}>
               <div className="flex size-(--cell-size) items-center justify-center text-center">

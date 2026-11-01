@@ -54,7 +54,6 @@ body {
     [data-slot="tabs-trigger"],
     [data-slot="input"],
     [data-slot="input-group"],
-    [data-slot="combobox-trigger"],
     [data-slot="pagination-link"],
     [data-slot="dropdown-menu-item"],
     [data-slot="command-item"],
@@ -92,7 +91,7 @@ body {
   [data-slot="app-header"],
   [data-slot="bottom-nav"],
   [data-slot="skip-link"],
-  [data-slot="back-to-top"],
+  [data-part="back-to-top"],
   [data-slot="announcement-bar"],
   [data-slot="sonner-toaster"],
   [data-sonner-toaster] {

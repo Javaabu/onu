@@ -86,7 +86,7 @@ This document captures the requirements, constraints and full build list for Onu
   - `@javaabu/onu/styles.css` — theme tokens + base styles
   - `@javaabu/onu/tailwind.css` — Tailwind `@theme` / `@source` entry for consumers
 - **R2.6** Heavy or licensed third-party dependencies (map SDKs, chart libs, editors, scanners, FontAwesome, fonts) are **optional peer dependencies**, required only when the matching subpath is imported.
-- **R2.7** Peer dependencies: `react` and `react-dom` `^18.3 || ^19`, `tailwindcss` `^4`.
+- **R2.7** Peer dependencies: `react` and `react-dom` `^19`, `tailwindcss` `^4`.
 - **R2.8** Ship TypeScript declarations; source written in TypeScript `strict` mode. No `any` in public APIs.
 - **R2.9** Every client component file carries a `"use client"` directive so it works in React Server Component environments (Next.js App Router).
 - **R2.10** Semantic versioning. Releases managed with [Changesets](https://github.com/changesets/changesets); `CHANGELOG.md` generated from them.
@@ -181,7 +181,7 @@ A dependency must meet **all** of these criteria:
 - **Maintained**: a release or meaningful commit within the last 12 months, a responsive issue tracker, and not archived or deprecated.
 - **Reputable**: widely adopted, and backed by an organisation or established maintainers.
 - **Typed**: first-party TypeScript types.
-- **Compatible**: React 18 and 19, SSR-safe, tree-shakable.
+- **Compatible**: React 19, SSR-safe, tree-shakable.
 - **Accessible and RTL-capable**, or can be made so by wrapping.
 - **Reasonable bundle size** for what it provides.
 
@@ -347,7 +347,7 @@ Javaabu currently uses the JTK (JavaScript Thaana Keyboard) approach for typing 
   - `useThaanaInput(ref, options)` hook that can be attached to any `<input>`, `<textarea>` or `contenteditable`.
   - `thaana` and `thaanaToggle` props on `<TextInput>` and `<Textarea>`.
   - A Tiptap extension (`ThaanaKeyboard`) so the WYSIWYG and block editors type Thaana through ProseMirror transactions rather than raw DOM edits.
-- **R13.3** **Every component that accepts free text** exposes a `thaana` prop (`boolean | ThaanaOptions`), including: Text input, Textarea, Search box, Autocomplete, Searchable select / Multi-select search field, Tags input, Inline edit, Editable select, Combobox-style inputs, Command palette, Translations editor, Notes, Comment thread composer, WYSIWYG and Block editor. Inputs whose content must be Latin (email, password, URL, number, phone, OTP, slug, colour) do **not** offer it.
+- **R13.3** **Every component that accepts free text** exposes a `thaana` prop (`boolean | ThaanaOptions`), including: Text input, Textarea, Search box, Autocomplete, Searchable select / Multi-select search field, Tags input, Inline edit, Editable select, Combobox-style inputs, Command palette, Translations editor, Comment thread composer, WYSIWYG and Block editor. Inputs whose content must be Latin (email, password, URL, number, phone, OTP, slug, colour) do **not** offer it.
 - **R13.4** When `thaana` is on, the field sets `dir="rtl"`, `lang="dv"` and the Thaana font automatically.
 - **R13.5** Optional per-field toggle (button and keyboard shortcut) to switch between Thaana and Latin while typing; the current mode is announced to screen readers.
 - **R13.6** Must work with:
@@ -512,7 +512,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Looks right in every density mode it supports, and outside admin contexts where relevant
 - [ ] Built on the shadcn component / approved library per §4–§5; any in-house build is justified in the PR
 - [ ] Uses semantic icon names so it follows the configured icon set
-- [ ] `className` / `classNames` / `asChild` overrides as applicable
+- [ ] `className` / `classNames` overrides as applicable; `asChild` where the component renders one element an app may need to replace (links, buttons, triggers)
 - [ ] Meets WCAG 2.2 AA; axe tests pass; keyboard interactions documented
 - [ ] Matches the expected UI behaviour in §25 where that component is specified, with a test for each listed behaviour
 - [ ] Unit tests meeting coverage thresholds
@@ -738,23 +738,23 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Avatar group
 - ~~Keyboard key~~ *(Removed.)* The `Kbd` primitive (`@javaabu/onu/primitives`) shows keys; `ActionMenu` and `CommandPalette` format their own shortcut hints.
 - [ ] Alert
-- [ ] Notice
+- ~~Notice~~ *(Folded into Callout: `appearance`.)*
 - [ ] Announcement bar
 - ~~Cookie consent~~ *(Removed.)* No Maldivian requirement asks for one and no sample page uses one; compose `AnnouncementBar` and `Modal` with `Switch`es when a project needs it.
 - [ ] Toast
 - [ ] Conditional link
 - [ ] Conditional display
 - [ ] Publish box
-- [ ] Last edited by
+- ~~Last edited by~~ *(Removed.)* Too app-specific for the library; compose `UserAvatar` and `RelativeDate`.
 - [ ] Relative date
 - [ ] Countdown
-- [ ] Activity feed
+- ~~Activity feed~~ *(Folded into Timeline: `actor`, `groupByDay`.)*
 - [ ] Comment thread
 - [ ] Icon with text
 - [ ] Share buttons
-- [ ] Print and back buttons
-- [ ] Calendar
-- [ ] Notes
+- ~~Print and back buttons~~ *(Removed.)* Too app-specific for the library; use `Button` and `LinkButton`.
+- ~~Calendar~~ *(Folded into Date calendar: `events`, `readOnly`, `size="sm"`.)*
+- ~~Notes~~ *(Folded into Comment thread: `variant="list"`.)*
 - [ ] Content card
 - [ ] Error pages (403, 404, 500, maintenance)
 

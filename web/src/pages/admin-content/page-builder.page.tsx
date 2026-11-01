@@ -148,7 +148,7 @@ export default function PageBuilderPage() {
                     <FormField label={tr("Page content", "ސަފްހާގެ ލިޔުން")} hideLabel name="content">
                       <BlockEditor
                         value={doc}
-                        onChange={setDoc}
+                        onValueChange={setDoc}
                         onImageUpload={async (file) => {
                           await wait(600)
                           return URL.createObjectURL(file)

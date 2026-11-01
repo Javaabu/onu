@@ -10,7 +10,7 @@ import { DateRangePicker, type DateRangeValue } from "@javaabu/onu"
 
 const [range, setRange] = React.useState<DateRangeValue>({ from: null, to: null })
 <FormField label="Leave period" name="leave">
-  <DateRangePicker value={range} onChange={setRange} />
+  <DateRangePicker value={range} onValueChange={setRange} />
 </FormField>
 ```
 
@@ -25,7 +25,7 @@ const [range, setRange] = React.useState<DateRangeValue>({ from: null, to: null 
 | Prop                                                                                              | Type                                       | Default                    | Description              |
 | ------------------------------------------------------------------------------------------------- | ------------------------------------------ | -------------------------- | ------------------------ |
 | `value` / `defaultValue`                                                                          | `{ from: Date \| null; to: Date \| null }` | `{ from: null, to: null }` |                          |
-| `onChange`                                                                                        | `(value: DateRangeValue) => void`          |                            |                          |
+| `onValueChange`                                                                                        | `(value: DateRangeValue) => void`          |                            |                          |
 | `withTime`                                                                                        | `boolean`                                  | `false`                    | Pick a time for each end |
 | `names`                                                                                           | `{ from?, to? }`                           | `name[from]`, `name[to]`   | Hidden input names       |
 | `labels`                                                                                          | `{ from?, to? }`                           | "From", "To"               | Sub-field labels         |
@@ -34,7 +34,7 @@ const [range, setRange] = React.useState<DateRangeValue>({ from: null, to: null 
 | `classNames`                                                                                      | `{ root, field, label, trigger, error }`   |                            | Classes for each part    |
 | `ref`                                                                                             | `Ref<HTMLDivElement>`                      |                            | The group element        |
 
-`name`, `required`, `disabled`, `clearable`, `sheet`, `size`, `today` and `aria-*` apply to both fields.
+`name`, `required`, `disabled`, `clearable`, `sheet`, `size`, `today` and `aria-*` apply to both fields; `className` goes to the root.
 
 ## Accessibility
 

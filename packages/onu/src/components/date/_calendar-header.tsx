@@ -61,7 +61,7 @@ export function CalendarHeader({
         aria-label={onCaptionClick ? captionLabel : undefined}
         aria-disabled={onCaptionClick ? undefined : true}
         onClick={onCaptionClick}
-        data-slot="calendar-caption"
+        data-part="calendar-caption"
       >
         {caption}
       </Button>

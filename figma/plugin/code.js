@@ -2,7 +2,7 @@
 (function() {
 
 //#region ../packages/onu/package.json
-	var version = "0.0.0";
+	var version = "0.2.0";
 
 //#endregion
 //#region ../tokens.json
@@ -174,6 +174,11 @@
 					"$type": "color",
 					"$value": "oklch(0.97 0 0)",
 					"$description": "Ant colorBgLayout #f5f5f5: the grey page behind dashboard cards."
+				},
+				"overlay": {
+					"$type": "color",
+					"$value": "oklch(0 0 0 / 10%)",
+					"$description": "The dim behind modal dialogs, sheets and drawers."
 				},
 				"preset-blue": {
 					"$type": "color",
@@ -419,6 +424,11 @@
 					"$type": "color",
 					"$value": "oklch(0.191 0 0)",
 					"$description": "Ant dark colorBgLayout #141414."
+				},
+				"overlay": {
+					"$type": "color",
+					"$value": "oklch(0 0 0 / 10%)",
+					"$description": "The dim behind modal dialogs, sheets and drawers."
 				},
 				"preset-blue": {
 					"$type": "color",
@@ -2206,7 +2216,7 @@
 			text: "xs",
 			icon: 12
 		},
-		md: {
+		default: {
 			h: 5.5,
 			px: 1.75,
 			text: "xs",
@@ -2239,13 +2249,13 @@
 				"gold"
 			],
 			size: [
-				"md",
+				"default",
 				"sm",
 				"lg"
 			],
 			dir: DIRS
 		},
-		filter: (v) => (v.color === "none" || v.variant === "default") && (v.size === "md" || v.color === "none" && v.dir === "ltr") && (v.dir === "ltr" || v.color === "none"),
+		filter: (v) => (v.color === "none" || v.variant === "default") && (v.size === "default" || v.color === "none" && v.dir === "ltr") && (v.dir === "ltr" || v.color === "none"),
 		props: {
 			children: {
 				type: "TEXT",
@@ -2357,7 +2367,7 @@
 		build(root, v, b) {
 			const s = STATUS[v.status];
 			const look = s.color ? preset(s.color) : TAG_VARIANT.default;
-			const size = TAG_SIZE[v.size];
+			const size = TAG_SIZE[v.size === "md" ? "default" : v.size];
 			b.style(root, {
 				h: size.h,
 				px: size.px,
@@ -2382,7 +2392,7 @@
 		}
 	};
 	const CALLOUT = {
-		default: {
+		neutral: {
 			fill: "card",
 			fillOpacity: 1,
 			stroke: "border",
@@ -2414,7 +2424,7 @@
 			icon: "triangle-alert",
 			tone: "warning"
 		},
-		destructive: {
+		danger: {
 			fill: "destructive",
 			fillOpacity: .05,
 			stroke: "destructive",
@@ -2427,9 +2437,9 @@
 		name: "Alert",
 		page: "Display",
 		key: "display-and-feedback/callout",
-		description: "<Callout variant title description actions dismissible icon /> from \"@javaabu/onu\" (the Alert: shadcn Alert with Onu tones).",
+		description: "<Callout tone title description actions dismissible icon /> from \"@javaabu/onu\" (the Alert: shadcn Alert with Onu tones).",
 		variants: {
-			variant: Object.keys(CALLOUT),
+			tone: Object.keys(CALLOUT),
 			dir: DIRS
 		},
 		props: {
@@ -2452,7 +2462,7 @@
 		},
 		width: 1100,
 		build(root, v, b) {
-			const look = CALLOUT[v.variant];
+			const look = CALLOUT[v.tone];
 			b.style(root, {
 				wPx: 480,
 				px: 4,
@@ -2471,7 +2481,7 @@
 				b.text(tr(b, "Your application was received", "ތިޔަ އެޕްލިކޭޝަން ލިބިއްޖެ"), {
 					prop: "title",
 					weight: "Medium",
-					color: v.variant === "destructive" ? "destructive" : "foreground",
+					color: v.tone === "danger" ? "destructive" : "foreground",
 					fillW: true
 				}),
 				b.text(tr(b, "We will email you when it has been reviewed.", "ރިވިއު ކުރެވުމުން އީމެއިލް ކުރެވޭނެ."), {
@@ -2509,7 +2519,8 @@
 			variant: [
 				"default",
 				"outline",
-				"muted"
+				"muted",
+				"plain"
 			],
 			size: ["default", "sm"],
 			dir: DIRS
@@ -2536,18 +2547,19 @@
 		width: 1300,
 		build(root, v, b) {
 			const sm = v.size === "sm";
+			const plain = v.variant === "plain";
 			b.style(root, {
 				dir: "V",
 				wPx: 360,
-				py: sm ? 4 : 6,
-				gap: sm ? 4 : 6,
-				radius: "xl",
-				fill: v.variant === "muted" ? "muted" : v.variant === "outline" ? void 0 : "card",
+				py: plain ? 0 : sm ? 4 : 6,
+				gap: plain ? 5 : sm ? 4 : 6,
+				radius: plain ? "none" : "xl",
+				fill: v.variant === "muted" ? "muted" : v.variant === "outline" || plain ? void 0 : "card",
 				fillOpacity: v.variant === "muted" ? .5 : 1,
-				stroke: v.variant === "muted" ? void 0 : "border",
-				clip: true
+				stroke: v.variant === "muted" || plain ? void 0 : "border",
+				clip: !plain
 			});
-			const pad = sm ? 4 : 6;
+			const pad = plain ? 0 : sm ? 4 : 6;
 			const header = b.row("header", {
 				px: pad,
 				gap: 2,
@@ -2604,7 +2616,7 @@
 			px: 32,
 			text: "xs"
 		},
-		md: {
+		default: {
 			px: 40,
 			text: "sm"
 		},
@@ -2633,7 +2645,7 @@
 			shape: ["circle", "square"],
 			status: ["none", ...Object.keys(PRESENCE)]
 		},
-		filter: (v) => v.status === "none" || v.size === "md" && v.shape === "circle",
+		filter: (v) => v.status === "none" || v.size === "default" && v.shape === "circle",
 		props: { initials: {
 			type: "TEXT",
 			default: "AM"
@@ -4245,7 +4257,7 @@
 	};
 	const MODAL_WIDTH = {
 		sm: 384,
-		md: 512,
+		default: 512,
 		lg: 672
 	};
 	const dialog = {
@@ -4255,13 +4267,13 @@
 		description: "<Modal trigger title description footer size closeButton>{body}</Modal> from \"@javaabu/onu\" (ConfirmDialog for confirmations).",
 		variants: {
 			size: [
-				"md",
+				"default",
 				"sm",
 				"lg"
 			],
 			dir: DIRS
 		},
-		filter: (v) => v.size === "md" || v.dir === "ltr",
+		filter: (v) => v.size === "default" || v.dir === "ltr",
 		props: {
 			title: {
 				type: "TEXT",
@@ -4603,7 +4615,7 @@
 				color: "muted-foreground",
 				fillW: true
 			})]),
-			b.instance("Alert", { variant: "info" }),
+			b.instance("Alert", { tone: "info" }),
 			...fields,
 			choices,
 			b.instance("Checkbox", { checked: "true" }),

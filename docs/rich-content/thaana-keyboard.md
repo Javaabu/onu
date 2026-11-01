@@ -6,6 +6,10 @@ reference: extension
 
 A Tiptap extension that types Thaana from a Latin keyboard through ProseMirror transactions rather than DOM edits (R13.2), so undo/redo, input rules and collaboration keep working. `WysiwygEditor` and `BlockEditor` use it for their `thaana` prop; use it directly in your own Tiptap editors.
 
+:::info
+Part of the `@javaabu/onu/editor` entry; install its packages from [Peer dependencies per entry](../installation-and-setup#peer-dependencies-per-entry).
+:::
+
 ```tsx
 import { ThaanaKeyboard } from "@javaabu/onu/editor"
 

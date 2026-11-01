@@ -27,8 +27,8 @@ When an existing image is removed, `removeName` renders a hidden input set to `1
 | `alt`          | `string`                                          | (required)             | Alt text for the preview (R14.10)                         |
 | `value`        | `File \| string \| null`                          |                        | Controlled value                                          |
 | `defaultValue` | `File \| string \| null`                          |                        | Initial value                                             |
-| `onChange`     | `(file: File \| null) => void`                    |                        | New file, or `null` when removed                          |
-| `onReject`     | `(rejection) => void`                             |                        | A picked file failed validation                           |
+| `onValueChange`     | `(file: File \| null) => void`                    |                        | New file, or `null` when removed                          |
+| `onReject`     | `(rejections) => void`                            |                        | A picked file failed validation                           |
 | `accept`       | `string`                                          | `"image/*"`            | Accepted types                                            |
 | `maxSize`      | `number`                                          |                        | Largest size in bytes                                     |
 | `shape`        | `"rounded" \| "square" \| "circle"`               | `"rounded"`            | Preview shape (`imageInputVariants`)                      |

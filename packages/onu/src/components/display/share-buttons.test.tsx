@@ -104,3 +104,21 @@ describe("ShareButtons", () => {
     await expectNoA11yViolations(container)
   })
 })
+
+describe("ShareButtons classNames", () => {
+  it("applies them to the root, buttons and icons", () => {
+    renderWithOnu(
+      <ShareButtons
+        url="https://x.mv"
+        native="never"
+        networks={["copy", "email"]}
+        classNames={{ root: "r", button: "b", icon: "i" }}
+      />,
+    )
+    expect(screen.getByRole("group")).toHaveClass("r")
+    for (const control of [screen.getByRole("button"), screen.getByRole("link")]) {
+      expect(control).toHaveClass("b")
+      expect(control.querySelector("svg")).toHaveClass("i")
+    }
+  })
+})

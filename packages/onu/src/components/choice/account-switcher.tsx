@@ -4,6 +4,7 @@ import * as React from "react"
 import { Command as CommandPrimitive } from "cmdk"
 
 import { Icon } from "../../icons/icon"
+import { getInitials } from "../../lib/initials"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
@@ -18,12 +19,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu"
-import { useControllableState } from "./_hooks"
 import { Picker, PickerContent, PickerTrigger } from "./_picker"
 import { useOpenState } from "./_selection"
 import { matchesQuery } from "./options"
 import { registerEnglish } from "../../i18n/english"
 import { choice as en_choice } from "../../locales/en/choice"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ choice: en_choice })
 
@@ -72,12 +73,6 @@ const GROUPS: { type: AccountType; key: string }[] = [
   { type: "delegated", key: "choice.delegatedAccounts" },
 ]
 
-function initials(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean)
-  const letters = parts.length > 1 ? [parts[0]![0], parts[parts.length - 1]![0]] : [parts[0]?.[0]]
-  return letters.filter(Boolean).join("").toLocaleUpperCase()
-}
-
 function AccountAvatar({ account, className }: { account: Account; className?: string }) {
   return (
     <Avatar className={cn("size-8", className)} data-slot="account-avatar" aria-hidden="true">
@@ -86,7 +81,7 @@ function AccountAvatar({ account, className }: { account: Account; className?: s
         {account.type === "organisation" && !account.avatar ? (
           <Icon name="building" className="size-4" />
         ) : (
-          initials(account.name)
+          getInitials(account.name)
         )}
       </AvatarFallback>
     </Avatar>
@@ -187,7 +182,7 @@ export function AccountSwitcher({
       type="button"
       data-slot="account-switcher"
       data-size={size}
-      aria-label={current ? `${t("choice.switchAccount")}: ${current.name}` : undefined}
+      aria-label={current ? t("choice.switchAccountFrom", { name: current.name }) : undefined}
       {...props}
       className={cn(
         "gap-2.5 p-1.5 pe-2.5 text-sm min-w-0 touch:min-h-11 data-[size=lg]:p-2 flex w-full items-center rounded-lg text-start outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 aria-expanded:bg-muted",

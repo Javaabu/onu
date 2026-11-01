@@ -39,7 +39,7 @@ Mount it once (e.g. in your layout). The shortcut toggles it from anywhere; you 
 ## Searching
 
 - Static items match when every word of the query appears in `value` (or the string `label`) or `keywords`. Case and Latin accents are ignored ("male" finds "Malé").
-- `search(query, { signal })` runs after `debounce` ms (default 250) once the query has `minQueryLength` characters (default 1). A newer query, or closing the palette, aborts the earlier request through `signal`, and late answers are ignored (R16.5).
+- `search(query, { signal })` runs after `debounce` ms (default 300) once the query has `minChars` characters (default 1). A newer query, or closing the palette, aborts the earlier request through `signal`, and late answers are ignored (R16.5).
 - Return items (shown under `searchHeading`) or groups. Errors show "Search failed" with a **Retry** button.
 
 ## Recent items
@@ -53,13 +53,13 @@ Chosen items are remembered in `localStorage` (`recent={{ storageKey, max }}`, d
 | `groups`                              | `CommandPaletteGroup[]`                             | `[]`               | Static items, filtered locally      |
 | `search`                              | `(query, { signal }) => Promise<Item[] \| Group[]>` |                    | Async search                        |
 | `searchHeading`                       | `ReactNode`                                         |                    | Heading for async items             |
-| `debounce`                            | `number`                                            | `250`              | Debounce in ms                      |
-| `minQueryLength`                      | `number`                                            | `1`                | Minimum query length for `search`   |
+| `debounce`                            | `number`                                            | `300`              | Debounce in ms                      |
+| `minChars`                      | `number`                                            | `1`                | Minimum query length for `search`   |
 | `recent`                              | `boolean \| { storageKey?, max? }`                  | `true`             | Remember chosen items               |
 | `shortcut`                            | `string \| false`                                   | `'k'`              | Key used with ⌘ / Ctrl              |
 | `thaana`                              | `boolean \| ThaanaOptions`                          |                    | Type Thaana in the search box       |
 | `placeholder`                         | `string`                                            | translated         | Search box placeholder              |
-| `title`                               | `string`                                            | "Command palette"  | Accessible name                     |
+| `label`                               | `string`                                            | "Command palette"  | Accessible name                     |
 | `emptyMessage`                        | `(query) => ReactNode`                              | "No results for …" | Empty state                         |
 | `footer`                              | `boolean`                                           | `true`             | Key hints (hidden on touch screens) |
 | `onNavigate`                          | `(href) => void`                                    | `location.assign`  | Router for `href` items             |
@@ -68,6 +68,7 @@ Chosen items are remembered in `localStorage` (`recent={{ storageKey, max }}`, d
 | `trigger`                             | `ReactNode`                                         |                    | Element that opens the palette      |
 | `open`, `defaultOpen`, `onOpenChange` |                                                     |                    | Open state                          |
 | `classNames`                          | `{ input, list, group, item, empty, footer }`       |                    | Classes for each part               |
+| `className`                           | `string`                                            |                    | Added to the dialog panel           |
 
 `CommandPaletteItem`: `{ id, label, value?, keywords?, icon?, description?, shortcut?, href?, onSelect?, disabled? }`. `matchesCommandItem` and `normalizeSearch` are exported for custom filtering.
 

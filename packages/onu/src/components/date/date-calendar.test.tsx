@@ -1,5 +1,5 @@
 import * as React from "react"
-import { screen, within } from "@testing-library/react"
+import { act, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
@@ -12,7 +12,7 @@ vi.setConfig({ testTimeout: 30_000 })
 
 const TODAY = new Date(2026, 2, 12) // Thursday 12 March 2026
 
-const caption = () => document.querySelector<HTMLElement>("[data-slot=calendar-caption]")!
+const caption = () => document.querySelector<HTMLElement>("[data-part=calendar-caption]")!
 const dayButton = (day: number, month = "March", year = 2026) =>
   screen.getByRole("button", { name: new RegExp(`${month} ${day}(st|nd|rd|th), ${year}$`) })
 
@@ -368,5 +368,57 @@ describe("DateCalendar — locale and direction", () => {
     expect(container.querySelector("[data-slot=calendar-header]")).toHaveClass("head-x")
     expect(caption()).toHaveClass("cap-x")
     expect(screen.getByRole("button", { name: "Next month" })).toHaveClass("nav-x")
+  })
+})
+
+describe("DateCalendar — keyboard", () => {
+  const focused = () => document.activeElement as HTMLElement
+
+  it.each([
+    ["ltr", "{ArrowRight}", "{ArrowLeft}"],
+    ["rtl", "{ArrowLeft}", "{ArrowRight}"],
+  ] as const)("in %s moves a day along the reading direction and a week up and down", async (dir, next, previous) => {
+    const user = userEvent.setup()
+    renderWithOnu(<DateCalendar today={TODAY} />, { dir })
+    act(() => dayButton(12).focus())
+    await user.keyboard(next)
+    expect(focused()).toHaveAccessibleName(/March 13th, 2026/)
+    await user.keyboard(`${previous}${previous}`)
+    expect(focused()).toHaveAccessibleName(/March 11th, 2026/)
+    await user.keyboard("{ArrowDown}")
+    expect(focused()).toHaveAccessibleName(/March 18th, 2026/)
+    await user.keyboard("{ArrowUp}")
+    expect(focused()).toHaveAccessibleName(/March 11th, 2026/)
+  })
+
+  it.each(directions)("in %s goes to the start and end of the week with Home and End", async (dir) => {
+    const user = userEvent.setup()
+    renderWithOnu(<DateCalendar today={TODAY} />, { dir })
+    act(() => dayButton(12).focus())
+    await user.keyboard("{Home}")
+    expect(focused()).toHaveAccessibleName(/March 8th, 2026/)
+    await user.keyboard("{End}")
+    expect(focused()).toHaveAccessibleName(/March 14th, 2026/)
+  })
+
+  it.each(directions)("in %s changes month with Page Up and Page Down", async (dir) => {
+    const user = userEvent.setup()
+    renderWithOnu(<DateCalendar today={TODAY} />, { dir })
+    act(() => dayButton(12).focus())
+    await user.keyboard("{PageUp}")
+    expect(focused()).toHaveAccessibleName(/February 12th, 2026/)
+    expect(caption()).toHaveTextContent("February 2026")
+    await user.keyboard("{PageDown}{PageDown}")
+    expect(focused()).toHaveAccessibleName(/April 12th, 2026/)
+    expect(caption()).toHaveTextContent("April 2026")
+  })
+
+  it("selects the focused day with Enter", async () => {
+    const user = userEvent.setup()
+    const onSelect = vi.fn()
+    renderWithOnu(<DateCalendar today={TODAY} onSelect={onSelect} />)
+    act(() => dayButton(12).focus())
+    await user.keyboard("{ArrowRight}{Enter}")
+    expect(onSelect).toHaveBeenCalledWith(new Date(2026, 2, 13))
   })
 })

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { useMergedRef } from "../inputs/text-input"
+import { useMergedRef } from "../../hooks/use-merged-ref"
 
 /**
  * Radix dialogs return focus to their own Trigger on close. Dialogs opened

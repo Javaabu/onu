@@ -28,6 +28,7 @@ function MyField() {
 | `enabled`   | `boolean`    |         | Whether Thaana typing is on       |
 | `onToggle`  | `() => void` |         | Called when the button is pressed |
 | `className` | `string`     |         | Merged with the button's classes  |
+| `classNames` | `{ root, label }` |  | Classes for each part |
 
 Every other `<button>` prop (such as `disabled`) is passed through. The button is always `type="button"`, so it never submits a form.
 

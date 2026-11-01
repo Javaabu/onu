@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { useAnnouncer } from "../../a11y/use-announcer"
 import { useIsMobile } from "../../hooks/use-mobile"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
@@ -15,6 +16,7 @@ import type { FilterDefinition, FilterValue, FilterValues } from "./listing-type
 import { cleanFilters, isFilterValueEmpty } from "./use-listing-state"
 import { registerEnglish } from "../../i18n/english"
 import { listing as en_listing } from "../../locales/en/listing"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ listing: en_listing })
 
@@ -29,6 +31,8 @@ export interface FilterPanelProps {
   onApply: (filters: FilterValues) => void
   /** Controlled open state. */
   open?: boolean
+  /** Initial open state when uncontrolled. Default `false`. */
+  defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
   /** Force the bottom sheet (`true`) or the dropdown (`false`). Defaults to the bottom sheet below 768px. */
   sheet?: boolean
@@ -71,7 +75,26 @@ export interface FilterPanelProps {
  * form's filters, and Expand shows the fields past `collapsedCount`.
  */
 export function FilterPanel(props: FilterPanelProps) {
-  return props.variant === "form" ? <FilterQueryForm {...props} /> : <FilterPopoverPanel {...props} />
+  const { t } = useTranslation()
+  const { announce, region } = useAnnouncer({ role: "status" })
+
+  // Announce changes to the applied filters, wherever they came from (Apply, Reset, chips, tabs).
+  const applied = cleanFilters(props.value)
+  const count = Object.keys(applied).length
+  const signature = JSON.stringify(applied)
+  const lastSignature = React.useRef(signature)
+  React.useEffect(() => {
+    if (lastSignature.current === signature) return
+    lastSignature.current = signature
+    announce(t("listing.filtersApplied", { count }))
+  }, [signature, count, announce, t])
+
+  return (
+    <>
+      {props.variant === "form" ? <FilterQueryForm {...props} /> : <FilterPopoverPanel {...props} />}
+      {region}
+    </>
+  )
 }
 
 function FilterQueryForm({
@@ -138,7 +161,7 @@ function FilterQueryForm({
               <FilterControl
                 definition={definition}
                 value={draft[definition.key]}
-                onChange={(next) => setDraftValue(definition.key, next)}
+                onValueChange={(next) => setDraftValue(definition.key, next)}
                 id={id}
                 labelId={labelId}
                 compact
@@ -189,6 +212,7 @@ function FilterPopoverPanel({
   value,
   onApply,
   open: openProp,
+  defaultOpen = false,
   onOpenChange,
   sheet,
   trigger,
@@ -202,15 +226,13 @@ function FilterPopoverPanel({
   const baseId = React.useId()
   const triggerRef = React.useRef<HTMLButtonElement>(null)
 
-  const [openState, setOpenState] = React.useState(false)
-  const open = openProp ?? openState
+  const [open, setOpenState] = useControllableState(openProp, defaultOpen, onOpenChange)
   const [draft, setDraft] = React.useState<FilterValues>(value)
 
   const setOpen = (next: boolean) => {
     // Reopening always starts from the applied filters (§25.7).
     if (next) setDraft(value)
     setOpenState(next)
-    onOpenChange?.(next)
   }
 
   const [prevOpen, setPrevOpen] = React.useState(open)
@@ -260,7 +282,7 @@ function FilterPopoverPanel({
             <FilterControl
               definition={definition}
               value={current}
-              onChange={(next) => setDraftValue(definition.key, next)}
+              onValueChange={(next) => setDraftValue(definition.key, next)}
               id={id}
               labelId={labelId}
             />
@@ -300,7 +322,7 @@ function FilterPopoverPanel({
     <Button
       ref={triggerRef}
       variant="outline"
-      data-slot="filter-panel-trigger"
+      data-part="filter-panel-trigger"
       aria-label={count ? t("listing.filtersCount", { count }) : undefined}
       aria-haspopup="dialog"
       aria-expanded={open}

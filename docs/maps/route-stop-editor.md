@@ -10,7 +10,7 @@ import { RouteStopEditor, type RouteStop } from "@javaabu/onu/maps"
 
 const [stops, setStops] = React.useState<RouteStop[]>([])
 <FormField label="Shuttle stops">
-  <RouteStopEditor value={stops} onChange={setStops} name="stops" max={8} />
+  <RouteStopEditor value={stops} onValueChange={setStops} name="stops" max={8} />
 </FormField>
 ```
 
@@ -26,7 +26,7 @@ Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provide
 
 | Prop                                          | Type                                | Default | Description                  |
 | --------------------------------------------- | ----------------------------------- | ------- | ---------------------------- |
-| `value` / `defaultValue` / `onChange`         | `RouteStop[]`                       | `[]`    | Stops in order               |
+| `value` / `defaultValue` / `onValueChange`         | `RouteStop[]`                       | `[]`    | Stops in order               |
 | `name`                                        | `string`                            |         | Hidden inputs                |
 | `max`                                         | `number`                            |         | Maximum stops                |
 | `addOnMapClick`                               | `boolean`                           | `true`  | Clicking the map adds a stop |

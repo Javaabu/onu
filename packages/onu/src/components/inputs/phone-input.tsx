@@ -16,9 +16,9 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../../ui/input-group"
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
 import { useFormFieldControl } from "../form/form-field"
-import { useControllableState } from "./_shared"
 import { registerEnglish } from "../../i18n/english"
 import { input as en_input } from "../../locales/en/input"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ input: en_input })
 
@@ -110,7 +110,7 @@ function CountrySelect({
         <PopoverTrigger asChild>
           <InputGroupButton
             size="xs"
-            data-slot="phone-country"
+            data-part="phone-country"
             aria-label={`${t("input.country")}: ${name}`}
             disabled={disabled || readOnly}
             onFocus={onFocus}

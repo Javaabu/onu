@@ -42,6 +42,8 @@ jobs:
           fail_ci_if_error: false
       - name: MCP server tests
         run: pnpm --filter @javaabu/onu-mcp test
+      - name: Figma plugin tests
+        run: pnpm figma:test
       - name: Build packages
         run: pnpm build
       - name: Size budgets

@@ -10,11 +10,13 @@ pnpm install
 pnpm dev   # web app at http://localhost:5173
 ```
 
+Branch from `dev` and target `dev` in PRs; `main` is release-only.
+
 Maps in the web app use Google Maps when `VITE_GOOGLE_MAPS_API_KEY` (and optionally `VITE_GOOGLE_MAPS_MAP_ID`) is set, and the keyless placeholder otherwise. Until a Map ID is set (locally or as the `GOOGLE_MAPS_MAP_ID` secret of the demo build), the examples use Google's `DEMO_MAP_ID`, so advanced markers work. The map demos open on Javaabu's office in Malé (`JAVAABU_OFFICE` in `web/src/showcase/maps/_data.ts`). To try the real Google adapter without a key (development mode, watermarked), set `VITE_GOOGLE_MAPS_FORCE=1 VITE_GOOGLE_MAPS_MAP_ID=DEMO_MAP_ID`. See [MapProvider](docs/maps/map-provider.md#verified-against-google-maps-js-api).
 
 ## Definition of done
 
-A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `dv` locale, `thaana` prop for free text, tokens-only colours, responsive and touch-friendly, `className`/`classNames`/`asChild` overrides, WCAG 2.2 AA with axe tests, unit tests, a showcase demo in `web/src/showcase`, a docs page in `docs/`, and a changeset.
+A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `dv` locale, `thaana` prop for free text, tokens-only colours, responsive and touch-friendly, `className`/`classNames` overrides, `asChild` where the component renders one element an app may need to replace (links, buttons, triggers), WCAG 2.2 AA with axe tests, unit tests, a showcase demo in `web/src/showcase`, a docs page in `docs/`, and a changeset.
 
 ## Where things go
 
@@ -33,6 +35,7 @@ A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `
 ## Rules of thumb
 
 - Use logical Tailwind utilities (`ms-`, `pe-`, `start-`, `text-start`, …). ESLint rejects physical `left`/`right` ones.
+- Report a value with `onValueChange(value)`; `onChange` is only for the native event.
 - Use theme tokens (`bg-primary`, `text-muted-foreground`), never raw colours.
 - Use `<Icon name="…">` (from `src/icons/icon`) with semantic names, so `OnuProvider icons` overrides apply. Never render a Lucide component directly. When a component always shows the same glyph (a spinner, a close button, a chevron), also pass that Lucide icon as `fallback`, e.g. `<Icon name="loading" fallback={Loader2Icon} />`: overrides still win, and the component keeps its glyph outside `OnuProvider`.
 - Never import `src/icons/lucide-map` in a component. `OnuProvider` loads the default set on demand, so neither a single component nor the provider ships ~250 icons. ESLint and `src/icons/icon-imports.test.ts` enforce this, and `pnpm --filter @javaabu/onu size` checks the bundle budgets.
@@ -52,7 +55,12 @@ The files in `packages/onu/src/ui` started as shadcn/ui's components (Radix base
 
 ## Checks
 
-E2E (Playwright: accessibility in five browsers, and Chromium screenshots) is slow, so CI runs it only when the last commit pushed to `main` starts with `e2e` (for example `e2e: new date picker`), or when you run the **E2E** workflow by hand from the Actions tab. Run it locally with `pnpm e2e:chromium`.
+E2E (Playwright) runs in two tiers:
+
+- **Smoke, on pull requests.** The **E2E smoke** workflow runs `e2e/a11y.spec.ts` and `e2e/thaana.spec.ts` in Chromium, with no screenshots, when a pull request touches `packages/onu/**`, `web/**` or `e2e/**`.
+- **Full, on demand.** The **E2E** workflow (accessibility in five browsers, and Chromium screenshots) is slow, so CI runs it only when the last commit pushed to `main` starts with `e2e` (for example `e2e: new date picker`), or when you run it by hand from the Actions tab.
+
+Run either locally with `pnpm e2e:chromium`, adding the two spec files for the smoke tier.
 
 The Chromium job compares a desktop screenshot of every component demo, in light LTR and dark RTL, with baselines stored as the `visual-baselines` Actions artifact (not in git). After an intended visual change, or when you add a component, run **E2E** by hand with **Update the visual baselines** ticked. Look at the screenshots in that run's `visual-baselines` artifact before relying on them. Baselines are kept for 90 days (about 90 MB). If none are stored (the first run, or 90 days after the last update), the run takes new ones instead of comparing.
 
@@ -85,10 +93,10 @@ Every change that affects a published package adds a changeset (`pnpm changeset`
 
 To release:
 
-1. On `dev`, run `pnpm changeset version`. It bumps every package with pending changesets, writes their `CHANGELOG.md` and deletes the changesets. All packages share one version, so check that `packages/onu` and `packages/onu-mcp` match.
+1. On `dev`, run `pnpm changeset version && node scripts/sync-plugin-version.mjs && pnpm figma:plugin`. `@javaabu/onu` and `@javaabu/onu-mcp` are a fixed group in `.changeset/config.json`, so they always move to the same version; the script copies that version into `plugins/onu/.claude-plugin/plugin.json`, which changesets can't see. The Figma plugin bundle embeds the version, so it is rebuilt too. `changeset version` also writes their `CHANGELOG.md` and deletes the changesets.
 2. Commit (`Release v0.1.0`) and merge `dev` into `main`. Wait for CI to pass on `main`.
 3. Tag that commit on `main` and push the tag: `git tag v0.1.0 && git push origin v0.1.0`.
 
-The **Release** workflow runs only for `v*` tags. It checks that the tagged commit is on `main` and that every package's version matches the tag, then builds and publishes to npm (versions already on npm are skipped). Tags with a pre-release suffix (`v1.0.0-beta.1`) publish under the `next` dist-tag.
+The **Release** workflow runs only for `v*` tags. It checks that the tagged commit is on `main` and that every package's version and the plugin's match the tag, then builds and publishes to npm (versions already on npm are skipped). Tags with a pre-release suffix (`v1.0.0-beta.1`) publish under the `next` dist-tag.
 
 Publishing needs an `NPM_TOKEN` repository secret: an npm granular access token with read and write access to the `@javaabu` scope and "bypass 2FA" allowed, from an account that can publish to `@javaabu`. Write tokens expire after about 90 days. Provenance is signed only once the repository is public. After the first release, you can switch to npm trusted publishing (each package's settings on npmjs.com, pointing at `release.yml`) and remove the token.

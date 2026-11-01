@@ -3,4 +3,5 @@
  * Tailwind projects should import `@javaabu/onu/tailwind.css` instead.
  */
 @import "./tokens.css";
+@import "./fonts-thaana.css";
 @import "./theme.css";
