@@ -2,11 +2,12 @@ import { screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 
 import { expectNoA11yViolations, renderWithOnu } from "../../test/utils"
+import { common as dv_common } from "../locales/dv/common"
 import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbList } from "./breadcrumb"
 import { Button } from "./button"
 import { Calendar } from "./calendar"
 import { Checkbox } from "./checkbox"
-import { Dialog, DialogContent, DialogTitle } from "./dialog"
+import { Dialog, DialogContent, DialogFooter, DialogTitle } from "./dialog"
 import {
   Pagination,
   PaginationContent,
@@ -80,6 +81,19 @@ describe("vendored primitive patches", () => {
     const svg = container.querySelector("[data-icon-name=chevron-right]")!
     expect(svg.getAttribute("class")).toContain("rtl:-scale-x-100")
     expect(svg.getAttribute("class")).not.toContain("rtl:rotate-180")
+  })
+
+  it("DialogFooter's close button is translated", () => {
+    renderWithOnu(
+      <Dialog open>
+        <DialogContent aria-describedby={undefined} showCloseButton={false}>
+          <DialogTitle>ސުރުޚީ</DialogTitle>
+          <DialogFooter showCloseButton />
+        </DialogContent>
+      </Dialog>,
+      { locale: "dv" },
+    )
+    expect(screen.getByRole("button", { name: dv_common.close })).toBeInTheDocument()
   })
 
   it("Button keeps its data-slot when a caller sets one", () => {
