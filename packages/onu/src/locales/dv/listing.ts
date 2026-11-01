@@ -156,8 +156,9 @@ export const listing = {
   reorder: "ތަރުތީބު ބަދަލުކުރޭ",
   moveTo: "ބަދަލުކުރާނީ…",
   moveToColumn: "{column} އަށް ބަދަލުކުރޭ",
-  moveUp: "މައްޗަށް",
-  moveDown: "ތިރިއަށް",
+  moveItemMenu: "{name} ބަދަލުކުރޭ",
+  moveItemUp: "{name} މައްޗަށް",
+  moveItemDown: "{name} ތިރިއަށް",
   moved: "{name} {column} އަށް ބަދަލުކުރެވިއްޖެ",
   movedToPosition: "{name} {total} ތެރެއިން {position} ވަނަ ތަނަށް ބަދަލުކުރެވިއްޖެ",
   dragInstructions:

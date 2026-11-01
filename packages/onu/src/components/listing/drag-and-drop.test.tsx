@@ -49,12 +49,12 @@ const order = () => screen.getAllByRole("listitem").map((li) => li.textContent)
 describe("SortableList", () => {
   it("reorders with Move up / Move down buttons and announces the new position", async () => {
     renderWithOnu(<List />)
-    expect(screen.getByRole("button", { name: "Move up: Renew licence" })).toBeDisabled()
-    await userEvent.click(screen.getByRole("button", { name: "Move down: Renew licence" }))
+    expect(screen.getByRole("button", { name: "Move Renew licence up" })).toBeDisabled()
+    await userEvent.click(screen.getByRole("button", { name: "Move Renew licence down" }))
     expect(order()).toEqual(["Inspect vessel", "Renew licence", "Collect fee"])
     await waitFor(() => expect(screen.getByText("Renew licence moved to position 2 of 3")).toBeInTheDocument())
-    expect(screen.getByRole("button", { name: "Move down: Collect fee" })).toBeDisabled()
-    await userEvent.click(screen.getByRole("button", { name: "Move up: Collect fee" }))
+    expect(screen.getByRole("button", { name: "Move Collect fee down" })).toBeDisabled()
+    await userEvent.click(screen.getByRole("button", { name: "Move Collect fee up" }))
     expect(order()).toEqual(["Inspect vessel", "Collect fee", "Renew licence"])
   })
 
@@ -122,8 +122,8 @@ describe("SortableList as a table", () => {
 
   it("has Move up / Move down buttons in the handle column by default", async () => {
     renderWithOnu(<Table />)
-    expect(screen.getByRole("button", { name: "Move up: Renew licence" })).toBeDisabled()
-    await userEvent.click(screen.getByRole("button", { name: "Move down: Renew licence" }))
+    expect(screen.getByRole("button", { name: "Move Renew licence up" })).toBeDisabled()
+    await userEvent.click(screen.getByRole("button", { name: "Move Renew licence down" }))
     expect(cells().map((c) => c.textContent)).toEqual(["Inspect vessel", "Renew licence", "Collect fee"])
     await expectNoA11yViolations()
   })
@@ -131,7 +131,7 @@ describe("SortableList as a table", () => {
   it("can be turned off", () => {
     renderWithOnu(<Table disabled />)
     expect(screen.getByRole("button", { name: "Drag to reorder Renew licence" })).toBeDisabled()
-    expect(screen.getByRole("button", { name: "Move down: Renew licence" })).toBeDisabled()
+    expect(screen.getByRole("button", { name: "Move Renew licence down" })).toBeDisabled()
   })
 
   it.each(directions)("has no axe violations in %s with Dhivehi", async (dir) => {
@@ -190,7 +190,7 @@ describe("KanbanBoard", () => {
   it("moves a card with its Move to… menu and announces it (button alternative to dragging)", async () => {
     const onMove = vi.fn()
     renderWithOnu(<Board onMove={onMove} />)
-    await userEvent.click(screen.getByRole("button", { name: "Move to… Renew licence" }))
+    await userEvent.click(screen.getByRole("button", { name: "Move Renew licence" }))
     const menu = await screen.findByRole("menu")
     expect(
       within(menu)
@@ -206,7 +206,7 @@ describe("KanbanBoard", () => {
   it("refuses moves canMove rejects", async () => {
     const onMove = vi.fn()
     renderWithOnu(<Board onMove={onMove} canMove={(m) => m.to !== "done"} />)
-    await userEvent.click(screen.getByRole("button", { name: "Move to… Renew licence" }))
+    await userEvent.click(screen.getByRole("button", { name: "Move Renew licence" }))
     await userEvent.click(await screen.findByRole("menuitem", { name: "Move to Done" }))
     expect(onMove).not.toHaveBeenCalled()
   })

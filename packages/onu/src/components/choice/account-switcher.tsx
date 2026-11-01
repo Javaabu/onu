@@ -187,7 +187,7 @@ export function AccountSwitcher({
       type="button"
       data-slot="account-switcher"
       data-size={size}
-      aria-label={current ? `${t("choice.switchAccount")}: ${current.name}` : undefined}
+      aria-label={current ? t("choice.switchAccountFrom", { name: current.name }) : undefined}
       {...props}
       className={cn(
         "gap-2.5 p-1.5 pe-2.5 text-sm min-w-0 touch:min-h-11 data-[size=lg]:p-2 flex w-full items-center rounded-lg text-start outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 aria-expanded:bg-muted",

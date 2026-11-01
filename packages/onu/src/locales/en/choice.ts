@@ -38,6 +38,7 @@ export const choice = {
   ratingValue: "{value} out of {max} stars",
   notRated: "Not rated",
   switchAccount: "Switch account",
+  switchAccountFrom: "Switch account: {name}",
   searchAccounts: "Search accounts…",
   personalAccount: "Your account",
   organisations: "Organisations",

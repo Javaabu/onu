@@ -123,7 +123,7 @@ function KanbanCard({
           size="icon-xs"
           className="touch:size-11"
           disabled={disabled}
-          aria-label={`${t("listing.moveTo")} ${name}`}
+          aria-label={t("listing.moveItemMenu", { name })}
         >
           <Icon name="more" />
         </Button>
