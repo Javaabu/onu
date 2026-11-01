@@ -298,6 +298,9 @@ describe("WysiwygEditor", () => {
     const dialog = await screen.findByRole("dialog", { name: "Insert image" })
     expect(within(dialog).getByLabelText(/Alternative text/)).toHaveAttribute("data-thaana")
     expect(within(dialog).getByLabelText(/Image URL/)).not.toHaveAttribute("data-thaana")
+    // Close it and let focus return, because the dialog would otherwise focus the editor after it unmounts.
+    await user.keyboard("{Escape}")
+    await waitFor(() => expect(button("Image")).toHaveFocus())
   })
 
   it("uploads images through the upload callback and reports failures", async () => {
