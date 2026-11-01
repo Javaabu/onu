@@ -11,9 +11,9 @@ import { radixSide, type LogicalSide } from "./_side"
 import { Button } from "../../ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
 import { BottomSheet } from "./bottom-sheet"
-import { useControllableState } from "./_use-controllable-state"
 import { registerEnglish } from "../../i18n/english"
 import { overlay as en_overlay } from "../../locales/en/overlay"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ overlay: en_overlay })
 

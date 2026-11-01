@@ -24,7 +24,7 @@ export default function MapPickerDemo() {
         className="grid"
       >
         <FormField label="Business location" name="location" required help="Where customers can find you.">
-          <MapPicker value={value} onChange={setValue} search={searchIslands} />
+          <MapPicker value={value} onValueChange={setValue} search={searchIslands} />
         </FormField>
         <p className="text-sm text-muted-foreground">
           Value: {value ? formatLatLng(value, t, locale.numberLocale, 5) : "—"}

@@ -19,7 +19,7 @@ export default function MapPolygonDemo() {
     <DemoPage>
       <DemoSection title="Zones" description="Two wards in Malé. Select one to see its points." className="grid">
         <FormField label="Collection zones" name="zones">
-          <MapPolygon value={value} onChange={setValue} tone="chart-2" />
+          <MapPolygon value={value} onValueChange={setValue} tone="chart-2" />
         </FormField>
         <details className="text-sm">
           <summary className="cursor-pointer text-muted-foreground">GeoJSON value</summary>

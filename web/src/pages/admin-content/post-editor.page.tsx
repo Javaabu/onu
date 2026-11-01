@@ -183,7 +183,7 @@ export default function PostEditorPage() {
                   <FormField label={tr("Body", "ލިޔުން")} name="body">
                     <WysiwygEditor
                       value={values.body}
-                      onChange={(html) => set("body", html as string)}
+                      onValueChange={(html) => set("body", html as string)}
                       thaana={{ defaultEnabled: dv }}
                       onImageUpload={async (file) => {
                         await wait(600)
@@ -263,8 +263,8 @@ export default function PostEditorPage() {
                 onVisibilityChange={(v) => set("visibility", v)}
                 publishAt={values.publishAt}
                 onPublishAtChange={(d) => set("publishAt", d)}
-                renderDateInput={({ id, value, onChange }) => (
-                  <DateTimePicker id={id} value={value} onChange={onChange} />
+                renderDateInput={({ id, value, onValueChange }) => (
+                  <DateTimePicker id={id} value={value} onValueChange={onValueChange} />
                 )}
                 onPreview={() => toast.info(tr("Preview opened in a new tab", "ޕްރިވިއު އައު ޓެބެއްގައި ހުޅުވިއްޖެ"))}
                 onSaveDraft={async () => {
@@ -295,7 +295,7 @@ export default function PostEditorPage() {
                       alt={tr("Featured image of the post", "ޕޯސްޓްގެ ފީޗަރޑް ފޮޓޯ")}
                       aspectRatio={16 / 9}
                       value={featured}
-                      onChange={(file) => {
+                      onValueChange={(file) => {
                         setFeatured(file)
                         if (file) setCropSrc(file)
                       }}

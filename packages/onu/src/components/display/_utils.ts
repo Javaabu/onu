@@ -29,28 +29,6 @@ export function useNow(interval: number | null, initial?: number): number | null
   return now
 }
 
-/** Copies text to the clipboard and exposes a `copied` flag that resets after `timeout` ms. */
-export function useCopyToClipboard(timeout = 2000) {
-  const [copied, setCopied] = React.useState(false)
-  const timer = React.useRef<number | undefined>(undefined)
-  React.useEffect(() => () => window.clearTimeout(timer.current), [])
-  const copy = React.useCallback(
-    async (text: string) => {
-      try {
-        await navigator.clipboard.writeText(text)
-      } catch {
-        return false
-      }
-      setCopied(true)
-      window.clearTimeout(timer.current)
-      timer.current = window.setTimeout(() => setCopied(false), timeout)
-      return true
-    },
-    [timeout],
-  )
-  return { copied, copy }
-}
-
 /** Reads and writes a JSON value in `localStorage`, tolerating unavailable storage. */
 export function readStorage<T>(key: string): T | null {
   try {

@@ -16,7 +16,7 @@ Maps in the web app use Google Maps when `VITE_GOOGLE_MAPS_API_KEY` (and optiona
 
 ## Definition of done
 
-A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `dv` locale, `thaana` prop for free text, tokens-only colours, responsive and touch-friendly, `className`/`classNames`/`asChild` overrides, WCAG 2.2 AA with axe tests, unit tests, a showcase demo in `web/src/showcase`, a docs page in `docs/`, and a changeset.
+A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `dv` locale, `thaana` prop for free text, tokens-only colours, responsive and touch-friendly, `className`/`classNames` overrides, `asChild` where the component renders one element an app may need to replace (links, buttons, triggers), WCAG 2.2 AA with axe tests, unit tests, a showcase demo in `web/src/showcase`, a docs page in `docs/`, and a changeset.
 
 ## Where things go
 
@@ -35,6 +35,7 @@ A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `
 ## Rules of thumb
 
 - Use logical Tailwind utilities (`ms-`, `pe-`, `start-`, `text-start`, …). ESLint rejects physical `left`/`right` ones.
+- Report a value with `onValueChange(value)`; `onChange` is only for the native event.
 - Use theme tokens (`bg-primary`, `text-muted-foreground`), never raw colours.
 - Use `<Icon name="…">` (from `src/icons/icon`) with semantic names, so `OnuProvider icons` overrides apply. Never render a Lucide component directly. When a component always shows the same glyph (a spinner, a close button, a chevron), also pass that Lucide icon as `fallback`, e.g. `<Icon name="loading" fallback={Loader2Icon} />`: overrides still win, and the component keeps its glyph outside `OnuProvider`.
 - Never import `src/icons/lucide-map` in a component. `OnuProvider` loads the default set on demand, so neither a single component nor the provider ships ~250 icons. ESLint and `src/icons/icon-imports.test.ts` enforce this, and `pnpm --filter @javaabu/onu size` checks the bundle budgets.

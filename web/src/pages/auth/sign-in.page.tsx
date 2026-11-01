@@ -77,7 +77,7 @@ export default function SignInPage() {
             </Button>
           }
         />
-        <Callout appearance="bordered" variant="info" icon="info">
+        <Callout appearance="bordered" tone="info" icon="info">
           {tr("Demo account:", "ޑެމޯ އެކައުންޓް:")}{" "}
           <bdi dir="ltr" className="font-mono">
             {DEMO_EMAIL} / {DEMO_PASSWORD}

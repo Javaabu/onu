@@ -62,7 +62,7 @@ export default function NewsIndexPage() {
               setPage(1)
             }}
             controls="news-list"
-            listLabel={tr("News categories", "ޚަބަރުގެ ބައިތައް")}
+            label={tr("News categories", "ޚަބަރުގެ ބައިތައް")}
           />
           <SearchBox
             value={query}

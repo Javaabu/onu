@@ -78,7 +78,7 @@ describe("TranslationsEditor", () => {
     let resolve: () => void = () => {}
     const onSave = vi.fn(() => new Promise<void>((r) => (resolve = r)))
     const onChange = vi.fn()
-    renderWithOnu(<TranslationsEditor defaultValue={entries} onSave={onSave} onChange={onChange} />)
+    renderWithOnu(<TranslationsEditor defaultValue={entries} onSave={onSave} onValueChange={onChange} />)
     const en = field("nav.atolls", "English")
     await user.type(en, "Atolls")
     expect(onChange).toHaveBeenLastCalledWith(
@@ -126,7 +126,7 @@ describe("TranslationsEditor", () => {
   it("is controlled through value and onChange", () => {
     function Controlled() {
       const [value, setValue] = React.useState(entries.slice(0, 1))
-      return <TranslationsEditor value={value} onChange={setValue} />
+      return <TranslationsEditor value={value} onValueChange={setValue} />
     }
     renderWithOnu(<Controlled />)
     const en = field("auth.login", "English")

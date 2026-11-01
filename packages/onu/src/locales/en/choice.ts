@@ -3,7 +3,6 @@ import type { MessageDict } from "../../i18n/types"
 export const choice = {
   placeholder: "Select an option",
   searchPlaceholder: "Search…",
-  options: "Options",
   showOptions: "Show options",
   noOptions: "No options",
   clearSelection: "Clear selection",
@@ -34,7 +33,6 @@ export const choice = {
   filterList: "Filter {list}",
   minimum: "Minimum",
   maximum: "Maximum",
-  rating: "Rating",
   ratingValue: "{value} out of {max} stars",
   notRated: "Not rated",
   switchAccount: "Switch account",

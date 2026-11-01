@@ -24,7 +24,7 @@ The field shows "23 Ramadan 1447 (12/03/2026)" by default.
 | Prop                                         | Type                                             | Default      | Description                              |
 | -------------------------------------------- | ------------------------------------------------ | ------------ | ---------------------------------------- |
 | `value` / `defaultValue`                     | `Date \| null`                                   |              | Gregorian date                           |
-| `onChange`                                   | `(value: Date \| null) => void`                  |              |                                          |
+| `onValueChange`                                   | `(value: Date \| null) => void`                  |              |                                          |
 | `format`                                     | `"long" \| "short" \| "month-year" \| "numeric"` | `"short"`    | Hijri display format                     |
 | `showGregorian`                              | `boolean`                                        | `true`       | Also show the Gregorian date             |
 | `gregorianFormat`                            | `string`                                         | `dd/MM/yyyy` |                                          |

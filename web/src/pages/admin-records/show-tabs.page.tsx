@@ -150,7 +150,7 @@ export default function ShowTabsPage() {
                   accept=".pdf,image/*"
                   maxSize={8 * 1024 * 1024}
                   description={tr("PDF or images, up to 8 MB each", "PDF ނުވަތަ ފޮޓޯ، ކޮންމެ އެއްޗެއް 8 MB އަށް")}
-                  onChange={(files) => {
+                  onValueChange={(files) => {
                     if (files.length) toast.success(tr("Document added", "ލިޔުން އިތުރުކުރެވިއްޖެ"))
                   }}
                 />

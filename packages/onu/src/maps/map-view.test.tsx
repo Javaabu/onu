@@ -227,7 +227,7 @@ describe("MapView (placeholder engine)", () => {
     const onChange = vi.fn()
     const { container } = renderWithOnu(
       <MapView center={MALE} zoom={14}>
-        <MapCircleShape center={MALE} radius={200} editable onChange={onChange} />
+        <MapCircleShape center={MALE} radius={200} editable onValueChange={onChange} />
       </MapView>,
     )
     const [centre, edge] = container.querySelectorAll("[data-slot=map-handle]")

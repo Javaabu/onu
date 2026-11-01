@@ -9,6 +9,7 @@ import { InputGroupButton } from "../../ui/input-group"
 import { TextInput, type TextInputProps } from "./text-input"
 import { registerEnglish } from "../../i18n/english"
 import { input as en_input } from "../../locales/en/input"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ input: en_input })
 
@@ -74,8 +75,7 @@ export function PasswordInput({
 }: PasswordInputProps) {
   const { t } = useTranslation()
   const id = React.useId()
-  const [innerVisible, setInnerVisible] = React.useState(defaultVisible)
-  const visible = visibleProp ?? innerVisible
+  const [visible, setVisible] = useControllableState(visibleProp, defaultVisible, onVisibleChange)
   const [capsLock, setCapsLock] = React.useState(false)
   const [typed, setTyped] = React.useState(() => String(props.defaultValue ?? ""))
   const password = props.value !== undefined ? String(props.value) : typed
@@ -95,8 +95,7 @@ export function PasswordInput({
 
   const toggle = () => {
     const next = !visible
-    setInnerVisible(next)
-    onVisibleChange?.(next)
+    setVisible(next)
   }
 
   const end =

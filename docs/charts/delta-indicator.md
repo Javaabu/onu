@@ -24,6 +24,7 @@ import { DeltaIndicator } from "@javaabu/onu/charts"
 | `variant`        | `"text" \| "badge"` | `"text"` | Plain or with a tinted background                |
 | `context`        | `ReactNode`         |          | Muted text after the delta, e.g. "vs last month" |
 | `className`      | `string`            |          | Classes for the root `<span>`                    |
+| `classNames` | `{ root, icon, value, context }` |  | Classes for each part |
 
 `deltaIndicatorVariants` (cva) is exported. The root carries `data-direction` (`up | down | flat`) and `data-sentiment` (`positive | negative | neutral`).
 

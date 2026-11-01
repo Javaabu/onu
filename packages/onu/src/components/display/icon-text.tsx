@@ -13,16 +13,16 @@ export const iconTextVariants = cva("inline-flex items-center [&>svg]:shrink-0",
       lg: "gap-2 text-base [&>svg]:size-5",
     },
     tone: {
-      default: "",
+      neutral: "",
       muted: "text-muted-foreground",
       primary: "text-primary",
       success: "text-success",
       warning: "[&>svg]:text-warning",
-      destructive: "text-destructive",
+      danger: "text-destructive",
       info: "text-info",
     },
   },
-  defaultVariants: { size: "md", tone: "default" },
+  defaultVariants: { size: "md", tone: "neutral" },
 })
 
 export interface IconTextProps extends React.ComponentProps<"span">, VariantProps<typeof iconTextVariants> {

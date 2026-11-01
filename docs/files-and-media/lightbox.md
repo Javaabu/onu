@@ -35,10 +35,11 @@ The component imports the library's CSS (`yet-another-react-lightbox/styles.css`
 
 | Prop            | Type              | Default | Description                                                    |
 | --------------- | ----------------- | ------- | -------------------------------------------------------------- |
-| `open`          | `boolean`         |         | Whether the viewer is open                                     |
+| `open`          | `boolean`         |         | Controlled open state                                     |
+| `defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled |
 | `onOpenChange`  | `(open) => void`  |         | Called with `false` on close                                   |
 | `slides`        | `LightboxSlide[]` |         | `{ src, alt, title?, description?, width?, height?, srcSet? }` |
-| `index`         | `number`          | `0`     | Slide to show                                                  |
+| `index`         | `number`          |      | Slide to show. Without it, the viewer tracks the slide itself, starting from the first |
 | `onIndexChange` | `(index) => void` |         | The slide changed                                              |
 | `zoom`          | `boolean`         | `true`  | Zoom plugin                                                    |
 | `captions`      | `boolean`         | `true`  | Captions plugin                                                |
@@ -46,6 +47,7 @@ The component imports the library's CSS (`yet-another-react-lightbox/styles.css`
 | `loop`          | `boolean`         | `false` | Wrap around                                                    |
 | `plugins`       | `Plugin[]`        |         | Extra library plugins (thumbnails, slideshow, …)               |
 | `className`     | `string`          |         | Class on the viewer root                                       |
+| `classNames` | `{ root, icon, counter }` |  | Classes for each part |
 
 ## Accessibility
 

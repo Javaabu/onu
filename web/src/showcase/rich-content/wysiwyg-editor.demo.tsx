@@ -28,7 +28,7 @@ export default function WysiwygEditorDemo() {
         className="gap-4 grid"
       >
         <FormField label="News article" help="Images are uploaded through the onImageUpload callback.">
-          <WysiwygEditor value={html} onChange={setHtml} onImageUpload={fakeUpload} name="body" />
+          <WysiwygEditor value={html} onValueChange={setHtml} onImageUpload={fakeUpload} name="body" />
         </FormField>
         <details className="text-sm">
           <summary className="cursor-pointer text-muted-foreground">HTML output</summary>

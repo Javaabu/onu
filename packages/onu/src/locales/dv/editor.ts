@@ -63,10 +63,10 @@ export const editor = {
   addRowAfter: "ދަށަށް ރޯއެއް",
   addColumnBefore: "ކުރިއަށް ކޮލަމެއް",
   addColumnAfter: "ފަހަތަށް ކޮލަމެއް",
-  deleteRow: "ރޯ ފޮހެލާ",
-  deleteColumn: "ކޮލަމް ފޮހެލާ",
+  deleteRow: "ރޯ ނައްތާލުން",
+  deleteColumn: "ކޮލަމް ނައްތާލުން",
   toggleHeaderRow: "ހެޑަރ ރޯ ދައްކާ/ފޮރުވާ",
-  deleteTable: "ޓޭބަލް ފޮހެލާ",
+  deleteTable: "ޓޭބަލް ނައްތާލުން",
 
   // Block editor
   blocks: "ބްލޮކްތައް",
@@ -78,7 +78,7 @@ export const editor = {
   moveUp: "މައްޗަށް",
   moveDown: "ދަށަށް",
   duplicate: "ކޮޕީއެއް ހަދާ",
-  deleteBlock: "ބްލޮކް ފޮހެލާ",
+  deleteBlock: "ބްލޮކް ނައްތާލުން",
   blockMoved: "ބްލޮކް {position} ވަނަ ތަނަށް ގެންދެވިއްޖެ",
   text: "ލިޔުން",
   textDescription: "އާދައިގެ ޕެރެގްރާފް",

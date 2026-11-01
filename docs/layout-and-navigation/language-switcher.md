@@ -12,26 +12,30 @@ function App() {
   const [locale, setLocale] = React.useState<"en" | "dv">("en")
   return (
     <OnuProvider locale={locale}>
-      <LanguageSwitcher onChange={(code) => setLocale(code as "en" | "dv")} />
+      <LanguageSwitcher onValueChange={(code) => setLocale(code as "en" | "dv")} />
     </OnuProvider>
   )
 }
 ```
 
-With Laravel, call your locale route in `onChange` (e.g. `router.post('/locale', { locale: code })`).
+With Laravel, call your locale route in `onValueChange` (e.g. `router.post('/locale', { locale: code })`).
 
 ## Props
 
 | Prop        | Type                             | Default            | Description                               |
 | ----------- | -------------------------------- | ------------------ | ----------------------------------------- |
 | `value`     | `string`                         | active locale code | Selected language                         |
-| `onChange`  | `(code: string) => void`         |                    | Called with the chosen code               |
+| `defaultValue` | `string` | | Initial language when uncontrolled; without it, follows the active locale |
+| `onValueChange`  | `(code: string) => void`         |                    | Called with the chosen code               |
 | `languages` | `{ code, name, dir? }[]`         | built-in locales   | Languages to offer                        |
 | `variant`   | `'select' \| 'toggle' \| 'menu'` | `'select'`         | Presentation                              |
 | `size`      | `'sm' \| 'default'`              | `'default'`        | Size                                      |
 | `showIcon`  | `boolean`                        | `true`             | Show the languages icon (select and menu) |
 | `disabled`  | `boolean`                        | `false`            | Disable                                   |
-| `id`        | `string`                         | generated          | Id of the select                          |
+| `id`        | `string`                         | generated          | Id of the select; with `toggle` and `menu`, of the root                          |
+| `classNames` | `{ root, icon, label, select, item, content }` |  | Classes for each part |
+
+Other HTML attributes and `ref` go to the root: the wrapper `<div>` with `select`, the button group with `toggle`, the button with `menu`.
 
 ## Accessibility
 

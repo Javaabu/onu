@@ -6,8 +6,6 @@ export const auth = {
   name: "Full name",
   confirmPassword: "Confirm password",
   newPassword: "New password",
-  showPassword: "Show password",
-  hidePassword: "Hide password",
   remember: "Remember me",
   forgotPassword: "Forgot password?",
   signInTitle: "Sign in",

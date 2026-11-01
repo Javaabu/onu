@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import type { Tone } from "../../lib/tone"
 import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "radix-ui"
 
@@ -12,7 +13,7 @@ import { display as en_display } from "../../locales/en/display"
 
 registerEnglish({ display: en_display })
 
-export type StatusTone = "success" | "warning" | "danger" | "info" | "neutral" | "pending"
+export type StatusTone = Tone | "pending"
 
 /**
  * Ant Design's bordered preset-colour tags: info blue (submitted), pending cyan
@@ -80,6 +81,7 @@ export interface StatusBadgeProps
   /** Override the icon: a semantic name, a node, or `false` to hide it. */
   icon?: string | React.ReactNode | false
   asChild?: boolean
+  classNames?: { root?: string; icon?: string }
 }
 
 const TONES = new Set<string>(Object.keys(TONE_ICONS))
@@ -95,6 +97,7 @@ export function StatusBadge({
   icon,
   size,
   className,
+  classNames,
   asChild = false,
   ...props
 }: StatusBadgeProps) {
@@ -112,13 +115,13 @@ export function StatusBadge({
       data-slot="status-badge"
       data-tone={tone}
       data-status={status}
-      className={cn(statusBadgeVariants({ tone, size }), className)}
+      className={cn(statusBadgeVariants({ tone, size }), classNames?.root, className)}
       {...props}
     >
       {iconValue === false || iconValue === null ? null : typeof iconValue === "string" ? (
         <Icon
           name={iconValue}
-          className={tone === "neutral" ? "size-2! fill-current text-muted-foreground" : undefined}
+          className={cn(tone === "neutral" && "size-2! fill-current text-muted-foreground", classNames?.icon)}
         />
       ) : (
         iconValue

@@ -26,7 +26,7 @@ export interface InlineEditProps extends Omit<
   onSave?: (value: string) => unknown
   onCancel?: () => void
   /** Called with every edit while typing. */
-  onChange?: (value: string) => void
+  onValueChange?: (value: string) => void
   placeholder?: string
   /** Use a textarea (Ctrl/Cmd+Enter saves). */
   multiline?: boolean
@@ -41,7 +41,7 @@ export interface InlineEditProps extends Omit<
   renderValue?: (value: string) => React.ReactNode
   /** Start in edit mode. */
   defaultEditing?: boolean
-  inputProps?: Omit<React.ComponentProps<"input">, "value" | "onChange" | "defaultValue">
+  inputProps?: Omit<React.ComponentProps<"input">, "value" | "onChange" | "defaultValue" | "size">
   classNames?: { display?: string; input?: string; actions?: string; error?: string }
 }
 
@@ -55,7 +55,7 @@ export function InlineEdit({
   defaultValue = "",
   onSave,
   onCancel,
-  onChange,
+  onValueChange,
   placeholder,
   multiline = false,
   thaana,
@@ -184,7 +184,7 @@ export function InlineEdit({
                 aria-describedby={cn(hintId, error && errorId)}
                 onChange={(e) => {
                   setDraft(e.target.value)
-                  onChange?.(e.target.value)
+                  onValueChange?.(e.target.value)
                 }}
                 onKeyDown={onKeyDown}
                 className={cn("min-w-48 flex-1", classNames?.input)}
@@ -203,7 +203,7 @@ export function InlineEdit({
                 aria-describedby={cn(hintId, error && errorId)}
                 onChange={(e) => {
                   setDraft(e.target.value)
-                  onChange?.(e.target.value)
+                  onValueChange?.(e.target.value)
                 }}
                 onKeyDown={onKeyDown}
                 className={cn("min-w-48 flex-1", classNames?.input)}

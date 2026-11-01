@@ -117,7 +117,7 @@ export default function ApiKeysPage() {
   const keysPanel = (
     <div className="gap-4 grid">
       <Callout
-        variant="info"
+        tone="info"
         title={tr("Keep keys secret", "ކީތައް ސިއްރުކޮށް ބަހައްޓަވާ")}
         description={tr(
           "A key is shown once, when you create it. Revoke a key straight away if it leaks.",
@@ -199,7 +199,7 @@ export default function ApiKeysPage() {
         />
         <Tabs
           variant="line"
-          listLabel={tr("Credentials", "ކްރެޑެންޝަލް")}
+          label={tr("Credentials", "ކްރެޑެންޝަލް")}
           items={[
             {
               value: "keys",
@@ -236,7 +236,7 @@ export default function ApiKeysPage() {
         {created ? (
           <div className="gap-4 grid">
             <Callout
-              variant="warning"
+              tone="warning"
               title={tr("Copy it now", "މިހާރު ކޮޕީކުރައްވާ")}
               description={tr(
                 "You won't be able to see it again. If you lose it, revoke it and create a new one.",

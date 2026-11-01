@@ -214,3 +214,90 @@ describe("SubmitButton", () => {
     expect(screen.getByRole("button", { name: "ހުށަހަޅާ" })).toBeInTheDocument()
   })
 })
+
+describe("LinkButton asChild", () => {
+  it("renders the child with the href, styles and icons", () => {
+    const ref = React.createRef<HTMLAnchorElement>()
+    renderWithOnu(
+      <LinkButton asChild href="/x" variant="outline" startIcon="users" external ref={ref}>
+        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid -- asChild gives it the href. */}
+        <a data-custom="">Go</a>
+      </LinkButton>,
+    )
+    const link = screen.getByRole("link", { name: /Go/ })
+    expect(link).toBe(ref.current)
+    expect(link).toHaveAttribute("data-custom")
+    expect(link).toHaveAttribute("href", "/x")
+    expect(link).toHaveAttribute("target", "_blank")
+    expect(link).toHaveAttribute("data-variant", "outline")
+    expect(link.querySelectorAll("svg")).toHaveLength(2)
+  })
+
+  it("drops the child when disabled, so it can't navigate", () => {
+    const { container } = renderWithOnu(
+      <LinkButton asChild href="/x" disabled>
+        <a data-custom="" href="/y">
+          Go
+        </a>
+      </LinkButton>,
+    )
+    const link = screen.getByRole("link", { name: "Go" })
+    expect(link).toHaveAttribute("aria-disabled", "true")
+    expect(link).not.toHaveAttribute("href")
+    expect(container.querySelector("[data-custom]")).toBeNull()
+  })
+})
+
+describe("ButtonGroup classNames", () => {
+  it.each([true, false])("applies root with attached=%s", (attached) => {
+    renderWithOnu(
+      <ButtonGroup attached={attached} classNames={{ root: "r" }}>
+        <Button>One</Button>
+      </ButtonGroup>,
+    )
+    expect(screen.getByRole("group")).toHaveClass("r")
+  })
+})
+
+describe("SubmitButton asChild", () => {
+  const Custom = (props: React.ComponentProps<"button">) => <button data-custom="" {...props} />
+
+  it("renders the child as the submit button", () => {
+    renderWithOnu(
+      <SubmitButton asChild>
+        <Custom>Save</Custom>
+      </SubmitButton>,
+    )
+    const button = screen.getByRole("button", { name: "Save" })
+    expect(button).toHaveAttribute("data-custom")
+    expect(button).toHaveAttribute("type", "submit")
+    expect(button).not.toHaveAttribute("aria-busy")
+  })
+
+  it("keeps the spinner and blocks submits while processing", async () => {
+    const onSubmit = vi.fn((event: React.FormEvent) => event.preventDefault())
+    renderWithOnu(
+      <form onSubmit={onSubmit}>
+        <SubmitButton asChild processing>
+          <Custom>Save</Custom>
+        </SubmitButton>
+      </form>,
+    )
+    const button = screen.getByRole("button", { name: "Save" })
+    expect(button).toHaveAttribute("aria-busy", "true")
+    expect(button.querySelector('[data-slot="button-spinner"]')).toBeInTheDocument()
+    await userEvent.click(button)
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  it("shows loadingText inside the child", () => {
+    renderWithOnu(
+      <SubmitButton asChild processing loadingText="Saving">
+        <Custom>Save</Custom>
+      </SubmitButton>,
+    )
+    const button = screen.getByRole("button", { name: "Saving" })
+    expect(button).toHaveAttribute("data-custom")
+    expect(button.querySelector('[data-slot="button-spinner"]')).toBeInTheDocument()
+  })
+})

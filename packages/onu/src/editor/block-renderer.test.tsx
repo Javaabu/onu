@@ -3,7 +3,8 @@ import { fireEvent, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../test/utils"
-import { detectDirection, isSafeImageUrl, isSafeUrl, normalizeUrl, toEmbedUrl } from "./_schema"
+import { isSafeUrl, normalizeUrl } from "../lib/url"
+import { detectDirection, isSafeImageUrl, toEmbedUrl } from "./_schema"
 import { BlockRenderer } from "./block-renderer"
 
 /** axe-core cannot message iframes in jsdom; check everything else. */
@@ -278,5 +279,27 @@ describe("URL safety helpers", () => {
     expect(toEmbedUrl("ftp://youtube.com/watch?v=dQw4w9WgXcQ")).toBeNull()
     expect(toEmbedUrl("not a url")).toBeNull()
     expect(toEmbedUrl(null)).toBeNull()
+  })
+})
+
+describe("BlockRenderer classNames", () => {
+  it("applies them to the root and the default renderers, and updates them", () => {
+    const content: JSONContent = {
+      type: "doc",
+      content: [
+        p(text("See "), text("this", [{ type: "link", attrs: { href: "https://x.mv" } }])),
+        { type: "image", attrs: { src: "https://x.mv/a.png", alt: "A" } },
+        { type: "callout", attrs: { variant: "info" }, content: [p(text("Note"))] },
+      ],
+    }
+    const { container, rerender } = renderWithOnu(
+      <BlockRenderer content={content} classNames={{ root: "r", callout: "c", image: "i", link: "l" }} />,
+    )
+    expect(container.querySelector('[data-slot="block-renderer"]')).toHaveClass("r")
+    expect(container.querySelector('[data-type="callout"]')).toHaveClass("c", "flex")
+    expect(screen.getByRole("img", { name: "A" })).toHaveClass("i")
+    expect(screen.getByRole("link", { name: "this" })).toHaveClass("l")
+    rerender(<BlockRenderer content={content} classNames={{ link: "l2" }} />)
+    expect(screen.getByRole("link", { name: "this" })).toHaveClass("l2")
   })
 })

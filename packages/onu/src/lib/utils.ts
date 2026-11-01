@@ -16,3 +16,9 @@ const twMerge = extendTailwindMerge({
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+/** Wraps a single value in an array. `null`, `undefined` and `""` become `[]`. */
+export function toArray<T>(value: T | T[] | null | undefined): T[] {
+  if (value === null || value === undefined || value === "") return []
+  return Array.isArray(value) ? value : [value]
+}

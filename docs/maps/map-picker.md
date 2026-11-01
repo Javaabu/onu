@@ -17,7 +17,7 @@ Controlled:
 
 ```tsx
 const [value, setValue] = React.useState<LatLng | null>(null)
-<MapPicker value={value} onChange={setValue} />
+<MapPicker value={value} onValueChange={setValue} />
 ```
 
 ## Search
@@ -28,7 +28,7 @@ const [value, setValue] = React.useState<LatLng | null>(null)
 <MapPicker search={async (query, { signal }) => (await fetch(`/api/places?q=${query}`, { signal })).json()} thaana />
 ```
 
-The search box is also available on its own as `PlaceSearchBox`, and its state as the `usePlaceSearchBox({ search, minLength, debounce })` hook (debounced; older requests aborted with `AbortController`).
+The search box is also available on its own as `PlaceSearchBox`, and its state as the `usePlaceSearchBox({ search, minChars, debounce })` hook (debounced; older requests aborted with `AbortController`).
 
 :::info No API key?
 Without a Google Maps API key the map renders a labelled **schematic preview** (no tiles, no network) instead of crashing. Everything else, including the text alternative, keeps working. See [MapProvider](./map-provider).
@@ -40,7 +40,7 @@ Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provide
 
 | Prop                                  | Type                                     | Default        | Description                                 |
 | ------------------------------------- | ---------------------------------------- | -------------- | ------------------------------------------- |
-| `value` / `defaultValue` / `onChange` | `LatLng \| null`                         |                | The picked point                            |
+| `value` / `defaultValue` / `onValueChange` | `LatLng \| null`                         |                | The picked point                            |
 | `name`                                | `string`                                 | from FormField | Hidden inputs `name[lat]`, `name[lng]`      |
 | `search`                              | `boolean \| PlaceSearch`                 | `true`         | Place search                                |
 | `thaana`                              | `boolean \| ThaanaOptions`               |                | Thaana typing in the search box             |

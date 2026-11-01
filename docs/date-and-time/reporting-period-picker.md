@@ -10,7 +10,7 @@ import { ReportingPeriodPicker, type ReportingPeriod } from "@javaabu/onu"
 
 const [period, setPeriod] = React.useState<ReportingPeriod | null>(null)
 <FormField label="Period" name="period">
-  <ReportingPeriodPicker value={period} onChange={setPeriod} fiscalYearStartMonth={6} />
+  <ReportingPeriodPicker value={period} onValueChange={setPeriod} fiscalYearStartMonth={6} />
 </FormField>
 ```
 
@@ -28,7 +28,7 @@ The value is `{ type, from, to }` where `from` is the first day and `to` the end
 | Prop                     | Type                                       | Default       | Description                       |
 | ------------------------ | ------------------------------------------ | ------------- | --------------------------------- |
 | `value` / `defaultValue` | `ReportingPeriod \| null`                  |               |                                   |
-| `onChange`               | `(value: ReportingPeriod \| null) => void` |               |                                   |
+| `onValueChange`               | `(value: ReportingPeriod \| null) => void` |               |                                   |
 | `types`                  | `ReportingPeriodType[]`                    | all four      | Kinds offered, in order           |
 | `defaultType`            | `ReportingPeriodType`                      | first type    | Kind shown first when empty       |
 | `fiscalYearStartMonth`   | `0–11`                                     | `0` (January) | First month of the financial year |

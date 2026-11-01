@@ -56,7 +56,7 @@ describe("AnnouncementBar", () => {
 
   it("can be non-dismissible with a variant", () => {
     renderWithOnu(
-      <AnnouncementBar dismissible={false} variant="warning" className="custom">
+      <AnnouncementBar dismissible={false} tone="warning" className="custom">
         Maintenance tonight
       </AnnouncementBar>,
     )

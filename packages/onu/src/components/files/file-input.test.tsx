@@ -78,15 +78,17 @@ function Controlled({
 
 describe("FileInput", () => {
   it("is a labelled native file input with a summary", async () => {
-    const onChange = vi.fn()
-    const { container } = renderWithOnu(<FileInput aria-label="Passport copy" onChange={onChange} className="extra" />)
+    const onValueChange = vi.fn()
+    const { container } = renderWithOnu(
+      <FileInput aria-label="Passport copy" onValueChange={onValueChange} className="extra" />,
+    )
     const el = screen.getByLabelText("Passport copy")
     expect(el).toHaveAttribute("type", "file")
     expect(screen.getByText("Choose file")).toBeInTheDocument()
     expect(screen.getByText("No file chosen")).toBeInTheDocument()
     expect(container.querySelector("[data-slot=file-input]")).toHaveClass("extra")
     await user().upload(el, file("passport.pdf"))
-    expect(onChange).toHaveBeenCalledWith([expect.any(File)])
+    expect(onValueChange).toHaveBeenCalledWith([expect.any(File)])
     expect(screen.getAllByText("passport.pdf").length).toBeGreaterThan(0)
     expect(screen.getByRole("list", { name: "Selected files" })).toBeInTheDocument()
     expect(screen.getByText("1 KB")).toBeInTheDocument()
@@ -122,10 +124,10 @@ describe("FileInput", () => {
 
   it("is controlled", async () => {
     function Controlled() {
-      const [files, setFiles] = React.useState<File[]>([file("existing.pdf")])
+      const [files, setFiles] = React.useState<FileInputEntry[]>([file("existing.pdf")])
       return (
         <>
-          <FileInput aria-label="Doc" multiple value={files} onChange={setFiles} />
+          <FileInput aria-label="Doc" multiple value={files} onValueChange={setFiles} />
           <output>{files.length}</output>
         </>
       )
@@ -138,14 +140,19 @@ describe("FileInput", () => {
   })
 
   it("removes files with the keyboard and returns focus to the input", async () => {
-    const onChange = vi.fn()
+    const onValueChange = vi.fn()
     const { container } = renderWithOnu(
-      <FileInput aria-label="Doc" defaultValue={[file("a.pdf"), file("b.pdf")]} multiple onChange={onChange} />,
+      <FileInput
+        aria-label="Doc"
+        defaultValue={[file("a.pdf"), file("b.pdf")]}
+        multiple
+        onValueChange={onValueChange}
+      />,
     )
     const remove = screen.getByRole("button", { name: "Remove a.pdf" })
     remove.focus()
     await userEvent.keyboard("{Enter}")
-    expect(onChange).toHaveBeenCalledWith([expect.objectContaining({ name: "b.pdf" })])
+    expect(onValueChange).toHaveBeenCalledWith([expect.objectContaining({ name: "b.pdf" })])
     expect(input(container)).toHaveFocus()
   })
 
@@ -194,16 +201,23 @@ describe("FileInput", () => {
 
 describe("FileInput append and showLimits", () => {
   it("adds to the selection, skips duplicates and enforces maxFiles", async () => {
-    const onChange = vi.fn()
+    const onValueChange = vi.fn()
     const { container } = renderWithOnu(
-      <FileInput append showLimits aria-label="Documents" maxFiles={2} maxSize={1024 * 1024} onChange={onChange} />,
+      <FileInput
+        append
+        showLimits
+        aria-label="Documents"
+        maxFiles={2}
+        maxSize={1024 * 1024}
+        onValueChange={onValueChange}
+      />,
     )
     expect(screen.getByText("Up to 2 files · 1 MB max each")).toBeInTheDocument()
     expect(screen.getByText("0 of 2")).toBeInTheDocument()
     const a = file("a.pdf")
     await user().upload(input(container), a)
     await user().upload(input(container), [a, file("b.pdf"), file("c.pdf")])
-    expect(onChange).toHaveBeenLastCalledWith([
+    expect(onValueChange).toHaveBeenLastCalledWith([
       expect.objectContaining({ name: "a.pdf" }),
       expect.objectContaining({ name: "b.pdf" }),
     ])
@@ -231,13 +245,13 @@ describe("FileInput append and showLimits", () => {
 
 describe("FileInput appearance=dropzone", () => {
   it("is named by its button, takes the keyboard and collects files without an uploader", async () => {
-    const onChange = vi.fn()
+    const onValueChange = vi.fn()
     const onFilesAdded = vi.fn()
     const { container } = renderWithOnu(
       <FileInput
         appearance="dropzone"
         multiple
-        onChange={onChange}
+        onValueChange={onValueChange}
         onFilesAdded={onFilesAdded}
         accept=".pdf"
         className="extra"
@@ -252,11 +266,11 @@ describe("FileInput appearance=dropzone", () => {
     await userEvent.tab()
     expect(el).toHaveFocus()
     await user().upload(el, [file("a.pdf"), file("b.png", 10, "image/png")])
-    expect(onChange).toHaveBeenCalledWith([expect.objectContaining({ name: "a.pdf" })])
+    expect(onValueChange).toHaveBeenCalledWith([expect.objectContaining({ name: "a.pdf" })])
     expect(onFilesAdded).toHaveBeenCalled()
     expect(screen.getByText("b.png is not an accepted file type.")).toBeInTheDocument()
     await userEvent.click(screen.getByRole("button", { name: "Remove a.pdf" }))
-    expect(onChange).toHaveBeenLastCalledWith([])
+    expect(onValueChange).toHaveBeenLastCalledWith([])
     expect(el).toHaveFocus()
     expect(screen.getByText("a.pdf removed")).toBeInTheDocument()
     await expectNoA11yViolations()
@@ -396,21 +410,12 @@ describe("FileInput value with stored files", () => {
 
   it("adds picked files to a controlled value next to existing ones", async () => {
     const onValueChange = vi.fn()
-    const onChange = vi.fn()
     const { container } = renderWithOnu(
-      <Controlled
-        appearance="dropzone"
-        multiple
-        initial={[permit]}
-        onValueChange={onValueChange}
-        onChange={onChange}
-        maxFiles={3}
-      />,
+      <Controlled appearance="dropzone" multiple initial={[permit]} onValueChange={onValueChange} maxFiles={3} />,
     )
     const receipt = file("receipt.pdf")
     await user().upload(input(container), [receipt])
     expect(onValueChange).toHaveBeenLastCalledWith([permit, expect.any(File)])
-    expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ name: "receipt.pdf" })])
     expect(screen.getByText("receipt.pdf")).toBeInTheDocument()
     // Picking the same file again is ignored; existing files count toward maxFiles.
     await user().upload(input(container), [receipt, file("a.pdf"), file("b.pdf")])
@@ -422,7 +427,7 @@ describe("FileInput value with stored files", () => {
     ])
 
     await userEvent.click(screen.getByRole("button", { name: "Remove receipt.pdf" }))
-    expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ name: "a.pdf" })])
+    expect(onValueChange).toHaveBeenLastCalledWith([permit, expect.objectContaining({ name: "a.pdf" })])
     await userEvent.click(screen.getByRole("button", { name: "Clear all" }))
     expect(screen.queryByRole("list", { name: "Selected files" })).not.toBeInTheDocument()
   })
@@ -525,11 +530,11 @@ describe("FileInput value with stored files", () => {
   })
 
   it("keeps the uncontrolled behaviour without value props", async () => {
-    const onChange = vi.fn()
-    const { container } = renderWithOnu(<FileInput appearance="dropzone" multiple onChange={onChange} />)
+    const onValueChange = vi.fn()
+    const { container } = renderWithOnu(<FileInput appearance="dropzone" multiple onValueChange={onValueChange} />)
     expect(screen.queryByRole("list")).not.toBeInTheDocument()
     await user().upload(input(container), [file("a.pdf")])
-    expect(onChange).toHaveBeenCalledWith([expect.objectContaining({ name: "a.pdf" })])
+    expect(onValueChange).toHaveBeenCalledWith([expect.objectContaining({ name: "a.pdf" })])
     expect(container.querySelector("input[type=hidden]")).toBeNull()
   })
 
@@ -599,18 +604,18 @@ describe("FileInput uploads", () => {
   })
 
   it("collects files without an uploader in append mode, skipping duplicates", async () => {
-    const onChange = vi.fn()
-    const { container } = renderWithOnu(<FileInput append aria-label="Files" onChange={onChange} />)
+    const onValueChange = vi.fn()
+    const { container } = renderWithOnu(<FileInput append aria-label="Files" onValueChange={onValueChange} />)
     const a = file("a.pdf")
     await user().upload(input(container), [a])
-    expect(onChange).toHaveBeenLastCalledWith([a])
+    expect(onValueChange).toHaveBeenLastCalledWith([a])
     expect(input(container)).toHaveAccessibleDescription("a.pdf")
     await user().upload(input(container), [a, file("b.pdf")])
-    expect(onChange).toHaveBeenLastCalledWith([a, expect.objectContaining({ name: "b.pdf" })])
+    expect(onValueChange).toHaveBeenLastCalledWith([a, expect.objectContaining({ name: "b.pdf" })])
     expect(screen.getByText("2 files selected")).toBeInTheDocument()
     expect(within(screen.getByRole("list", { name: "Selected files" })).getAllByRole("listitem")).toHaveLength(2)
     await userEvent.click(screen.getByRole("button", { name: "Remove a.pdf" }))
-    expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ name: "b.pdf" })])
+    expect(onValueChange).toHaveBeenLastCalledWith([expect.objectContaining({ name: "b.pdf" })])
     expect(input(container)).toHaveFocus()
   })
 
@@ -854,5 +859,14 @@ describe("FileIcon", () => {
     expect(icons[1]).toHaveAttribute("data-kind", "pdf")
     expect(icons[1]).toHaveClass("x", "size-12")
     expect(screen.getByRole("img", { name: "PDF" })).toBeInTheDocument()
+  })
+})
+
+describe("FileIcon classNames", () => {
+  it("applies them to the root and icon", () => {
+    const { container } = renderWithOnu(<FileIcon name="a.pdf" classNames={{ root: "r", icon: "i" }} />)
+    const root = container.querySelector('[data-slot="file-icon"]')
+    expect(root).toHaveClass("r")
+    expect(root?.querySelector("svg")).toHaveClass("i")
   })
 })

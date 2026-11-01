@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Command as CommandPrimitive } from "cmdk"
 
+import { useAsyncSearch } from "../../hooks/use-async-search"
 import { Icon } from "../../icons/icon"
 import type { SemanticIconName } from "../../icons/types"
 import { cn } from "../../lib/utils"
@@ -12,10 +13,10 @@ import { Button } from "../../ui/button"
 import { Kbd } from "../../ui/kbd"
 import { ThaanaToggle } from "../inputs/thaana-toggle"
 import { ModalContent, ModalDescription, ModalRoot, ModalTitle, ModalTrigger } from "./modal"
-import { useControllableState } from "./_use-controllable-state"
 import { registerEnglish } from "../../i18n/english"
 import { common as en_common } from "../../locales/en/common"
 import { overlay as en_overlay } from "../../locales/en/overlay"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ common: en_common, overlay: en_overlay })
 
@@ -66,10 +67,10 @@ export interface CommandPaletteProps {
     context: CommandPaletteSearchContext,
   ) => Promise<CommandPaletteItem[] | CommandPaletteGroup[]>
   searchHeading?: React.ReactNode
-  /** Debounce for `search` in ms. Default 250. */
+  /** Debounce for `search` in ms. Default 300. */
   debounce?: number
   /** Minimum query length before `search` runs. Default 1. */
-  minQueryLength?: number
+  minChars?: number
   /** Remember chosen items and show them when the query is empty. Default `true`. */
   recent?: boolean | { storageKey?: string; max?: number }
   /** Key that opens the palette with ⌘ (macOS) or Ctrl. `false` disables it. Default `"k"`. */
@@ -77,8 +78,8 @@ export interface CommandPaletteProps {
   /** Type Thaana in the search box (R13.3). */
   thaana?: ThaanaProp
   placeholder?: string
-  /** Accessible title of the dialog. Default "Command palette". */
-  title?: string
+  /** Accessible name of the dialog. Default "Command palette". */
+  label?: string
   /** Shown when nothing matches. Receives the query. */
   emptyMessage?: (query: string) => React.ReactNode
   /** Show the key hints footer (hidden on touch screens). Default `true`. */
@@ -139,14 +140,6 @@ function isGroupList(value: CommandPaletteItem[] | CommandPaletteGroup[]): value
   return value.length > 0 && "items" in value[0]!
 }
 
-interface AsyncResult {
-  query: string
-  groups: CommandPaletteGroup[]
-  error: boolean
-}
-
-const NO_RESULT: AsyncResult = { query: "\u0000", groups: [], error: false }
-
 const isMac = () => typeof navigator !== "undefined" && /Mac|iPhone|iPad|iPod/.test(navigator.platform ?? "")
 
 /**
@@ -163,13 +156,13 @@ export function CommandPalette({
   groups = [],
   search,
   searchHeading,
-  debounce = 250,
-  minQueryLength = 1,
+  debounce,
+  minChars = 1,
   recent = true,
   shortcut = "k",
   thaana,
   placeholder,
-  title,
+  label,
   emptyMessage,
   footer = true,
   onNavigate,
@@ -181,9 +174,7 @@ export function CommandPalette({
   const { t } = useTranslation()
   const [open, setOpenState] = useControllableState(openProp, defaultOpen, onOpenChange)
   const [query, setQuery] = React.useState("")
-  const [result, setResult] = React.useState<AsyncResult>(NO_RESULT)
   const [known, setKnown] = React.useState<Record<string, CommandPaletteItem>>({})
-  const [attempt, setAttempt] = React.useState(0)
   const inputRef = React.useRef<HTMLInputElement>(null)
   const { fieldProps, active: thaanaActive, enabled: thaanaEnabled, toggle } = useThaanaField(inputRef, thaana)
 
@@ -213,39 +204,38 @@ export function CommandPalette({
   }, [shortcut, open, setOpen])
 
   const trimmed = query.trim()
-  const searching = !!search && open && trimmed.length >= minQueryLength
+  const searching = !!search && open && trimmed.length >= minChars
 
-  // Debounced async search; a newer query (or closing) aborts the older request.
-  React.useEffect(() => {
-    if (!searching || !search) return
-    const controller = new AbortController()
-    const timer = setTimeout(() => {
-      search(trimmed, { signal: controller.signal }).then(
-        (value) => {
-          if (controller.signal.aborted) return
-          const list = value ?? []
-          const resultGroups = isGroupList(list) ? list : [{ id: "search", heading: searchHeading, items: list }]
-          setResult({ query: trimmed, groups: resultGroups, error: false })
+  // Remembers every item seen, so a recent item from an old search still resolves.
+  const runSearch = React.useMemo(
+    () =>
+      search &&
+      (async (q: string, options: { signal: AbortSignal }) => {
+        const list = (await search(q, options)) ?? []
+        const resultGroups = isGroupList(list) ? list : [{ id: "search", heading: searchHeading, items: list }]
+        if (!options.signal.aborted) {
           setKnown((prev) => {
             const next = { ...prev }
             for (const group of resultGroups) for (const item of group.items) next[item.id] = item
             return next
           })
-        },
-        () => {
-          if (controller.signal.aborted) return
-          setResult({ query: trimmed, groups: [], error: true })
-        },
-      )
-    }, debounce)
-    return () => {
-      clearTimeout(timer)
-      controller.abort()
-    }
-  }, [searching, search, trimmed, debounce, searchHeading, attempt])
-
-  const loading = searching && result.query !== trimmed
-  const failed = searching && !loading && result.error
+        }
+        return resultGroups
+      }),
+    [search, searchHeading],
+  )
+  const {
+    data: resultGroups,
+    status: searchStatus,
+    pending: loading,
+    retry,
+  } = useAsyncSearch<CommandPaletteGroup[]>({
+    search: runSearch,
+    query: trimmed,
+    enabled: searching,
+    delay: debounce,
+  })
+  const failed = !loading && searchStatus === "error"
 
   const staticGroups = React.useMemo(
     () =>
@@ -266,7 +256,8 @@ export function CommandPalette({
     return recentIds.map((id) => lookup.get(id) ?? known[id]).filter((item): item is CommandPaletteItem => !!item)
   }, [recent, trimmed, groups, recentIds, known])
 
-  const asyncGroups = searching && !loading ? result.groups.filter((group) => group.items.length > 0) : []
+  const asyncGroups =
+    searching && !loading && !failed ? (resultGroups ?? []).filter((group) => group.items.length > 0) : []
   const visible: CommandPaletteGroup[] = [
     ...(recentItems.length ? [{ id: "recent", heading: t("overlay.recent"), items: recentItems }] : []),
     ...staticGroups,
@@ -303,17 +294,17 @@ export function CommandPalette({
     <ModalRoot open={open} onOpenChange={setOpen}>
       {trigger ? <ModalTrigger asChild>{trigger}</ModalTrigger> : null}
       <ModalContent
-        size="md"
+        size="default"
         mobile="fullscreen"
         data-slot="command-palette"
         className={cn("sm:top-[12vh] sm:translate-y-0 sm:data-open:slide-in-from-top-2", className)}
       >
-        <ModalTitle className="sr-only">{title ?? t("overlay.commandPalette")}</ModalTitle>
+        <ModalTitle className="sr-only">{label ?? t("overlay.commandPalette")}</ModalTitle>
         <ModalDescription className="sr-only">{t("overlay.commandPaletteDescription")}</ModalDescription>
         <CommandPrimitive
           shouldFilter={false}
           loop
-          label={title ?? t("overlay.commandPalette")}
+          label={label ?? t("overlay.commandPalette")}
           className="min-h-0 flex flex-1 flex-col"
         >
           <div
@@ -393,14 +384,7 @@ export function CommandPalette({
             {failed ? (
               <div data-slot="command-palette-error" className="gap-3 py-6 text-sm flex flex-col items-center">
                 <p className="text-destructive">{t("overlay.searchFailed")}</p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setResult(NO_RESULT)
-                    setAttempt((n) => n + 1)
-                  }}
-                >
+                <Button variant="outline" size="sm" onClick={retry}>
                   <Icon name="refresh" />
                   {t("common.retry")}
                 </Button>

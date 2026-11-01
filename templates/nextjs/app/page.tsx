@@ -25,7 +25,7 @@ export default async function HomePage() {
 
       <PageTitle title={t.title} action={<LinkButton href="#contact">{t.newApplication}</LinkButton>} />
 
-      <Callout variant="info" title={t.welcome} description={t.welcomeBody} />
+      <Callout tone="info" title={t.welcome} description={t.welcomeBody} />
 
       <Card title={t.recent}>
         <ul className="gap-3 flex flex-col">

@@ -151,8 +151,8 @@ export default function UsersPage() {
       label: tr("Change role", "ރޯލް ބަދަލުކުރޭ"),
       icon: "edit",
       defaultValue: "officer",
-      form: ({ id, value, onChange }) => (
-        <Select id={id} size="sm" options={roleOptions} value={value ?? ""} onValueChange={(v) => onChange(v)} />
+      form: ({ id, value, onValueChange }) => (
+        <Select id={id} size="sm" options={roleOptions} value={value ?? ""} onValueChange={(v) => onValueChange(v)} />
       ),
       run: async (ids, role) => {
         await wait()

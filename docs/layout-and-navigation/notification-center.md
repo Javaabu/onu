@@ -20,11 +20,11 @@ Notifications are data you own (from Laravel's database notifications, a websock
 
 ## Items
 
-`{ id, title, description?, time?, read?, href?, icon?, variant? }`
+`{ id, title, description?, time?, read?, href?, icon?, tone? }`
 
 - `time` (`Date`, ISO string or timestamp) is shown as relative time in the active locale ("about 1 hour ago", Dhivehi in `dv`).
 - `href` makes the row a link (through `OnuProvider linkComponent`); following it closes the list.
-- `variant`: `default | success | warning | error | info` tints the icon.
+- `tone`: `neutral | info | success | warning | danger` tints the icon.
 - Clicking an unread item calls `onMarkRead` (turn off with `markReadOnClick={false}`).
 
 ## Props
@@ -42,6 +42,8 @@ Notifications are data you own (from Laravel's database notifications, a websock
 | `markReadOnClick`                       | `boolean`                                 | `true`    | Mark read when clicked                         |
 | `now`                                   | `Date`                                    |           | Reference time (tests, SSR)                    |
 | `classNames`                            | `{ trigger, count, content, list, item }` |           | Classes for each part                          |
+
+Other `<button>` props and `ref` go to the bell button.
 
 ## Accessibility
 

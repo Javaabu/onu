@@ -7,7 +7,7 @@ import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
 import { Textarea as BaseTextarea } from "../../ui/textarea"
 import { useFormFieldControl } from "../form/form-field"
 import { ThaanaToggle } from "./thaana-toggle"
-import { useMergedRef } from "./text-input"
+import { useMergedRef } from "../../hooks/use-merged-ref"
 
 export interface TextareaProps extends React.ComponentProps<"textarea"> {
   thaana?: ThaanaProp

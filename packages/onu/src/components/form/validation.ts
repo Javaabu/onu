@@ -1,4 +1,5 @@
-import { toArray, toDotNotation, type FormErrors } from "./form-context"
+import { toArray } from "../../lib/utils"
+import { toDotNotation, type FormErrors } from "./form-context"
 
 /** Laravel's 422 response body: `{ message, errors: { "items.0.name": ["…"] } }` (R16.3). */
 export interface ValidationPayload {
@@ -66,7 +67,7 @@ export async function readValidationErrors(value: unknown): Promise<ValidationPa
 export function errorEntries(errors: FormErrors | null | undefined): [string, string[]][] {
   if (!errors) return []
   return Object.entries(errors)
-    .map(([name, messages]) => [name, toArray(messages)] as [string, string[]])
+    .map(([name, messages]) => [name, toArray(messages).filter(Boolean)] as [string, string[]])
     .filter(([, messages]) => messages.length > 0)
 }
 

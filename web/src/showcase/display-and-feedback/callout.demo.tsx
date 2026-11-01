@@ -16,29 +16,25 @@ export default function CalloutDemo() {
       <DemoSection title="Variants" className="grid">
         <Callout title="New this month" description="Online passport renewals are now available on eFaas." />
         <Callout
-          variant="info"
+          tone="info"
           title="Office hours"
           description="The Malé service centre is open 8:00–14:00 during Ramazan."
         />
         <Callout
-          variant="success"
+          tone="success"
           title="Application submitted"
           description="Reference APP-2026-00412. We'll email you when it's reviewed."
         />
         <Callout
-          variant="warning"
+          tone="warning"
           title="Permit expires in 5 days"
           description="Renew before 30 June to avoid a MVR 500 late fee."
         />
-        <Callout
-          variant="destructive"
-          title="Payment failed"
-          description="Your card was declined. No money was taken."
-        />
+        <Callout tone="danger" title="Payment failed" description="Your card was declined. No money was taken." />
       </DemoSection>
       <DemoSection title="Actions and dismiss" className="grid">
         <Callout
-          variant="warning"
+          tone="warning"
           dismissible
           title="Unverified email"
           description="Verify aishath@example.mv to receive notifications."
@@ -55,7 +51,7 @@ export default function CalloutDemo() {
       </DemoSection>
       <DemoSection title="Dhivehi" className="grid">
         <Callout
-          variant="info"
+          tone="info"
           title="ރަސްމީ ބަންދު"
           description="ޖުލައި 26 ގައި ހުރިހާ ސަރވިސް ސެންޓަރުތަކެއް ބަންދުވާނެ."
           dismissible
@@ -67,27 +63,27 @@ export default function CalloutDemo() {
         className="grid"
       >
         <Callout appearance="plain">Changes apply from the next billing period.</Callout>
-        <Callout appearance="plain" variant="info">
+        <Callout appearance="plain" tone="info">
           Your documents are reviewed within 3 working days.
         </Callout>
-        <Callout appearance="plain" variant="success">
+        <Callout appearance="plain" tone="success">
           All required documents are attached.
         </Callout>
-        <Callout appearance="plain" variant="warning">
+        <Callout appearance="plain" tone="warning">
           This record is locked while it is being reviewed.
         </Callout>
-        <Callout appearance="plain" variant="destructive">
+        <Callout appearance="plain" tone="danger">
           This action can't be undone.
         </Callout>
       </DemoSection>
       <DemoSection title="Subtle and bordered" className="max-w-lg grid">
-        <Callout appearance="subtle" variant="info" icon="clock">
+        <Callout appearance="subtle" tone="info" icon="clock">
           Last synced with the National Registration Bureau 5 minutes ago.
         </Callout>
-        <Callout appearance="bordered" variant="warning">
+        <Callout appearance="bordered" tone="warning">
           Fees are charged in MVR. Card payments may include a bank fee.
         </Callout>
-        <Callout appearance="bordered" variant="info">
+        <Callout appearance="bordered" tone="info">
           ފޯމު ފުރިހަމަކުރުމަށް 10 މިނެޓު ހޭދަވާނެ.
         </Callout>
       </DemoSection>

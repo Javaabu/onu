@@ -4,7 +4,6 @@ import type { choice as en } from "../en/choice"
 export const choice = {
   placeholder: "އިޚްތިޔާރެއް ކުރައްވާ",
   searchPlaceholder: "ހޯއްދަވާ…",
-  options: "އިޚްތިޔާރުތައް",
   showOptions: "އިޚްތިޔާރުތައް ދައްކާ",
   noOptions: "އެއްވެސް އިޚްތިޔާރެއް ނެތް",
   clearSelection: "އިޚްތިޔާރު ފޮހެލައްވާ",
@@ -32,7 +31,6 @@ export const choice = {
   filterList: "{list} ފިލްޓަރ ކުރައްވާ",
   minimum: "އެންމެ ކުޑަ",
   maximum: "އެންމެ ބޮޑު",
-  rating: "ރޭޓިންގ",
   ratingValue: "{max} ތަރިން {value}",
   notRated: "ރޭޓިންގ ދީފައެއް ނެތް",
   switchAccount: "އެކައުންޓް ބަދަލުކުރައްވާ",

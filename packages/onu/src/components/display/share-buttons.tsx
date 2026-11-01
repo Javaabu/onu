@@ -6,7 +6,7 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
-import { useCopyToClipboard } from "./_utils"
+import { useCopyToClipboard } from "../../hooks/use-copy-to-clipboard"
 import { registerEnglish } from "../../i18n/english"
 import { display as en_display } from "../../locales/en/display"
 
@@ -81,6 +81,7 @@ export interface ShareButtonsProps extends Omit<React.ComponentProps<"div">, "ti
   variant?: "outline" | "ghost" | "secondary"
   /** Called after a share action (`native`, a network, or `copy`). */
   onShare?: (network: ShareNetwork | "native") => void
+  classNames?: { root?: string; button?: string; icon?: string }
 }
 
 /**
@@ -99,10 +100,12 @@ export function ShareButtons({
   variant = "outline",
   onShare,
   className,
+  classNames,
   ...props
 }: ShareButtonsProps) {
   const { t } = useTranslation()
-  const { copied, copy } = useCopyToClipboard()
+  const { status, copy } = useCopyToClipboard()
+  const copied = status === "copied"
   const hasNative = React.useSyncExternalStore(noopSubscribe, canNativeShare, () => false)
   const url = urlProp ?? (typeof window !== "undefined" ? window.location.href : "")
   const showNative = native !== "never" && hasNative
@@ -132,7 +135,7 @@ export function ShareButtons({
       role="group"
       aria-label={t("display.share")}
       data-slot="share-buttons"
-      className={cn("gap-2 flex flex-wrap items-center", className)}
+      className={cn("gap-2 flex flex-wrap items-center", classNames?.root, className)}
       {...props}
     >
       {showNative ? (
@@ -140,11 +143,11 @@ export function ShareButtons({
           type="button"
           variant={variant}
           size={buttonSize}
-          className={touch}
+          className={cn(touch, classNames?.button)}
           onClick={() => void shareNative()}
           aria-label={iconOnly ? t("display.share") : undefined}
         >
-          {icons?.native ?? <Icon name="share" data-icon="inline-start" />}
+          {icons?.native ?? <Icon name="share" data-icon="inline-start" className={classNames?.icon} />}
           {iconOnly ? null : t("display.share")}
         </Button>
       ) : null}
@@ -156,7 +159,7 @@ export function ShareButtons({
                 type="button"
                 variant={variant}
                 size={buttonSize}
-                className={touch}
+                className={cn(touch, classNames?.button)}
                 data-network={network}
                 aria-label={iconOnly ? label(network) : undefined}
                 onClick={() =>
@@ -165,11 +168,19 @@ export function ShareButtons({
                   })
                 }
               >
-                {icons?.copy ?? <Icon name={copied ? "check" : ICONS.copy} data-icon="inline-start" />}
+                {icons?.copy ?? (
+                  <Icon name={copied ? "check" : ICONS.copy} data-icon="inline-start" className={classNames?.icon} />
+                )}
                 {iconOnly ? null : visibleLabel(network)}
               </Button>
             ) : (
-              <Button key={network} asChild variant={variant} size={buttonSize} className={touch}>
+              <Button
+                key={network}
+                asChild
+                variant={variant}
+                size={buttonSize}
+                className={cn(touch, classNames?.button)}
+              >
                 <a
                   href={shareUrl(network, url, title, text)}
                   target={network === "email" ? undefined : "_blank"}
@@ -179,7 +190,9 @@ export function ShareButtons({
                   title={iconOnly ? label(network) : undefined}
                   onClick={() => onShare?.(network)}
                 >
-                  {icons?.[network] ?? <Icon name={ICONS[network]} data-icon="inline-start" />}
+                  {icons?.[network] ?? (
+                    <Icon name={ICONS[network]} data-icon="inline-start" className={classNames?.icon} />
+                  )}
                   {iconOnly ? null : visibleLabel(network)}
                 </a>
               </Button>

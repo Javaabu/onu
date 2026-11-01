@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../test/utils"
-import { AvatarUpload, initials } from "./avatar-upload"
+import { AvatarUpload } from "./avatar-upload"
 import { cropImage, cropImageToFile, loadImage, rotatedSize } from "./crop-image"
 import { ImageCropper, type ImageCropperHandle } from "./image-cropper"
 
@@ -181,16 +181,10 @@ describe("AvatarUpload", () => {
   const pick = (container: HTMLElement) => container.querySelector<HTMLInputElement>("input[type=file]")!
   const photo = (size = 1000) => new File([new Uint8Array(size)], "me.png", { type: "image/png" })
 
-  it("makes initials", () => {
-    expect(initials("Aishath Shifa Mohamed")).toBe("AS")
-    expect(initials("އަޙްމަދު ނާޒިމް")).toBe("އނ")
-    expect(initials("  ")).toBe("")
-  })
-
   it("shows initials, then crops a picked photo in a dialog and returns focus", async () => {
     mockCanvas()
     const onChange = vi.fn()
-    const { container } = renderWithOnu(<AvatarUpload personName="Aishath Shifa" onChange={onChange} />)
+    const { container } = renderWithOnu(<AvatarUpload personName="Aishath Shifa" onValueChange={onChange} />)
     expect(screen.getByRole("img", { name: "Aishath Shifa (no photo)" })).toHaveTextContent("AS")
     const change = screen.getByRole("button", { name: "Upload photo" })
     const click = vi.spyOn(pick(container), "click")
@@ -214,7 +208,7 @@ describe("AvatarUpload", () => {
 
   it("falls back to the original file when cropping fails, and can cancel", async () => {
     const onChange = vi.fn()
-    const { container } = renderWithOnu(<AvatarUpload personName="Ali" onChange={onChange} size="xl" />)
+    const { container } = renderWithOnu(<AvatarUpload personName="Ali" onValueChange={onChange} size="xl" />)
     await userEvent.upload(pick(container), photo())
     await userEvent.click(await screen.findByRole("button", { name: "Cancel" }))
     expect(onChange).not.toHaveBeenCalled()
@@ -232,7 +226,7 @@ describe("AvatarUpload", () => {
         defaultValue="/ali.jpg"
         crop={false}
         maxSize={500}
-        onChange={onChange}
+        onValueChange={onChange}
         onReject={onReject}
       />,
     )

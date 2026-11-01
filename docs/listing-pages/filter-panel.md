@@ -104,6 +104,7 @@ Every definition also accepts `render` (replace the built-in control) and `forma
 | `value`                 | `FilterValues`                                             |                 | Applied filters                        |
 | `onApply`               | `(filters) => void`                                        |                 | Apply (and `{}` on Clear all)          |
 | `open` / `onOpenChange` | `boolean` / `(open) => void`                               |                 | Controlled open state                  |
+| `defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled |
 | `sheet`                 | `boolean`                                                  | below 768px     | Force the bottom sheet or the dropdown |
 | `trigger`               | `ReactNode`                                                | Filters + count | Button content                         |
 | `align`                 | `"start" \| "center" \| "end"`                             | `"start"`       | Dropdown alignment                     |
@@ -115,7 +116,7 @@ Every definition also accepts `render` (replace the built-in control) and `forma
 
 ## Accessibility
 
-The panel is a `dialog` named "Filters"; each filter's control is labelled by its name. The button's name includes the count ("Filters, 2 applied"). Focus returns to the button when the panel closes.
+The panel is a `dialog` named "Filters"; each filter's control is labelled by its name. The button's name includes the count ("Filters, 2 applied"). Changes to the applied filters are announced ("2 filters applied", "Filters cleared"). Focus returns to the button when the panel closes.
 
 | Key               | Action                                   |
 | ----------------- | ---------------------------------------- |

@@ -211,7 +211,7 @@ function GoogleMarker({
   )
 }
 
-function GoogleCircle({ center, radius, tone = "primary", editable, onChange }: AdapterCircleProps) {
+function GoogleCircle({ center, radius, tone = "primary", editable, onValueChange }: AdapterCircleProps) {
   const { colors } = useMapEngine()
   const color = colors[tone]
   const latest = React.useRef({ center, radius })
@@ -229,12 +229,12 @@ function GoogleCircle({ center, radius, tone = "primary", editable, onChange }: 
       fillColor={color}
       fillOpacity={0.15}
       onRadiusChanged={(r) => {
-        if (Math.abs(r - latest.current.radius) > 0.5) onChange?.({ center: latest.current.center, radius: r })
+        if (Math.abs(r - latest.current.radius) > 0.5) onValueChange?.({ center: latest.current.center, radius: r })
       }}
       onCenterChanged={(c) => {
         const next = c?.toJSON()
         if (next && (next.lat !== latest.current.center.lat || next.lng !== latest.current.center.lng))
-          onChange?.({ center: next, radius: latest.current.radius })
+          onValueChange?.({ center: next, radius: latest.current.radius })
       }}
     />
   )
@@ -319,7 +319,7 @@ function toFeatures(shapes: DrawShape[], kind: "polygon" | "linestring") {
 function GoogleDraw({
   kind,
   shapes,
-  onChange,
+  onValueChange,
   onFinish,
   mode,
   selectedId,
@@ -333,9 +333,9 @@ function GoogleDraw({
   // Set while the value is pushed into terra-draw: its `clear()` reports a delete,
   // which must not be echoed back as the user removing every shape.
   const syncing = React.useRef(false)
-  const callbacks = React.useRef({ onChange, onSelect, onFinish })
+  const callbacks = React.useRef({ onValueChange, onSelect, onFinish })
   React.useEffect(() => {
-    callbacks.current = { onChange, onSelect, onFinish }
+    callbacks.current = { onValueChange, onSelect, onFinish }
   })
   const color = colors[tone]
 
@@ -397,7 +397,7 @@ function GoogleDraw({
         if (!instance) return
         const next = shapesFromSnapshot(instance.getSnapshot(), kind)
         lastEmitted.current = JSON.stringify(next)
-        callbacks.current.onChange(next)
+        callbacks.current.onValueChange(next)
       }
       instance.on("finish", (id, context) => {
         emit()

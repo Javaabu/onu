@@ -23,7 +23,7 @@ Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provide
 
 | Prop                                  | Type                                                                                          | Default   | Description                                       |
 | ------------------------------------- | --------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------- |
-| `value` / `defaultValue` / `onChange` | `MaldivesAddress`                                                                             | `{}`      | `{ atoll?, island?, road?, house?, location? }`   |
+| `value` / `defaultValue` / `onValueChange` | `MaldivesAddress`                                                                             | `{}`      | `{ atoll?, island?, road?, house?, location? }`   |
 | `name`                                | `string`                                                                                      |           | Field name prefix                                 |
 | `islands`                             | `AddressIsland[]`                                                                             |           | Island options                                    |
 | `pin`                                 | `boolean`                                                                                     | `false`   | Map pin picker                                    |

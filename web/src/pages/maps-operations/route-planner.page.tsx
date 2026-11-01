@@ -177,7 +177,7 @@ export default function RoutePlannerPage() {
               <Select value={vessel} onValueChange={(v) => setVessel(v as VesselType)} options={vessels} />
             </FormField>
             <FormField label={tr("Departure", "ފުރާ ގަޑި")} name="departure">
-              <TimePicker value={departure} onChange={setDeparture} hourCycle={24} minuteStep={15} />
+              <TimePicker value={departure} onValueChange={setDeparture} hourCycle={24} minuteStep={15} />
             </FormField>
           </FormGroup>
         </Card>
@@ -217,7 +217,7 @@ export default function RoutePlannerPage() {
             <FormField label={tr("Stops", "ސްޓޮޕްތައް")} name="stops" hideLabel>
               <RouteStopEditor
                 value={stops}
-                onChange={changeStops}
+                onValueChange={changeStops}
                 name="stops"
                 max={8}
                 zoom={9}
@@ -248,7 +248,7 @@ export default function RoutePlannerPage() {
                 <MapRoute
                   key={pathKey}
                   value={path}
-                  onChange={(next) => {
+                  onValueChange={(next) => {
                     setPath(next)
                     setCustomised(true)
                   }}
@@ -258,7 +258,7 @@ export default function RoutePlannerPage() {
                 />
               </FormField>
               {customised && stretch > 1.001 ? (
-                <Callout appearance="bordered" variant="info" icon="info">
+                <Callout appearance="bordered" tone="info" icon="info">
                   {tr(
                     `The detours add ${formatDistance(sailed - straight, t, locale.numberLocale)} to the trip.`,
                     `މަގު ބަދަލުކުރުމުން ${formatDistance(sailed - straight, t, locale.numberLocale)} އިތުރުވޭ.`,

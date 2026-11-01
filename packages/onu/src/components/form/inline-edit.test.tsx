@@ -124,7 +124,7 @@ describe("InlineEdit", () => {
   it("is controlled, multiline (Ctrl+Enter saves) and reports changes", async () => {
     function Controlled() {
       const [value, setValue] = React.useState("Line 1")
-      return <InlineEdit label="Notes" value={value} onSave={setValue} multiline onChange={changes} />
+      return <InlineEdit label="Notes" value={value} onSave={setValue} multiline onValueChange={changes} />
     }
     const changes = vi.fn()
     renderWithOnu(<Controlled />)

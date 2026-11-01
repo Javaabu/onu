@@ -7,11 +7,11 @@ import { cn } from "../../lib/utils"
 import { useOnu } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { PeriodGrid, type GridItem } from "./_period-grid"
-import { useControllableState } from "./_use-controllable-state"
 import { pad2, wrap, type TimeValue } from "./_utils"
 import { registerEnglish } from "../../i18n/english"
 import { common as en_common } from "../../locales/en/common"
 import { date as en_date } from "../../locales/en/date"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ common: en_common, date: en_date })
 
@@ -20,7 +20,7 @@ export type TimePanelView = "steppers" | "hours" | "minutes"
 export interface TimePanelProps {
   /** Selected time. `null` shows "--" until the user picks something. */
   value: TimeValue | null
-  onChange: (value: TimeValue) => void
+  onValueChange: (value: TimeValue) => void
   /** 12-hour (with AM/PM) or 24-hour. Defaults to the locale's hour cycle. */
   hourCycle?: 12 | 24
   /** Minutes between cells in the minute grid. Default 5. */
@@ -43,7 +43,7 @@ const EMPTY: TimeValue = { hours: 0, minutes: 0 }
  */
 export function TimePanel({
   value,
-  onChange,
+  onValueChange,
   hourCycle: hourCycleProp,
   minuteStep = 5,
   view: viewProp,
@@ -73,7 +73,7 @@ export function TimePanel({
   const displayHour = twelve ? (current.hours % 12 === 0 ? 12 : current.hours % 12) : current.hours
   const periodLabel = pm ? t("date.pm") : t("date.am")
 
-  const set = (next: Partial<TimeValue>) => onChange({ ...current, ...next })
+  const set = (next: Partial<TimeValue>) => onValueChange({ ...current, ...next })
   const stepHour = (delta: number) => set({ hours: wrap(current.hours + delta, 24) })
   const stepMinute = (delta: number) => set({ minutes: wrap(current.minutes + delta, 60) })
   const setPeriod = (toPm: boolean) => {

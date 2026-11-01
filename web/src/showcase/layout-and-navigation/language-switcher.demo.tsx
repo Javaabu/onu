@@ -17,14 +17,14 @@ export default function LanguageSwitcherDemo() {
   return (
     <DemoPage>
       <DemoSection title="Select">
-        <LanguageSwitcher value={settings.locale} onChange={onChange} />
-        <LanguageSwitcher value={settings.locale} onChange={onChange} size="sm" showIcon={false} />
+        <LanguageSwitcher value={settings.locale} onValueChange={onChange} />
+        <LanguageSwitcher value={settings.locale} onValueChange={onChange} size="sm" showIcon={false} />
       </DemoSection>
       <DemoSection title="Toggle">
-        <LanguageSwitcher variant="toggle" value={settings.locale} onChange={onChange} />
+        <LanguageSwitcher variant="toggle" value={settings.locale} onValueChange={onChange} />
       </DemoSection>
       <DemoSection title="Menu">
-        <LanguageSwitcher variant="menu" value={settings.locale} onChange={onChange} />
+        <LanguageSwitcher variant="menu" value={settings.locale} onValueChange={onChange} />
       </DemoSection>
       <DemoSection title="Disabled">
         <LanguageSwitcher disabled />

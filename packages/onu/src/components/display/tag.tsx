@@ -34,7 +34,7 @@ export const tagVariants = cva(
       },
       size: {
         sm: "h-5 px-1.5 text-xs [&_svg]:size-3",
-        md: "h-5.5 px-1.75 text-xs [&_svg]:size-3",
+        default: "h-5.5 px-1.75 text-xs [&_svg]:size-3",
         lg: "h-7 px-2.5 text-sm [&_svg]:size-3.5",
       },
       interactive: {
@@ -42,7 +42,7 @@ export const tagVariants = cva(
         false: "",
       },
     },
-    defaultVariants: { variant: "default", size: "md", interactive: false },
+    defaultVariants: { variant: "default", size: "default", interactive: false },
   },
 )
 
@@ -151,7 +151,7 @@ export function Tag({
       data-slot="tag"
       data-variant={variant ?? "default"}
       data-color={color}
-      data-size={size ?? "md"}
+      data-size={size ?? "default"}
       data-selected={selected || undefined}
       data-disabled={disabled || undefined}
       className={cn(

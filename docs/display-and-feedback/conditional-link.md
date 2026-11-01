@@ -26,6 +26,7 @@ The link uses the `linkComponent` from `OnuProvider` (R16.2), so it works with I
 | `fallbackAs`    | `ElementType`    | `'span'` | Element for the plain-text version  |
 | `className`     | `string`         |          | Classes for both versions           |
 | `linkClassName` | `string`         |          | Classes for the link version only   |
+| `asChild` | `boolean` |  | Render your element as the link; without a link only its content is shown, as plain text |
 
 Other anchor props and `ref` go to the link. Both versions have `data-slot="conditional-link"` and `data-linked="true|false"`.
 

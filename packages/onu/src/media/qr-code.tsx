@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { encode } from "uqr"
 
 import { LiveRegion } from "../a11y/live-region"
-import { useCopy } from "../components/inputs/_shared"
+import { useCopyToClipboard } from "../hooks/use-copy-to-clipboard"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
@@ -306,7 +306,7 @@ export function QrCode({
 }: QrCodeProps) {
   const { t } = useTranslation()
   const svgRef = React.useRef<SVGSVGElement>(null)
-  const { status, copy } = useCopy()
+  const { status, copy } = useCopyToClipboard()
   const [busy, setBusy] = React.useState<QrCodeDownloadFormat | null>(null)
   const logoOptions = typeof logo === "string" ? { src: logo } : logo
   const effectiveLevel: QrCodeLevel = logoOptions ? "H" : level

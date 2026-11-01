@@ -66,6 +66,8 @@ The table always shows the rows it is given (it never sorts or pages by itself):
 | `striped`, `stickyHeader`, `density` | `boolean`, `boolean`, `"compact" \| "default" \| "comfortable"` |                       | Variants (`dataTableVariants`)                        |
 | `classNames`                         | `{ table, header, row, cell, cards, card, footer, toolbar }`    |                       | Classes for each part                                 |
 
+Other `<div>` props and `ref` go to the root.
+
 `DataTableColumn<T>`: `id`, `header` (text), `headerContent?`, `accessor?` (key or function), `cell?`, `sortable?`, `hideable?`, `primary?`, `align?`, `numeric?` (tabular figures, end-aligned), `hideOnCards?`, `className?`, `headerClassName?`.
 
 ## Accessibility
@@ -76,7 +78,7 @@ The table always shows the rows it is given (it never sorts or pages by itself):
 | <kbd>Enter</kbd> / <kbd>Space</kbd> | Sorts by a header, ticks a checkbox, opens a menu           |
 | <kbd>Escape</kbd>                   | Closes a ⋯ menu and returns focus to it                     |
 
-The header checkbox reports `aria-checked="mixed"` when some rows are selected. Selected rows have `aria-selected`. Sort changes and the selected count are announced. Each checkbox is a 24×24px target (WCAG 2.5.8) with the 16px box drawn inside, so it never crowds a sortable first column; on touch screens the hit area grows to 44px.
+The header checkbox reports `aria-checked="mixed"` when some rows are selected. Selected rows have `aria-selected`. Sort changes, the selected count and clearing the selection are announced. Each checkbox is a 24×24px target (WCAG 2.5.8) with the 16px box drawn inside, so it never crowds a sortable first column; on touch screens the hit area grows to 44px.
 
 ## RTL
 

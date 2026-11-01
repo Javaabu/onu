@@ -20,7 +20,7 @@ export default function UserAvatarDemo() {
         <UserAvatar />
       </DemoSection>
       <DemoSection title="Sizes and shapes">
-        {(["xs", "sm", "md", "lg", "xl"] as const).map((size) => (
+        {(["xs", "sm", "default", "lg", "xl"] as const).map((size) => (
           <UserAvatar key={size} name="Aishath Shiuna" size={size} />
         ))}
         <UserAvatar name="Ministry of Health" shape="square" size="lg" />

@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { useAsyncSearch, type AsyncSearchStatus } from "../hooks/use-async-search"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
@@ -20,80 +21,44 @@ export interface UsePlaceSearchBoxOptions {
   /** The search function, e.g. the map engine's geocoder or your own API. `null` disables searching. */
   search: PlaceSearch | null
   /** Minimum characters before searching. Default 2. */
-  minLength?: number
+  minChars?: number
   /** Debounce in ms. Default 300. */
   debounce?: number
 }
 
-export type PlaceSearchStatus = "idle" | "loading" | "done" | "error"
+export type PlaceSearchStatus = AsyncSearchStatus
 
 /**
  * State for a place search box: debounced, and older requests are aborted
  * (`AbortController`) so a slow early response never overwrites a newer one.
  */
-export function usePlaceSearchBox({ search, minLength = 2, debounce = 300 }: UsePlaceSearchBoxOptions) {
+export function usePlaceSearchBox({ search, minChars = 2, debounce }: UsePlaceSearchBoxOptions) {
   const [query, setQueryState] = React.useState("")
-  const [results, setResults] = React.useState<PlaceResult[]>([])
-  const [status, setStatus] = React.useState<PlaceSearchStatus>("idle")
   const searchRef = useLatest(search)
-  const controller = React.useRef<AbortController | null>(null)
-  const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const cancel = React.useCallback(() => {
-    if (timer.current) clearTimeout(timer.current)
-    timer.current = null
-    controller.current?.abort()
-    controller.current = null
-  }, [])
-
-  const run = React.useCallback(
-    (q: string) => {
-      const fn = searchRef.current
-      if (!fn) return
-      controller.current?.abort()
-      const ac = new AbortController()
-      controller.current = ac
-      setStatus("loading")
-      fn(q, { signal: ac.signal }).then(
-        (list) => {
-          if (ac.signal.aborted) return
-          setResults(list)
-          setStatus("done")
-        },
-        () => {
-          if (ac.signal.aborted) return
-          setResults([])
-          setStatus("error")
-        },
-      )
-    },
-    [searchRef],
-  )
+  const stableSearch = React.useCallback<PlaceSearch>((q, options) => searchRef.current!(q, options), [searchRef])
+  const trimmed = query.trim()
+  const { data, status, retry, clear } = useAsyncSearch({
+    search: search ? stableSearch : null,
+    query: trimmed,
+    enabled: trimmed.length > 0 && trimmed.length >= minChars,
+    delay: debounce,
+  })
 
   const setQuery = React.useCallback(
     (q: string) => {
       setQueryState(q)
-      cancel()
-      if (q.trim().length < minLength || !searchRef.current) {
-        setResults([])
-        setStatus("idle")
-        return
-      }
-      timer.current = setTimeout(() => run(q.trim()), debounce)
+      if (q.trim().length < minChars) clear()
     },
-    [cancel, debounce, minLength, run, searchRef],
+    [clear, minChars],
   )
 
   const reset = React.useCallback(() => {
-    cancel()
     setQueryState("")
-    setResults([])
-    setStatus("idle")
-  }, [cancel])
+    clear()
+  }, [clear])
 
-  React.useEffect(() => cancel, [cancel])
-
-  return { query, setQuery, results, status, reset, retry: () => run(query.trim()) }
+  const results: PlaceResult[] = status === "idle" || status === "error" ? [] : (data ?? [])
+  return { query, setQuery, results, status, reset, retry }
 }
 
 export interface PlaceSearchBoxProps {
@@ -104,7 +69,7 @@ export interface PlaceSearchBoxProps {
   thaana?: ThaanaProp
   disabled?: boolean
   className?: string
-  minLength?: number
+  minChars?: number
   debounce?: number
   "aria-label"?: string
 }
@@ -117,14 +82,14 @@ export function PlaceSearchBox({
   thaana,
   disabled,
   className,
-  minLength,
+  minChars,
   debounce,
   "aria-label": ariaLabel,
 }: PlaceSearchBoxProps) {
   const { t } = useTranslation()
   const inputRef = React.useRef<HTMLInputElement>(null)
   const { fieldProps } = useThaanaField(inputRef, thaana)
-  const { query, setQuery, results, status, reset, retry } = usePlaceSearchBox({ search, minLength, debounce })
+  const { query, setQuery, results, status, reset, retry } = usePlaceSearchBox({ search, minChars, debounce })
   const [open, setOpen] = React.useState(false)
   const [active, setActive] = React.useState(-1)
   const listId = React.useId()

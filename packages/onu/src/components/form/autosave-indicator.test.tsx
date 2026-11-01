@@ -127,3 +127,20 @@ describe("useAutosave", () => {
     expect(screen.getByText("No unsaved changes")).toBeInTheDocument()
   })
 })
+
+describe("AutosaveIndicator classNames", () => {
+  it("applies them to the root, icon, label and retry button", () => {
+    const { container } = renderWithOnu(
+      <AutosaveIndicator
+        status="error"
+        onRetry={() => {}}
+        classNames={{ root: "r", icon: "i", label: "l", retry: "t" }}
+      />,
+    )
+    const root = container.querySelector('[data-slot="autosave-indicator"]')
+    expect(root).toHaveClass("r")
+    expect(root?.querySelector("svg")).toHaveClass("i")
+    expect(root?.querySelector("span")).toHaveClass("l")
+    expect(screen.getByRole("button", { name: "Retry" })).toHaveClass("t")
+  })
+})

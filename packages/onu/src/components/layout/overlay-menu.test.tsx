@@ -1,3 +1,4 @@
+import { createRef } from "react"
 import { screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
@@ -54,7 +55,7 @@ describe("OverlayMenu", () => {
     renderWithOnu(
       <OverlayMenu
         items={items}
-        title="Site menu"
+        label="Site menu"
         onOpenChange={onOpenChange}
         trigger={<button type="button">Browse</button>}
         classNames={{ content: "cnt" }}
@@ -80,5 +81,16 @@ describe("OverlayMenu", () => {
     expect(await screen.findByRole("dialog", { name: "މެނޫ" })).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "މެނޫ ބަންދުކުރޭ" })).toBeInTheDocument()
     await expectNoA11yViolations()
+  })
+})
+
+describe("OverlayMenu rest props", () => {
+  it("passes rest props and ref to the overlay", () => {
+    const ref = createRef<HTMLDivElement>()
+    renderWithOnu(<OverlayMenu items={items} defaultOpen ref={ref} data-testid="overlay" />)
+    const overlay = screen.getByRole("dialog")
+    expect(overlay).toBe(ref.current)
+    expect(overlay).toHaveAttribute("data-testid", "overlay")
+    expect(overlay).toHaveAttribute("data-slot", "overlay-menu")
   })
 })

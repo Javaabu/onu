@@ -260,7 +260,7 @@ export default function MenuBuilderPage() {
           size="sm"
         >
           <div className="px-3 py-2 rounded-lg border bg-background">
-            <TopNav items={previewItems} navLabel={tr("Menu preview", "މެނޫ ޕްރިވިއު")} />
+            <TopNav items={previewItems} label={tr("Menu preview", "މެނޫ ޕްރިވިއު")} />
           </div>
         </Card>
 

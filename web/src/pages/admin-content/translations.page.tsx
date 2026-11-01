@@ -85,7 +85,7 @@ export default function TranslationsPage() {
         <Tabs
           variant="line"
           countAppearance="pill"
-          listLabel={tr("Translation groups", "ތަރުޖަމާގެ ބައިތައް")}
+          label={tr("Translation groups", "ތަރުޖަމާގެ ބައިތައް")}
           controls="translations-list"
           value={group}
           onValueChange={setGroup}
@@ -100,7 +100,7 @@ export default function TranslationsPage() {
           <TranslationsEditor
             key={group}
             value={visible}
-            onChange={(next) => setEntries((all) => all.map((e) => next.find((n) => n.key === e.key) ?? e))}
+            onValueChange={(next) => setEntries((all) => all.map((e) => next.find((n) => n.key === e.key) ?? e))}
             locales={locales}
             onSave={async ({ value, key }) => {
               await wait(500)

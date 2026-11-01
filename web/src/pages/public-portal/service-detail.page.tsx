@@ -162,7 +162,7 @@ export default function ServiceDetailPage() {
             </Card>
             <Callout
               className="mt-4"
-              variant="info"
+              tone="info"
               title={tr("Lost passports", "ގެއްލިފައިވާ ޕާސްޕޯޓް")}
               description={tr(
                 `Replacing a lost passport costs an extra ${mvr(250)}.`,

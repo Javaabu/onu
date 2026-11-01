@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
-import { ForgotPasswordForm, RegisterForm, ResetPasswordForm, SignInForm } from "./auth-forms"
+import { SignInForm } from "./sign-in-form"
 
 describe("SignInForm", () => {
   it("submits email, password and remember", async () => {
@@ -55,7 +55,7 @@ describe("SignInForm", () => {
     expect(password).toHaveAttribute("type", "password")
     await userEvent.click(screen.getByRole("button", { name: "Show password" }))
     expect(password).toHaveAttribute("type", "text")
-    expect(screen.getByRole("button", { name: "Hide password" })).toHaveAttribute("aria-pressed", "true")
+    expect(screen.getByRole("button", { name: "Show password" })).toHaveAttribute("aria-pressed", "true")
   })
 
   it("shows server errors, processing state, status and the single sign-on slot", async () => {
@@ -99,85 +99,11 @@ describe("SignInForm", () => {
     expect(screen.getByLabelText(/އީމެއިލް/)).toHaveAttribute("dir", "ltr")
     await expectNoA11yViolations()
   })
-})
 
-describe("RegisterForm", () => {
-  it("submits every field and requires the terms when given", async () => {
-    const onSubmit = vi.fn()
-    renderWithOnu(<RegisterForm onSubmit={onSubmit} termsHref="/terms" signInHref="/login" title="Join" />)
-    expect(screen.getByRole("heading", { name: "Join" })).toBeInTheDocument()
-    await userEvent.type(screen.getByLabelText(/Full name/), "Mohamed Ibrahim")
-    await userEvent.type(screen.getByLabelText(/Email/), "mohamed@example.mv")
-    await userEvent.type(screen.getByLabelText(/^Password/), "pw123456")
-    await userEvent.type(screen.getByLabelText(/Confirm password/), "pw123456")
-    const terms = screen.getByRole("checkbox", { name: /I agree/ })
-    expect(terms).toBeRequired()
-    await userEvent.click(terms)
-    await userEvent.click(screen.getByRole("button", { name: "Create account" }))
-    expect(onSubmit).toHaveBeenCalledWith({
-      name: "Mohamed Ibrahim",
-      email: "mohamed@example.mv",
-      password: "pw123456",
-      password_confirmation: "pw123456",
-      terms: true,
-    })
-    expect(screen.getByRole("link", { name: "Sign in" })).toHaveAttribute("href", "/login")
-    expect(screen.getByRole("link", { name: "Read the terms and conditions" })).toHaveAttribute("href", "/terms")
-    await expectNoA11yViolations()
-  })
-
-  it("shows a terms error and types the name in Thaana", () => {
-    renderWithOnu(<RegisterForm termsHref="/t" nameThaana errors={{ terms: "You must accept the terms." }} />, {
-      locale: "dv",
-    })
-    expect(screen.getByRole("checkbox")).toHaveAccessibleDescription("You must accept the terms.")
-    expect(screen.getByLabelText(/ފުރިހަމަ ނަން/)).toHaveAttribute("lang", "dv")
-  })
-})
-
-describe("ForgotPasswordForm", () => {
-  it("submits the email and shows the sent status", async () => {
-    const onSubmit = vi.fn()
-    renderWithOnu(<ForgotPasswordForm onSubmit={onSubmit} signInHref="/login" status="Reset link sent." />)
-    await userEvent.type(screen.getByLabelText(/Email/), "a@b.mv")
-    await userEvent.click(screen.getByRole("button", { name: "Email reset link" }))
-    expect(onSubmit).toHaveBeenCalledWith({ email: "a@b.mv" })
-    expect(screen.getByRole("status")).toHaveTextContent("Reset link sent.")
-    expect(screen.getByRole("link", { name: "Back to sign in" })).toBeInTheDocument()
-    await expectNoA11yViolations()
-  })
-})
-
-describe("ResetPasswordForm", () => {
-  it("submits the token, email and new password", async () => {
-    const onSubmit = vi.fn()
-    renderWithOnu(
-      <ResetPasswordForm
-        token="abc123"
-        onSubmit={onSubmit}
-        emailReadOnly
-        defaultValues={{ email: "a@b.mv" }}
-        signInHref="/login"
-        submitLabel="Save password"
-      />,
+  it("styles the single sign-on slot", () => {
+    const { container } = renderWithOnu(
+      <SignInForm sso={<button type="button">SSO</button>} classNames={{ sso: "so" }} />,
     )
-    expect(screen.getByLabelText(/Email/)).toHaveAttribute("readonly")
-    await userEvent.type(screen.getByLabelText(/New password/), "n3w")
-    await userEvent.type(screen.getByLabelText(/Confirm password/), "n3w")
-    await userEvent.click(screen.getByRole("button", { name: "Save password" }))
-    expect(onSubmit).toHaveBeenCalledWith({
-      token: "abc123",
-      email: "a@b.mv",
-      password: "n3w",
-      password_confirmation: "n3w",
-    })
-    await expectNoA11yViolations()
-  })
-
-  it("submits natively without onSubmit", () => {
-    renderWithOnu(<ResetPasswordForm token="t" formProps={{ action: "/reset", method: "post" }} />)
-    const form = document.querySelector("form")!
-    expect(form).toHaveAttribute("action", "/reset")
-    expect(form.querySelector("input[name=token]")).toHaveValue("t")
+    expect(container.querySelector('[data-slot="auth-sso"]')).toHaveClass("so")
   })
 })

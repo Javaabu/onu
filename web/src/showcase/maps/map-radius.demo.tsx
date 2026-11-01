@@ -25,7 +25,7 @@ export default function MapRadiusDemo() {
         className="grid"
       >
         <FormField label="Delivery area" name="area" help="Orders outside this circle are not accepted.">
-          <MapRadius value={value} onChange={setValue} min={100} max={5000} step={50} zoom={14} />
+          <MapRadius value={value} onValueChange={setValue} min={100} max={5000} step={50} zoom={14} />
         </FormField>
       </DemoSection>
       <DemoSection title="Empty" description="Click the map to place the centre." className="grid">

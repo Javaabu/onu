@@ -43,6 +43,7 @@ export interface DeltaIndicatorProps
   positiveIsGood?: boolean
   /** Text after the delta, e.g. "vs last month". Read by screen readers too. */
   context?: React.ReactNode
+  classNames?: { root?: string; icon?: string; value?: string; context?: string }
 }
 
 const ICONS: Record<DeltaDirection, string> = { up: "arrow-up", down: "arrow-down", flat: "minus" }
@@ -59,6 +60,7 @@ export function DeltaIndicator({
   variant,
   context,
   className,
+  classNames,
   ...props
 }: DeltaIndicatorProps) {
   const { t } = useOnu()
@@ -92,15 +94,17 @@ export function DeltaIndicator({
       data-slot="delta-indicator"
       data-direction={direction}
       data-sentiment={sentiment}
-      className={cn(deltaIndicatorVariants({ sentiment, variant }), className)}
+      className={cn(deltaIndicatorVariants({ sentiment, variant }), classNames?.root, className)}
       {...props}
     >
-      <Icon name={ICONS[direction]} className="size-3.5 shrink-0" />
-      <span aria-hidden="true" dir="ltr">
+      <Icon name={ICONS[direction]} className={cn("size-3.5 shrink-0", classNames?.icon)} />
+      <span aria-hidden="true" dir="ltr" className={classNames?.value}>
         {visible}
       </span>
       <span className="sr-only">{spoken}</span>
-      {context ? <span className="ms-0.5 font-normal text-muted-foreground">{context}</span> : null}
+      {context ? (
+        <span className={cn("ms-0.5 font-normal text-muted-foreground", classNames?.context)}>{context}</span>
+      ) : null}
     </span>
   )
 }

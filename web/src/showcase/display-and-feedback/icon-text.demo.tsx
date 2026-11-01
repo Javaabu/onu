@@ -28,7 +28,7 @@ export default function IconTextDemo() {
         <IconText icon="warning" tone="warning">
           Expires soon
         </IconText>
-        <IconText icon="error" tone="destructive" size="lg">
+        <IconText icon="error" tone="danger" size="lg">
           Overdue
         </IconText>
         <IconText icon="external-link" iconPosition="end" tone="primary" iconLabel="opens in a new tab" asChild>

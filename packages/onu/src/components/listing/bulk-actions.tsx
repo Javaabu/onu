@@ -16,7 +16,7 @@ registerEnglish({ listing: en_listing })
 
 export interface BulkActionFormProps<V = unknown> {
   value: V | undefined
-  onChange: (value: V | undefined) => void
+  onValueChange: (value: V | undefined) => void
   /** Id for the form control; the action's label is linked to it. */
   id: string
 }
@@ -229,7 +229,7 @@ export function BulkActionBar({
               {phase.action.form?.({
                 id: formId,
                 value: phase.value,
-                onChange: (value) => setPhase({ ...phase, value }),
+                onValueChange: (value) => setPhase({ ...phase, value }),
               })}
               <Button type="submit" size="sm" className="touch:min-h-11">
                 {t("listing.bulkApply")}

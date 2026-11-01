@@ -95,7 +95,7 @@ export default function MyApplicationsPage() {
         <Tabs
           variant="line"
           countAppearance="pill"
-          listLabel={tr("Filter by status", "ހާލަތުން ފިލްޓަރ")}
+          label={tr("Filter by status", "ހާލަތުން ފިލްޓަރ")}
           value={tab}
           onValueChange={(v) => {
             state.setFilter("tab", v === "all" ? undefined : v)

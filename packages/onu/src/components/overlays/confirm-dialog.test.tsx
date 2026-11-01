@@ -181,7 +181,7 @@ describe("ConfirmDialog", () => {
     renderWithOnu(<ConfirmDialog defaultOpen variant="destructive" />, { locale: "dv", dir })
     expect(screen.getByRole("alertdialog", { name: "ޔަޤީންތޯ؟" })).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "ކެންސަލްކުރޭ" })).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "ފޮހެލާ" })).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "ނައްތާލުން" })).toBeInTheDocument()
     await expectNoA11yViolations()
   })
 })

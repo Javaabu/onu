@@ -257,7 +257,7 @@ export default function SettingsPage() {
                 accept="image/png,image/svg+xml"
                 maxSize={1024 * 1024}
                 value={branding.values.logo}
-                onChange={(f) => branding.set("logo", f)}
+                onValueChange={(f) => branding.set("logo", f)}
               />
             </FormField>
           </div>
@@ -510,7 +510,7 @@ export default function SettingsPage() {
           orientation="vertical"
           narrow="select"
           items={items}
-          listLabel={tr("Settings sections", "ސެޓިންގްސްގެ ބައިތައް")}
+          label={tr("Settings sections", "ސެޓިންގްސްގެ ބައިތައް")}
         />
       </div>
     </AdminShell>

@@ -3,11 +3,11 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
-import { useControllable } from "../components/files/_use-controllable"
 import { syncInputFiles, validateFile, type FileRejection } from "../components/files/file-utils"
 import { useObjectUrl, useRejectionMessage } from "../components/files/use-files"
 import { useFormField, useFormFieldControl } from "../components/form/form-field"
-import { useMergedRef } from "../components/inputs/text-input"
+import { useMergedRef } from "../hooks/use-merged-ref"
+import { getInitials } from "../lib/initials"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
@@ -19,6 +19,7 @@ import { ImageCropper, type ImageCropperHandle } from "./image-cropper"
 import { registerEnglish } from "../i18n/english"
 import { common as en_common } from "../locales/en/common"
 import { file as en_file } from "../locales/en/file"
+import { useControllableState } from "../hooks/use-controllable-state"
 
 registerEnglish({ common: en_common, file: en_file })
 
@@ -34,16 +35,6 @@ export const avatarUploadVariants = cva("", {
   defaultVariants: { size: "default" },
 })
 
-/** Initials from a name: "Aishath Shifa" → "AS", "އަޙްމަދު ނާޒިމް" → "އނ". */
-export function initials(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean)
-  return parts
-    .slice(0, 2)
-    .map((p) => Array.from(p)[0] ?? "")
-    .join("")
-    .toLocaleUpperCase()
-}
-
 export interface AvatarUploadProps
   extends
     Omit<React.ComponentProps<"input">, "type" | "value" | "defaultValue" | "onChange" | "size">,
@@ -51,8 +42,8 @@ export interface AvatarUploadProps
   /** The avatar: a picked `File`, an existing image URL, or `null` (controlled). */
   value?: File | string | null
   defaultValue?: File | string | null
-  onChange?: (file: File | null) => void
-  onReject?: (rejection: FileRejection) => void
+  onValueChange?: (file: File | null) => void
+  onReject?: (rejections: FileRejection[]) => void
   /** Person's name: used for initials and the image's alt text. */
   personName: string
   /** Largest allowed size in bytes (checked before cropping). */
@@ -70,7 +61,7 @@ export interface AvatarUploadProps
 export function AvatarUpload({
   value,
   defaultValue,
-  onChange,
+  onValueChange,
   onReject,
   personName,
   accept = "image/*",
@@ -89,10 +80,10 @@ export function AvatarUpload({
   const merged = useMergedRef(local, ref)
   const changeRef = React.useRef<HTMLButtonElement>(null)
   const cropper = React.useRef<ImageCropperHandle>(null)
-  const [image, setImage] = useControllable<File | string | null>(
+  const [image, setImage] = useControllableState<File | string | null>(
     value,
     defaultValue ?? null,
-    onChange as ((v: File | string | null) => void) | undefined,
+    onValueChange as ((v: File | string | null) => void) | undefined,
   )
   const [pending, setPending] = React.useState<File | null>(null)
   const [saving, setSaving] = React.useState(false)
@@ -117,7 +108,7 @@ export function AvatarUpload({
     if (code) {
       const r = { file, code }
       setRejection(r)
-      onReject?.(r)
+      onReject?.([r])
       return
     }
     setRejection(null)
@@ -153,7 +144,7 @@ export function AvatarUpload({
           role="img"
           aria-label={t("file.noPhotoFor", { name: personName })}
         >
-          {personName ? initials(personName) : <Icon name="user" />}
+          {personName ? getInitials(personName) : <Icon name="user" />}
         </AvatarFallback>
       </Avatar>
       <div className={cn("gap-2 flex flex-col items-start", classNames?.actions)}>

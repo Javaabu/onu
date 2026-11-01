@@ -8,10 +8,10 @@ An alert box for messages that need attention: info, success, warning or destruc
 ```tsx
 import { Callout } from "@javaabu/onu"
 
-<Callout variant="success" title="Application submitted" description="Reference APP-2026-00412." />
+<Callout tone="success" title="Application submitted" description="Reference APP-2026-00412." />
 
 <Callout
-  variant="warning"
+  tone="warning"
   title="Permit expires in 5 days"
   description="Renew before 30 June to avoid a late fee."
   actions={<Button size="sm">Renew now</Button>}
@@ -25,34 +25,35 @@ With `appearance` set to `plain`, `subtle` or `bordered`, a callout is a subtle 
 
 ```tsx
 <Callout appearance="plain">Changes apply from the next billing period.</Callout>
-<Callout appearance="bordered" variant="warning">Card payments may include a bank fee.</Callout>
-<Callout appearance="subtle" variant="info" icon="clock">Last synced 5 minutes ago.</Callout>
+<Callout appearance="bordered" tone="warning">Card payments may include a bank fee.</Callout>
+<Callout appearance="subtle" tone="info" icon="clock">Last synced 5 minutes ago.</Callout>
 ```
 
 ## Props
 
 | Prop           | Type                                                             | Default     | Description                            |
 | -------------- | ---------------------------------------------------------------- | ----------- | -------------------------------------- |
-| `variant`      | `'default' \| 'info' \| 'success' \| 'warning' \| 'destructive'` | `'default'` | Tone                                   |
+| `tone` | `'neutral' \| 'info' \| 'success' \| 'warning' \| 'danger'` | `'neutral'` | Tone                                   |
 | `appearance`   | `'box' \| 'plain' \| 'subtle' \| 'bordered'`                     | `'box'`     | Alert box, or a quiet inline notice    |
 | `title`        | `ReactNode`                                                      |             | Title                                  |
 | `description`  | `ReactNode`                                                      |             | Body (or `children`)                   |
 | `actions`      | `ReactNode`                                                      |             | Buttons or links under the description |
-| `icon`         | `string \| ReactNode \| false`                                   | per variant | Icon override; `false` hides it        |
+| `icon`         | `string \| ReactNode \| false`                                   | per tone | Icon override; `false` hides it        |
 | `dismissible`  | `boolean`                                                        | `false`     | Show a dismiss (×) button              |
 | `open`         | `boolean`                                                        |             | Controlled visibility                  |
+| `defaultOpen` | `boolean` | `true` | Initial visibility when uncontrolled |
 | `onOpenChange` | `(open) => void`                                                 |             | Called when dismissed                  |
 | `onDismiss`    | `() => void`                                                     |             | Called after dismissing                |
 | `role`         | `string`                                                         | see below   | ARIA role override                     |
 | `classNames`   | `{ icon, title, description, actions, dismiss }`                 |             | Classes for each part                  |
 
-Variants are exported as `calloutVariants` (box) and `calloutInlineVariants` (inline, keyed by `variant` and `appearance`).
+Variants are exported as `calloutVariants` (box) and `calloutInlineVariants` (inline, keyed by `tone` and `appearance`).
 
 ## Accessibility
 
 - In the box, `warning` and `destructive` use `role="alert"` (announced immediately); the others use `role="status"` (announced politely). Pass `role="note"` for static content that shouldn't be announced.
 - The inline appearances use `role="note"`, so they are not announced. Use the box for messages that must interrupt.
-- Each variant has its own icon, so meaning doesn't rely on colour.
+- Each tone has its own icon, so meaning doesn't rely on colour.
 - The dismiss button is labelled "Dismiss" and is 44px on touch screens.
 
 | Key                                 | Action                    |

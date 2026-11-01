@@ -1,3 +1,4 @@
+import { createRef } from "react"
 import { screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
@@ -76,5 +77,16 @@ describe("UserProfile", () => {
     await userEvent.click(screen.getByRole("button", { name: "އަޙްމަދު ޢަލީ ގެ އެކައުންޓް މެނޫ" }))
     expect(await screen.findByRole("menuitem", { name: "ސައިން އައުޓް" })).toBeInTheDocument()
     await expectNoA11yViolations()
+  })
+})
+
+describe("UserProfile rest props", () => {
+  it("passes rest props and ref to the trigger", () => {
+    const ref = createRef<HTMLButtonElement>()
+    renderWithOnu(<UserProfile name="Aisha Ali" ref={ref} data-testid="me" id="account" />)
+    const trigger = screen.getByTestId("me")
+    expect(trigger).toBe(ref.current)
+    expect(trigger).toHaveAttribute("data-part", "user-profile")
+    expect(trigger).toHaveAttribute("id", "account")
   })
 })

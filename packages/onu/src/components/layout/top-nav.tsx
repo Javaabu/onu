@@ -64,7 +64,7 @@ export interface TopNavProps extends Omit<React.ComponentProps<"div">, "children
   /** Which side the phone menu slides in from. */
   mobileSide?: "start" | "end"
   /** Accessible name of the navigation landmark. */
-  navLabel?: string
+  label?: string
   classNames?: {
     list?: string
     /** Top-level links. */
@@ -141,7 +141,7 @@ export function TopNav({
   logo,
   mobileFooter,
   mobileSide = "end",
-  navLabel,
+  label: labelProp,
   className,
   classNames,
   ...props
@@ -150,7 +150,7 @@ export function TopNav({
   const [open, setOpen] = React.useState(false)
   const tree = React.useMemo(() => items.map(toNavItem), [items])
   const activeHref = React.useMemo(() => resolveActiveHref(tree, currentHref, match), [tree, currentHref, match])
-  const label = navLabel ?? t("layout.mainNavigation")
+  const label = labelProp ?? t("layout.mainNavigation")
   // Wide panels open in the shared viewport under the whole bar, so they stay on screen.
   const mega = items.some((item) => item.columns?.length)
 

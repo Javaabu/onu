@@ -38,6 +38,8 @@ Initials are derived from the name when there is no image (`getInitials`, works 
 | `align`        | `'start' \| 'end'`                               | `'end'`    | Menu alignment                       |
 | `classNames`   | `{ trigger, avatar, name, subtitle, content }`   |            | Classes for each part                |
 
+Other `<button>` props and `ref` go to the trigger button.
+
 ## Accessibility
 
 - The trigger is named "Account menu for Aishath Shifa"; the avatar image is decorative.

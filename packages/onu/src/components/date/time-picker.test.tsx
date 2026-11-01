@@ -26,15 +26,15 @@ const button = (name: string | RegExp) => within(dialog()).getByRole("button", {
 
 /** Calls onChange with the last value; renders controlled so the panel reflects it. */
 function Controlled(props: Partial<React.ComponentProps<typeof TimePicker>> & { initial?: Date | null }) {
-  const { initial = at(14, 30), onChange, ...rest } = props
+  const { initial = at(14, 30), onValueChange, ...rest } = props
   const [value, setValue] = React.useState<Date | null>(initial)
   return (
     <TimePicker
       aria-label="Time"
       value={value}
-      onChange={(v) => {
+      onValueChange={(v) => {
         setValue(v)
-        onChange?.(v)
+        onValueChange?.(v)
       }}
       {...rest}
     />
@@ -81,7 +81,7 @@ describe("TimePicker — steppers (§25.2)", () => {
 
   it("▲ and ▼ change the value by one", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<Controlled onChange={onChange} />)
+    const { user } = setup(<Controlled onValueChange={onChange} />)
     await user.click(trigger())
     await user.click(button("Next hour"))
     expect(onChange).toHaveBeenLastCalledWith(at(15, 30))
@@ -94,7 +94,7 @@ describe("TimePicker — steppers (§25.2)", () => {
 
   it("wraps around: ▼ on 12 gives 11, ▲ on 59 minutes gives 00", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<Controlled initial={at(12, 59)} onChange={onChange} />)
+    const { user } = setup(<Controlled initial={at(12, 59)} onValueChange={onChange} />)
     await user.click(trigger())
     await user.click(button("Previous hour"))
     expect(hour()).toHaveTextContent("11")
@@ -105,7 +105,7 @@ describe("TimePicker — steppers (§25.2)", () => {
 
   it("never changes the date when the hour wraps", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<Controlled initial={at(23, 15)} onChange={onChange} />)
+    const { user } = setup(<Controlled initial={at(23, 15)} onValueChange={onChange} />)
     await user.click(trigger())
     await user.click(button("Next hour"))
     expect(onChange).toHaveBeenLastCalledWith(at(0, 15))
@@ -115,7 +115,7 @@ describe("TimePicker — steppers (§25.2)", () => {
 
   it("AM / PM switches keeping the same hour on the clock", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<Controlled initial={at(9, 0)} onChange={onChange} />)
+    const { user } = setup(<Controlled initial={at(9, 0)} onValueChange={onChange} />)
     await user.click(trigger())
     await user.click(button("PM"))
     expect(onChange).toHaveBeenLastCalledWith(at(21, 0))
@@ -126,7 +126,7 @@ describe("TimePicker — steppers (§25.2)", () => {
 
   it("Up/Down arrows on a number step it", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<Controlled onChange={onChange} />)
+    const { user } = setup(<Controlled onValueChange={onChange} />)
     await user.click(trigger())
     await user.keyboard("{ArrowUp}")
     expect(onChange).toHaveBeenLastCalledWith(at(15, 30))
@@ -137,7 +137,7 @@ describe("TimePicker — steppers (§25.2)", () => {
 
   it("A and P switch AM/PM directly", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<Controlled initial={at(9, 5)} onChange={onChange} />)
+    const { user } = setup(<Controlled initial={at(9, 5)} onValueChange={onChange} />)
     await user.click(trigger())
     await user.keyboard("p")
     expect(onChange).toHaveBeenLastCalledWith(at(21, 5))
@@ -168,7 +168,7 @@ describe("TimePicker — hour grid (§25.2)", () => {
 
   it("Back returns to the steppers without changing anything", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<Controlled onChange={onChange} />)
+    const { user } = setup(<Controlled onValueChange={onChange} />)
     await user.click(trigger())
     await user.click(hour())
     await user.click(button("Back"))
@@ -178,7 +178,7 @@ describe("TimePicker — hour grid (§25.2)", () => {
 
   it("clicking an hour sets it, keeps AM/PM and returns to the steppers", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<Controlled onChange={onChange} />)
+    const { user } = setup(<Controlled onValueChange={onChange} />)
     await user.click(trigger())
     await user.click(hour())
     await user.click(button("9 PM"))
@@ -189,7 +189,7 @@ describe("TimePicker — hour grid (§25.2)", () => {
 
   it("arrow keys move around the clock and Enter picks", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<Controlled initial={at(1, 0)} onChange={onChange} />)
+    const { user } = setup(<Controlled initial={at(1, 0)} onValueChange={onChange} />)
     await user.click(trigger())
     hour().focus()
     await user.keyboard("{Enter}")
@@ -230,7 +230,7 @@ describe("TimePicker — minute grid (§25.2)", () => {
 
   it("clicking a minute sets it and returns; Back returns without changing", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<Controlled onChange={onChange} />)
+    const { user } = setup(<Controlled onValueChange={onChange} />)
     await user.click(trigger())
     await user.click(minute())
     await user.click(button("Back"))
@@ -253,7 +253,7 @@ describe("TimePicker — minute grid (§25.2)", () => {
 describe("TimePicker — footer, 24-hour mode and keyboard (§25.2)", () => {
   it("Clear empties the field and closes; it is not offered on required fields", async () => {
     const onChange = vi.fn()
-    const { user, unmount } = setup(<TimePicker aria-label="Time" defaultValue={at(9, 0)} onChange={onChange} />)
+    const { user, unmount } = setup(<TimePicker aria-label="Time" defaultValue={at(9, 0)} onValueChange={onChange} />)
     await user.click(trigger())
     await user.click(button("Clear"))
     expect(onChange).toHaveBeenCalledWith(null)
@@ -273,7 +273,7 @@ describe("TimePicker — footer, 24-hour mode and keyboard (§25.2)", () => {
 
   it("24-hour mode has no AM/PM switch and an hour grid of 00–23", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<Controlled hourCycle={24} onChange={onChange} />)
+    const { user } = setup(<Controlled hourCycle={24} onValueChange={onChange} />)
     await user.click(trigger())
     expect(within(dialog()).queryByRole("group", { name: "AM or PM" })).not.toBeInTheDocument()
     expect(hour()).toHaveTextContent("14")
@@ -298,7 +298,7 @@ describe("TimePicker — footer, 24-hour mode and keyboard (§25.2)", () => {
   it("starts an empty field at 00:00 on the reference date", async () => {
     const onChange = vi.fn()
     const { user } = setup(
-      <TimePicker aria-label="Time" referenceDate={new Date(2026, 4, 1)} onChange={onChange} name="opens_at" />,
+      <TimePicker aria-label="Time" referenceDate={new Date(2026, 4, 1)} onValueChange={onChange} name="opens_at" />,
     )
     await user.click(trigger())
     await user.click(button("Next hour"))
@@ -308,7 +308,9 @@ describe("TimePicker — footer, 24-hour mode and keyboard (§25.2)", () => {
 
   it("starts with AM when the period is picked first", async () => {
     const onChange = vi.fn()
-    const { user } = setup(<TimePicker aria-label="Time" referenceDate={new Date(2026, 4, 1)} onChange={onChange} />)
+    const { user } = setup(
+      <TimePicker aria-label="Time" referenceDate={new Date(2026, 4, 1)} onValueChange={onChange} />,
+    )
     await user.click(trigger())
     await user.click(button("AM"))
     expect(onChange).toHaveBeenLastCalledWith(new Date(2026, 4, 1, 0, 0))
@@ -342,7 +344,7 @@ describe("TimePanel", () => {
     renderWithOnu(
       <TimePanel
         value={{ hours: 6, minutes: 45 }}
-        onChange={() => {}}
+        onValueChange={() => {}}
         view="minutes"
         onViewChange={onViewChange}
         className="panel-x"

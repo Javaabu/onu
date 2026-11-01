@@ -9,7 +9,6 @@ export const overlay = {
   commandPalette: "Command palette",
   commandPaletteDescription: "Search for a page or a command to run",
   commandPlaceholder: "Type a command or search…",
-  openCommandPalette: "Open command palette",
   recent: "Recent",
   searching: "Searching…",
   searchFailed: "Search failed",

@@ -8,9 +8,9 @@ import { cn } from "../../lib/utils"
 import { useDirection, useTranslation } from "../../providers/onu-provider"
 import { radixSide, type LogicalSide } from "./_side"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip"
-import { useControllableState } from "./_use-controllable-state"
 import { registerEnglish } from "../../i18n/english"
 import { overlay as en_overlay } from "../../locales/en/overlay"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ overlay: en_overlay })
 
@@ -42,6 +42,8 @@ export interface TipProps extends Omit<
    */
   touch?: "tap" | "long-press"
   disabled?: boolean
+  /** `trigger` and `icon` style the default ⓘ button; a `children` trigger styles itself. */
+  classNames?: { trigger?: string; icon?: string; content?: string }
 }
 
 /**
@@ -60,6 +62,7 @@ export function Tip({
   disabled,
   side,
   className,
+  classNames,
   ...props
 }: TipProps) {
   const { t } = useTranslation()
@@ -83,9 +86,10 @@ export function Tip({
       className={cn(
         "size-5 inline-flex items-center justify-center rounded-full align-middle text-muted-foreground outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
         "touch:size-11 touch:-m-3",
+        classNames?.trigger,
       )}
     >
-      <Icon name="info" className="size-4" />
+      <Icon name="info" className={cn("size-4", classNames?.icon)} />
       <span className="sr-only">{t("overlay.moreInfo")}</span>
     </button>
   )
@@ -138,7 +142,7 @@ export function Tip({
           data-slot="tip-content"
           sideOffset={4}
           collisionPadding={8}
-          className={cn("max-w-[min(20rem,calc(100vw-1rem))] text-balance", className)}
+          className={cn("max-w-[min(20rem,calc(100vw-1rem))] text-balance", classNames?.content, className)}
           {...props}
           side={radixSide(side, dir)}
         >

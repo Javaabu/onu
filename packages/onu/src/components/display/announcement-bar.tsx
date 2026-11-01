@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { toneSolid } from "../../lib/tone"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { Icon } from "../../icons/icon"
@@ -17,14 +18,12 @@ export const announcementBarVariants = cva(
   "gap-x-3 gap-y-1 px-4 py-2 text-sm relative flex w-full flex-wrap items-center justify-center text-center",
   {
     variants: {
-      variant: {
+      tone: {
         primary: "bg-primary text-primary-foreground",
-        neutral: "border-b bg-muted text-foreground",
-        info: "bg-info text-info-foreground",
-        warning: "bg-warning text-warning-foreground",
+        ...toneSolid,
       },
     },
-    defaultVariants: { variant: "primary" },
+    defaultVariants: { tone: "primary" },
   },
 )
 
@@ -81,7 +80,7 @@ export function AnnouncementBar({
   dismissible = true,
   onDismiss,
   storagePrefix = "onu-announcement:",
-  variant,
+  tone,
   className,
   classNames,
   children,
@@ -107,8 +106,8 @@ export function AnnouncementBar({
       role="region"
       aria-label={t("display.announcement")}
       data-slot="announcement-bar"
-      data-variant={variant ?? "primary"}
-      className={cn(announcementBarVariants({ variant }), dismissible && "pe-12", className)}
+      data-tone={tone ?? "primary"}
+      className={cn(announcementBarVariants({ tone }), dismissible && "pe-12", className)}
       {...props}
     >
       <p className={cn("gap-2 inline-flex items-center", classNames?.message)}>

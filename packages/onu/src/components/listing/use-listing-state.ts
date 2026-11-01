@@ -50,7 +50,7 @@ export interface UseListingStateOptions {
   paramPrefix?: string
   paramNames?: Partial<ListingParamNames>
   /** Called after every change, e.g. to fetch the page from an API. */
-  onChange?: (state: ListingState) => void
+  onValueChange?: (state: ListingState) => void
   /** Initial selection (row ids). Selection is never put in the URL. */
   defaultSelection?: string[]
   /** Initial column visibility (`{ email: false }` hides a column). */
@@ -235,7 +235,7 @@ function sameFilters(a: FilterValues, b: FilterValues) {
  * the state is mirrored to the URL with `history.replaceState`.
  */
 export function useListingState(options: UseListingStateOptions = {}): ListingController {
-  const { url = true, paramPrefix, paramNames, onChange, defaultSelection, defaultColumnVisibility } = options
+  const { url = true, paramPrefix, paramNames, onValueChange, defaultSelection, defaultColumnVisibility } = options
   const urlOptions = React.useMemo(() => ({ paramPrefix, paramNames }), [paramPrefix, paramNames])
 
   const defaults = React.useMemo<ListingState>(
@@ -256,9 +256,9 @@ export function useListingState(options: UseListingStateOptions = {}): ListingCo
   const { selection, ...state } = full
   const [columnVisibility, setColumnVisibility] = React.useState<Record<string, boolean>>(defaultColumnVisibility ?? {})
 
-  const onChangeRef = React.useRef(onChange)
+  const onChangeRef = React.useRef(onValueChange)
   React.useEffect(() => {
-    onChangeRef.current = onChange
+    onChangeRef.current = onValueChange
   })
   const first = React.useRef(true)
   const { search, sort, page, perPage, filters, view } = full

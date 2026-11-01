@@ -59,7 +59,7 @@ export const date = {
   period: "މކ ނުވަތަ މފ",
   changeTime: "ވަގުތު ބަދަލުކުރައްވާ، {time}",
   backToCalendar: "ކެލެންޑަރަށް އެނބުރި",
-  clearTime: "ވަގުތު ފޮހެލާ",
+  clearTime: "ވަގުތު ސާފުކުރުން",
 
   // Ranges
   from: "ފެށޭ ތާރީޚު",

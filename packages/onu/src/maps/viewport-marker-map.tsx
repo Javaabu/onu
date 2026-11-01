@@ -8,7 +8,7 @@ import { useTranslation } from "../providers/onu-provider"
 import { Button } from "../ui/button"
 import { Spinner } from "../ui/spinner"
 import { useMapEngine } from "./_context"
-import { useControllableState, useLatest } from "./_hooks"
+import { useLatest } from "./_hooks"
 import { boundsEqual } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import { MapMarker, MapView } from "./map-view"
@@ -16,6 +16,7 @@ import type { ClusterMarker, LatLng, LatLngBounds, MapHandle, MapViewState } fro
 import { registerEnglish } from "../i18n/english"
 import { common as en_common } from "../locales/en/common"
 import { map as en_map } from "../locales/en/map"
+import { useControllableState } from "../hooks/use-controllable-state"
 
 registerEnglish({ common: en_common, map: en_map })
 

@@ -51,6 +51,7 @@ Unknown statuses fall back to the `neutral` tone with the raw value as the label
 | `icon`      | `string \| ReactNode \| false`     |         | Icon override; `false` hides it                         |
 | `size`      | `'sm' \| 'md' \| 'lg'`             | `'md'`  | Size                                                    |
 | `asChild`   | `boolean`                          | `false` | Render your element (e.g. a link) with the badge styles |
+| `classNames` | `{ root, icon }` |  | Classes for each part |
 
 Variants are exported as `statusBadgeVariants` (`tone`, `size`). The root has `data-slot="status-badge"`, `data-tone` and `data-status`.
 

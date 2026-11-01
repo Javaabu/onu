@@ -169,7 +169,7 @@ export default function RolesPage() {
             </div>
             {role.locked ? (
               <Callout
-                variant="info"
+                tone="info"
                 title={tr("This role can't be changed", "މި ރޯލް ބަދަލެއް ނުކުރެވޭނެ")}
                 description={tr(
                   "Super admins always have every permission.",

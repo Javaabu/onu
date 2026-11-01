@@ -17,10 +17,10 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../../ui/drawer"
-import { useControllableState } from "./_use-controllable-state"
 import { useRestoreFocus } from "./_use-restore-focus"
 import { registerEnglish } from "../../i18n/english"
 import { overlay as en_overlay } from "../../locales/en/overlay"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ overlay: en_overlay })
 

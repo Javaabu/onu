@@ -230,7 +230,7 @@ export default function ExportPage() {
             </FormField>
           </FormGroup>
           <FormField label={tr("Submitted between", "ހުށަހެޅި މުއްދަތު")} name="submitted" className="mt-4">
-            <DateRangePicker value={range} onChange={setRange} />
+            <DateRangePicker value={range} onValueChange={setRange} />
           </FormField>
         </Card>
 
@@ -264,7 +264,7 @@ export default function ExportPage() {
             {file ? (
               <>
                 <Callout
-                  variant="success"
+                  tone="success"
                   title={tr("Your file is ready", "ފައިލް ތައްޔާރު")}
                   description={tr(
                     `${file.rows} applications, ${columns.length} columns.`,

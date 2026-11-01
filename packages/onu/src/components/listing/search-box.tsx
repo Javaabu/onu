@@ -8,7 +8,7 @@ import { useTranslation } from "../../providers/onu-provider"
 import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../../ui/input-group"
 import { useFormFieldControl } from "../form/form-field"
-import { useMergedRef } from "../inputs/text-input"
+import { useMergedRef } from "../../hooks/use-merged-ref"
 import { registerEnglish } from "../../i18n/english"
 import { listing as en_listing } from "../../locales/en/listing"
 

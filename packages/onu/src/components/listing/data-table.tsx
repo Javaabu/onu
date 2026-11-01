@@ -81,7 +81,8 @@ export const dataTableVariants = cva("", {
   defaultVariants: { striped: false, stickyHeader: false, density: "default" },
 })
 
-export interface DataTableProps<T extends RowData> extends VariantProps<typeof dataTableVariants> {
+export interface DataTableProps<T extends RowData>
+  extends Omit<React.ComponentProps<"div">, "children">, VariantProps<typeof dataTableVariants> {
   columns: DataTableColumn<T>[]
   /** Rows of the current page. */
   data: T[]
@@ -186,6 +187,7 @@ export function DataTable<T extends RowData>({
   density,
   className,
   classNames,
+  ...props
 }: DataTableProps<T>) {
   const { t } = useTranslation()
   const Link = useLinkComponent()
@@ -266,6 +268,15 @@ export function DataTable<T extends RowData>({
       }),
     )
   }, [sortKey, state.sort, byId, announce, t])
+
+  // Announce when the selection empties, whichever control cleared it.
+  const selectedCount = state.selection.length
+  const lastSelectedCount = React.useRef(selectedCount)
+  React.useEffect(() => {
+    const previous = lastSelectedCount.current
+    lastSelectedCount.current = selectedCount
+    if (previous > 0 && selectedCount === 0) announce(t("listing.selectionCleared"))
+  }, [selectedCount, announce, t])
 
   const allSelected = rows.length > 0 && table.getIsAllPageRowsSelected()
   const someSelected = table.getIsSomePageRowsSelected()
@@ -529,7 +540,7 @@ export function DataTable<T extends RowData>({
   )
 
   return (
-    <div data-slot="data-table" className={cn("gap-3 min-w-0 grid", className)}>
+    <div data-slot="data-table" className={cn("gap-3 min-w-0 grid", className)} {...props}>
       {region}
       {selectable ? (
         <BulkActionBar

@@ -11,11 +11,11 @@ import { Button } from "../../ui/button"
 import { FormField } from "../form/form-field"
 import { TextInput } from "../inputs/text-input"
 import { FileRow } from "./_file-row"
-import { useControllable } from "./_use-controllable"
 import { FileInput, type FileInputProps } from "./file-input"
 import { syncInputFiles } from "./file-utils"
 import { registerEnglish } from "../../i18n/english"
 import { file as en_file } from "../../locales/en/file"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ file: en_file })
 
@@ -53,7 +53,7 @@ export interface AdditionalFilesUploadProps
   existing?: ExistingAttachment[]
   value?: AdditionalFilesValue
   defaultValue?: AdditionalFilesValue
-  onChange?: (value: AdditionalFilesValue) => void
+  onValueChange?: (value: AdditionalFilesValue) => void
   /** Ask for a display name per new file (defaults to the file name). Default `true`. */
   withName?: boolean
   /** Ask for a description per new file. Default `true`. */
@@ -85,7 +85,7 @@ export function AdditionalFilesUpload({
   existing = [],
   value,
   defaultValue,
-  onChange,
+  onValueChange,
   withName = true,
   withDescription = true,
   thaana,
@@ -102,7 +102,7 @@ export function AdditionalFilesUpload({
   ...props
 }: AdditionalFilesUploadProps) {
   const { t } = useTranslation()
-  const [state, setState] = useControllable<AdditionalFilesValue>(value, defaultValue ?? EMPTY, onChange)
+  const [state, setState] = useControllableState<AdditionalFilesValue>(value, defaultValue ?? EMPTY, onValueChange)
   const pickerRef = React.useRef<HTMLInputElement>(null)
   const rootRef = React.useRef<HTMLDivElement>(null)
   const [announcement, setAnnouncement] = React.useState("")
@@ -277,7 +277,7 @@ export function AdditionalFilesUpload({
         name=""
         append
         value={NO_FILES}
-        onChange={addFiles}
+        onFilesAdded={addFiles}
         onReject={onReject}
         accept={accept}
         maxSize={maxSize}

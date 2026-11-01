@@ -44,7 +44,7 @@ Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provide
 | `className`, `classNames` | `string`, `{ root, map }`                       |                 | Overrides                                       |
 
 `MapMarker`: `position`, `title` (accessible name), `label` (text in the pin), `tone`, `selected`, `heading` (arrow marker), `draggable`, `onDragEnd`, `onClick`, `zIndex`.
-`MapCircleShape`: `center`, `radius` (m), `tone`, `editable`, `onChange`. `MapPolygonShape`: `path`, `tone`, `selected`, `onClick`. `MapPolylineShape`: `path`, `tone`, `dashed`, `width`.
+`MapCircleShape`: `center`, `radius` (m), `tone`, `editable`, `onValueChange`. `MapPolygonShape`: `path`, `tone`, `selected`, `onClick`. `MapPolylineShape`: `path`, `tone`, `dashed`, `width`.
 
 Tones: `primary`, `muted`, `success`, `warning`, `destructive`, `info`, `chart-1` … `chart-8`.
 

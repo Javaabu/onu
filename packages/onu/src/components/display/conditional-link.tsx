@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Slot } from "radix-ui"
 
 import { cn } from "../../lib/utils"
 import { AppLink } from "./_link"
@@ -17,6 +18,11 @@ export interface ConditionalLinkProps extends Omit<React.AnchorHTMLAttributes<HT
   fallbackAs?: React.ElementType
   /** Classes applied only to the link version. */
   linkClassName?: string
+  /**
+   * Render the child element as the link: it gets the `href` and classes. Without
+   * a link only the child's content is rendered, as plain text.
+   */
+  asChild?: boolean
   ref?: React.Ref<HTMLAnchorElement>
 }
 
@@ -32,19 +38,23 @@ export function ConditionalLink({
   fallbackAs: Fallback = "span",
   className,
   linkClassName,
+  asChild = false,
   children,
   ref,
   ...props
 }: ConditionalLinkProps) {
   if (!href || !when) {
+    const text =
+      asChild && React.isValidElement<{ children?: React.ReactNode }>(children) ? children.props.children : children
     return (
       <Fallback data-slot="conditional-link" data-linked="false" className={className}>
-        {children}
+        {text}
       </Fallback>
     )
   }
+  const Comp = asChild ? Slot.Root : AppLink
   return (
-    <AppLink
+    <Comp
       ref={ref}
       href={href}
       data-slot="conditional-link"
@@ -57,6 +67,6 @@ export function ConditionalLink({
       {...props}
     >
       {children}
-    </AppLink>
+    </Comp>
   )
 }

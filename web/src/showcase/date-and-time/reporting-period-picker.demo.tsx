@@ -21,7 +21,7 @@ export default function ReportingPeriodPickerDemo() {
           name="period"
           help={period ? `${period.type}: ${period.from.toDateString()} – ${period.to.toDateString()}` : "No period"}
         >
-          <ReportingPeriodPicker value={period} onChange={setPeriod} />
+          <ReportingPeriodPicker value={period} onValueChange={setPeriod} />
         </FormField>
       </DemoSection>
       <DemoSection

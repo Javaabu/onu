@@ -153,7 +153,7 @@ export interface AdapterCircleProps {
   tone?: MapTone
   /** Show drag handles for the centre and the radius. */
   editable?: boolean
-  onChange?: (value: { center: LatLng; radius: number }) => void
+  onValueChange?: (value: { center: LatLng; radius: number }) => void
 }
 
 export interface AdapterPolygonProps {
@@ -182,7 +182,7 @@ export interface AdapterDrawProps {
   /** What a new shape is. */
   kind: "polygon" | "linestring"
   shapes: DrawShape[]
-  onChange: (shapes: DrawShape[]) => void
+  onValueChange: (shapes: DrawShape[]) => void
   /** A new shape was completed with the drawing tool (engines that finish shapes themselves). */
   onFinish?: (id: string) => void
   /** `draw` adds a new shape on the next clicks; `edit` lets the user drag vertices. */

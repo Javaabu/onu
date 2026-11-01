@@ -106,7 +106,7 @@ export default function TabsDemo() {
   return (
     <DemoPage>
       <DemoSection title="Items API" className="block">
-        <Tabs items={items} listLabel={dv ? "މެމްބަރު" : "Member"} />
+        <Tabs items={items} label={dv ? "މެމްބަރު" : "Member"} />
       </DemoSection>
       <DemoSection title="Line variant" className="block">
         <Tabs items={items} variant="line" defaultValue="documents" />
@@ -119,7 +119,7 @@ export default function TabsDemo() {
         <Tabs
           variant="line"
           countAppearance="pill"
-          listLabel={dv ? "ހާލަތުން ފިލްޓަރ" : "Filter by status"}
+          label={dv ? "ހާލަތުން ފިލްޓަރ" : "Filter by status"}
           controls="tabs-demo-list"
           value={status}
           onValueChange={setStatus}
@@ -130,7 +130,7 @@ export default function TabsDemo() {
         </p>
         <Tabs
           countAppearance="pill"
-          listLabel={dv ? "ހާލަތުން ފިލްޓަރ" : "Filter by status"}
+          label={dv ? "ހާލަތުން ފިލްޓަރ" : "Filter by status"}
           value={status}
           onValueChange={setStatus}
           items={statuses}

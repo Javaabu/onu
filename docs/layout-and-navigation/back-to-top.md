@@ -28,6 +28,8 @@ const ref = React.useRef<HTMLDivElement>(null)
 | `showLabel`       | `boolean`                | `false`   | Show "Back to top" next to the icon              |
 | `position`        | `'fixed' \| 'static'`    | `'fixed'` | Float or render in place                         |
 | `alwaysVisible`   | `boolean`                | `false`   | Ignore the threshold                             |
+| `asChild` | `boolean` |  | Render your element (e.g. a link to `#top`) as the button; the icon goes before its content, so leave it empty unless `showLabel` is on |
+| `classNames` | `{ root, icon }` |  | Classes for each part |
 
 Other `Button` props are passed through.
 

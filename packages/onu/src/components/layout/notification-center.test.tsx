@@ -16,12 +16,12 @@ const base: NotificationItem[] = [
     title: "Application approved",
     description: "Your building permit for Hulhumalé was approved.",
     time: new Date("2026-10-07T09:00:00Z"),
-    variant: "success",
+    tone: "success",
     icon: "success",
     href: "/applications/1",
   },
   { id: "2", title: "Payment received", description: "MVR 1,250.00", time: "2026-10-05T10:00:00Z", read: true },
-  { id: "3", title: "Document requested", time: 1759800000000, variant: "warning" },
+  { id: "3", title: "Document requested", time: 1759800000000, tone: "warning" },
 ]
 
 const original = window.matchMedia
@@ -129,5 +129,19 @@ describe("NotificationCenter", () => {
     expect(screen.getByRole("button", { name: "ނޮޓިފިކޭޝަންތައް، 2 ނުކިޔާ" })).toBeInTheDocument()
     expect(await screen.findByRole("list", { name: "ނޮޓިފިކޭޝަންތައް" })).toBeInTheDocument()
     await expectNoA11yViolations()
+  })
+})
+
+describe("NotificationCenter rest props", () => {
+  it("passes rest props and ref to the trigger, which keeps opening the list", async () => {
+    const ref = React.createRef<HTMLButtonElement>()
+    const onClick = vi.fn()
+    renderWithOnu(<NotificationCenter notifications={base} ref={ref} data-testid="bell" onClick={onClick} />)
+    const trigger = screen.getByTestId("bell")
+    expect(trigger).toBe(ref.current)
+    expect(trigger).toHaveAttribute("data-part", "notification-center-trigger")
+    await userEvent.click(trigger)
+    expect(onClick).toHaveBeenCalledOnce()
+    expect(await screen.findByText("Notifications")).toBeInTheDocument()
   })
 })

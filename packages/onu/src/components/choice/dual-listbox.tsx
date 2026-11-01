@@ -9,11 +9,11 @@ import { useTranslation } from "../../providers/onu-provider"
 import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
 import { Button } from "../../ui/button"
 import { useFormField, useFormFieldControl } from "../form/form-field"
-import { useControllableState } from "./_hooks"
 import { filterOptions, normalizeOptions, type ChoiceOption, type ChoiceOptionInput } from "./options"
 import { registerEnglish } from "../../i18n/english"
 import { choice as en_choice } from "../../locales/en/choice"
 import { common as en_common } from "../../locales/en/common"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ choice: en_choice, common: en_common })
 
@@ -41,14 +41,14 @@ type Side = "available" | "chosen"
 
 function FilterInput({
   value,
-  onChange,
+  onValueChange,
   label,
   thaana,
   disabled,
   className,
 }: {
   value: string
-  onChange: (v: string) => void
+  onValueChange: (v: string) => void
   label: string
   thaana?: ThaanaProp
   disabled?: boolean
@@ -69,7 +69,7 @@ function FilterInput({
         disabled={disabled}
         aria-label={label}
         placeholder={label}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onValueChange(e.target.value)}
         className={cn(
           "h-8 ps-8 pe-2.5 text-sm touch:h-11 w-full rounded-lg border border-input bg-card outline-none placeholder:text-muted-foreground hover:border-primary-5 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 disabled:opacity-50 dark:bg-input/30",
           className,
@@ -172,7 +172,7 @@ function Pane({
       {searchable ? (
         <FilterInput
           value={query}
-          onChange={setQuery}
+          onValueChange={setQuery}
           label={t("choice.filterList", { list: title })}
           thaana={thaana}
           disabled={disabled}

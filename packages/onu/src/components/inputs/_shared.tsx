@@ -4,6 +4,7 @@ import * as React from "react"
 
 import { LiveRegion } from "../../a11y/live-region"
 import { Icon } from "../../icons/icon"
+import { useCopyToClipboard } from "../../hooks/use-copy-to-clipboard"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { InputGroupButton } from "../../ui/input-group"
@@ -11,77 +12,6 @@ import { registerEnglish } from "../../i18n/english"
 import { input as en_input } from "../../locales/en/input"
 
 registerEnglish({ input: en_input })
-
-/**
- * Controlled/uncontrolled state in one hook: uses `value` when it is not
- * `undefined`, otherwise internal state seeded from `defaultValue`.
- */
-export function useControllableState<T, A extends unknown[] = []>(
-  value: T | undefined,
-  defaultValue: T,
-  onChange?: (value: T, ...args: A) => void,
-): [T, (next: T, ...args: A) => void] {
-  const [inner, setInner] = React.useState<T>(defaultValue)
-  const controlled = value !== undefined
-  const current = controlled ? value : inner
-  const onChangeRef = React.useRef(onChange)
-  React.useEffect(() => {
-    onChangeRef.current = onChange
-  })
-  const set = React.useCallback(
-    (next: T, ...args: A) => {
-      if (!controlled) setInner(next)
-      onChangeRef.current?.(next, ...args)
-    },
-    [controlled],
-  )
-  return [current, set]
-}
-
-/** Writes text to the clipboard, falling back to `execCommand("copy")`. */
-export async function writeClipboard(text: string): Promise<boolean> {
-  try {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(text)
-      return true
-    }
-  } catch {
-    // fall through to the legacy path
-  }
-  const el = document.createElement("textarea")
-  el.value = text
-  el.setAttribute("readonly", "")
-  el.style.position = "fixed"
-  el.style.opacity = "0"
-  document.body.appendChild(el)
-  el.select()
-  let ok: boolean
-  try {
-    ok = document.execCommand?.("copy") ?? false
-  } catch {
-    ok = false
-  }
-  el.remove()
-  return ok
-}
-
-/** Copies text and reports `"copied"` / `"failed"` for `timeout` ms. */
-export function useCopy(timeout = 2000) {
-  const [status, setStatus] = React.useState<"idle" | "copied" | "failed">("idle")
-  const timer = React.useRef<ReturnType<typeof setTimeout>>(undefined)
-  React.useEffect(() => () => clearTimeout(timer.current), [])
-  const copy = React.useCallback(
-    async (text: string) => {
-      const ok = await writeClipboard(text)
-      setStatus(ok ? "copied" : "failed")
-      clearTimeout(timer.current)
-      timer.current = setTimeout(() => setStatus("idle"), timeout)
-      return ok
-    },
-    [timeout],
-  )
-  return { status, copy }
-}
 
 export interface CopyButtonProps extends Omit<React.ComponentProps<typeof InputGroupButton>, "onCopy" | "value"> {
   value: string
@@ -91,7 +21,7 @@ export interface CopyButtonProps extends Omit<React.ComponentProps<typeof InputG
 /** Icon button for input groups that copies `value` and announces "Copied". */
 export function CopyButton({ value, onCopy, className, disabled, ...props }: CopyButtonProps) {
   const { t } = useTranslation()
-  const { status, copy } = useCopy()
+  const { status, copy } = useCopyToClipboard()
   return (
     <>
       <InputGroupButton

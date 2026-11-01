@@ -33,7 +33,7 @@ pnpm e2e:chromium                          # Playwright (a11y with axe, visual)
 
 ## Rules
 
-- A component is done only with: light/dark, LTR/RTL, `dv` strings, `thaana` on free-text fields, tokens-only colours, `className`/`classNames`/`asChild`, axe-clean, unit tests, a demo, a docs page and a changeset (`.changeset/*.md`).
+- A component is done only with: light/dark, LTR/RTL, `dv` strings, `thaana` on free-text fields, tokens-only colours, `className`/`classNames`, `asChild` where the component renders one element an app may need to replace (links, buttons, triggers), axe-clean, unit tests, a demo, a docs page and a changeset (`.changeset/*.md`).
 - Logical Tailwind utilities only (`ms-`, `pe-`, `start-`, `text-start`); ESLint rejects `left`/`right` ones. Theme tokens only, never raw colours.
 - Icons through `<Icon name="…">` with semantic names; never render Lucide components or import `src/icons/lucide-map` in a component.
 - No hard-coded English: strings live in `src/locales/{en,dv}/<namespace>.ts`, and a module registers the English namespaces it uses with `registerEnglish(...)`.

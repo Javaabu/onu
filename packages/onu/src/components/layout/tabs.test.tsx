@@ -21,7 +21,7 @@ describe("Tabs", () => {
     renderWithOnu(
       <Tabs
         items={items}
-        listLabel="Record"
+        label="Record"
         className="extra"
         classNames={{ list: "lst", trigger: "trg", count: "cnt" }}
       />,
@@ -140,7 +140,7 @@ describe("Tabs vertical with narrow", () => {
 
   it("is controllable and offers a horizontal scroller instead of a select", () => {
     const { rerender } = renderWithOnu(
-      <Tabs orientation="vertical" narrow="scroll" items={settingsItems} value="members" listLabel="Settings" />,
+      <Tabs orientation="vertical" narrow="scroll" items={settingsItems} value="members" label="Settings" />,
     )
     expect(screen.queryByRole("combobox")).toBeNull()
     expect(screen.getByRole("tablist", { name: "Settings" })).toHaveClass("overflow-x-auto")
@@ -248,7 +248,7 @@ describe("Tabs as filter tabs", () => {
         <Tabs
           variant="line"
           countAppearance="pill"
-          listLabel="Filter by status"
+          label="Filter by status"
           controls="users"
           onValueChange={onValueChange}
           items={statuses}
@@ -301,7 +301,7 @@ describe("Tabs as filter tabs", () => {
         <Tabs
           variant="line"
           countAppearance="pill"
-          listLabel="ހާލަތުން ފިލްޓަރުކުރޭ"
+          label="ހާލަތުން ފިލްޓަރުކުރޭ"
           controls="list"
           items={[{ value: "a", label: "ހުރިހާ", count: 3 }]}
         />

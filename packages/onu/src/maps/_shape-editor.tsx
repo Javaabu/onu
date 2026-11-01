@@ -256,7 +256,7 @@ export function ShapeEditor({
         <Draw
           kind={kind}
           shapes={shapes}
-          onChange={onDrawChange}
+          onValueChange={onDrawChange}
           onFinish={() => {
             if (!multiple) setMode("view")
           }}
@@ -381,7 +381,7 @@ export function ShapeEditor({
             ) : null}
             {disabled || (!selected && !canAddShape) ? null : (
               <div className="gap-2 flex flex-wrap items-end">
-                <CoordinateFields value={newPoint} onChange={setNewPoint} className="min-w-0 flex-1" />
+                <CoordinateFields value={newPoint} onValueChange={setNewPoint} className="min-w-0 flex-1" />
                 <Button type="button" variant="secondary" disabled={!newPoint} onClick={addPoint}>
                   <Icon name="add" />
                   {t("map.addPoint")}

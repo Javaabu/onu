@@ -25,7 +25,7 @@ export function SystemShell({ children }: { children: React.ReactNode }) {
         <div className="gap-1 flex items-center">
           <LanguageSwitcher
             value={settings.locale}
-            onChange={(code) => update({ locale: code as "en" | "dv" })}
+            onValueChange={(code) => update({ locale: code as "en" | "dv" })}
             size="sm"
           />
           <ThemeToggle />

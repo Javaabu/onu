@@ -105,7 +105,7 @@ export default function StatusTrackerPage() {
         />
 
         <Callout
-          variant="warning"
+          tone="warning"
           title={tr(
             "Action needed: upload your lease agreement",
             "ޢަމަލެއް ކުރަން ޖެހޭ: ކުލި އެއްބަސްވުން އަޕްލޯޑްކުރައްވާ",

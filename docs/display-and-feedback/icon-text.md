@@ -22,7 +22,7 @@ import { IconText } from "@javaabu/onu"
 | `iconPosition` | `'start' \| 'end'`                                                                       | `'start'`   | Icon side                                |
 | `iconLabel`    | `string`                                                                                 |             | Makes the icon meaningful (`role="img"`) |
 | `size`         | `'sm' \| 'md' \| 'lg'`                                                                   | `'md'`      | Text and icon size                       |
-| `tone`         | `'default' \| 'muted' \| 'primary' \| 'success' \| 'warning' \| 'destructive' \| 'info'` | `'default'` | Colour                                   |
+| `tone`         | `'neutral' \| 'muted' \| 'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'neutral'` | Colour                                   |
 | `asChild`      | `boolean`                                                                                | `false`     | Render your element (e.g. a link)        |
 | `classNames`   | `{ icon, text }`                                                                         |             | Classes for each part                    |
 

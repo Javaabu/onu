@@ -31,7 +31,7 @@ Rows that match "Missing only" stay visible while you type their translation, un
 | -------------------- | ---------------------------------------------------------- | ---------------- | ------------------------------------ |
 | `value`              | `TranslationEntry[]`                                       |                  | Controlled entries                   |
 | `defaultValue`       | `TranslationEntry[]`                                       |                  | Initial entries                      |
-| `onChange`           | `(entries) => void`                                        |                  | Called when any cell changes         |
+| `onValueChange`           | `(entries) => void`                                        |                  | Called when any cell changes         |
 | `locales`            | `{ code, label?, thaana? }[]`                              | English, Dhivehi | Language columns                     |
 | `onSave`             | `({ key, locale, value, entry }) => void \| Promise<void>` |                  | Saves one cell                       |
 | `saveOnBlur`         | `boolean`                                                  | `true`           | Save when a changed cell loses focus |

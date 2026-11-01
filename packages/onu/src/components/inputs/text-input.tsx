@@ -2,6 +2,8 @@
 
 import * as React from "react"
 
+import { useMergedRef } from "../../hooks/use-merged-ref"
+import { normalizeUrl } from "../../lib/url"
 import { cn } from "../../lib/utils"
 import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
 import { Input } from "../../ui/input"
@@ -9,7 +11,11 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "../../ui/input-gro
 import { useFormFieldControl } from "../form/form-field"
 import { ThaanaToggle } from "./thaana-toggle"
 
+const FIELD_SIZES = { sm: "h-7 text-xs", default: "h-8", lg: "h-10 text-base" } as const
+
 export interface TextInputProps extends Omit<React.ComponentProps<"input">, "size"> {
+  /** Field height, shared with `NumberInput` and `Select`. Default `default`. */
+  size?: keyof typeof FIELD_SIZES
   /** Type Thaana from a Latin keyboard (R13.3). `true` or keyboard options. Ignored for `type="email"` and `type="url"`. */
   thaana?: ThaanaProp
   /** Show a Thaana/Latin toggle button when `thaana` is on (R13.5). */
@@ -26,36 +32,11 @@ export interface TextInputProps extends Omit<React.ComponentProps<"input">, "siz
   classNames?: { root?: string; input?: string; startAddon?: string; endAddon?: string }
 }
 
-function setRef<T>(ref: React.Ref<T> | undefined, node: T | null) {
-  if (typeof ref === "function") ref(node)
-  else if (ref) (ref as React.RefObject<T | null>).current = node
-}
-
-/** Merges a forwarded ref with a local one. */
-export function useMergedRef<T>(a: React.Ref<T> | undefined, b?: React.Ref<T>) {
-  return React.useCallback(
-    (node: T | null) => {
-      setRef(a, node)
-      setRef(b, node)
-    },
-    [a, b],
-  )
-}
-
 /** The props `TextInput` passes on to the `<input>`. */
 type InputProps = Omit<
   TextInputProps,
   "thaana" | "thaanaToggle" | "urlProtocol" | "startAddon" | "endAddon" | "className" | "classNames" | "ref"
 >
-
-const HAS_SCHEME = /^[a-z][a-z\d+.-]*:/i
-
-/** Adds `protocol` to a URL that has no scheme (`example.mv` → `https://example.mv`). */
-export function normalizeUrl(value: string, protocol = "https://"): string {
-  const trimmed = value.trim()
-  if (!trimmed || HAS_SCHEME.test(trimmed)) return trimmed
-  return protocol + trimmed.replace(/^\/\//, "")
-}
 
 /**
  * Sets the value the way typing does (a native input event), so `onChange`,
@@ -85,8 +66,10 @@ function latinProps(props: InputProps, urlProtocol: string | false): InputProps 
     onBlur:
       type === "url" && urlProtocol !== false
         ? (e: React.FocusEvent<HTMLInputElement>) => {
-            const next = normalizeUrl(e.currentTarget.value, urlProtocol)
-            if (next !== e.currentTarget.value) typeValue(e.currentTarget, next)
+            const value = e.currentTarget.value
+            // A `//host` value takes the protocol here; unsafe schemes are left for validation to report.
+            const next = normalizeUrl(value.trim().replace(/^\/\//, ""), urlProtocol) ?? value.trim()
+            if (next !== value) typeValue(e.currentTarget, next)
             onBlur?.(e)
           }
         : onBlur,
@@ -105,6 +88,7 @@ export function TextInput({
   urlProtocol = "https://",
   startAddon,
   endAddon,
+  size = "default",
   className,
   classNames,
   ref,
@@ -129,7 +113,7 @@ export function TextInput({
       <Input
         ref={merged}
         data-slot="input"
-        className={cn(classNames?.input, className)}
+        className={cn(FIELD_SIZES[size], classNames?.input, className)}
         {...fieldProps}
         {...controlProps}
       />
@@ -137,7 +121,10 @@ export function TextInput({
   }
 
   return (
-    <InputGroup className={cn(classNames?.root, className)} data-disabled={controlProps.disabled || undefined}>
+    <InputGroup
+      className={cn(FIELD_SIZES[size], classNames?.root, className)}
+      data-disabled={controlProps.disabled || undefined}
+    >
       {startAddon ? (
         <InputGroupAddon align="inline-start" className={classNames?.startAddon}>
           {startAddon}

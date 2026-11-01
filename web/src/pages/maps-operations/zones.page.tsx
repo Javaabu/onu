@@ -152,7 +152,7 @@ function ZoneEditor({
         <FormField label={tr("Boundary", "ބޯޑަރު")} name="boundary" required>
           <MapPolygon
             value={shape}
-            onChange={setShape}
+            onValueChange={setShape}
             multiple={false}
             tone={TONES[type]}
             center={zone ? ringToPath(zone.ring)[0] : { lat: 4.1745, lng: 73.509 }}

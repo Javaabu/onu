@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { toneTint, type Tone } from "../../lib/tone"
 import { formatDistance } from "date-fns"
 
 import { useIsMobile } from "../../hooks/use-mobile"
@@ -28,10 +29,10 @@ export interface NotificationItem {
   /** Semantic icon name or node (e.g. an avatar). */
   icon?: string | React.ReactNode
   /** Tints the icon. */
-  variant?: "default" | "success" | "warning" | "error" | "info"
+  tone?: Tone
 }
 
-export interface NotificationCenterProps {
+export interface NotificationCenterProps extends Omit<React.ComponentProps<"button">, "children"> {
   notifications: NotificationItem[]
   onMarkRead?: (id: string) => void
   onMarkAllRead?: () => void
@@ -52,14 +53,6 @@ export interface NotificationCenterProps {
   now?: Date
   className?: string
   classNames?: { trigger?: string; count?: string; content?: string; list?: string; item?: string }
-}
-
-const VARIANT_CLASSES: Record<NonNullable<NotificationItem["variant"]>, string> = {
-  default: "bg-muted text-muted-foreground",
-  success: "bg-success/10 text-success",
-  warning: "bg-warning/15 text-warning",
-  error: "bg-destructive/10 text-destructive",
-  info: "bg-info/10 text-info",
 }
 
 function toDate(value: Date | string | number) {
@@ -86,6 +79,7 @@ export function NotificationCenter({
   now,
   className,
   classNames,
+  ...props
 }: NotificationCenterProps) {
   const { t, locale } = useTranslation()
   const isMobile = useIsMobile()
@@ -121,6 +115,7 @@ export function NotificationCenter({
       aria-label={triggerLabel}
       data-part="notification-center-trigger"
       className={cn("touch:size-11 relative", classNames?.trigger, className)}
+      {...props}
     >
       <Icon name="bell" />
       {count > 0 ? (
@@ -169,7 +164,7 @@ export function NotificationCenter({
               <span
                 className={cn(
                   "mt-0.5 size-8 [&_svg]:size-4 flex shrink-0 items-center justify-center rounded-full",
-                  VARIANT_CLASSES[item.variant ?? "default"],
+                  toneTint[item.tone ?? "neutral"],
                 )}
               >
                 <NavIcon icon={item.icon ?? "bell"} />

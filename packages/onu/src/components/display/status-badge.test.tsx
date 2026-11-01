@@ -77,3 +77,12 @@ describe("StatusBadge", () => {
     await expectNoA11yViolations(container)
   })
 })
+
+describe("StatusBadge classNames", () => {
+  it("applies them to the root and icon", () => {
+    const { container } = renderWithOnu(<StatusBadge status="neutral" classNames={{ root: "r", icon: "i" }} />)
+    const root = container.querySelector('[data-slot="status-badge"]')
+    expect(root).toHaveClass("r")
+    expect(root?.querySelector("svg")).toHaveClass("i", "fill-current")
+  })
+})

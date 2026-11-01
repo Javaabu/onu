@@ -176,7 +176,7 @@ export default function ProfilePage() {
               }}
             />
             {acting !== "me" ? (
-              <Callout appearance="plain" variant="info">
+              <Callout appearance="plain" tone="info">
                 {tr(
                   `Applications and payments you make now are made for ${actingAccount?.name}.`,
                   `މިހާރު ކުރާ ޢަމަލުތައް ކުރެވެނީ ${actingAccount?.name} ގެ ފަރާތުން.`,

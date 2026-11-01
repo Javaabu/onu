@@ -8,15 +8,15 @@ import { Callout } from "./callout"
 
 describe("Callout", () => {
   it.each([
-    ["default", "status", "info"],
+    ["neutral", "status", "info"],
     ["info", "status", "info"],
     ["success", "status", "success"],
     ["warning", "alert", "warning"],
-    ["destructive", "alert", "error"],
-  ] as const)("%s variant uses role=%s and the %s icon", (variant, role, icon) => {
-    const { container } = renderWithOnu(<Callout variant={variant} title="Heads up" description="Body" />)
+    ["danger", "alert", "error"],
+  ] as const)("%s tone uses role=%s and the %s icon", (tone, role, icon) => {
+    const { container } = renderWithOnu(<Callout tone={tone} title="Heads up" description="Body" />)
     const el = screen.getByRole(role)
-    expect(el).toHaveAttribute("data-variant", variant)
+    expect(el).toHaveAttribute("data-tone", tone)
     expect(el).toHaveTextContent("Heads up")
     expect(container.querySelector(`[data-icon-name=${icon}]`)).toBeInTheDocument()
   })
@@ -65,7 +65,7 @@ describe("Callout", () => {
   })
 
   it.each(directions)("is accessible in %s (dv)", async (dir) => {
-    const { container } = renderWithOnu(<Callout dismissible variant="warning" title="ސަމާލުކަމަށް" />, {
+    const { container } = renderWithOnu(<Callout dismissible tone="warning" title="ސަމާލުކަމަށް" />, {
       dir,
       locale: "dv",
     })
@@ -74,14 +74,33 @@ describe("Callout", () => {
   })
 })
 
+describe("Callout defaultOpen", () => {
+  it("is shown by default and hides itself when dismissed", async () => {
+    const onOpenChange = vi.fn()
+    renderWithOnu(
+      <Callout dismissible onOpenChange={onOpenChange}>
+        Saved
+      </Callout>,
+    )
+    await userEvent.click(screen.getByRole("button", { name: "Dismiss" }))
+    expect(screen.queryByText("Saved")).not.toBeInTheDocument()
+    expect(onOpenChange).toHaveBeenCalledWith(false)
+  })
+
+  it("can start hidden", () => {
+    renderWithOnu(<Callout defaultOpen={false}>Saved</Callout>)
+    expect(screen.queryByText("Saved")).not.toBeInTheDocument()
+  })
+})
+
 describe("Callout appearance", () => {
   it.each([
-    ["default", "info", "text-muted-foreground"],
+    ["neutral", "info", "text-muted-foreground"],
     ["warning", "warning", "border-warning"],
-    ["destructive", "error", "border-destructive"],
-  ] as const)("inline %s callouts are notes with the %s icon", (variant, icon, cls) => {
+    ["danger", "error", "border-destructive"],
+  ] as const)("inline %s callouts are notes with the %s icon", (tone, icon, cls) => {
     const { container } = renderWithOnu(
-      <Callout variant={variant} appearance="bordered">
+      <Callout tone={tone} appearance="bordered">
         Changes apply next month.
       </Callout>,
     )
@@ -113,7 +132,7 @@ describe("Callout appearance", () => {
 
   it.each(directions)("is accessible in %s (dv)", async (dir) => {
     const { container } = renderWithOnu(
-      <Callout variant="info" appearance="bordered">
+      <Callout tone="info" appearance="bordered">
         ފޯމު ފުރިހަމަކުރުމަށް 10 މިނެޓު ހޭދަވާނެ.
       </Callout>,
       { dir, locale: "dv" },
@@ -124,16 +143,18 @@ describe("Callout appearance", () => {
 })
 
 describe("Callout inline variants", () => {
-  it.each(["default", "info", "success", "warning", "destructive"] as const)("renders the %s variant", (variant) => {
+  it.each(["neutral", "info", "success", "warning", "danger"] as const)("renders the %s tone", (tone) => {
     renderWithOnu(
-      <Callout variant={variant} appearance="bordered">
+      <Callout tone={tone} appearance="bordered">
         Changes apply next month.
       </Callout>,
     )
     const el = screen.getByRole("note")
     expect(el).toHaveAttribute("data-slot", "callout")
-    expect(el).toHaveAttribute("data-variant", variant)
-    expect(el).toHaveClass(variant === "default" ? "border-border" : `border-${variant}`)
+    expect(el).toHaveAttribute("data-tone", tone)
+    expect(el).toHaveClass(
+      tone === "neutral" ? "border-border" : tone === "danger" ? "border-destructive" : `border-${tone}`,
+    )
   })
 
   it("is neutral by default", () => {
@@ -143,7 +164,7 @@ describe("Callout inline variants", () => {
       </Callout>,
     )
     const el = screen.getByRole("note")
-    expect(el).toHaveAttribute("data-variant", "default")
+    expect(el).toHaveAttribute("data-tone", "neutral")
     expect(el).toHaveClass("n-x", "text-muted-foreground")
     expect(el).not.toHaveClass("rounded-md")
     expect(container.querySelector("[data-icon-name=info]")).toBeInTheDocument()

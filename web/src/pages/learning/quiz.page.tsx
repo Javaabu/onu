@@ -128,7 +128,7 @@ export default function QuizPage() {
               </h2>
               {unanswered ? (
                 <Callout
-                  variant="warning"
+                  tone="warning"
                   title={tr(`${unanswered} questions not answered`, `${unanswered} ސުވާލަކަށް ޖަވާބު ނުދެއްވާ`)}
                   description={tr(
                     "Unanswered questions are marked wrong.",
