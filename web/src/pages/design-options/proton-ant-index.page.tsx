@@ -488,7 +488,7 @@ export default function ProtonAntIndexPage() {
         <Tabs
           variant="line"
           countAppearance="pill"
-          listLabel={tr("Filter by status", "ހާލަތުން ފިލްޓަރ")}
+          label={tr("Filter by status", "ހާލަތުން ފިލްޓަރ")}
           items={tabs}
           value={tabValue}
           controls={listId}

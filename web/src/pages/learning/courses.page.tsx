@@ -123,7 +123,7 @@ export default function CourseCataloguePage() {
             value={tab}
             onValueChange={setTab}
             controls="course-grid"
-            listLabel={tr("Courses", "ކޯސްތައް")}
+            label={tr("Courses", "ކޯސްތައް")}
           />
           <div className="gap-3 sm:grid-cols-2 lg:w-[26rem] grid">
             <Select

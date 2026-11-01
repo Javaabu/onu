@@ -70,7 +70,7 @@ export interface CommandPaletteProps {
   /** Debounce for `search` in ms. Default 300. */
   debounce?: number
   /** Minimum query length before `search` runs. Default 1. */
-  minQueryLength?: number
+  minChars?: number
   /** Remember chosen items and show them when the query is empty. Default `true`. */
   recent?: boolean | { storageKey?: string; max?: number }
   /** Key that opens the palette with ⌘ (macOS) or Ctrl. `false` disables it. Default `"k"`. */
@@ -78,8 +78,8 @@ export interface CommandPaletteProps {
   /** Type Thaana in the search box (R13.3). */
   thaana?: ThaanaProp
   placeholder?: string
-  /** Accessible title of the dialog. Default "Command palette". */
-  title?: string
+  /** Accessible name of the dialog. Default "Command palette". */
+  label?: string
   /** Shown when nothing matches. Receives the query. */
   emptyMessage?: (query: string) => React.ReactNode
   /** Show the key hints footer (hidden on touch screens). Default `true`. */
@@ -157,12 +157,12 @@ export function CommandPalette({
   search,
   searchHeading,
   debounce,
-  minQueryLength = 1,
+  minChars = 1,
   recent = true,
   shortcut = "k",
   thaana,
   placeholder,
-  title,
+  label,
   emptyMessage,
   footer = true,
   onNavigate,
@@ -204,7 +204,7 @@ export function CommandPalette({
   }, [shortcut, open, setOpen])
 
   const trimmed = query.trim()
-  const searching = !!search && open && trimmed.length >= minQueryLength
+  const searching = !!search && open && trimmed.length >= minChars
 
   // Remembers every item seen, so a recent item from an old search still resolves.
   const runSearch = React.useMemo(
@@ -299,12 +299,12 @@ export function CommandPalette({
         data-slot="command-palette"
         className={cn("sm:top-[12vh] sm:translate-y-0 sm:data-open:slide-in-from-top-2", className)}
       >
-        <ModalTitle className="sr-only">{title ?? t("overlay.commandPalette")}</ModalTitle>
+        <ModalTitle className="sr-only">{label ?? t("overlay.commandPalette")}</ModalTitle>
         <ModalDescription className="sr-only">{t("overlay.commandPaletteDescription")}</ModalDescription>
         <CommandPrimitive
           shouldFilter={false}
           loop
-          label={title ?? t("overlay.commandPalette")}
+          label={label ?? t("overlay.commandPalette")}
           className="min-h-0 flex flex-1 flex-col"
         >
           <div

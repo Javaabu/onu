@@ -225,9 +225,9 @@ describe("CommandPalette", () => {
     expect(JSON.parse(window.localStorage.getItem("onu-command-palette-recent")!)).toEqual(["s2"])
   })
 
-  it("respects minQueryLength", async () => {
+  it("respects minChars", async () => {
     const search = vi.fn(async () => [])
-    renderWithOnu(<CommandPalette defaultOpen search={search} debounce={0} minQueryLength={3} />)
+    renderWithOnu(<CommandPalette defaultOpen search={search} debounce={0} minChars={3} />)
     await userEvent.type(screen.getByRole("combobox"), "ab")
     await new Promise((r) => setTimeout(r, 20))
     expect(search).not.toHaveBeenCalled()
@@ -251,7 +251,7 @@ describe("CommandPalette", () => {
       <CommandPalette
         defaultOpen
         groups={groups}
-        title="Search Onu"
+        label="Search Onu"
         placeholder="Find…"
         footer={false}
         emptyMessage={(q) => `Nothing for ${q}`}

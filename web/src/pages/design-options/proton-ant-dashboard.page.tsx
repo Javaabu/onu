@@ -321,7 +321,7 @@ export default function ProtonAntDashboardPage() {
           <Tabs
             variant="line"
             className="pa-card-tabs"
-            listLabel={tr("Chart", "ޗާޓް")}
+            label={tr("Chart", "ޗާޓް")}
             items={[
               {
                 value: "applications",

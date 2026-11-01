@@ -85,7 +85,7 @@ export default function TranslationsPage() {
         <Tabs
           variant="line"
           countAppearance="pill"
-          listLabel={tr("Translation groups", "ތަރުޖަމާގެ ބައިތައް")}
+          label={tr("Translation groups", "ތަރުޖަމާގެ ބައިތައް")}
           controls="translations-list"
           value={group}
           onValueChange={setGroup}

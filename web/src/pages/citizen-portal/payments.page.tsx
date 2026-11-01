@@ -134,7 +134,7 @@ export default function MyPaymentsPage() {
         <Tabs
           variant="line"
           countAppearance="pill"
-          listLabel={tr("Filter by status", "ހާލަތުން ފިލްޓަރ")}
+          label={tr("Filter by status", "ހާލަތުން ފިލްޓަރ")}
           value={tab}
           onValueChange={(v) => state.setFilter("tab", v === "all" ? undefined : v)}
           items={TABS.map((t) => ({ value: t, label: labels[t], count: payments.filter((p) => inTab(p, t)).length }))}

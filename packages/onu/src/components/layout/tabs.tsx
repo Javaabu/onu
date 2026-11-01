@@ -48,7 +48,7 @@ export interface TabsProps extends React.ComponentProps<typeof TabsPrimitive.Roo
    */
   narrow?: "select" | "scroll"
   /** Accessible name for the tab list (and the `narrow="select"` select, default "Choose a section"). */
-  listLabel?: string
+  label?: string
   /**
    * Id of the element the tabs filter, e.g. a listing. Tabs whose item has no
    * `content` render no panel and point `aria-controls` here (or nowhere
@@ -123,7 +123,7 @@ export function Tabs({
   variant = "default",
   scrollable = true,
   narrow,
-  listLabel,
+  label,
   controls,
   countAppearance,
   orientation = "horizontal",
@@ -151,7 +151,7 @@ export function Tabs({
   const root = { value, onValueChange: setValue, orientation, dir, activationMode }
 
   if (vertical && narrow && items) {
-    const label = listLabel ?? t("layout.chooseSection")
+    const selectLabel = label ?? t("layout.chooseSection")
     const scroll = narrow === "scroll"
     return (
       <div data-slot="stacked-tabs" className={cn("@container/stacked-tabs", className)} {...props}>
@@ -162,7 +162,7 @@ export function Tabs({
           {!scroll ? (
             <div className="@2xl/stacked-tabs:hidden">
               <label htmlFor={selectId} className="sr-only">
-                {label}
+                {selectLabel}
               </label>
               <NativeSelect
                 id={selectId}
@@ -180,7 +180,7 @@ export function Tabs({
           ) : null}
           <TabsPrimitive.List
             data-slot="stacked-tabs-list"
-            aria-label={label}
+            aria-label={selectLabel}
             className={cn(
               "gap-1 flex",
               scroll
@@ -267,7 +267,7 @@ export function Tabs({
           >
             <TabsList
               variant={variant}
-              aria-label={listLabel}
+              aria-label={label}
               // A line list draws its hairline under the whole row, as Ant's line tabs do.
               className={cn(!vertical && variant === "line" && "w-max min-w-full", classNames?.list)}
             >

@@ -55,7 +55,7 @@ describe("OverlayMenu", () => {
     renderWithOnu(
       <OverlayMenu
         items={items}
-        title="Site menu"
+        label="Site menu"
         onOpenChange={onOpenChange}
         trigger={<button type="button">Browse</button>}
         classNames={{ content: "cnt" }}

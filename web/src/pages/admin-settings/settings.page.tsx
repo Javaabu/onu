@@ -510,7 +510,7 @@ export default function SettingsPage() {
           orientation="vertical"
           narrow="select"
           items={items}
-          listLabel={tr("Settings sections", "ސެޓިންގްސްގެ ބައިތައް")}
+          label={tr("Settings sections", "ސެޓިންގްސްގެ ބައިތައް")}
         />
       </div>
     </AdminShell>

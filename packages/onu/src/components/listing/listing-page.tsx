@@ -200,7 +200,7 @@ export function ListingPage<T extends RowData>({
       items={tabs}
       variant="line"
       countAppearance="pill"
-      listLabel={t("listing.filterTabs")}
+      label={t("listing.filterTabs")}
       value={tabValue}
       controls={listId}
       onValueChange={(value) => state.setFilter(tabsFilterKey, value === tabs[0]?.value ? undefined : value)}

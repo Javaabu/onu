@@ -199,7 +199,7 @@ export default function ApiKeysPage() {
         />
         <Tabs
           variant="line"
-          listLabel={tr("Credentials", "ކްރެޑެންޝަލް")}
+          label={tr("Credentials", "ކްރެޑެންޝަލް")}
           items={[
             {
               value: "keys",

@@ -21,7 +21,7 @@ export interface UsePlaceSearchBoxOptions {
   /** The search function, e.g. the map engine's geocoder or your own API. `null` disables searching. */
   search: PlaceSearch | null
   /** Minimum characters before searching. Default 2. */
-  minLength?: number
+  minChars?: number
   /** Debounce in ms. Default 300. */
   debounce?: number
 }
@@ -32,7 +32,7 @@ export type PlaceSearchStatus = AsyncSearchStatus
  * State for a place search box: debounced, and older requests are aborted
  * (`AbortController`) so a slow early response never overwrites a newer one.
  */
-export function usePlaceSearchBox({ search, minLength = 2, debounce }: UsePlaceSearchBoxOptions) {
+export function usePlaceSearchBox({ search, minChars = 2, debounce }: UsePlaceSearchBoxOptions) {
   const [query, setQueryState] = React.useState("")
   const searchRef = useLatest(search)
   const stableSearch = React.useCallback<PlaceSearch>((q, options) => searchRef.current!(q, options), [searchRef])
@@ -40,16 +40,16 @@ export function usePlaceSearchBox({ search, minLength = 2, debounce }: UsePlaceS
   const { data, status, retry, clear } = useAsyncSearch({
     search: search ? stableSearch : null,
     query: trimmed,
-    enabled: trimmed.length > 0 && trimmed.length >= minLength,
+    enabled: trimmed.length > 0 && trimmed.length >= minChars,
     delay: debounce,
   })
 
   const setQuery = React.useCallback(
     (q: string) => {
       setQueryState(q)
-      if (q.trim().length < minLength) clear()
+      if (q.trim().length < minChars) clear()
     },
-    [clear, minLength],
+    [clear, minChars],
   )
 
   const reset = React.useCallback(() => {
@@ -69,7 +69,7 @@ export interface PlaceSearchBoxProps {
   thaana?: ThaanaProp
   disabled?: boolean
   className?: string
-  minLength?: number
+  minChars?: number
   debounce?: number
   "aria-label"?: string
 }
@@ -82,14 +82,14 @@ export function PlaceSearchBox({
   thaana,
   disabled,
   className,
-  minLength,
+  minChars,
   debounce,
   "aria-label": ariaLabel,
 }: PlaceSearchBoxProps) {
   const { t } = useTranslation()
   const inputRef = React.useRef<HTMLInputElement>(null)
   const { fieldProps } = useThaanaField(inputRef, thaana)
-  const { query, setQuery, results, status, reset, retry } = usePlaceSearchBox({ search, minLength, debounce })
+  const { query, setQuery, results, status, reset, retry } = usePlaceSearchBox({ search, minChars, debounce })
   const [open, setOpen] = React.useState(false)
   const [active, setActive] = React.useState(-1)
   const listId = React.useId()

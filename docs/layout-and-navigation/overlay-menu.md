@@ -31,7 +31,7 @@ import { Button, LanguageSwitcher, Logo, OverlayMenu } from "@javaabu/onu"
 | `trigger`                               | `ReactNode`                                  | menu button | Custom trigger (rendered `asChild`) |
 | `logo`                                  | `ReactNode`                                  |             | Top start of the overlay            |
 | `footer`                                | `ReactNode`                                  |             | Under the navigation                |
-| `title`                                 | `string`                                     | "Menu"      | Accessible dialog title             |
+| `label`                                 | `string`                                     | "Menu"      | Accessible dialog title             |
 | `classNames`                            | `{ trigger, overlay, content, nav, footer }` |             | Classes for each part               |
 
 Other `<div>` props and `ref` go to the overlay's content element, which is in the page while the menu is open.

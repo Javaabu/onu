@@ -148,7 +148,7 @@ export default function SearchResultsPage() {
             value={type}
             onValueChange={setType}
             controls="search-results"
-            listLabel={tr("Result types", "ނަތީޖާގެ ބާވަތް")}
+            label={tr("Result types", "ނަތީޖާގެ ބާވަތް")}
           />
         ) : null}
         <div id="search-results" className="mt-6">

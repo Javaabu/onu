@@ -14,7 +14,7 @@ import { layout as en_layout } from "../../locales/en/layout"
 
 registerEnglish({ layout: en_layout })
 
-export interface OverlayMenuProps extends Omit<React.ComponentProps<"div">, "children" | "title"> {
+export interface OverlayMenuProps extends Omit<React.ComponentProps<"div">, "children"> {
   items?: NavItem[]
   groups?: NavGroup[]
   currentHref?: string
@@ -28,8 +28,8 @@ export interface OverlayMenuProps extends Omit<React.ComponentProps<"div">, "chi
   logo?: React.ReactNode
   /** Content under the navigation (language switcher, contact details, sign in). */
   footer?: React.ReactNode
-  /** Accessible title of the overlay. Defaults to "Menu". */
-  title?: string
+  /** Accessible name of the overlay. Defaults to "Menu". */
+  label?: string
   className?: string
   classNames?: { trigger?: string; overlay?: string; content?: string; nav?: string; footer?: string }
 }
@@ -50,7 +50,7 @@ export function OverlayMenu({
   trigger,
   logo,
   footer,
-  title,
+  label,
   className,
   classNames,
   ...props
@@ -103,7 +103,7 @@ export function OverlayMenu({
               </Button>
             </DialogPrimitive.Close>
           </div>
-          <DialogPrimitive.Title className="sr-only">{title ?? t("layout.menu")}</DialogPrimitive.Title>
+          <DialogPrimitive.Title className="sr-only">{label ?? t("layout.menu")}</DialogPrimitive.Title>
           <DialogPrimitive.Description className="sr-only">{t("layout.mainNavigation")}</DialogPrimitive.Description>
           <div className="px-4 py-6 max-w-2xl sm:px-8 mx-auto w-full flex-1">
             <SideNav

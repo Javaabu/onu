@@ -56,7 +56,7 @@ export default function NotificationsPage() {
           <Tabs
             variant="line"
             countAppearance="pill"
-            listLabel={tr("Show", "ދައްކާ")}
+            label={tr("Show", "ދައްކާ")}
             value={tab}
             onValueChange={setTab}
             items={[
