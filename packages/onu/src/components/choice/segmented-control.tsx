@@ -41,6 +41,8 @@ export interface SegmentedControlProps
       "type" | "value" | "defaultValue" | "onValueChange" | "children"
     >,
     Omit<VariantProps<typeof segmentedControlVariants>, "fullWidth"> {
+  /** Field name; adds a hidden input so the value is submitted with a form. */
+  name?: string
   options: ReadonlyArray<ChoiceOptionInput>
   value?: string
   defaultValue?: string
