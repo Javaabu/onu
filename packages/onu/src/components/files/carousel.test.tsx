@@ -77,6 +77,34 @@ function setup(
 
 afterEach(() => vi.useRealTimers())
 
+describe("Carousel arrows in RTL", () => {
+  function Arrows({ orientation }: { orientation: "horizontal" | "vertical" }) {
+    return (
+      <Carousel label="Photos" orientation={orientation}>
+        <CarouselContent>
+          <CarouselItem>One</CarouselItem>
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+    )
+  }
+
+  it("don't mirror when vertical, because the button is rotated", () => {
+    const { container } = renderWithOnu(<Arrows orientation="vertical" />, { dir: "rtl" })
+    for (const svg of container.querySelectorAll("button svg")) {
+      expect(svg.getAttribute("class")).not.toContain("rtl:-scale-x-100")
+    }
+  })
+
+  it("mirror when horizontal", () => {
+    const { container } = renderWithOnu(<Arrows orientation="horizontal" />, { dir: "rtl" })
+    for (const svg of container.querySelectorAll("button svg")) {
+      expect(svg.getAttribute("class")).toContain("rtl:-scale-x-100")
+    }
+  })
+})
+
 describe("Carousel", () => {
   it("is a labelled region with translated controls, dots and announcements", async () => {
     const { scrollTo } = setup((setApi) => (
