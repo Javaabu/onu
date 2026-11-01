@@ -17,6 +17,7 @@ import { UploadProgress } from "./upload-progress"
 import { useFormatFileSize, useRejectionMessage, useUploadQueue, type UploadItem, type UploadSource } from "./use-files"
 import { registerEnglish } from "../../i18n/english"
 import { file as en_file } from "../../locales/en/file"
+import { useIsomorphicLayoutEffect } from "../../hooks/use-isomorphic-layout-effect"
 
 registerEnglish({ file: en_file })
 
@@ -220,7 +221,7 @@ export function FileInput<R = unknown>({
   // Latest list for upload callbacks; updated as soon as it changes so two uploads finishing together both land.
   const entriesRef = React.useRef(entries)
   // Reset on every render, so a change the parent ignored does not linger.
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     entriesRef.current = entries
   })
   // Upload queue id → value id of the entry it became.

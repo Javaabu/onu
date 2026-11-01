@@ -4,6 +4,7 @@ import * as React from "react"
 
 import { interpolateLatLng, latLngEquals } from "./geo"
 import type { LatLng } from "./types"
+import { useIsomorphicLayoutEffect } from "../hooks/use-isomorphic-layout-effect"
 
 /** Controlled when `value !== undefined`, otherwise internal state seeded by `defaultValue`. */
 export function useControllableState<T>(
@@ -28,7 +29,7 @@ export function useControllableState<T>(
 /** A ref that always holds the latest value (for callbacks used in effects). */
 export function useLatest<T>(value: T) {
   const ref = React.useRef(value)
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     ref.current = value
   })
   return ref
