@@ -52,3 +52,18 @@ Element.prototype.hasPointerCapture ??= vi.fn(() => false)
 Element.prototype.setPointerCapture ??= vi.fn()
 Element.prototype.releasePointerCapture ??= vi.fn()
 window.HTMLElement.prototype.scrollTo ??= vi.fn()
+
+// jsdom implements neither; without these each call prints a "Not implemented" error. Tests that
+// need a canvas context spy on getContext.
+HTMLCanvasElement.prototype.getContext = (() => null) as typeof HTMLCanvasElement.prototype.getContext
+window.focus = () => {}
+// A frame has its own window (the print frame in src/export/pdf.ts focuses it).
+const contentWindow = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, "contentWindow")!
+Object.defineProperty(HTMLIFrameElement.prototype, "contentWindow", {
+  ...contentWindow,
+  get(this: HTMLIFrameElement) {
+    const win = contentWindow.get!.call(this) as Window | null
+    if (win) win.focus = () => {}
+    return win
+  },
+})
