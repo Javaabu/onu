@@ -1,6 +1,7 @@
 ---
 title: Auth forms
 sidebar_position: 20
+covers: sign-in-form, register-form, forgot-password-form, reset-password-form
 ---
 
 Ready-made, presentational authentication forms: `SignInForm`, `RegisterForm`, `ForgotPasswordForm` and `ResetPasswordForm`. They render the fields Laravel's auth scaffolding expects, call `onSubmit` with typed values, and show the `errors`, `processing` and `status` you pass. They never make requests themselves.
