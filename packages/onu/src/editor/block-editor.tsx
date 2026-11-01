@@ -297,6 +297,7 @@ export function BlockEditor({
             onOpenChange={(next) => setDialog(next ? "image" : null)}
             onCloseAutoFocus={afterDialog}
             onUpload={onImageUpload}
+            thaana={thaana}
             onSubmit={({ src, alt }) => editor.chain().setImage({ src, alt }).run()}
           />
           <EmbedDialog

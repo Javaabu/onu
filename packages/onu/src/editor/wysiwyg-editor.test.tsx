@@ -291,6 +291,15 @@ describe("WysiwygEditor", () => {
     expect(editor.getHTML()).toContain('alt="Malé skyline"')
   })
 
+  it("gives the alt text field the editor's Thaana keyboard, but not the URL field", async () => {
+    const user = userEvent.setup()
+    await setup({ thaana: true })
+    await user.click(button("Image"))
+    const dialog = await screen.findByRole("dialog", { name: "Insert image" })
+    expect(within(dialog).getByLabelText(/Alternative text/)).toHaveAttribute("data-thaana")
+    expect(within(dialog).getByLabelText(/Image URL/)).not.toHaveAttribute("data-thaana")
+  })
+
   it("uploads images through the upload callback and reports failures", async () => {
     const user = userEvent.setup()
     const onImageUpload = vi
