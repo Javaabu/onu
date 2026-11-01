@@ -52,6 +52,7 @@ describe("ProtonAnt tokens", () => {
     "shell-active",
     "shell-weak",
     "layout",
+    "overlay",
     ...["blue", "cyan", "green", "red", "gold"].flatMap((c) => [
       `preset-${c}`,
       `preset-${c}-border`,

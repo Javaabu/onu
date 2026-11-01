@@ -146,6 +146,10 @@
       "value": "oklch(0.97 0 0)",
       "type": "color"
     },
+    "overlay": {
+      "value": "oklch(0 0 0 / 10%)",
+      "type": "color"
+    },
     "preset-blue": {
       "value": "oklch(0.96 0.021 241.3)",
       "type": "color"
@@ -374,6 +378,10 @@
     },
     "layout": {
       "value": "oklch(0.191 0 0)",
+      "type": "color"
+    },
+    "overlay": {
+      "value": "oklch(0 0 0 / 10%)",
       "type": "color"
     },
     "preset-blue": {

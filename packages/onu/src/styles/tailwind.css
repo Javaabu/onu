@@ -80,6 +80,7 @@
   --color-shell-active: var(--shell-active);
   --color-shell-weak: var(--shell-weak);
   --color-layout: var(--layout);
+  --color-overlay: var(--overlay);
   --color-preset-blue: var(--preset-blue);
   --color-preset-blue-border: var(--preset-blue-border);
   --color-preset-blue-foreground: var(--preset-blue-foreground);

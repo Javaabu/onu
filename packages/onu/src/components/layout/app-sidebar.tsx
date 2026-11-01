@@ -143,10 +143,10 @@ function Badge({ item, ctx }: { item: NavItem; ctx: Ctx }) {
  * active states on the shell, a semibold active label and a brand icon.
  */
 const SHELL_BUTTON = cn(
-  "h-9 gap-3 px-2.5 text-sm rounded-lg text-[color:var(--shell-foreground,var(--foreground))]",
-  "hover:text-[color:var(--shell-foreground,var(--foreground))] active:text-[color:var(--shell-foreground,var(--foreground))] data-active:text-[color:var(--shell-foreground,var(--foreground))]",
+  "h-9 gap-3 px-2.5 text-sm rounded-lg text-shell-foreground",
+  "hover:text-shell-foreground active:text-shell-foreground data-active:text-shell-foreground",
   shellClasses.hover,
-  "active:bg-[color:var(--shell-active,rgb(194_192_190/0.35))] dark:active:bg-[color:var(--shell-active,rgb(91_87_107/0.4))]",
+  "active:bg-shell-active",
   shellClasses.active,
   "data-active:font-semibold [&>svg]:text-muted-foreground data-active:[&>svg]:text-primary",
   "group-has-data-[sidebar=menu-badge]/menu-item:pe-12",
