@@ -92,7 +92,7 @@ For a classic filter bar that you render yourself (a `GET` form above a server-r
 | `boolean`    | Any / Yes / No select                                                                                                                   | `"1"` \| `"0"`           |
 | `text`       | A text box (`thaana` supported)                                                                                                         | `string`                 |
 | `trashed`    | Hide / Include / Only                                                                                                                   | `"with"` \| `"only"`     |
-| `custom`     | Your `render({ value, onChange, id, definition })`                                                                                      | anything                 |
+| `custom`     | Your `render({ value, onValueChange, id, definition })`                                                                                      | anything                 |
 
 Every definition also accepts `render` (replace the built-in control) and `format(value)` (the pill text).
 

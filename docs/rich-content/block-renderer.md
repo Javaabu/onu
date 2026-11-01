@@ -31,7 +31,7 @@ Helpers `isSafeUrl`, `isSafeImageUrl` and `toEmbedUrl` are exported.
 ```tsx
 <BlockRenderer
   content={doc}
-  nodes={{ image: ({ node }) => <Lightbox src={node.attrs.src} alt={node.attrs.alt} /> }}
+  nodes={{ image: ({ node }) => <ZoomableImage src={node.attrs.src} alt={node.attrs.alt} /> }}
   marks={{ link: ({ mark, children }) => <InertiaLink href={mark.attrs.href}>{children}</InertiaLink> }}
   codeBlock={{ lineNumbers: true }}
 />

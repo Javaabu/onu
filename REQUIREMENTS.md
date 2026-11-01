@@ -347,7 +347,7 @@ Javaabu currently uses the JTK (JavaScript Thaana Keyboard) approach for typing 
   - `useThaanaInput(ref, options)` hook that can be attached to any `<input>`, `<textarea>` or `contenteditable`.
   - `thaana` and `thaanaToggle` props on `<TextInput>` and `<Textarea>`.
   - A Tiptap extension (`ThaanaKeyboard`) so the WYSIWYG and block editors type Thaana through ProseMirror transactions rather than raw DOM edits.
-- **R13.3** **Every component that accepts free text** exposes a `thaana` prop (`boolean | ThaanaOptions`), including: Text input, Textarea, Search box, Autocomplete, Searchable select / Multi-select search field, Tags input, Inline edit, Editable select, Combobox-style inputs, Command palette, Translations editor, Notes, Comment thread composer, WYSIWYG and Block editor. Inputs whose content must be Latin (email, password, URL, number, phone, OTP, slug, colour) do **not** offer it.
+- **R13.3** **Every component that accepts free text** exposes a `thaana` prop (`boolean | ThaanaOptions`), including: Text input, Textarea, Search box, Autocomplete, Searchable select / Multi-select search field, Tags input, Inline edit, Editable select, Combobox-style inputs, Command palette, Translations editor, Comment thread composer, WYSIWYG and Block editor. Inputs whose content must be Latin (email, password, URL, number, phone, OTP, slug, colour) do **not** offer it.
 - **R13.4** When `thaana` is on, the field sets `dir="rtl"`, `lang="dv"` and the Thaana font automatically.
 - **R13.5** Optional per-field toggle (button and keyboard shortcut) to switch between Thaana and Latin while typing; the current mode is announced to screen readers.
 - **R13.6** Must work with:
@@ -738,23 +738,23 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Avatar group
 - ~~Keyboard key~~ *(Removed.)* The `Kbd` primitive (`@javaabu/onu/primitives`) shows keys; `ActionMenu` and `CommandPalette` format their own shortcut hints.
 - [ ] Alert
-- [ ] Notice
+- ~~Notice~~ *(Folded into Callout: `appearance`.)*
 - [ ] Announcement bar
 - ~~Cookie consent~~ *(Removed.)* No Maldivian requirement asks for one and no sample page uses one; compose `AnnouncementBar` and `Modal` with `Switch`es when a project needs it.
 - [ ] Toast
 - [ ] Conditional link
 - [ ] Conditional display
 - [ ] Publish box
-- [ ] Last edited by
+- ~~Last edited by~~ *(Removed.)* Too app-specific for the library; compose `UserAvatar` and `RelativeDate`.
 - [ ] Relative date
 - [ ] Countdown
-- [ ] Activity feed
+- ~~Activity feed~~ *(Folded into Timeline: `actor`, `groupByDay`.)*
 - [ ] Comment thread
 - [ ] Icon with text
 - [ ] Share buttons
-- [ ] Print and back buttons
-- [ ] Calendar
-- [ ] Notes
+- ~~Print and back buttons~~ *(Removed.)* Too app-specific for the library; use `Button` and `LinkButton`.
+- ~~Calendar~~ *(Folded into Date calendar: `events`, `readOnly`, `size="sm"`.)*
+- ~~Notes~~ *(Folded into Comment thread: `variant="list"`.)*
 - [ ] Content card
 - [ ] Error pages (403, 404, 500, maintenance)
 

@@ -13,7 +13,7 @@ const actions: BulkAction<unknown>[] = [
     id: "status",
     label: "Change status",
     defaultValue: "active",
-    form: ({ id, value, onChange }) => <StatusSelect id={id} value={value} onChange={onChange} />,
+    form: ({ id, value, onValueChange }) => <StatusSelect id={id} value={value} onValueChange={onValueChange} />,
     run: (ids, status) => api.updateStatus(ids, status),
     successMessage: (n) => `${n} users updated`,
   },

@@ -13,7 +13,7 @@ Read the **Rules** section at the top of `node_modules/@javaabu/onu/llms.txt` (o
 
 ## 2. Pick components from the index
 
-`llms.txt` lists every component, hook and guide with one line on what it is for. Search it (or call `onu_search_docs` / `onu_list_components`) before writing a component yourself: Onu probably has it (listing pages, save bars, confirm dialogs, Thaana inputs, Maldivian phone and ID inputs, eFaas and BML brand assets…).
+`llms.txt` lists every component, hook and guide with one line on what it is for. Search it (or call `onu_search_docs` / `onu_list_components`) before writing a component yourself: Onu probably has it (listing pages, save bars, confirm dialogs, Thaana inputs, Maldivian phone inputs…).
 
 ## 3. Read each component's page before using it
 

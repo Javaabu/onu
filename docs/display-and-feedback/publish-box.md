@@ -37,7 +37,7 @@ Without the `on…Change` handlers each row is read-only (a status badge, an ico
 | `visibilityOptions`  | `{ value, label }[]`                                           | public, private           | Select options                                  |
 | `publishAt`          | `Date \| string \| number \| null`                             |                           | Publish date                                    |
 | `onPublishAtChange`  | `(date \| null) => void`                                       |                           | Show a date-time field                          |
-| `renderDateInput`    | `({ id, value, onChange }) => ReactNode`                       |                           | Use your own picker (e.g. Onu's DateTimePicker) |
+| `renderDateInput`    | `({ id, value, onValueChange }) => ReactNode`                       |                           | Use your own picker (e.g. Onu's DateTimePicker) |
 | `previewHref`        | `string`                                                       |                           | Preview link (opens a new tab)                  |
 | `onPreview`          | `() => void`                                                   |                           | Preview button                                  |
 | `onSaveDraft`        | `() => void \| Promise`                                        |                           | Save draft button (hidden once published)       |

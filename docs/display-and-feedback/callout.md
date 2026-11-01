@@ -3,7 +3,7 @@ title: Callout (Alert)
 sidebar_position: 7
 ---
 
-An alert box for messages that need attention: info, success, warning or destructive, with a title, description, actions and an optional dismiss button. Extends shadcn's `Alert` (which stays available as `Alert`). With `appearance` it is a quieter inline notice instead.
+An alert box for messages that need attention: neutral, info, success, warning or danger, with a title, description, actions and an optional dismiss button. Extends shadcn's `Alert` (which stays available as `Alert`). With `appearance` it is a quieter inline notice instead.
 
 ```tsx
 import { Callout } from "@javaabu/onu"
@@ -51,7 +51,7 @@ Variants are exported as `calloutVariants` (box) and `calloutInlineVariants` (in
 
 ## Accessibility
 
-- In the box, `warning` and `destructive` use `role="alert"` (announced immediately); the others use `role="status"` (announced politely). Pass `role="note"` for static content that shouldn't be announced.
+- In the box, `warning` and `danger` use `role="alert"` (announced immediately); the others use `role="status"` (announced politely). Pass `role="note"` for static content that shouldn't be announced.
 - The inline appearances use `role="note"`, so they are not announced. Use the box for messages that must interrupt.
 - Each tone has its own icon, so meaning doesn't rely on colour.
 - The dismiss button is labelled "Dismiss" and is 44px on touch screens.
