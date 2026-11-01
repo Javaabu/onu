@@ -30,7 +30,7 @@ Variants are exported as `iconTextVariants`.
 
 ## Accessibility
 
-The icon is decorative unless `iconLabel` is set. Give it a label only when it adds meaning the text doesn't.
+This renders a `<span>` with no role of its own (or your element with `asChild`), so screen readers read its text. An icon named by a string is decorative and hidden from them unless `iconLabel` is set, which gives it that accessible name. Give it a label only when it adds meaning the text doesn't. `iconLabel` has no effect on an icon passed as a node, so name that node yourself.
 
 ## RTL
 

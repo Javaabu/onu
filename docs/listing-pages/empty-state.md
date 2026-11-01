@@ -33,4 +33,4 @@ import { EmptyState } from "@javaabu/onu"
 
 ## Accessibility
 
-The state is a `status` region, so a search that empties the list is announced.
+The root has `role="status"`, so a search that empties the list is announced with its title and description. The title is a `<div>`, not a heading, so it doesn't add to the page outline. A `media` icon named by a string is hidden from screen readers, and the clear-search and clear-filters actions are ordinary labelled buttons.
