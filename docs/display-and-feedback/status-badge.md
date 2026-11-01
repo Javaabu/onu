@@ -57,7 +57,8 @@ Variants are exported as `statusBadgeVariants` (`tone`, `size`). The root has `d
 
 ## Accessibility
 
-- The text label is always present; the icon is decorative.
+- The root is a `<span>` with no role of its own, so screen readers read the label inline. They hear no change when `status` changes; announce it yourself with `announce()` or `LiveRegion` if it updates while someone is on the page.
+- The text label is always present, so status never depends on colour. An icon named by a string is hidden from screen readers; if you pass your own node, hide it too.
 - Not interactive unless you render a link or button with `asChild`.
 
 ## RTL and Dhivehi

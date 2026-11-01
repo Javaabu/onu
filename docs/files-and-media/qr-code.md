@@ -5,6 +5,12 @@ sidebar_position: 19
 
 A QR code generator. The text is encoded with [`uqr`](https://github.com/unjs/uqr) (MIT, zero dependencies) and Onu renders the SVG itself, so the dark modules use `currentColor` and follow theme tokens. It supports the four error-correction levels, a quiet zone, a centre logo (which switches to level H automatically), and optional buttons to download the code as PNG or SVG and to copy the encoded text. It is the generator counterpart of the [QR code scanner](../text-inputs/qr-code-scanner.md) and is exported from the media entry point.
 
+```bash
+pnpm add react-easy-crop signature_pad yet-another-react-lightbox media-chrome
+```
+
+`@javaabu/onu/media` imports all of these statically, so install them even if you only use `QrCode`.
+
 ```tsx
 import { QrCode } from "@javaabu/onu/media"
 

@@ -43,6 +43,7 @@ Set `name` to also render native fields: `name[removed][]` (hidden ids), `name[a
 | `disabled`                                 | `boolean`                               |         | Disable all actions                                             |
 | `name`                                     | `string`                                |         | Prefix for native form fields                                   |
 | `classNames`                               | `{ list, item, fields, picker, empty }` |         | Classes for each part                                           |
+| `aria-label`                               | `string`                                |         | Name of the add-file picker; default from the locale            |
 
 ## Accessibility
 

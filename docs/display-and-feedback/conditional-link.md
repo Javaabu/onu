@@ -32,4 +32,4 @@ Other anchor props and `ref` go to the link. Both versions have `data-slot="cond
 
 ## Accessibility
 
-Plain text is not focusable, so keyboard users only stop on real links.
+With somewhere to go, this renders a link (`<a>` through `linkComponent`, or your element with `asChild`), named by its content. Otherwise it renders the same content in a `<span>` (or `fallbackAs`) with no link role, no `href` and no extra state, so assistive tech reads plain text. That text is not focusable, so keyboard users only stop on real links.

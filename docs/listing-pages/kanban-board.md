@@ -45,6 +45,7 @@ import { KanbanBoard } from "@javaabu/onu"
 | `emptyColumn`   | `ReactNode`                                             | Text in empty columns             |
 | `disabled`      | `boolean`                                               |                                   |
 | `classNames`    | `{ column, header, list, card }`                        |                                   |
+| `className`     | `string`                                                |                                   |
 
 ## Accessibility
 

@@ -25,7 +25,7 @@ When there are more than `max` people, `max - 1` avatars are shown followed by "
 | ---------------- | -------------------------------------- | ------- | ---------------------------------------- |
 | `users`          | `{ id?, name, src?, status? }[]`       |         | People to show                           |
 | `max`            | `number`                               | `4`     | Avatars shown, including the "+N" button |
-| `size`           | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'`  | Avatar size                              |
+| `size`           | `'xs' \| 'sm' \| 'default' \| 'lg' \| 'xl'` | `'default'`  | Avatar size                              |
 | `shape`          | `'circle' \| 'square'`                 |         | Avatar shape                             |
 | `renderOverflow` | `(hidden) => ReactNode`                |         | Custom popover content                   |
 | `classNames`     | `{ avatar, count, popover }`           |         | Classes for each part                    |

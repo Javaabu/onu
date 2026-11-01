@@ -37,7 +37,7 @@ Without the `on…Change` handlers each row is read-only (a status badge, an ico
 | `visibilityOptions`  | `{ value, label }[]`                                           | public, private           | Select options                                  |
 | `publishAt`          | `Date \| string \| number \| null`                             |                           | Publish date                                    |
 | `onPublishAtChange`  | `(date \| null) => void`                                       |                           | Show a date-time field                          |
-| `renderDateInput`    | `({ id, value, onChange }) => ReactNode`                       |                           | Use your own picker (e.g. Onu's DateTimePicker) |
+| `renderDateInput`    | `({ id, value, onValueChange }) => ReactNode`                       |                           | Use your own picker (e.g. Onu's DateTimePicker) |
 | `previewHref`        | `string`                                                       |                           | Preview link (opens a new tab)                  |
 | `onPreview`          | `() => void`                                                   |                           | Preview button                                  |
 | `onSaveDraft`        | `() => void \| Promise`                                        |                           | Save draft button (hidden once published)       |
@@ -45,6 +45,7 @@ Without the `on…Change` handlers each row is read-only (a status badge, an ico
 | `busy`               | `'draft' \| 'publish' \| null`                                 | automatic                 | Force a busy state                              |
 | `disabled`           | `boolean`                                                      | `false`                   | Disable every control                           |
 | `title`              | `ReactNode`                                                    | "Publish"                 | Card title                                      |
+| `now`                | `DateInput`                                                    | current time              | Reference time for deciding "Schedule" vs "Publish" |
 | `classNames`         | `{ header, content, footer, row }`                             |                           | Classes for each part                           |
 
 ## Accessibility

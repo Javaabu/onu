@@ -5,6 +5,12 @@ sidebar_position: 4
 
 Read-only code with [Shiki](https://shiki.style) syntax highlighting, a language label, a copy button and optional line numbers. Shiki is loaded lazily on first use, and code is always laid out left-to-right, even on RTL pages.
 
+The `@javaabu/onu/editor` entry imports Tiptap statically, so it needs the Tiptap packages as well as `shiki`:
+
+```bash
+pnpm add @tiptap/core @tiptap/react @tiptap/pm @tiptap/starter-kit @tiptap/extension-image @tiptap/extension-table @tiptap/extension-text-align @tiptap/extension-placeholder @tiptap/static-renderer @tiptap/suggestion shiki
+```
+
 ```tsx
 import { CodeBlock } from '@javaabu/onu/editor';
 

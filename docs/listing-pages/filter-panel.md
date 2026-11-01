@@ -92,7 +92,7 @@ For a classic filter bar that you render yourself (a `GET` form above a server-r
 | `boolean`    | Any / Yes / No select                                                                                                                   | `"1"` \| `"0"`           |
 | `text`       | A text box (`thaana` supported)                                                                                                         | `string`                 |
 | `trashed`    | Hide / Include / Only                                                                                                                   | `"with"` \| `"only"`     |
-| `custom`     | Your `render({ value, onChange, id, definition })`                                                                                      | anything                 |
+| `custom`     | Your `render({ value, onValueChange, id, definition })`                                                                                      | anything                 |
 
 Every definition also accepts `render` (replace the built-in control) and `format(value)` (the pill text).
 
@@ -113,6 +113,7 @@ Every definition also accepts `render` (replace the built-in control) and `forma
 | `defaultExpanded`       | `boolean`                                                  | `false`         | Form: start expanded                   |
 | `formLabel`             | `string`                                                   | "Filters"       | Form: accessible name                  |
 | `classNames`            | `{ trigger, badge, content, body, filter, label, footer }` |                 | Classes for each part                  |
+| `className`             | `string`                                                   |                 | Added to the trigger (the form with `variant="form"`) |
 
 ## Accessibility
 

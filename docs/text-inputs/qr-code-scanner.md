@@ -5,11 +5,13 @@ sidebar_position: 22
 
 A QR code scanner. It opens the camera with `getUserMedia`, decodes frames with the browser's `BarcodeDetector`, and loads the [`barcode-detector`](https://github.com/Sec-ant/barcode-detector) polyfill (ZXing in WebAssembly) only where the native API is missing (R8.2). It shows clear states for the permission prompt, a blocked camera, no camera and unsupported browsers, has a torch toggle when the camera supports one, and always offers manual entry. The camera stops when a code is found (unless `continuous`) and when the component unmounts.
 
-It is exported from the media entry point, and `barcode-detector` is an optional peer dependency:
+It is exported from the media entry point, and needs these optional peer dependencies:
 
 ```bash
-npm install barcode-detector
+pnpm add barcode-detector react-easy-crop signature_pad yet-another-react-lightbox media-chrome
 ```
+
+`@javaabu/onu/media` imports the other four statically, so install them too.
 
 ```tsx
 import { QrCodeScanner } from "@javaabu/onu/media"

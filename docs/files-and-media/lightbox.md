@@ -6,8 +6,10 @@ sidebar_position: 12
 A full-screen image viewer built on [yet-another-react-lightbox](https://yet-another-react-lightbox.com): keyboard, swipe, pinch/double-tap/wheel zoom, captions and a counter, with a focus trap, focus return, translated labels and mirrored arrows in RTL. Part of the optional media entry. Use [`Gallery`](./gallery) for the thumbnail grid.
 
 ```bash
-pnpm add yet-another-react-lightbox
+pnpm add react-easy-crop signature_pad yet-another-react-lightbox media-chrome
 ```
+
+`@javaabu/onu/media` imports all of these statically, so install them even if you only use `Lightbox`.
 
 ```tsx
 import { Lightbox } from "@javaabu/onu/media"

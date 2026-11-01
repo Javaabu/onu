@@ -5,6 +5,10 @@ sidebar_position: 3
 
 A pie or donut chart on shadcn's chart (Recharts). The donut shows the total (or your own label) in the middle; the table lists each slice's value and share.
 
+:::info
+Charts live in the `@javaabu/onu/charts` entry and need the optional peer dependency `recharts` (v3): `pnpm add recharts`.
+:::
+
 ```tsx
 import { PieChart } from "@javaabu/onu/charts"
 
@@ -32,7 +36,7 @@ Pie and donut slices stay solid, also when other charts use gradient fills: adja
 
 ## Props
 
-Also takes the common chart props (`title`, `description`, `valueFormat`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [CategoryChart](./category-chart).
+Also takes the common chart props (`title` (required), `description`, `hideTitle`, `id`, `valueFormat`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [CategoryChart](./category-chart).
 
 | Prop          | Type                        | Default        | Description                             |
 | ------------- | --------------------------- | -------------- | --------------------------------------- |

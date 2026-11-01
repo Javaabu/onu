@@ -68,6 +68,7 @@ Chosen items are remembered in `localStorage` (`recent={{ storageKey, max }}`, d
 | `trigger`                             | `ReactNode`                                         |                    | Element that opens the palette      |
 | `open`, `defaultOpen`, `onOpenChange` |                                                     |                    | Open state                          |
 | `classNames`                          | `{ input, list, group, item, empty, footer }`       |                    | Classes for each part               |
+| `className`                           | `string`                                            |                    | Added to the dialog panel           |
 
 `CommandPaletteItem`: `{ id, label, value?, keywords?, icon?, description?, shortcut?, href?, onSelect?, disabled? }`. `matchesCommandItem` and `normalizeSearch` are exported for custom filtering.
 

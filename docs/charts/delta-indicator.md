@@ -5,6 +5,10 @@ sidebar_position: 8
 
 A change indicator: an arrow icon, a signed percentage and a semantic colour. Used by [StatTile](./stat-tile) and the [comparison](./time-series-chart#comparison) of `TimeSeriesChart` and `CategoryChart`, and handy in tables.
 
+:::info
+Charts live in the `@javaabu/onu/charts` entry and need the optional peer dependency `recharts` (v3): `pnpm add recharts`.
+:::
+
 ```tsx
 import { DeltaIndicator } from "@javaabu/onu/charts"
 

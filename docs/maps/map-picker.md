@@ -53,6 +53,20 @@ Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provide
 
 Values are rounded to 6 decimals (about 10 cm).
 
+### PlaceSearchBox props
+
+| Prop          | Type                           | Default | Description                     |
+| ------------- | ------------------------------ | ------- | ------------------------------- |
+| `search`      | `PlaceSearch \| null`          | required | Runs the search                 |
+| `onSelect`    | `(place: PlaceResult) => void` | required | Called with the chosen place    |
+| `minChars`    | `number`                       | `2`     | Characters needed before searching |
+| `debounce`    | `number`                       | `300`   | Delay before searching, in ms   |
+| `placeholder` | `string`                       | from the locale | Shown when empty        |
+| `thaana`      | `ThaanaProp`                   |         | Type Thaana from a Latin keyboard |
+| `disabled`    | `boolean`                      | `false` | Disable the input               |
+| `aria-label`  | `string`                       | from the locale | The input's accessible name |
+| `className`   | `string`                       |         | Added to the root               |
+
 ## Accessibility
 
 - The latitude/longitude fields are the keyboard and screen-reader alternative to the map; invalid numbers show an error.

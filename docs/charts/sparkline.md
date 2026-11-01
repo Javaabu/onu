@@ -5,6 +5,10 @@ sidebar_position: 6
 
 A tiny inline line or area chart with no axes, labels or tooltip, for trends in tables, stat tiles and text.
 
+:::info
+Charts live in the `@javaabu/onu/charts` entry and need the optional peer dependency `recharts` (v3): `pnpm add recharts`.
+:::
+
 ```tsx
 import { Sparkline } from "@javaabu/onu/charts"
 
