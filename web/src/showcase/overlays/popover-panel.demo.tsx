@@ -66,7 +66,7 @@ export default function PopoverPanelDemo() {
       </DemoSection>
 
       <DemoSection title="Sides">
-        {(["top", "right", "bottom", "left"] as const).map((side) => (
+        {(["top", "end", "bottom", "start"] as const).map((side) => (
           <PopoverPanel key={side} side={side} trigger={<Button variant="ghost">{side}</Button>} title={side}>
             Opens on the {side}.
           </PopoverPanel>

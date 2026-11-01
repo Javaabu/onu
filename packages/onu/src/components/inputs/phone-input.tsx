@@ -110,7 +110,7 @@ function CountrySelect({
         <PopoverTrigger asChild>
           <InputGroupButton
             size="xs"
-            data-slot="phone-country"
+            data-part="phone-country"
             aria-label={`${t("input.country")}: ${name}`}
             disabled={disabled || readOnly}
             onFocus={onFocus}

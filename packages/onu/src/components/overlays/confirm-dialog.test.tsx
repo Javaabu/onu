@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
+import { overlay as dv_overlay } from "../../locales/dv/overlay"
 import { Button } from "../../ui/button"
 import { ConfirmDialog, ConfirmProvider, confirm, useConfirm, type ConfirmFunction } from "./confirm-dialog"
 
@@ -269,6 +270,14 @@ describe("useConfirm / confirm()", () => {
     expect(onConfirm).toHaveBeenCalledOnce()
     await expect(confirm()).resolves.toBe(false)
     expect(native).toHaveBeenLastCalledWith("Are you sure?")
+  })
+
+  it("useConfirm's window.confirm fallback uses the locale", async () => {
+    const native = vi.spyOn(window, "confirm").mockReturnValue(false)
+    const onResult = vi.fn()
+    renderWithOnu(<Asker onResult={onResult} />, { locale: "dv" })
+    await userEvent.click(screen.getByRole("button", { name: "Ask" }))
+    await waitFor(() => expect(native).toHaveBeenCalledWith(dv_overlay.confirmTitle))
   })
 
   it("useConfirm outside a provider returns the fallback", async () => {

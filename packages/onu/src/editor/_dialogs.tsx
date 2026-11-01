@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "../ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { isSafeImageUrl, normalizeUrl, toEmbedUrl } from "./_schema"
+import type { ThaanaProp } from "../thaana/use-thaana-field"
 import { registerEnglish } from "../i18n/english"
 import { common as en_common } from "../locales/en/common"
 import { editor as en_editor } from "../locales/en/editor"
@@ -197,6 +198,8 @@ function LinkForm({
 export interface ImageDialogProps extends BaseDialogProps {
   onSubmit: (image: { src: string; alt: string }) => void
   onUpload?: ImageUploadHandler
+  /** The editor's `thaana` prop, for the alt text field. */
+  thaana?: ThaanaProp
 }
 
 export function ImageDialog({ open, onOpenChange, onCloseAutoFocus, ...props }: ImageDialogProps) {
@@ -223,8 +226,9 @@ function toImageUrl(input: string): string | null {
 function ImageForm({
   onSubmit,
   onUpload,
+  thaana,
   close,
-}: Pick<ImageDialogProps, "onSubmit" | "onUpload"> & { close: () => void }) {
+}: Pick<ImageDialogProps, "onSubmit" | "onUpload" | "thaana"> & { close: () => void }) {
   const { t } = useTranslation()
   const [tab, setTab] = React.useState<"url" | "upload">("url")
   const [src, setSrc] = React.useState("")
@@ -307,7 +311,7 @@ function ImageForm({
         urlField
       )}
       <FormField label={t("editor.imageAlt")} help={t("editor.imageAltHelp")}>
-        <TextInput value={alt} onChange={(event) => setAlt(event.target.value)} />
+        <TextInput value={alt} thaana={thaana} onChange={(event) => setAlt(event.target.value)} />
       </FormField>
       <p role="status" aria-live="polite" className="text-sm text-destructive empty:hidden">
         {status === "error" ? t("editor.imageUploadFailed") : null}

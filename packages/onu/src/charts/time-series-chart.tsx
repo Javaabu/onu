@@ -312,7 +312,7 @@ export function TimeSeriesChart({
         <>
           {actions}
           {brush && zoomed ? (
-            <Button type="button" variant="ghost" size="sm" data-slot="chart-reset-zoom" onClick={resetZoom}>
+            <Button type="button" variant="ghost" size="sm" data-part="chart-reset-zoom" onClick={resetZoom}>
               <Icon name="zoom-out" />
               {t("chart.resetZoom")}
             </Button>

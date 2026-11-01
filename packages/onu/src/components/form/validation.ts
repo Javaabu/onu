@@ -11,7 +11,7 @@ export class ValidationError extends Error {
   readonly errors: FormErrors
   constructor(payload: ValidationPayload | FormErrors, message?: string) {
     const body = isValidationPayload(payload) ? payload : { errors: payload }
-    super(message ?? body.message ?? "The given data was invalid.")
+    super(message ?? body.message ?? "")
     this.name = "ValidationError"
     this.errors = body.errors
   }
@@ -36,7 +36,7 @@ export function isValidationPayload(value: unknown): value is ValidationPayload 
  * Returns `null` when there is none. Use `readValidationErrors` for a fetch `Response`.
  */
 export function getValidationErrors(value: unknown): ValidationPayload | null {
-  if (value instanceof ValidationError) return { message: value.message, errors: value.errors }
+  if (value instanceof ValidationError) return { message: value.message || undefined, errors: value.errors }
   if (isValidationPayload(value)) return value
   if (!isRecord(value)) return null
   for (const key of ["response", "data", "body", "cause"] as const) {

@@ -230,7 +230,7 @@ export function ConfirmDialog({
           </AlertDialogCancel>
           <Button
             type="button"
-            data-slot="confirm-dialog-confirm"
+            data-part="confirm-dialog-confirm"
             variant={destructive ? "destructive" : "default"}
             disabled={!matches || pending}
             onClick={() => void handleConfirm()}
@@ -342,10 +342,10 @@ export function ConfirmProvider({ children, defaults }: ConfirmProviderProps) {
 }
 
 /** Falls back to the browser's `window.confirm` when no `ConfirmProvider` is mounted. */
-const fallbackConfirm: ConfirmFunction = async (options) => {
+const fallbackConfirm = async (options?: ConfirmOptions | string, defaultTitle: string = en_overlay.confirmTitle) => {
   const opts = typeof options === "string" ? { title: options } : (options ?? {})
   const text = [opts.title, opts.description].filter((part) => typeof part === "string").join("\n\n")
-  const ok = typeof window !== "undefined" && window.confirm(text || "Are you sure?")
+  const ok = typeof window !== "undefined" && window.confirm(text || defaultTitle)
   if (ok) await opts.onConfirm?.()
   return ok
 }
@@ -360,7 +360,12 @@ const fallbackConfirm: ConfirmFunction = async (options) => {
  * ```
  */
 export function useConfirm(): ConfirmFunction {
-  return React.useContext(ConfirmContext) ?? confirm
+  const context = React.useContext(ConfirmContext)
+  const defaultTitle = useTranslation().t("overlay.confirmTitle")
+  return React.useMemo(
+    () => context ?? ((options) => (activeConfirm.get() ?? ((o) => fallbackConfirm(o, defaultTitle)))(options)),
+    [context, defaultTitle],
+  )
 }
 
 /**

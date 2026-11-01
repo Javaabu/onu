@@ -12,6 +12,16 @@ vi.setConfig({ testTimeout: 20_000 })
 const touch = { pointerType: "touch", pointerId: 1, button: 0 }
 
 describe("Tip", () => {
+  it("resolves side=start to the physical side in RTL", () => {
+    renderWithOnu(
+      <Tip content="Print" side="start" open>
+        <Button>Go</Button>
+      </Tip>,
+      { dir: "rtl" },
+    )
+    expect(document.querySelector("[data-slot=tip-content]")).toHaveAttribute("data-side", "right")
+  })
+
   afterEach(() => vi.useRealTimers())
 
   it("shows on keyboard focus and hides on Escape", async () => {

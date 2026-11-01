@@ -41,6 +41,16 @@ describe("SegmentedControl", () => {
     expect(screen.getByRole("radio", { name: "Week" })).toHaveAttribute("aria-checked", "true")
   })
 
+  it("submits its value under its own name, ahead of the field's", () => {
+    const { container } = renderWithOnu(
+      <FormField label="View" name="from_field">
+        <SegmentedControl name="from_prop" options={views} defaultValue="grid" />
+      </FormField>,
+    )
+    expect(container.querySelector("input[type=hidden]")).toHaveAttribute("name", "from_prop")
+    expect(container.querySelector("input[type=hidden]")).toHaveValue("grid")
+  })
+
   it("is controlled, icon-only, sized and full width", () => {
     function Controlled() {
       const [value, setValue] = React.useState("grid")

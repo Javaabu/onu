@@ -215,7 +215,7 @@ export function DocsSidebar() {
           placeholder="Filter"
           aria-label="Filter the menu"
           startAddon={<Icon name="filter" />}
-          className="bg-[color:var(--shell-field,#ffffff)] group-data-[collapsible=icon]:hidden dark:bg-[color:var(--shell-field,#292733)]"
+          className="bg-shell-field group-data-[collapsible=icon]:hidden"
         />
       }
     >

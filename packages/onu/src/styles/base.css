@@ -91,7 +91,7 @@ body {
   [data-slot="app-header"],
   [data-slot="bottom-nav"],
   [data-slot="skip-link"],
-  [data-slot="back-to-top"],
+  [data-part="back-to-top"],
   [data-slot="announcement-bar"],
   [data-slot="sonner-toaster"],
   [data-sonner-toaster] {

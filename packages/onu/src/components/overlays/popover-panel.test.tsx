@@ -27,6 +27,11 @@ function mockPhone() {
 }
 
 describe("PopoverPanel", () => {
+  it("resolves side=start to the physical side in RTL", () => {
+    renderWithOnu(<PopoverPanel trigger={<Button>Go</Button>} side="start" open title="Filters" />, { dir: "rtl" })
+    expect(document.querySelector("[data-slot=popover-panel]")).toHaveAttribute("data-side", "right")
+  })
+
   afterEach(() => vi.restoreAllMocks())
 
   it("opens a labelled, non-modal panel and returns focus on Escape", async () => {

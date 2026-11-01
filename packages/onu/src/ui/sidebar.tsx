@@ -285,7 +285,7 @@ function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<t
   return (
     <Button
       data-sidebar="trigger"
-      data-slot="sidebar-trigger"
+      data-part="sidebar-trigger"
       variant="ghost"
       size="icon-sm"
       className={cn(className)}
@@ -596,14 +596,15 @@ function SidebarMenuBadge({ className, ...props }: React.ComponentProps<"div">) 
 function SidebarMenuSkeleton({
   className,
   showIcon = false,
+  index = 0,
   ...props
 }: React.ComponentProps<"div"> & {
   showIcon?: boolean
+  /** Position in a list of skeletons, which varies the width. */
+  index?: number
 }) {
-  // Random width between 50 to 90%.
-  const [width] = React.useState(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`
-  })
+  // onu: a fixed cycle instead of Math.random(), so server and client markup match.
+  const width = `${[60, 75, 50, 85][index % 4]}%`
 
   return (
     <div

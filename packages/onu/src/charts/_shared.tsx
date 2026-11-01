@@ -299,7 +299,7 @@ export function ChartFrame({
                 type="button"
                 variant="outline"
                 size="sm"
-                data-slot="chart-view-toggle"
+                data-part="chart-view-toggle"
                 aria-controls={bodyId}
                 className={classNames?.toggle}
                 onClick={() => setView(view === "table" ? "chart" : "table")}

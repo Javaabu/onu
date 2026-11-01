@@ -100,7 +100,7 @@ export function ThemeToggle({ variant = "menu", showSystem = true, size = "defau
         <Button
           variant="ghost"
           size={iconSize}
-          data-slot="theme-toggle"
+          data-part="theme-toggle"
           aria-label={`${label}: ${t(KEYS[theme])}`}
           onClick={() => choose(next)}
           className={cn("touch:size-11", className)}
@@ -119,7 +119,7 @@ export function ThemeToggle({ variant = "menu", showSystem = true, size = "defau
           <Button
             variant="ghost"
             size={iconSize}
-            data-slot="theme-toggle"
+            data-part="theme-toggle"
             aria-label={`${label}: ${t(KEYS[theme])}`}
             className={cn("touch:size-11", className)}
           >

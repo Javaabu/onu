@@ -96,7 +96,7 @@ export function CopyButton({ value, onCopy, className, disabled, ...props }: Cop
     <>
       <InputGroupButton
         size="icon-xs"
-        data-slot="copy-button"
+        data-part="copy-button"
         data-copied={status === "copied" || undefined}
         aria-label={t("input.copy")}
         title={t("input.copy")}

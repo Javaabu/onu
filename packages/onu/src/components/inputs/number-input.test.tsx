@@ -324,11 +324,11 @@ describe("NumberInput units", () => {
       <NumberInput stepper aria-label="Weight" unit="kg" endAddon={<span>max</span>} defaultValue={2} />,
     )
     const end = container.querySelector("[data-slot=input-group-addon][data-align=inline-end]")!
-    expect(Array.from(end.children).map((el) => el.getAttribute("data-slot") ?? el.textContent)).toEqual([
-      "unit",
-      "max",
-      "number-input-increment",
-    ])
+    expect(
+      Array.from(end.children).map(
+        (el) => el.getAttribute("data-part") ?? el.getAttribute("data-slot") ?? el.textContent,
+      ),
+    ).toEqual(["unit", "max", "number-input-increment"])
     expect(container.querySelector("[data-slot=input-group-addon][data-align=inline-start]")!.children).toHaveLength(1)
   })
 

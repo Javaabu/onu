@@ -37,6 +37,7 @@
   --onu-shell-active: oklch(0.809 0.004 67.8 / 35%);
   --onu-shell-weak: oklch(0.929 0.005 67.8);
   --onu-layout: oklch(0.97 0 0);
+  --onu-overlay: oklch(0 0 0 / 10%);
   --onu-preset-blue: oklch(0.96 0.021 241.3);
   --onu-preset-blue-border: oklch(0.819 0.096 247.3);
   --onu-preset-blue-foreground: oklch(0.504 0.21 261);
@@ -115,6 +116,7 @@
   --onu-shell-active: oklch(0.468 0.032 294.3 / 40%);
   --onu-shell-weak: oklch(0.363 0.029 295.7);
   --onu-layout: oklch(0.191 0 0);
+  --onu-overlay: oklch(0 0 0 / 10%);
   --onu-preset-blue: oklch(0.219 0.038 263.3);
   --onu-preset-blue-border: oklch(0.319 0.081 257.5);
   --onu-preset-blue-foreground: oklch(0.721 0.129 251.8);

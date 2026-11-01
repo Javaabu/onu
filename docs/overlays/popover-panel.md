@@ -40,7 +40,8 @@ Below 768px this renders a `BottomSheet` with the same title, content and footer
 | `footer`                              | `ReactNode`                                           |             | Actions, aligned to the inline end        |
 | `closeButton`                         | `boolean`                                             | `false`     | Show a × button                           |
 | `mobile`                              | `'popover' \| 'sheet'`                                | `'popover'` | Presentation on phones                    |
-| `side`, `align`, `sideOffset`, …      |                                                       |             | Radix `Popover.Content` positioning props |
+| `side` | `"top" \| "bottom" \| "start" \| "end"` | | Side it opens on; `start` and `end` follow the reading direction |
+| `align`, `sideOffset`, … | | | Radix `Popover.Content` props |
 | `open`, `defaultOpen`, `onOpenChange` |                                                       |             | Open state                                |
 | `className`                           | `string`                                              |             | Classes for the panel                     |
 | `classNames`                          | `{ header, title, description, body, footer, close }` |             | Classes for each part                     |
@@ -58,4 +59,4 @@ Below 768px this renders a `BottomSheet` with the same title, content and footer
 
 ## RTL
 
-`side="left"` / `"right"` are physical (Radix); prefer `top` / `bottom` with `align="start" | "end"`, which follow the direction.
+`side="start"` / `"end"` and `align="start"` / `"end"` follow the reading direction.

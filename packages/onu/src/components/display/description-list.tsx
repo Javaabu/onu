@@ -158,7 +158,7 @@ export function DescriptionListItem({
             type="button"
             variant="ghost"
             size="icon-xs"
-            data-slot="description-list-copy"
+            data-part="description-list-copy"
             className={cn("-my-0.5 touch:size-9 shrink-0", classNames?.copy)}
             aria-label={copied ? t("common.copied") : t("display.copyValue", { label: plainText(label) || text })}
             onClick={() => void copy(text)}

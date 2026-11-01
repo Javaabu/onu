@@ -168,8 +168,9 @@ export const listing = {
   reorder: "Reorder",
   moveTo: "Move to…",
   moveToColumn: "Move to {column}",
-  moveUp: "Move up",
-  moveDown: "Move down",
+  moveItemMenu: "Move {name}",
+  moveItemUp: "Move {name} up",
+  moveItemDown: "Move {name} down",
   moved: "{name} moved to {column}",
   movedToPosition: "{name} moved to position {position} of {total}",
   dragInstructions:

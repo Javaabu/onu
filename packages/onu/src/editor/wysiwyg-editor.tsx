@@ -221,6 +221,7 @@ export function WysiwygEditor({
             onOpenChange={(next) => setDialog(next ? "image" : null)}
             onCloseAutoFocus={afterDialog}
             onUpload={onImageUpload}
+            thaana={thaana}
             onSubmit={({ src, alt }) => editor.chain().setImage({ src, alt }).run()}
           />
         </>

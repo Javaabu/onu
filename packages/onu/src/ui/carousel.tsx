@@ -180,7 +180,7 @@ function CarouselPrevious({
 
   return (
     <Button
-      data-slot="carousel-previous"
+      data-part="carousel-previous"
       variant={variant}
       size={size}
       className={cn(
@@ -195,7 +195,8 @@ function CarouselPrevious({
       {...props}
     >
       {/* onu: the Icon already mirrors in RTL; translated label. */}
-      <Icon name="chevron-left" fallback={ChevronLeftIcon} />
+      {/* onu: the button already rotates when vertical, where up and down don't mirror in RTL. */}
+      <Icon name="chevron-left" fallback={ChevronLeftIcon} flip={orientation === "vertical" ? false : undefined} />
       <span className="sr-only">{t("common.previousSlide")}</span>
     </Button>
   )
@@ -212,7 +213,7 @@ function CarouselNext({
 
   return (
     <Button
-      data-slot="carousel-next"
+      data-part="carousel-next"
       variant={variant}
       size={size}
       className={cn(
@@ -227,7 +228,7 @@ function CarouselNext({
       {...props}
     >
       {/* onu: the Icon already mirrors in RTL; translated label. */}
-      <Icon name="chevron-right" fallback={ChevronRightIcon} />
+      <Icon name="chevron-right" fallback={ChevronRightIcon} flip={orientation === "vertical" ? false : undefined} />
       <span className="sr-only">{t("common.nextSlide")}</span>
     </Button>
   )

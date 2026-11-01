@@ -65,7 +65,7 @@ Without a `trigger`, a ⋯ icon button labelled "More actions" opens the menu (4
 | `className`                                    | `string`                       |                | Classes for the menu                                             |
 | `classNames`                                   | `{ trigger, item }`            |                | Classes for the default trigger (or the area) and items          |
 
-Other props go to Radix `DropdownMenu.Content` (`side`, `sideOffset`, …), or `ContextMenu.Content` with `openOn="context"`, where the menu opens at the pointer and `align`, `side` and `sideOffset` do not apply.
+`side` is `top`, `bottom`, `start` or `end`, which follow the reading direction. Other props go to Radix `DropdownMenu.Content` (`sideOffset`, …), or `ContextMenu.Content` with `openOn="context"`, where the menu opens at the pointer and `align`, `side` and `sideOffset` do not apply.
 
 ## Row actions
 

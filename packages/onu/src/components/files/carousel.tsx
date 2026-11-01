@@ -238,7 +238,7 @@ export function CarouselAutoplayToggle({
       type="button"
       variant={variant}
       size={size}
-      data-slot="carousel-autoplay-toggle"
+      data-part="carousel-autoplay-toggle"
       aria-label={playing ? t("file.pauseSlides") : t("file.playSlides")}
       className={cn("rounded-full", className)}
       onClick={() => setPlaying(!playing)}

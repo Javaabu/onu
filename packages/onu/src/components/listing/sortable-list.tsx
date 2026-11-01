@@ -122,7 +122,7 @@ function useSortableItem({
         variant="ghost"
         size="icon-xs"
         className="touch:size-11"
-        aria-label={`${t("listing.moveUp")}: ${name}`}
+        aria-label={t("listing.moveItemUp", { name })}
         disabled={disabled || index === 0}
         onClick={() => onMove(index, index - 1)}
       >
@@ -132,7 +132,7 @@ function useSortableItem({
         variant="ghost"
         size="icon-xs"
         className="touch:size-11"
-        aria-label={`${t("listing.moveDown")}: ${name}`}
+        aria-label={t("listing.moveItemDown", { name })}
         disabled={disabled || index === count - 1}
         onClick={() => onMove(index, index + 1)}
       >

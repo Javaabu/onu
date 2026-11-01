@@ -63,6 +63,11 @@ describe("visibleItems", () => {
 })
 
 describe("ActionMenu", () => {
+  it("resolves side=start to the physical side in RTL", () => {
+    renderWithOnu(<ActionMenu items={[{ label: "View" }]} side="start" defaultOpen />, { dir: "rtl" })
+    expect(document.querySelector("[data-slot=action-menu-content]")).toHaveAttribute("data-side", "right")
+  })
+
   it("§25.6: clicking ⋯ opens the row's actions; only allowed actions are listed", async () => {
     const view = vi.fn()
     renderWithOnu(<ActionMenu items={rowActions({ view })} />)

@@ -42,6 +42,7 @@ export const form = {
   maxItems: { one: "ގިނަވެގެން 1 އައިޓަމް", other: "ގިނަވެގެން {count} އައިޓަމް" },
   minItems: { one: "މަދުވެގެން 1 އައިޓަމް", other: "މަދުވެގެން {count} އައިޓަމް" },
   edit: "{label} އެޑިޓްކުރޭ",
+  editValue: "{label} އެޑިޓްކުރޭ: {value}",
   emptyValue: "ހުސް",
   saveEdit: "ސޭވްކުރޭ",
   cancelEdit: "ކެންސަލްކުރޭ",

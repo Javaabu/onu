@@ -92,6 +92,7 @@ Every token is a CSS variable you can set. The names follow shadcn/ui, prefixed 
 | Sidebar | `--onu-sidebar`, `--onu-sidebar-foreground`, `--onu-sidebar-primary`, `--onu-sidebar-accent`, `--onu-sidebar-border` |
 | App shell | `--onu-shell`, `--onu-shell-foreground`, `--onu-shell-border`, `--onu-shell-field`, `--onu-shell-hover`, `--onu-shell-active`, `--onu-shell-weak` (see [App shell tokens](#app-shell-tokens)) |
 | Layout grey | `--onu-layout` (Ant's `colorBgLayout`: the grey page behind dashboard cards) |
+| Overlay | `--onu-overlay` (the dim behind modal dialogs, sheets and drawers) |
 | Preset colours | `--onu-preset-{blue,cyan,green,red,gold}` with `-border` and `-foreground` (see [Preset colours](#preset-colours)) |
 | Elevation | `--onu-shadow-popup` (the one shadow: menus, selects, popovers, dialogs) |
 | Shape | `--onu-radius` (every radius derives from it; `0` gives square corners) |

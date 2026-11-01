@@ -123,7 +123,7 @@ function KanbanCard({
           size="icon-xs"
           className="touch:size-11"
           disabled={disabled}
-          aria-label={`${t("listing.moveTo")} ${name}`}
+          aria-label={t("listing.moveItemMenu", { name })}
         >
           <Icon name="more" />
         </Button>
@@ -194,8 +194,9 @@ function KanbanColumnView({
         <h3 id={headingId} className="text-sm font-medium">
           {column.title}
         </h3>
-        <Badge variant="secondary" className="tabular-nums" aria-label={t("listing.columnItems", { count })}>
-          {new Intl.NumberFormat(locale.numberLocale).format(count)}
+        <Badge variant="secondary" className="tabular-nums">
+          <span aria-hidden="true">{new Intl.NumberFormat(locale.numberLocale).format(count)}</span>
+          <span className="sr-only">{t("listing.columnItems", { count })}</span>
         </Badge>
         <div className="ms-auto">{column.actions}</div>
       </header>

@@ -14,10 +14,13 @@ export function toDate(value: DateInput): Date | null {
 
 /**
  * The current time, refreshed every `interval` ms (pass `null` to stop).
- * Starts from `initial` so server and first client render agree.
+ * Starts from `initial`, or `null` until the first tick on mount, so server and
+ * first client render agree; show a stable placeholder while it is `null`.
  */
-export function useNow(interval: number | null, initial?: number): number {
-  const [now, setNow] = React.useState(() => initial ?? Date.now())
+export function useNow(interval: number | null, initial?: number): number | null {
+  const [now, setNow] = React.useState<number | null>(initial ?? null)
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- the clock only exists after hydration
+  React.useEffect(() => setNow(Date.now()), [])
   React.useEffect(() => {
     if (interval === null) return
     const id = window.setInterval(() => setNow(Date.now()), interval)

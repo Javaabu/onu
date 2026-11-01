@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
+import { form as dv_form } from "../../locales/dv/form"
 import { TextInput } from "../inputs/text-input"
 import { FormField } from "./form-field"
 import {
@@ -86,6 +87,14 @@ describe("ValidationSummary", () => {
   })
 })
 
+describe("ValidationSummary with a ValidationError that has no message", () => {
+  it("shows the translated title", () => {
+    const errors = getValidationErrors(new ValidationError({ name: "ނަން ލިޔުއްވާ" }))
+    renderWithOnu(<ValidationSummary errors={errors} />, { locale: "dv" })
+    expect(screen.getByRole("alert")).toHaveTextContent(dv_form.errorSummaryTitle.one)
+  })
+})
+
 describe("validation helpers", () => {
   it("detects Laravel payloads", () => {
     expect(isValidationPayload(payload)).toBe(true)
@@ -105,7 +114,8 @@ describe("validation helpers", () => {
     expect(getValidationErrors("nope")).toBeNull()
     const err = new ValidationError(payload)
     expect(getValidationErrors(err)).toEqual({ message: payload.message, errors: payload.errors })
-    expect(new ValidationError({ a: "b" }).message).toBe("The given data was invalid.")
+    expect(new ValidationError({ a: "b" }).message).toBe("")
+    expect(getValidationErrors(new ValidationError({ a: "b" }))?.message).toBeUndefined()
     expect(new ValidationError({ a: "b" }, "Custom").message).toBe("Custom")
   })
 

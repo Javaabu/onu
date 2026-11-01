@@ -36,6 +36,7 @@ export const choice = {
   ratingValue: "{max} ތަރިން {value}",
   notRated: "ރޭޓިންގ ދީފައެއް ނެތް",
   switchAccount: "އެކައުންޓް ބަދަލުކުރައްވާ",
+  switchAccountFrom: "އެކައުންޓް ބަދަލުކުރައްވާ: {name}",
   searchAccounts: "އެކައުންޓް ހޯއްދަވާ…",
   personalAccount: "ތިޔަބޭފުޅާގެ އެކައުންޓް",
   organisations: "މުއައްސަސާތައް",
