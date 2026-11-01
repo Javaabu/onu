@@ -6,15 +6,15 @@ Onu (`@javaabu/onu`) is Javaabu's React UI library: shadcn/ui (Radix base) and T
 
 ## Layout
 
-| Path                        | What                                                                                                                       |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `packages/onu`              | The library. `src/components/<group>/<name>.tsx` + `.test.tsx`; heavy entries in `src/{charts,maps,editor,calendar,media}` |
-| `packages/onu/src/ui`       | shadcn/ui primitives, now Onu-owned code: edit in place, mark upstream changes with `// onu:`                              |
-| `packages/onu-mcp`          | MCP server that serves the docs to AI assistants                                                                           |
-| `web`                       | Docs and demo site: `src/showcase/<group>/<name>.demo.tsx`, `src/pages/<group>/<name>.page.tsx`                            |
-| `docs`                      | Markdown docs, one page per component (`docs/<group>/<name>.md`)                                                           |
-| `scripts/llms.mjs`          | Builds `llms.txt`, `llms-full.txt` and `docs/*.md` for AI assistants from `docs/`                                          |
-| `templates`, `e2e`, `figma` | App templates, Playwright tests, Figma plugin                                                                              |
+| Path                  | What                                                                                                                       |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `packages/onu`        | The library. `src/components/<group>/<name>.tsx` + `.test.tsx`; heavy entries in `src/{charts,maps,editor,calendar,media}` |
+| `packages/onu/src/ui` | shadcn/ui primitives, now Onu-owned code: edit in place, mark upstream changes with `// onu:`                              |
+| `packages/onu-mcp`    | MCP server that serves the docs to AI assistants                                                                           |
+| `web`                 | Docs and demo site: `src/showcase/<group>/<name>.demo.tsx`, `src/pages/<group>/<name>.page.tsx`                            |
+| `docs`                | Markdown docs, one page per component (`docs/<group>/<name>.md`)                                                           |
+| `scripts/llms.mjs`    | Builds `llms.txt`, `llms-full.txt` and `docs/*.md` for AI assistants from `docs/`                                          |
+| `e2e`, `figma`        | Playwright tests, Figma plugin                                                                                             |
 
 ## Commands
 
