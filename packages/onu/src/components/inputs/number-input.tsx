@@ -9,10 +9,10 @@ import { useOnu } from "../../providers/onu-provider"
 import { InputGroupButton } from "../../ui/input-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
 import { useFormFieldControl } from "../form/form-field"
-import { useControllableState } from "./_shared"
 import { TextInput, type TextInputProps } from "./text-input"
 import { registerEnglish } from "../../i18n/english"
 import { input as en_input } from "../../locales/en/input"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ input: en_input })
 

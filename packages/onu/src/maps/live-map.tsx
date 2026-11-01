@@ -8,13 +8,14 @@ import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
 import { Button } from "../ui/button"
-import { useAnimatedLatLng, useControllableState, useLatest } from "./_hooks"
+import { useAnimatedLatLng, useLatest } from "./_hooks"
 import { boundsOf, compassDirection, compassLabel, formatLatLng } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import { MALE, MapMarker, MapView } from "./map-view"
 import type { LatLng, MapHandle, MapTone } from "./types"
 import { registerEnglish } from "../i18n/english"
 import { map as en_map } from "../locales/en/map"
+import { useControllableState } from "../hooks/use-controllable-state"
 
 registerEnglish({ map: en_map })
 

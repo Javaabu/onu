@@ -9,11 +9,11 @@ import { useTranslation } from "../../providers/onu-provider"
 import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
 import { Button } from "../../ui/button"
 import { useFormField, useFormFieldControl } from "../form/form-field"
-import { useControllableState } from "./_hooks"
 import { filterOptions, normalizeOptions, type ChoiceOption, type ChoiceOptionInput } from "./options"
 import { registerEnglish } from "../../i18n/english"
 import { choice as en_choice } from "../../locales/en/choice"
 import { common as en_common } from "../../locales/en/common"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ choice: en_choice, common: en_common })
 

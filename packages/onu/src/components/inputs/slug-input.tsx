@@ -8,11 +8,11 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { InputGroupButton } from "../../ui/input-group"
-import { useControllableState } from "./_shared"
 import { thaanaToLatin } from "./_thaana-latin"
 import { TextInput, useMergedRef, type TextInputProps } from "./text-input"
 import { registerEnglish } from "../../i18n/english"
 import { input as en_input } from "../../locales/en/input"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ input: en_input })
 

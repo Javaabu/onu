@@ -10,7 +10,7 @@ import { useOnu, useTranslation } from "../providers/onu-provider"
 import { Button } from "../ui/button"
 import { NativeSelect, NativeSelectOption } from "../ui/native-select"
 import { useMapEngine } from "./_context"
-import { useControllableState, useLatest } from "./_hooks"
+import { useLatest } from "./_hooks"
 import {
   boundsOf,
   formatDistance,
@@ -28,6 +28,7 @@ import { MapMarker, MapPolylineShape, MapView } from "./map-view"
 import type { MapHandle, MapTone } from "./types"
 import { registerEnglish } from "../i18n/english"
 import { map as en_map } from "../locales/en/map"
+import { useControllableState } from "../hooks/use-controllable-state"
 
 registerEnglish({ map: en_map })
 

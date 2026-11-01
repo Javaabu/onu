@@ -17,10 +17,10 @@ import {
 } from "../../ui/select"
 import { useFormFieldControl } from "../form/form-field"
 import { useMergedRef } from "../inputs/text-input"
-import { useControllableState } from "./_hooks"
 import { groupOptions, normalizeOptions, type ChoiceOptionInput } from "./options"
 import { registerEnglish } from "../../i18n/english"
 import { choice as en_choice } from "../../locales/en/choice"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ choice: en_choice })
 

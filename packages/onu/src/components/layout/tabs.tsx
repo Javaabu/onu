@@ -11,6 +11,7 @@ import { TabsContent, TabsList, TabsTrigger } from "../../ui/tabs"
 import { NavBadge, NavIcon } from "./_nav"
 import { registerEnglish } from "../../i18n/english"
 import { layout as en_layout } from "../../locales/en/layout"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ layout: en_layout })
 
@@ -139,12 +140,11 @@ export function Tabs({
 }: TabsProps) {
   const { t } = useTranslation()
   const vertical = orientation === "vertical"
-  const [inner, setInner] = React.useState(defaultValue ?? items?.find((i) => !i.disabled)?.value ?? "")
-  const value = valueProp ?? inner
-  const setValue = (next: string) => {
-    if (valueProp === undefined) setInner(next)
-    onValueChange?.(next)
-  }
+  const [value, setValue] = useControllableState(
+    valueProp,
+    defaultValue ?? items?.find((i) => !i.disabled)?.value ?? "",
+    onValueChange,
+  )
   const selectId = React.useId()
   // A tab without a panel points at what it filters instead of a panel id Radix would make up.
   const panelless = (item: TabItem) => (item.content === undefined ? { "aria-controls": controls } : {})

@@ -12,9 +12,9 @@ import { Button } from "../../ui/button"
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "../../ui/drawer"
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
 import { useFormField, useFormFieldControl } from "../form/form-field"
-import { useControllableState } from "./_use-controllable-state"
 import { registerEnglish } from "../../i18n/english"
 import { common as en_common } from "../../locales/en/common"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ common: en_common })
 

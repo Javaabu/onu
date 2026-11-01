@@ -11,7 +11,6 @@ import { Button } from "../ui/button"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group"
 import { Label } from "../ui/label"
 import { CoordinateFields } from "./_coordinate-fields"
-import { useControllableState } from "./_hooks"
 import { formatArea, formatDistance, formatLatLng, roundLatLng } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import { MALE, MapCircleShape, MapView } from "./map-view"
@@ -19,6 +18,7 @@ import type { LatLng, MapHandle, MapTone } from "./types"
 import { registerEnglish } from "../i18n/english"
 import { common as en_common } from "../locales/en/common"
 import { map as en_map } from "../locales/en/map"
+import { useControllableState } from "../hooks/use-controllable-state"
 
 registerEnglish({ common: en_common, map: en_map })
 

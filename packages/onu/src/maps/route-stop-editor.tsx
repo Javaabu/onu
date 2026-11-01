@@ -15,13 +15,13 @@ import { useTranslation } from "../providers/onu-provider"
 import type { ThaanaProp } from "../thaana/use-thaana-field"
 import { Button } from "../ui/button"
 import { CoordinateFields } from "./_coordinate-fields"
-import { useControllableState } from "./_hooks"
 import { boundsOf, formatDistance, formatLatLng, pathLength, roundLatLng } from "./geo"
 import { EnsureMapProvider } from "./map-provider"
 import { MapMarker, MapPolylineShape, MapView } from "./map-view"
 import type { LatLng, MapHandle, MapTone } from "./types"
 import { registerEnglish } from "../i18n/english"
 import { map as en_map } from "../locales/en/map"
+import { useControllableState } from "../hooks/use-controllable-state"
 
 registerEnglish({ map: en_map })
 

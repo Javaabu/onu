@@ -15,6 +15,7 @@ import type { FilterDefinition, FilterValue, FilterValues } from "./listing-type
 import { cleanFilters, isFilterValueEmpty } from "./use-listing-state"
 import { registerEnglish } from "../../i18n/english"
 import { listing as en_listing } from "../../locales/en/listing"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ listing: en_listing })
 
@@ -202,15 +203,13 @@ function FilterPopoverPanel({
   const baseId = React.useId()
   const triggerRef = React.useRef<HTMLButtonElement>(null)
 
-  const [openState, setOpenState] = React.useState(false)
-  const open = openProp ?? openState
+  const [open, setOpenState] = useControllableState(openProp, false, onOpenChange)
   const [draft, setDraft] = React.useState<FilterValues>(value)
 
   const setOpen = (next: boolean) => {
     // Reopening always starts from the applied filters (§25.7).
     if (next) setDraft(value)
     setOpenState(next)
-    onOpenChange?.(next)
   }
 
   const [prevOpen, setPrevOpen] = React.useState(open)

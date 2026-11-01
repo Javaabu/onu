@@ -12,10 +12,10 @@ import { Button } from "../../ui/button"
 import { Kbd } from "../../ui/kbd"
 import { ThaanaToggle } from "../inputs/thaana-toggle"
 import { ModalContent, ModalDescription, ModalRoot, ModalTitle, ModalTrigger } from "./modal"
-import { useControllableState } from "./_use-controllable-state"
 import { registerEnglish } from "../../i18n/english"
 import { common as en_common } from "../../locales/en/common"
 import { overlay as en_overlay } from "../../locales/en/overlay"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ common: en_common, overlay: en_overlay })
 

@@ -10,12 +10,12 @@ import type { LabelLayout } from "../providers/onu-provider"
 import { useTranslation } from "../providers/onu-provider"
 import type { ThaanaProp } from "../thaana/use-thaana-field"
 import { NativeSelect, NativeSelectOption } from "../ui/native-select"
-import { useControllableState } from "./_hooks"
 import { atollLabel, findAtoll, MALDIVES_ATOLLS } from "./maldives"
 import { MapPicker } from "./map-picker"
 import type { LatLng, PlaceSearch } from "./types"
 import { registerEnglish } from "../i18n/english"
 import { map as en_map } from "../locales/en/map"
+import { useControllableState } from "../hooks/use-controllable-state"
 
 registerEnglish({ map: en_map })
 

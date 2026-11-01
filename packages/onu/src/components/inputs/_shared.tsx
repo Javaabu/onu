@@ -12,32 +12,6 @@ import { input as en_input } from "../../locales/en/input"
 
 registerEnglish({ input: en_input })
 
-/**
- * Controlled/uncontrolled state in one hook: uses `value` when it is not
- * `undefined`, otherwise internal state seeded from `defaultValue`.
- */
-export function useControllableState<T, A extends unknown[] = []>(
-  value: T | undefined,
-  defaultValue: T,
-  onChange?: (value: T, ...args: A) => void,
-): [T, (next: T, ...args: A) => void] {
-  const [inner, setInner] = React.useState<T>(defaultValue)
-  const controlled = value !== undefined
-  const current = controlled ? value : inner
-  const onChangeRef = React.useRef(onChange)
-  React.useEffect(() => {
-    onChangeRef.current = onChange
-  })
-  const set = React.useCallback(
-    (next: T, ...args: A) => {
-      if (!controlled) setInner(next)
-      onChangeRef.current?.(next, ...args)
-    },
-    [controlled],
-  )
-  return [current, set]
-}
-
 /** Writes text to the clipboard, falling back to `execCommand("copy")`. */
 export async function writeClipboard(text: string): Promise<boolean> {
   try {

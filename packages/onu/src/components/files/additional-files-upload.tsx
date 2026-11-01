@@ -11,11 +11,11 @@ import { Button } from "../../ui/button"
 import { FormField } from "../form/form-field"
 import { TextInput } from "../inputs/text-input"
 import { FileRow } from "./_file-row"
-import { useControllable } from "./_use-controllable"
 import { FileInput, type FileInputProps } from "./file-input"
 import { syncInputFiles } from "./file-utils"
 import { registerEnglish } from "../../i18n/english"
 import { file as en_file } from "../../locales/en/file"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ file: en_file })
 
@@ -102,7 +102,7 @@ export function AdditionalFilesUpload({
   ...props
 }: AdditionalFilesUploadProps) {
   const { t } = useTranslation()
-  const [state, setState] = useControllable<AdditionalFilesValue>(value, defaultValue ?? EMPTY, onChange)
+  const [state, setState] = useControllableState<AdditionalFilesValue>(value, defaultValue ?? EMPTY, onChange)
   const pickerRef = React.useRef<HTMLInputElement>(null)
   const rootRef = React.useRef<HTMLDivElement>(null)
   const [announcement, setAnnouncement] = React.useState("")

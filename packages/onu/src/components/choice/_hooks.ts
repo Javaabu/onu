@@ -8,28 +8,6 @@ import { choice as en_choice } from "../../locales/en/choice"
 
 registerEnglish({ choice: en_choice })
 
-/**
- * Controlled/uncontrolled state. `value === undefined` means uncontrolled;
- * `null` is a controlled empty value.
- */
-export function useControllableState<T, A extends unknown[] = []>(
-  value: T | undefined,
-  defaultValue: T,
-  onChange?: (value: T, ...args: A) => void,
-) {
-  const [inner, setInner] = React.useState<T>(defaultValue)
-  const controlled = value !== undefined
-  const current = controlled ? value : inner
-  const set = React.useCallback(
-    (next: T, ...args: A) => {
-      if (!controlled) setInner(next)
-      onChange?.(next, ...args)
-    },
-    [controlled, onChange],
-  )
-  return [current, set] as const
-}
-
 /** `value`, updated only after it stops changing for `delay` ms. */
 export function useDebouncedValue<T>(value: T, delay: number): T {
   const [debounced, setDebounced] = React.useState(value)

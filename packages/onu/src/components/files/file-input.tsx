@@ -10,7 +10,6 @@ import { Button, buttonVariants } from "../../ui/button"
 import { useFormField, useFormFieldControl } from "../form/form-field"
 import { useMergedRef } from "../inputs/text-input"
 import { FileRow } from "./_file-row"
-import { useControllable } from "./_use-controllable"
 import type { ExistingAttachment } from "./additional-files-upload"
 import { fileKey, syncInputFiles, validateFiles, type FileRejection, type FileValidationOptions } from "./file-utils"
 import { UploadProgress } from "./upload-progress"
@@ -18,6 +17,7 @@ import { useFormatFileSize, useRejectionMessage, useUploadQueue, type UploadItem
 import { registerEnglish } from "../../i18n/english"
 import { file as en_file } from "../../locales/en/file"
 import { useIsomorphicLayoutEffect } from "../../hooks/use-isomorphic-layout-effect"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ file: en_file })
 
@@ -213,7 +213,7 @@ export function FileInput<R = unknown>({
   const local = React.useRef<HTMLInputElement>(null)
   const merged = useMergedRef(local, ref)
   const rootRef = React.useRef<HTMLDivElement>(null)
-  const [entries, setEntriesState] = useControllable<FileInputEntry<R>[]>(
+  const [entries, setEntriesState] = useControllableState<FileInputEntry<R>[]>(
     value,
     defaultValue ?? (NO_ENTRIES as FileInputEntry<R>[]),
     onValueChange,

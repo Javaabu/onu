@@ -3,7 +3,6 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
-import { useControllable } from "../components/files/_use-controllable"
 import { syncInputFiles, validateFile, type FileRejection } from "../components/files/file-utils"
 import { useObjectUrl, useRejectionMessage } from "../components/files/use-files"
 import { useFormField, useFormFieldControl } from "../components/form/form-field"
@@ -19,6 +18,7 @@ import { ImageCropper, type ImageCropperHandle } from "./image-cropper"
 import { registerEnglish } from "../i18n/english"
 import { common as en_common } from "../locales/en/common"
 import { file as en_file } from "../locales/en/file"
+import { useControllableState } from "../hooks/use-controllable-state"
 
 registerEnglish({ common: en_common, file: en_file })
 
@@ -89,7 +89,7 @@ export function AvatarUpload({
   const merged = useMergedRef(local, ref)
   const changeRef = React.useRef<HTMLButtonElement>(null)
   const cropper = React.useRef<ImageCropperHandle>(null)
-  const [image, setImage] = useControllable<File | string | null>(
+  const [image, setImage] = useControllableState<File | string | null>(
     value,
     defaultValue ?? null,
     onChange as ((v: File | string | null) => void) | undefined,

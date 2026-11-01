@@ -20,10 +20,10 @@ import { Calendar, CalendarDayButton } from "../../ui/calendar"
 import { ConditionalLink } from "../display/conditional-link"
 import { CalendarHeader } from "./_calendar-header"
 import { PeriodGrid, type GridItem } from "./_period-grid"
-import { useControllableState } from "./_use-controllable-state"
 import { decadeSpanStart, formatDate, isOutOfRange, yearBlockStart, type DateRangeValue } from "./_utils"
 import { registerEnglish } from "../../i18n/english"
 import { date as en_date } from "../../locales/en/date"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ date: en_date })
 

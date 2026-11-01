@@ -8,10 +8,10 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Popover, PopoverAnchor, PopoverContent } from "../../ui/popover"
 import { matchesQuery } from "../choice/options"
-import { useControllableState } from "./_shared"
 import { registerEnglish } from "../../i18n/english"
 import { common as en_common } from "../../locales/en/common"
 import { input as en_input } from "../../locales/en/input"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ common: en_common, input: en_input })
 

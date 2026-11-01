@@ -10,6 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from "../../ui/alert"
 import { Button } from "../../ui/button"
 import { registerEnglish } from "../../i18n/english"
 import { display as en_display } from "../../locales/en/display"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ display: en_display })
 
@@ -119,14 +120,12 @@ export function Callout({
   ...props
 }: CalloutProps) {
   const { t } = useTranslation()
-  const [openState, setOpenState] = React.useState(true)
-  const open = openProp ?? openState
+  const [open, setOpen] = useControllableState(openProp, true, onOpenChange)
   const v = variant ?? "default"
   if (!open) return null
 
   const dismiss = () => {
-    setOpenState(false)
-    onOpenChange?.(false)
+    setOpen(false)
     onDismiss?.()
   }
 

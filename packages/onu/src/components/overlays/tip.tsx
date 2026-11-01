@@ -8,9 +8,9 @@ import { cn } from "../../lib/utils"
 import { useDirection, useTranslation } from "../../providers/onu-provider"
 import { radixSide, type LogicalSide } from "./_side"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip"
-import { useControllableState } from "./_use-controllable-state"
 import { registerEnglish } from "../../i18n/english"
 import { overlay as en_overlay } from "../../locales/en/overlay"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ overlay: en_overlay })
 

@@ -9,11 +9,11 @@ import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { useFormField, useFormFieldControl } from "../form/form-field"
 import { useMergedRef } from "../inputs/text-input"
-import { useControllable } from "./_use-controllable"
 import { syncInputFiles, validateFile, type FileRejection } from "./file-utils"
 import { useObjectUrl, useRejectionMessage } from "./use-files"
 import { registerEnglish } from "../../i18n/english"
 import { file as en_file } from "../../locales/en/file"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ file: en_file })
 
@@ -76,7 +76,7 @@ export function ImageInput({
   const { t } = useTranslation()
   const local = React.useRef<HTMLInputElement>(null)
   const merged = useMergedRef(local, ref)
-  const [image, setImage] = useControllable<File | string | null>(
+  const [image, setImage] = useControllableState<File | string | null>(
     value,
     defaultValue ?? null,
     onChange as ((v: File | string | null) => void) | undefined,

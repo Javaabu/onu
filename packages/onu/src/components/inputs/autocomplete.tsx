@@ -17,11 +17,11 @@ import {
   type SuggestionRow,
   type SuggestionSource,
 } from "./_suggestions"
-import { useControllableState } from "./_shared"
 import { TextInput, useMergedRef, type TextInputProps } from "./text-input"
 import { registerEnglish } from "../../i18n/english"
 import { choice as en_choice } from "../../locales/en/choice"
 import { common as en_common } from "../../locales/en/common"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ choice: en_choice, common: en_common })
 

@@ -9,6 +9,7 @@ import { Button } from "../../ui/button"
 import { registerEnglish } from "../../i18n/english"
 import { common as en_common } from "../../locales/en/common"
 import { layout as en_layout } from "../../locales/en/layout"
+import { useControllableState } from "../../hooks/use-controllable-state"
 
 registerEnglish({ common: en_common, layout: en_layout })
 
@@ -112,8 +113,8 @@ export function Wizard({
   ...props
 }: WizardProps) {
   const { t, locale } = useTranslation()
-  const [inner, setInner] = React.useState(defaultStep)
-  const index = Math.min(Math.max(stepProp ?? inner, 0), Math.max(steps.length - 1, 0))
+  const [step, setStep] = useControllableState(stepProp, defaultStep, onStepChange)
+  const index = Math.min(Math.max(step, 0), Math.max(steps.length - 1, 0))
   const [completed, setCompleted] = React.useState<Set<number>>(() => new Set())
   const [failed, setFailed] = React.useState<Set<number>>(() => new Set())
   const [validating, setValidating] = React.useState(false)
@@ -145,8 +146,7 @@ export function Wizard({
 
   const change = (target: number) => {
     moved.current = true
-    if (stepProp === undefined) setInner(target)
-    onStepChange?.(target)
+    setStep(target)
     const s = steps[target]!
     setAnnouncement(t("layout.stepOfTitle", { current: target + 1, total, title: plain(s) }))
   }

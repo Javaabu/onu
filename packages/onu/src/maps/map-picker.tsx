@@ -11,7 +11,6 @@ import type { ThaanaProp } from "../thaana/use-thaana-field"
 import { Button } from "../ui/button"
 import { Spinner } from "../ui/spinner"
 import { CoordinateFields } from "./_coordinate-fields"
-import { useControllableState } from "./_hooks"
 import { PlaceSearchBox } from "./_place-search"
 import { useMapEngine } from "./_context"
 import { formatLatLng, roundLatLng } from "./geo"
@@ -21,6 +20,7 @@ import type { LatLng, MapHandle, PlaceSearch } from "./types"
 import { registerEnglish } from "../i18n/english"
 import { common as en_common } from "../locales/en/common"
 import { map as en_map } from "../locales/en/map"
+import { useControllableState } from "../hooks/use-controllable-state"
 
 registerEnglish({ common: en_common, map: en_map })
 
