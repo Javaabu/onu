@@ -1,0 +1,40 @@
+name: E2E smoke
+
+# The quick E2E tier: on a pull request that touches the library, the web app or the E2E
+# tests, run the accessibility scans and the Thaana keyboard check in Chromium. No visual
+# diff and no baseline download: the full five-browser and visual run stays in e2e.yml.
+on:
+  pull_request:
+    paths:
+      - "packages/onu/**"
+      - "web/**"
+      - "e2e/**"
+
+concurrency:
+  group: e2e-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Playwright smoke (chromium)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm build:web
+      - run: pnpm e2e:chromium e2e/a11y.spec.ts e2e/thaana.spec.ts
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-smoke
+          path: playwright-report
+          retention-days: 7

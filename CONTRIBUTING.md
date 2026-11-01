@@ -53,7 +53,12 @@ The files in `packages/onu/src/ui` started as shadcn/ui's components (Radix base
 
 ## Checks
 
-E2E (Playwright: accessibility in five browsers, and Chromium screenshots) is slow, so CI runs it only when the last commit pushed to `main` starts with `e2e` (for example `e2e: new date picker`), or when you run the **E2E** workflow by hand from the Actions tab. Run it locally with `pnpm e2e:chromium`.
+E2E (Playwright) runs in two tiers:
+
+- **Smoke, on pull requests.** The **E2E smoke** workflow runs `e2e/a11y.spec.ts` and `e2e/thaana.spec.ts` in Chromium, with no screenshots, when a pull request touches `packages/onu/**`, `web/**` or `e2e/**`.
+- **Full, on demand.** The **E2E** workflow (accessibility in five browsers, and Chromium screenshots) is slow, so CI runs it only when the last commit pushed to `main` starts with `e2e` (for example `e2e: new date picker`), or when you run it by hand from the Actions tab.
+
+Run either locally with `pnpm e2e:chromium`, adding the two spec files for the smoke tier.
 
 The Chromium job compares a desktop screenshot of every component demo, in light LTR and dark RTL, with baselines stored as the `visual-baselines` Actions artifact (not in git). After an intended visual change, or when you add a component, run **E2E** by hand with **Update the visual baselines** ticked. Look at the screenshots in that run's `visual-baselines` artifact before relying on them. Baselines are kept for 90 days (about 90 MB). If none are stored (the first run, or 90 days after the last update), the run takes new ones instead of comparing.
 
