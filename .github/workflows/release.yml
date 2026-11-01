@@ -41,6 +41,7 @@ jobs:
               exit 1
             fi
           done
+          node scripts/sync-plugin-version.mjs --check
       - name: Check the npm token
         run: |
           if [ -z "$NPM_TOKEN" ]; then
