@@ -6,7 +6,7 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
-import { useCopyToClipboard } from "./_utils"
+import { useCopyToClipboard } from "../../hooks/use-copy-to-clipboard"
 import { registerEnglish } from "../../i18n/english"
 import { display as en_display } from "../../locales/en/display"
 
@@ -104,7 +104,8 @@ export function ShareButtons({
   ...props
 }: ShareButtonsProps) {
   const { t } = useTranslation()
-  const { copied, copy } = useCopyToClipboard()
+  const { status, copy } = useCopyToClipboard()
+  const copied = status === "copied"
   const hasNative = React.useSyncExternalStore(noopSubscribe, canNativeShare, () => false)
   const url = urlProp ?? (typeof window !== "undefined" ? window.location.href : "")
   const showNative = native !== "never" && hasNative

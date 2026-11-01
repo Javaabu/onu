@@ -49,4 +49,4 @@ The cropped image is a square JPEG, 512px by default (`cropOptions`), returned a
 
 ## RTL and Dhivehi
 
-Initials work with Thaana names ("އަޙްމަދު ނާޒިމް" → "އނ"). The layout mirrors in RTL.
+Initials work with Thaana names ("އަޙްމަދު ނާޒިމް" → "އަނާ"). The layout mirrors in RTL.

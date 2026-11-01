@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu"
-import { getInitials } from "../display/user-avatar"
+import { getInitials } from "../../lib/initials"
 import { NavIcon, NavLink } from "./_nav"
 import { registerEnglish } from "../../i18n/english"
 import { layout as en_layout } from "../../locales/en/layout"

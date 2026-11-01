@@ -2,6 +2,8 @@
 
 import * as React from "react"
 
+import { useMergedRef } from "../../hooks/use-merged-ref"
+import { normalizeUrl } from "../../lib/url"
 import { cn } from "../../lib/utils"
 import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
 import { Input } from "../../ui/input"
@@ -30,36 +32,11 @@ export interface TextInputProps extends Omit<React.ComponentProps<"input">, "siz
   classNames?: { root?: string; input?: string; startAddon?: string; endAddon?: string }
 }
 
-function setRef<T>(ref: React.Ref<T> | undefined, node: T | null) {
-  if (typeof ref === "function") ref(node)
-  else if (ref) (ref as React.RefObject<T | null>).current = node
-}
-
-/** Merges a forwarded ref with a local one. */
-export function useMergedRef<T>(a: React.Ref<T> | undefined, b?: React.Ref<T>) {
-  return React.useCallback(
-    (node: T | null) => {
-      setRef(a, node)
-      setRef(b, node)
-    },
-    [a, b],
-  )
-}
-
 /** The props `TextInput` passes on to the `<input>`. */
 type InputProps = Omit<
   TextInputProps,
   "thaana" | "thaanaToggle" | "urlProtocol" | "startAddon" | "endAddon" | "className" | "classNames" | "ref"
 >
-
-const HAS_SCHEME = /^[a-z][a-z\d+.-]*:/i
-
-/** Adds `protocol` to a URL that has no scheme (`example.mv` → `https://example.mv`). */
-export function normalizeUrl(value: string, protocol = "https://"): string {
-  const trimmed = value.trim()
-  if (!trimmed || HAS_SCHEME.test(trimmed)) return trimmed
-  return protocol + trimmed.replace(/^\/\//, "")
-}
 
 /**
  * Sets the value the way typing does (a native input event), so `onChange`,
@@ -89,8 +66,10 @@ function latinProps(props: InputProps, urlProtocol: string | false): InputProps 
     onBlur:
       type === "url" && urlProtocol !== false
         ? (e: React.FocusEvent<HTMLInputElement>) => {
-            const next = normalizeUrl(e.currentTarget.value, urlProtocol)
-            if (next !== e.currentTarget.value) typeValue(e.currentTarget, next)
+            const value = e.currentTarget.value
+            // A `//host` value takes the protocol here; unsafe schemes are left for validation to report.
+            const next = normalizeUrl(value.trim().replace(/^\/\//, ""), urlProtocol) ?? value.trim()
+            if (next !== value) typeValue(e.currentTarget, next)
             onBlur?.(e)
           }
         : onBlur,

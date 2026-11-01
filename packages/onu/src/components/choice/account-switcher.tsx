@@ -4,6 +4,7 @@ import * as React from "react"
 import { Command as CommandPrimitive } from "cmdk"
 
 import { Icon } from "../../icons/icon"
+import { getInitials } from "../../lib/initials"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
@@ -72,12 +73,6 @@ const GROUPS: { type: AccountType; key: string }[] = [
   { type: "delegated", key: "choice.delegatedAccounts" },
 ]
 
-function initials(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean)
-  const letters = parts.length > 1 ? [parts[0]![0], parts[parts.length - 1]![0]] : [parts[0]?.[0]]
-  return letters.filter(Boolean).join("").toLocaleUpperCase()
-}
-
 function AccountAvatar({ account, className }: { account: Account; className?: string }) {
   return (
     <Avatar className={cn("size-8", className)} data-slot="account-avatar" aria-hidden="true">
@@ -86,7 +81,7 @@ function AccountAvatar({ account, className }: { account: Account; className?: s
         {account.type === "organisation" && !account.avatar ? (
           <Icon name="building" className="size-4" />
         ) : (
-          initials(account.name)
+          getInitials(account.name)
         )}
       </AvatarFallback>
     </Avatar>

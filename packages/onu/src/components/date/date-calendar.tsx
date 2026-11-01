@@ -14,7 +14,7 @@ import {
 } from "date-fns"
 import type { DateRange, Matcher, Modifiers, WeekNumberProps } from "react-day-picker"
 
-import { cn } from "../../lib/utils"
+import { cn, toArray } from "../../lib/utils"
 import { useOnu } from "../../providers/onu-provider"
 import { Calendar, CalendarDayButton } from "../../ui/calendar"
 import { ConditionalLink } from "../display/conditional-link"
@@ -480,11 +480,6 @@ function WeekNumberCell({ children, week: _week, ...props }: WeekNumberProps) {
 }
 
 const CALENDAR_COMPONENTS = { WeekNumber: WeekNumberCell, DayButton: EventDayButton }
-
-function toArray<T>(value: T | T[] | undefined): T[] {
-  if (value === undefined) return []
-  return Array.isArray(value) ? value : [value]
-}
 
 function clampDate(date: Date, min?: Date, max?: Date) {
   if (min && date < min) return min

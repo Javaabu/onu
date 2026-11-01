@@ -55,7 +55,7 @@ describe("SignInForm", () => {
     expect(password).toHaveAttribute("type", "password")
     await userEvent.click(screen.getByRole("button", { name: "Show password" }))
     expect(password).toHaveAttribute("type", "text")
-    expect(screen.getByRole("button", { name: "Hide password" })).toHaveAttribute("aria-pressed", "true")
+    expect(screen.getByRole("button", { name: "Show password" })).toHaveAttribute("aria-pressed", "true")
   })
 
   it("shows server errors, processing state, status and the single sign-on slot", async () => {

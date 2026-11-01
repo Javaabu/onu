@@ -3,7 +3,8 @@ import { fireEvent, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../test/utils"
-import { detectDirection, isSafeImageUrl, isSafeUrl, normalizeUrl, toEmbedUrl } from "./_schema"
+import { isSafeUrl, normalizeUrl } from "../lib/url"
+import { detectDirection, isSafeImageUrl, toEmbedUrl } from "./_schema"
 import { BlockRenderer } from "./block-renderer"
 
 /** axe-core cannot message iframes in jsdom; check everything else. */

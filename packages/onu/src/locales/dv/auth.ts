@@ -7,8 +7,6 @@ export const auth = {
   name: "ފުރިހަމަ ނަން",
   confirmPassword: "ޕާސްވޯޑް ކަށަވަރުކުރޭ",
   newPassword: "އައު ޕާސްވޯޑް",
-  showPassword: "ޕާސްވޯޑް ދައްކާ",
-  hidePassword: "ޕާސްވޯޑް ފޮރުވާ",
   remember: "ހަނދާން ބަހައްޓާ",
   forgotPassword: "ޕާސްވޯޑް ހަނދާން ނެތީތަ؟",
   signInTitle: "ސައިން އިން",

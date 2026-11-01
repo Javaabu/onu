@@ -2,11 +2,11 @@
 
 import * as React from "react"
 
-import { cn } from "../../lib/utils"
+import { cn, toArray } from "../../lib/utils"
 import type { LabelLayout } from "../../providers/onu-provider"
 import { Label } from "../../ui/label"
 import { FieldErrors } from "./field-errors"
-import { INLINE_FIELD_GRID, toArray, useFieldErrors, useFormDisabled, useLabelLayout } from "./form-context"
+import { INLINE_FIELD_GRID, useFieldErrors, useFormDisabled, useLabelLayout } from "./form-context"
 import { HelpText } from "./help-text"
 import { RequiredMarker } from "./required-marker"
 
@@ -98,7 +98,7 @@ export function FormField({
   const formDisabled = useFormDisabled()
   const disabled = disabledProp ?? formDisabled
   const serverErrors = useFieldErrors(name)
-  const errors = [...toArray(error), ...serverErrors]
+  const errors = [...toArray(error).filter(Boolean), ...serverErrors]
   const invalid = errors.length > 0
   const helpId = help ? `${id}-help` : undefined
   const errorId = invalid ? `${id}-error` : undefined

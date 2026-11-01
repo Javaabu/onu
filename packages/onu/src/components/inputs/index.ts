@@ -1,4 +1,6 @@
-export { normalizeUrl, TextInput, useMergedRef, type TextInputProps } from "./text-input"
+export { useMergedRef } from "../../hooks/use-merged-ref"
+export { normalizeUrl } from "../../lib/url"
+export { TextInput, type TextInputProps } from "./text-input"
 export { Textarea, type TextareaProps } from "./textarea"
 export { ThaanaToggle, type ThaanaToggleProps } from "./thaana-toggle"
 export * from "./password-input"

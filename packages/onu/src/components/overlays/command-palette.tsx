@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Command as CommandPrimitive } from "cmdk"
 
+import { useAsyncSearch } from "../../hooks/use-async-search"
 import { Icon } from "../../icons/icon"
 import type { SemanticIconName } from "../../icons/types"
 import { cn } from "../../lib/utils"
@@ -66,7 +67,7 @@ export interface CommandPaletteProps {
     context: CommandPaletteSearchContext,
   ) => Promise<CommandPaletteItem[] | CommandPaletteGroup[]>
   searchHeading?: React.ReactNode
-  /** Debounce for `search` in ms. Default 250. */
+  /** Debounce for `search` in ms. Default 300. */
   debounce?: number
   /** Minimum query length before `search` runs. Default 1. */
   minQueryLength?: number
@@ -139,14 +140,6 @@ function isGroupList(value: CommandPaletteItem[] | CommandPaletteGroup[]): value
   return value.length > 0 && "items" in value[0]!
 }
 
-interface AsyncResult {
-  query: string
-  groups: CommandPaletteGroup[]
-  error: boolean
-}
-
-const NO_RESULT: AsyncResult = { query: "\u0000", groups: [], error: false }
-
 const isMac = () => typeof navigator !== "undefined" && /Mac|iPhone|iPad|iPod/.test(navigator.platform ?? "")
 
 /**
@@ -163,7 +156,7 @@ export function CommandPalette({
   groups = [],
   search,
   searchHeading,
-  debounce = 250,
+  debounce,
   minQueryLength = 1,
   recent = true,
   shortcut = "k",
@@ -181,9 +174,7 @@ export function CommandPalette({
   const { t } = useTranslation()
   const [open, setOpenState] = useControllableState(openProp, defaultOpen, onOpenChange)
   const [query, setQuery] = React.useState("")
-  const [result, setResult] = React.useState<AsyncResult>(NO_RESULT)
   const [known, setKnown] = React.useState<Record<string, CommandPaletteItem>>({})
-  const [attempt, setAttempt] = React.useState(0)
   const inputRef = React.useRef<HTMLInputElement>(null)
   const { fieldProps, active: thaanaActive, enabled: thaanaEnabled, toggle } = useThaanaField(inputRef, thaana)
 
@@ -215,37 +206,36 @@ export function CommandPalette({
   const trimmed = query.trim()
   const searching = !!search && open && trimmed.length >= minQueryLength
 
-  // Debounced async search; a newer query (or closing) aborts the older request.
-  React.useEffect(() => {
-    if (!searching || !search) return
-    const controller = new AbortController()
-    const timer = setTimeout(() => {
-      search(trimmed, { signal: controller.signal }).then(
-        (value) => {
-          if (controller.signal.aborted) return
-          const list = value ?? []
-          const resultGroups = isGroupList(list) ? list : [{ id: "search", heading: searchHeading, items: list }]
-          setResult({ query: trimmed, groups: resultGroups, error: false })
+  // Remembers every item seen, so a recent item from an old search still resolves.
+  const runSearch = React.useMemo(
+    () =>
+      search &&
+      (async (q: string, options: { signal: AbortSignal }) => {
+        const list = (await search(q, options)) ?? []
+        const resultGroups = isGroupList(list) ? list : [{ id: "search", heading: searchHeading, items: list }]
+        if (!options.signal.aborted) {
           setKnown((prev) => {
             const next = { ...prev }
             for (const group of resultGroups) for (const item of group.items) next[item.id] = item
             return next
           })
-        },
-        () => {
-          if (controller.signal.aborted) return
-          setResult({ query: trimmed, groups: [], error: true })
-        },
-      )
-    }, debounce)
-    return () => {
-      clearTimeout(timer)
-      controller.abort()
-    }
-  }, [searching, search, trimmed, debounce, searchHeading, attempt])
-
-  const loading = searching && result.query !== trimmed
-  const failed = searching && !loading && result.error
+        }
+        return resultGroups
+      }),
+    [search, searchHeading],
+  )
+  const {
+    data: resultGroups,
+    status: searchStatus,
+    pending: loading,
+    retry,
+  } = useAsyncSearch<CommandPaletteGroup[]>({
+    search: runSearch,
+    query: trimmed,
+    enabled: searching,
+    delay: debounce,
+  })
+  const failed = !loading && searchStatus === "error"
 
   const staticGroups = React.useMemo(
     () =>
@@ -266,7 +256,8 @@ export function CommandPalette({
     return recentIds.map((id) => lookup.get(id) ?? known[id]).filter((item): item is CommandPaletteItem => !!item)
   }, [recent, trimmed, groups, recentIds, known])
 
-  const asyncGroups = searching && !loading ? result.groups.filter((group) => group.items.length > 0) : []
+  const asyncGroups =
+    searching && !loading && !failed ? (resultGroups ?? []).filter((group) => group.items.length > 0) : []
   const visible: CommandPaletteGroup[] = [
     ...(recentItems.length ? [{ id: "recent", heading: t("overlay.recent"), items: recentItems }] : []),
     ...staticGroups,
@@ -393,14 +384,7 @@ export function CommandPalette({
             {failed ? (
               <div data-slot="command-palette-error" className="gap-3 py-6 text-sm flex flex-col items-center">
                 <p className="text-destructive">{t("overlay.searchFailed")}</p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setResult(NO_RESULT)
-                    setAttempt((n) => n + 1)
-                  }}
-                >
+                <Button variant="outline" size="sm" onClick={retry}>
                   <Icon name="refresh" />
                   {t("common.retry")}
                 </Button>

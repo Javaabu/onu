@@ -3,6 +3,7 @@
 import * as React from "react"
 
 import { LiveRegion } from "../../a11y/live-region"
+import { useAsyncSearch } from "../../hooks/use-async-search"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
@@ -73,52 +74,33 @@ export function useSuggestions({
   source,
   query,
   enabled,
-  debounce = 300,
+  debounce,
   minChars = 0,
   max = 50,
   exclude,
 }: UseSuggestionsOptions) {
   const { locale } = useTranslation()
   const isAsync = typeof source === "function"
-  const [remote, setRemote] = React.useState<{ query: string; items: NormalizedOption[] } | null>(null)
-  const [status, setStatus] = React.useState<"idle" | "loading" | "error">("idle")
-  const [attempt, setAttempt] = React.useState(0)
   const tooShort = query.trim().length < minChars
-
-  React.useEffect(() => {
-    if (!isAsync || !enabled || tooShort) return
-    const controller = new AbortController()
-    const timer = setTimeout(() => {
-      setStatus("loading")
-      source(query, { signal: controller.signal }).then(
-        (items) => {
-          if (controller.signal.aborted) return
-          setRemote({ query, items: items.map(normalizeOption) })
-          setStatus("idle")
-        },
-        () => {
-          if (!controller.signal.aborted) setStatus("error")
-        },
-      )
-    }, debounce)
-    return () => {
-      clearTimeout(timer)
-      controller.abort()
-    }
-  }, [isAsync, source, query, enabled, tooShort, debounce, attempt])
+  const { data, status, retry } = useAsyncSearch({
+    search: isAsync ? source : null,
+    query,
+    enabled: enabled && !tooShort,
+    delay: debounce,
+  })
 
   const items = React.useMemo(() => {
     if (tooShort || !source) return []
-    const all = isAsync ? (remote?.items ?? []) : (source as readonly SuggestionOption[]).map(normalizeOption)
+    const all = (isAsync ? (data ?? []) : (source as readonly SuggestionOption[])).map(normalizeOption)
     const filtered = isAsync ? all : all.filter((o) => !query.trim() || optionMatches(o, query, locale.code))
     return filtered.filter((o) => !exclude?.includes(o.value)).slice(0, max)
-  }, [tooShort, source, isAsync, remote, query, exclude, max, locale.code])
+  }, [tooShort, source, isAsync, data, query, exclude, max, locale.code])
 
   return {
     items,
     loading: isAsync && !tooShort && status === "loading",
     error: isAsync && !tooShort && status === "error",
-    retry: () => setAttempt((n) => n + 1),
+    retry,
   }
 }
 

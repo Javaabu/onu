@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from "vitest"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { Icon } from "../../icons/icon"
 import { FormField } from "../form/form-field"
-import { normalizeUrl, TextInput } from "./text-input"
+import { TextInput } from "./text-input"
 import { Textarea } from "./textarea"
 
 // userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
@@ -152,13 +152,15 @@ describe("TextInput type=email and type=url", () => {
     await expectNoA11yViolations()
   })
 
-  it("normalizes URLs", () => {
-    expect(normalizeUrl("example.mv")).toBe("https://example.mv")
-    expect(normalizeUrl("  //cdn.example.mv/a ")).toBe("https://cdn.example.mv/a")
-    expect(normalizeUrl("http://x.mv")).toBe("http://x.mv")
-    expect(normalizeUrl("mailto:a@b.mv")).toBe("mailto:a@b.mv")
-    expect(normalizeUrl("")).toBe("")
-    expect(normalizeUrl("x.mv", "http://")).toBe("http://x.mv")
+  it("gives a //host URL the protocol on blur, and leaves an unsafe scheme for validation", () => {
+    renderWithOnu(<TextInput type="url" aria-label="Website" />)
+    const input = screen.getByRole<HTMLInputElement>("textbox", { name: "Website" })
+    fireEvent.change(input, { target: { value: "  //cdn.example.mv/a " } })
+    fireEvent.blur(input)
+    expect(input.value).toBe("https://cdn.example.mv/a")
+    fireEvent.change(input, { target: { value: "javascript:alert(1)" } })
+    fireEvent.blur(input)
+    expect(input.value).toBe("javascript:alert(1)")
   })
 
   it("is a URL field that adds https:// on blur (uncontrolled)", async () => {

@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { toArray } from "../../lib/utils"
 import type { ChoiceOption } from "./options"
 
 export interface SingleSelectionProps {
@@ -25,11 +26,6 @@ export type SelectionProps = SingleSelectionProps | MultipleSelectionProps
 
 /** Placeholder options made for values whose label is unknown; never cached. */
 const FALLBACKS = new WeakSet<ChoiceOption>()
-
-function toArray(value: string | string[] | null | undefined): string[] {
-  if (value === null || value === undefined || value === "") return []
-  return Array.isArray(value) ? value : [value]
-}
 
 /**
  * Value handling shared by the combobox-style selects. Remembers the options a

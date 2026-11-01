@@ -6,7 +6,8 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { syncInputFiles, validateFile, type FileRejection } from "../components/files/file-utils"
 import { useObjectUrl, useRejectionMessage } from "../components/files/use-files"
 import { useFormField, useFormFieldControl } from "../components/form/form-field"
-import { useMergedRef } from "../components/inputs/text-input"
+import { useMergedRef } from "../hooks/use-merged-ref"
+import { getInitials } from "../lib/initials"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
@@ -33,16 +34,6 @@ export const avatarUploadVariants = cva("", {
   },
   defaultVariants: { size: "default" },
 })
-
-/** Initials from a name: "Aishath Shifa" → "AS", "އަޙްމަދު ނާޒިމް" → "އނ". */
-export function initials(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean)
-  return parts
-    .slice(0, 2)
-    .map((p) => Array.from(p)[0] ?? "")
-    .join("")
-    .toLocaleUpperCase()
-}
 
 export interface AvatarUploadProps
   extends
@@ -153,7 +144,7 @@ export function AvatarUpload({
           role="img"
           aria-label={t("file.noPhotoFor", { name: personName })}
         >
-          {personName ? initials(personName) : <Icon name="user" />}
+          {personName ? getInitials(personName) : <Icon name="user" />}
         </AvatarFallback>
       </Avatar>
       <div className={cn("gap-2 flex flex-col items-start", classNames?.actions)}>

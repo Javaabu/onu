@@ -39,7 +39,7 @@ Mount it once (e.g. in your layout). The shortcut toggles it from anywhere; you 
 ## Searching
 
 - Static items match when every word of the query appears in `value` (or the string `label`) or `keywords`. Case and Latin accents are ignored ("male" finds "Malé").
-- `search(query, { signal })` runs after `debounce` ms (default 250) once the query has `minQueryLength` characters (default 1). A newer query, or closing the palette, aborts the earlier request through `signal`, and late answers are ignored (R16.5).
+- `search(query, { signal })` runs after `debounce` ms (default 300) once the query has `minQueryLength` characters (default 1). A newer query, or closing the palette, aborts the earlier request through `signal`, and late answers are ignored (R16.5).
 - Return items (shown under `searchHeading`) or groups. Errors show "Search failed" with a **Retry** button.
 
 ## Recent items
@@ -53,7 +53,7 @@ Chosen items are remembered in `localStorage` (`recent={{ storageKey, max }}`, d
 | `groups`                              | `CommandPaletteGroup[]`                             | `[]`               | Static items, filtered locally      |
 | `search`                              | `(query, { signal }) => Promise<Item[] \| Group[]>` |                    | Async search                        |
 | `searchHeading`                       | `ReactNode`                                         |                    | Heading for async items             |
-| `debounce`                            | `number`                                            | `250`              | Debounce in ms                      |
+| `debounce`                            | `number`                                            | `300`              | Debounce in ms                      |
 | `minQueryLength`                      | `number`                                            | `1`                | Minimum query length for `search`   |
 | `recent`                              | `boolean \| { storageKey?, max? }`                  | `true`             | Remember chosen items               |
 | `shortcut`                            | `string \| false`                                   | `'k'`              | Key used with ⌘ / Ctrl              |

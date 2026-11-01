@@ -17,7 +17,8 @@ import {
   type SuggestionRow,
   type SuggestionSource,
 } from "./_suggestions"
-import { TextInput, useMergedRef, type TextInputProps } from "./text-input"
+import { useMergedRef } from "../../hooks/use-merged-ref"
+import { TextInput, type TextInputProps } from "./text-input"
 import { registerEnglish } from "../../i18n/english"
 import { choice as en_choice } from "../../locales/en/choice"
 import { common as en_common } from "../../locales/en/common"

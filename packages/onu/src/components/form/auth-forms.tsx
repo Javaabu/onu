@@ -6,10 +6,10 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
 import { Checkbox } from "../../ui/checkbox"
+import { PasswordInput } from "../inputs/password-input"
 import { TextInput } from "../inputs/text-input"
 import { Card, type CardProps } from "../layout/card"
 import { Divider } from "../layout/divider"
-import { PasswordField } from "./_password-input"
 import { FieldErrors } from "./field-errors"
 import { Form, type FormValues } from "./form"
 import { useFieldErrors, useFormDisabled, type FormErrors } from "./form-context"
@@ -276,7 +276,7 @@ export function SignInForm({
           forgotPasswordHref ? <AuthLink href={forgotPasswordHref}>{t("auth.forgotPassword")}</AuthLink> : null
         }
       >
-        <PasswordField autoComplete="current-password" defaultValue={defaultValues?.password} />
+        <PasswordInput autoComplete="current-password" defaultValue={defaultValues?.password} />
       </FormField>
       {showRemember ? (
         <CheckboxRow name="remember" label={t("auth.remember")} defaultChecked={defaultValues?.remember} />
@@ -351,10 +351,10 @@ export function RegisterForm({
         <TextInput type="email" autoComplete="email" inputMode="email" dir="ltr" defaultValue={defaultValues?.email} />
       </FormField>
       <FormField label={t("auth.password")} name="password" required>
-        <PasswordField autoComplete="new-password" />
+        <PasswordInput autoComplete="new-password" />
       </FormField>
       <FormField label={t("auth.confirmPassword")} name="password_confirmation" required>
-        <PasswordField autoComplete="new-password" />
+        <PasswordInput autoComplete="new-password" />
       </FormField>
       {extraFields}
       {termsHref ? (
@@ -481,10 +481,10 @@ export function ResetPasswordForm({
         />
       </FormField>
       <FormField label={t("auth.newPassword")} name="password" required>
-        <PasswordField autoComplete="new-password" />
+        <PasswordInput autoComplete="new-password" />
       </FormField>
       <FormField label={t("auth.confirmPassword")} name="password_confirmation" required>
-        <PasswordField autoComplete="new-password" />
+        <PasswordInput autoComplete="new-password" />
       </FormField>
       {extraFields}
     </AuthShell>
