@@ -5,7 +5,8 @@ import type { Tooltip as TooltipPrimitive } from "radix-ui"
 
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
-import { useTranslation } from "../../providers/onu-provider"
+import { useDirection, useTranslation } from "../../providers/onu-provider"
+import { radixSide, type LogicalSide } from "./_side"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip"
 import { useControllableState } from "./_use-controllable-state"
 import { registerEnglish } from "../../i18n/english"
@@ -15,7 +16,12 @@ registerEnglish({ overlay: en_overlay })
 
 const LONG_PRESS_MS = 500
 
-export interface TipProps extends Omit<React.ComponentProps<typeof TooltipPrimitive.Content>, "content" | "children"> {
+export interface TipProps extends Omit<
+  React.ComponentProps<typeof TooltipPrimitive.Content>,
+  "content" | "children" | "side"
+> {
+  /** Side it opens on. `start` and `end` follow the reading direction. Default `top`. */
+  side?: LogicalSide
   /** The tooltip text. Keep it short and never put the only copy of important information here. */
   content: React.ReactNode
   /**
@@ -52,10 +58,12 @@ export function Tip({
   delayDuration = 300,
   touch,
   disabled,
+  side,
   className,
   ...props
 }: TipProps) {
   const { t } = useTranslation()
+  const dir = useDirection()
   const [open, setOpen] = useControllableState(openProp, defaultOpen, onOpenChange)
   const pointerType = React.useRef<string>("mouse")
   const timer = React.useRef<ReturnType<typeof setTimeout>>(undefined)
@@ -132,6 +140,7 @@ export function Tip({
           collisionPadding={8}
           className={cn("max-w-[min(20rem,calc(100vw-1rem))] text-balance", className)}
           {...props}
+          side={radixSide(side, dir)}
         >
           {content}
         </TooltipContent>

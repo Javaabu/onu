@@ -5,7 +5,8 @@ import type { DropdownMenu as DropdownMenuPrimitive } from "radix-ui"
 
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
-import { useTranslation } from "../../providers/onu-provider"
+import { useDirection, useTranslation } from "../../providers/onu-provider"
+import { radixSide, type LogicalSide } from "./_side"
 import { Button } from "../../ui/button"
 import {
   DropdownMenu,
@@ -58,8 +59,10 @@ const dropdownParts: MenuParts = {
 
 export interface ActionMenuProps extends Omit<
   React.ComponentProps<typeof DropdownMenuPrimitive.Content>,
-  "children" | "asChild"
+  "children" | "asChild" | "side"
 > {
+  /** Side it opens on. `start` and `end` follow the reading direction. Default `bottom`. */
+  side?: LogicalSide
   /** Menu entries: actions, checkbox and radio items, submenus, groups, labels and separators. */
   items: MenuItem[]
   /**
@@ -172,9 +175,11 @@ export function DropdownActionMenu({
   onCloseAutoFocus,
   className,
   classNames,
+  side,
   ...props
 }: ActionMenuProps) {
   const { t } = useTranslation()
+  const dir = useDirection()
   const triggerLabel = label ?? (name === undefined ? t("overlay.moreActions") : t("listing.actionsFor", { name }))
   const menu = useActionMenuItems({ items, name, itemClassName: classNames?.item })
 
@@ -203,6 +208,7 @@ export function DropdownActionMenu({
           collisionPadding={8}
           className={cn("min-w-44 w-auto max-w-[calc(100vw-1rem)]", className)}
           {...props}
+          side={radixSide(side, dir)}
           onCloseAutoFocus={(event) => {
             onCloseAutoFocus?.(event)
             menu.ask()

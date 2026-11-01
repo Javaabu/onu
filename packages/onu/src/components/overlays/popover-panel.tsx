@@ -6,7 +6,8 @@ import { Popover as PopoverPrimitive } from "radix-ui"
 import { useIsMobile } from "../../hooks/use-mobile"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
-import { useTranslation } from "../../providers/onu-provider"
+import { useDirection, useTranslation } from "../../providers/onu-provider"
+import { radixSide, type LogicalSide } from "./_side"
 import { Button } from "../../ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
 import { BottomSheet } from "./bottom-sheet"
@@ -18,8 +19,10 @@ registerEnglish({ overlay: en_overlay })
 
 export interface PopoverPanelProps extends Omit<
   React.ComponentProps<typeof PopoverPrimitive.Content>,
-  "title" | "children"
+  "title" | "children" | "side"
 > {
+  /** Side it opens on. `start` and `end` follow the reading direction. Default `bottom`. */
+  side?: LogicalSide
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
@@ -58,9 +61,11 @@ export function PopoverPanel({
   children,
   className,
   classNames,
+  side,
   ...props
 }: PopoverPanelProps) {
   const { t } = useTranslation()
+  const dir = useDirection()
   const isMobile = useIsMobile()
   const [open, setOpen] = useControllableState(openProp, defaultOpen, onOpenChange)
   const titleId = React.useId()
@@ -94,6 +99,7 @@ export function PopoverPanel({
         className={cn("gap-3 p-3 w-80 max-w-[calc(100vw-2rem)]", className)}
         collisionPadding={8}
         {...props}
+        side={radixSide(side, dir)}
       >
         {title || description || closeButton ? (
           <div

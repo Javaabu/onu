@@ -37,7 +37,7 @@ export default function TipDemo() {
             <Icon name="print" />
           </Button>
         </Tip>
-        <Tip content="Download as PDF" side="right">
+        <Tip content="Download as PDF" side="end">
           <Button size="icon" variant="outline" aria-label="Download as PDF" onClick={() => undefined}>
             <Icon name="download" />
           </Button>

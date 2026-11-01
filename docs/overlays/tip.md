@@ -42,7 +42,8 @@ Tapping elsewhere or pressing <kbd>Escape</kbd> closes it.
 | `delayDuration`                       | `number`                | `300`    | Hover delay in ms                    |
 | `disabled`                            | `boolean`               | `false`  | Render only the trigger              |
 | `open`, `defaultOpen`, `onOpenChange` |                         |          | Open state                           |
-| `side`, `align`, `sideOffset`, …      |                         |          | Radix `Tooltip.Content` props        |
+| `side` | `"top" \| "bottom" \| "start" \| "end"` | | Side it opens on; `start` and `end` follow the reading direction |
+| `align`, `sideOffset`, … | | | Radix `Tooltip.Content` props |
 | `className`                           | `string`                |          | Classes for the tip                  |
 
 ## Accessibility
@@ -57,4 +58,4 @@ Tapping elsewhere or pressing <kbd>Escape</kbd> closes it.
 
 ## RTL and Dhivehi
 
-The "More information" label is translated, and `side="left"` / `"right"` follow Radix's physical sides; prefer `top` / `bottom`.
+The "More information" label is translated, and `side="start"` / `"end"` follow the reading direction.
