@@ -72,17 +72,25 @@ export function loadShiki(): Promise<Highlighter> {
   return highlighterPromise
 }
 
+type LanguageInput = Exclude<Parameters<Highlighter["loadLanguage"]>[number], string>
+type ThemeInput = Exclude<Parameters<Highlighter["loadTheme"]>[number], string>
+
+/** Loaders return `unknown` so callers can register any Shiki module; Shiki reads a module or a getter. */
+function isLoadable<T>(value: unknown): value is T {
+  return (typeof value === "object" && value !== null) || typeof value === "function"
+}
+
 async function ensureLoaded(highlighter: Highlighter, lang: string, themes: CodeThemes) {
   const langs = highlighter.getLoadedLanguages()
   if (!langs.includes(lang)) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await highlighter.loadLanguage((await LANGUAGE_LOADERS[lang]!()) as any)
+    const language = await LANGUAGE_LOADERS[lang]!()
+    if (isLoadable<LanguageInput>(language)) await highlighter.loadLanguage(language)
   }
   const loaded = highlighter.getLoadedThemes()
   for (const name of [themes.light, themes.dark]) {
     if (!loaded.includes(name) && THEME_LOADERS[name]) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await highlighter.loadTheme((await THEME_LOADERS[name]!()) as any)
+      const theme = await THEME_LOADERS[name]!()
+      if (isLoadable<ThemeInput>(theme)) await highlighter.loadTheme(theme)
     }
   }
 }
@@ -261,8 +269,7 @@ export function useHighlightedCode(code: string, language: string | null | undef
     return () => {
       cancelled = true
     }
-    // `key` covers code, language and themes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `key` covers code, language and themes.
   }, [key])
   return result?.key === key ? result.tokens : null
 }

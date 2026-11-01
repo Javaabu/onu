@@ -135,7 +135,7 @@ export function Form<T extends FieldValues = FormValues>({
     ...errorsProp,
   }
   const errorsKey = JSON.stringify(merged)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- `merged` is new each render; `errorsKey` stands for its contents.
   const errors = React.useMemo<FormErrors>(() => merged, [errorsKey])
 
   const processing = !!processingProp || submitting
