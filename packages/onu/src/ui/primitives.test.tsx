@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 
 import { expectNoA11yViolations, renderWithOnu } from "../../test/utils"
 import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbList } from "./breadcrumb"
+import { Calendar } from "./calendar"
 import { Checkbox } from "./checkbox"
 import { Dialog, DialogContent, DialogTitle } from "./dialog"
 import {
@@ -78,6 +79,13 @@ describe("vendored primitive patches", () => {
     const svg = container.querySelector("[data-icon-name=chevron-right]")!
     expect(svg.getAttribute("class")).toContain("rtl:-scale-x-100")
     expect(svg.getAttribute("class")).not.toContain("rtl:rotate-180")
+  })
+
+  it("Calendar's month arrows mirror once in RTL", () => {
+    const { container } = renderWithOnu(<Calendar dir="rtl" />, { dir: "rtl" })
+    const previous = container.querySelector(".rdp-button_previous")!
+    expect(previous.querySelector("svg")?.getAttribute("class")).toContain("rtl:-scale-x-100")
+    expect(container.querySelector(".group\\/calendar")?.className).not.toContain("rotate-180")
   })
 
   it("Progress exposes its value and fills from the inline start in RTL", () => {
