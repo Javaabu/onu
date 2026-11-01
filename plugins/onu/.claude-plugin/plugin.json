@@ -9,12 +9,5 @@
   "homepage": "https://github.com/Javaabu/onu/blob/main/docs/guides/ai-assistants.md",
   "repository": "https://github.com/Javaabu/onu",
   "license": "MIT",
-  "keywords": [
-    "react",
-    "ui",
-    "rtl",
-    "dhivehi",
-    "thaana",
-    "laravel"
-  ]
+  "keywords": ["react", "ui", "rtl", "dhivehi", "thaana", "laravel"]
 }

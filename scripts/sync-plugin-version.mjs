@@ -22,7 +22,8 @@ if (manifest.version === version) {
   )
   process.exit(1)
 } else {
-  manifest.version = version
-  writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`)
+  // Only the version changes, so the file keeps its formatting.
+  const text = readFileSync(manifestPath, "utf8")
+  writeFileSync(manifestPath, text.replace(/("version":\s*)"[^"]*"/, `$1"${version}"`))
   console.log(`plugin.json is now at ${version}`)
 }
