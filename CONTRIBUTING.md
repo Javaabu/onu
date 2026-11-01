@@ -93,7 +93,7 @@ Every change that affects a published package adds a changeset (`pnpm changeset`
 
 To release:
 
-1. On `dev`, run `pnpm changeset version && node scripts/sync-plugin-version.mjs`. `@javaabu/onu` and `@javaabu/onu-mcp` are a fixed group in `.changeset/config.json`, so they always move to the same version; the script copies that version into `plugins/onu/.claude-plugin/plugin.json`, which changesets can't see. `changeset version` also writes their `CHANGELOG.md` and deletes the changesets.
+1. On `dev`, run `pnpm changeset version && node scripts/sync-plugin-version.mjs && pnpm figma:plugin`. `@javaabu/onu` and `@javaabu/onu-mcp` are a fixed group in `.changeset/config.json`, so they always move to the same version; the script copies that version into `plugins/onu/.claude-plugin/plugin.json`, which changesets can't see. The Figma plugin bundle embeds the version, so it is rebuilt too. `changeset version` also writes their `CHANGELOG.md` and deletes the changesets.
 2. Commit (`Release v0.1.0`) and merge `dev` into `main`. Wait for CI to pass on `main`.
 3. Tag that commit on `main` and push the tag: `git tag v0.1.0 && git push origin v0.1.0`.
 
