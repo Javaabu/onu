@@ -108,7 +108,7 @@ function applicationForm(kit: Kit, page: PageNode, name: string, dir: Dir) {
         fillW: true,
       }),
     ]),
-    b.instance("Alert", { variant: "info" }),
+    b.instance("Alert", { tone: "info" }),
     ...fields,
     choices,
     b.instance("Checkbox", { checked: "true" }),

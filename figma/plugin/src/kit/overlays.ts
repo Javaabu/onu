@@ -32,7 +32,7 @@ export const tooltip: KitComponent = {
   },
 }
 
-const MODAL_WIDTH: Record<string, number> = { sm: 384, md: 512, lg: 672 }
+const MODAL_WIDTH: Record<string, number> = { sm: 384, default: 512, lg: 672 }
 
 export const dialog: KitComponent = {
   name: "Dialog",
@@ -40,8 +40,8 @@ export const dialog: KitComponent = {
   key: "overlays/modal",
   description:
     '<Modal trigger title description footer size closeButton>{body}</Modal> from "@javaabu/onu" (ConfirmDialog for confirmations).',
-  variants: { size: ["md", "sm", "lg"], dir: DIRS },
-  filter: (v) => v.size === "md" || v.dir === "ltr",
+  variants: { size: ["default", "sm", "lg"], dir: DIRS },
+  filter: (v) => v.size === "default" || v.dir === "ltr",
   props: {
     title: { type: "TEXT", default: "Edit profile" },
     description: { type: "TEXT", default: "Changes are saved when you press Save." },
