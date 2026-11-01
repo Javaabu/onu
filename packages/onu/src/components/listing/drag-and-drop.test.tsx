@@ -178,7 +178,7 @@ describe("KanbanBoard", () => {
   it("shows columns with counts and cards", async () => {
     renderWithOnu(<Board />)
     const todo = screen.getByRole("region", { name: "To do" })
-    expect(within(todo).getByLabelText("2 items")).toBeInTheDocument()
+    expect(within(todo).getByText("2 items")).toBeInTheDocument()
     expect(within(todo).getAllByRole("listitem")).toHaveLength(2)
     expect(within(screen.getByRole("region", { name: "Done" })).getByText("Nothing here")).toBeInTheDocument()
     expect(
