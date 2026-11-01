@@ -10,7 +10,7 @@ import { Button } from "../../ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../../ui/card"
 import { Input } from "../../ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
-import { toDate, type DateInput } from "./_utils"
+import { toDate, useNow, type DateInput } from "./_utils"
 import { StatusBadge, type StatusMap } from "./status-badge"
 import { AppLink } from "./_link"
 import { registerEnglish } from "../../i18n/english"
@@ -110,8 +110,8 @@ export function PublishBox({
   const [running, setRunning] = React.useState<"draft" | "publish" | null>(null)
   const busy = busyProp ?? running
   const date = toDate(publishAt)
-  const [nowAtMount] = React.useState(() => Date.now())
-  const reference = toDate(now)?.getTime() ?? nowAtMount
+  const live = useNow(null)
+  const reference = toDate(now)?.getTime() ?? live
 
   const statusLabel = (value: string) => (STATUS_LABELS[value] ? t(STATUS_LABELS[value]) : value)
   const map: StatusMap = Object.fromEntries(
@@ -127,7 +127,7 @@ export function PublishBox({
   ]
 
   const published = status === "published"
-  const future = !!date && date.getTime() > reference
+  const future = !!date && reference !== null && date.getTime() > reference
   const primaryLabel = published ? t("display.update") : future ? t("display.schedule") : t("display.publish")
 
   const run = async (kind: "draft" | "publish", action?: () => void | Promise<unknown>) => {

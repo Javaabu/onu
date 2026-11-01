@@ -79,7 +79,9 @@ export function RelativeDate({
   const now = fixedNow?.getTime() ?? liveNow
 
   const nextInterval =
-    date && !fixedNow && updateInterval !== false ? (updateInterval ?? autoUpdateInterval(date, now)) : null
+    date && !fixedNow && updateInterval !== false
+      ? (updateInterval ?? autoUpdateInterval(date, now ?? date.getTime()))
+      : null
   if (nextInterval !== interval) setIntervalMs(nextInterval)
 
   if (!date) {
@@ -95,8 +97,9 @@ export function RelativeDate({
     )
   }
 
-  const relative = formatRelativeDate(date, now, locale, t)
   const exact = formatDate(date, format, { locale: locale.dateFns })
+  // Until the first tick there is no "now": show the exact date, on the server and in the first client render.
+  const relative = now === null ? exact : formatRelativeDate(date, now, locale, t)
 
   if (!showExact) {
     return (
