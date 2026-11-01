@@ -25,7 +25,7 @@ See [`REQUIREMENTS.md`](REQUIREMENTS.md) for the full specification and [`docs/`
 
 ```bash
 npm install @javaabu/onu
-# optional font pack (Inter, JetBrains Mono, Noto Sans Thaana; Faruma and MV Faseyha are bundled)
+# optional font pack (Inter, JetBrains Mono, Noto Sans Thaana; Faruma and MV Faseyha come with tailwind.css and styles.css)
 npm install @fontsource-variable/inter @fontsource-variable/jetbrains-mono @fontsource-variable/noto-sans-thaana
 ```
 

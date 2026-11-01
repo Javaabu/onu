@@ -25,7 +25,7 @@ npm install @fontsource-variable/inter @fontsource-variable/jetbrains-mono @font
 @import "@javaabu/onu/fonts.css"; /* optional: needs the font packages above */
 ```
 
-Without the font pack, leave out the last line. Faruma and MV Faseyha (Thaana) are inside `@javaabu/onu`; see [Fonts](./guides/fonts).
+Without the font pack, leave out the last line. `tailwind.css` already loads Faruma and MV Faseyha (Thaana); see [Fonts](./guides/fonts).
 
 `tailwind.css` adds Onu's design tokens, the dark mode variant, and tells Tailwind to scan Onu's components for classes.
 

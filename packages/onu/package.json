@@ -518,6 +518,7 @@
       "path": [
         "src/styles/styles.css",
         "src/styles/tokens.css",
+        "src/styles/fonts-thaana.css",
         "src/styles/theme.css"
       ],
       "rolldown": false,
@@ -529,6 +530,7 @@
         "src/styles/tailwind.css",
         "src/styles/shadcn.css",
         "src/styles/tokens.css",
+        "src/styles/fonts-thaana.css",
         "src/styles/theme.css",
         "src/styles/base.css"
       ],
@@ -536,10 +538,16 @@
       "limit": "8.5 kB"
     },
     {
+      "name": "fonts-thaana.css",
+      "path": "src/styles/fonts-thaana.css",
+      "rolldown": false,
+      "limit": "400 B"
+    },
+    {
       "name": "fonts.css",
       "path": "src/styles/fonts.css",
       "rolldown": false,
-      "limit": "600 B"
+      "limit": "400 B"
     },
     {
       "name": "fonts-optional.css",

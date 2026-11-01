@@ -29,13 +29,11 @@ All of these are self-hosted from npm, so no requests go to a font CDN.
 
 # Thaana fonts
 
-Onu ships Faruma and MV Faseyha with `fonts.css`, as `woff2` files subset to Thaana and its punctuation (about 12 kB each). Their `unicode-range` means a browser only downloads them when a page shows Thaana text, and Latin text in a mixed sentence stays in Inter.
+`tailwind.css` and `styles.css` load Faruma and MV Faseyha, so they work without `fonts.css` and its packages. They ship as `woff2` files subset to Thaana and its punctuation (about 12 kB each). Their `unicode-range` means a browser only downloads them when a page shows Thaana text, and Latin text in a mixed sentence stays in Inter.
 
 - **Faruma** is used for Dhivehi body text (`--onu-font-thaana`).
 - **MV Faseyha** is used for Dhivehi headings and `<b>`/`<strong>` (`--onu-font-thaana-bold`). Both fonts have a single weight and Onu turns off faux bold for Dhivehi, so emphasis uses the second face instead.
-- Characters neither font covers fall back to Noto Sans Thaana.
-
-If you don't import `fonts.css`, the same names still apply to copies installed on the device.
+- Characters neither font covers fall back to Noto Sans Thaana when you import `fonts.css`.
 
 # Mixed Dhivehi and English
 
