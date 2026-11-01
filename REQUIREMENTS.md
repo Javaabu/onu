@@ -86,7 +86,7 @@ This document captures the requirements, constraints and full build list for Onu
   - `@javaabu/onu/styles.css` — theme tokens + base styles
   - `@javaabu/onu/tailwind.css` — Tailwind `@theme` / `@source` entry for consumers
 - **R2.6** Heavy or licensed third-party dependencies (map SDKs, chart libs, editors, scanners, FontAwesome, fonts) are **optional peer dependencies**, required only when the matching subpath is imported.
-- **R2.7** Peer dependencies: `react` and `react-dom` `^18.3 || ^19`, `tailwindcss` `^4`.
+- **R2.7** Peer dependencies: `react` and `react-dom` `^19`, `tailwindcss` `^4`.
 - **R2.8** Ship TypeScript declarations; source written in TypeScript `strict` mode. No `any` in public APIs.
 - **R2.9** Every client component file carries a `"use client"` directive so it works in React Server Component environments (Next.js App Router).
 - **R2.10** Semantic versioning. Releases managed with [Changesets](https://github.com/changesets/changesets); `CHANGELOG.md` generated from them.
@@ -181,7 +181,7 @@ A dependency must meet **all** of these criteria:
 - **Maintained**: a release or meaningful commit within the last 12 months, a responsive issue tracker, and not archived or deprecated.
 - **Reputable**: widely adopted, and backed by an organisation or established maintainers.
 - **Typed**: first-party TypeScript types.
-- **Compatible**: React 18 and 19, SSR-safe, tree-shakable.
+- **Compatible**: React 19, SSR-safe, tree-shakable.
 - **Accessible and RTL-capable**, or can be made so by wrapping.
 - **Reasonable bundle size** for what it provides.
 

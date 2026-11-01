@@ -24,8 +24,8 @@ See [`REQUIREMENTS.md`](REQUIREMENTS.md) for the full specification and [`docs/`
 ## Install
 
 ```bash
-npm install @javaabu/onu
-# optional font pack (Inter, JetBrains Mono, Noto Sans Thaana; Faruma and MV Faseyha are bundled)
+npm install @javaabu/onu react-hook-form @tanstack/react-query
+# optional font pack (Inter, JetBrains Mono, Noto Sans Thaana; Faruma and MV Faseyha come with tailwind.css and styles.css)
 npm install @fontsource-variable/inter @fontsource-variable/jetbrains-mono @fontsource-variable/noto-sans-thaana
 ```
 

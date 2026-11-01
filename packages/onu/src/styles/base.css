@@ -54,7 +54,6 @@ body {
     [data-slot="tabs-trigger"],
     [data-slot="input"],
     [data-slot="input-group"],
-    [data-slot="combobox-trigger"],
     [data-slot="pagination-link"],
     [data-slot="dropdown-menu-item"],
     [data-slot="command-item"],

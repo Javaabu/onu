@@ -3,7 +3,7 @@ title: Inertia & Next.js
 sidebar_position: 13
 ---
 
-Onu is plain React, so it works in Vite apps, Laravel + Inertia (React) and Next.js.
+Onu is plain React (React 19), so it works in Vite apps, Laravel + Inertia (React) and Next.js.
 
 # Links
 

@@ -9,8 +9,8 @@ import { FormField } from "../form/form-field"
 import {
   buildUrl,
   detectHasMore,
-  getOnuQueryClient,
   invalidateApiOptions,
+  useOnuQueryClient,
   parseApiItem,
   parseApiResponse,
   valueUrlFor,
@@ -335,13 +335,34 @@ describe("ApiSelect", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
+  it("gives each OnuProvider its own fallback client, and invalidates it", async () => {
+    const clients: QueryClient[] = []
+    function Capture({ children }: { children?: React.ReactNode }) {
+      const client = useOnuQueryClient()
+      React.useEffect(() => void clients.push(client), [client])
+      return children
+    }
+    renderWithOnu(<Capture />)
+    mockFetch(() => ({ data: islands }))
+    renderWithOnu(
+      <Capture>
+        <ApiSelect aria-label="Island" url="/api/fallback-own" debounce={0} />
+      </Capture>,
+    )
+    expect(clients).toHaveLength(2)
+    expect(clients[0]).not.toBe(clients[1])
+
+    await open()
+    expect(await screen.findByRole("option", { name: "Malé" })).toBeInTheDocument()
+    expect(clients[1]?.getQueryCache().getAll().length).toBeGreaterThan(0)
+    await invalidateApiOptions(clients[1]!, "/api/fallback-own")
+  })
+
   it("works without a QueryClientProvider (fallback client) and with one", async () => {
     mockFetch(() => ({ data: islands }))
     const { unmount } = renderWithOnu(<ApiSelect aria-label="Island" url="/api/fallback" debounce={0} />)
     await open()
     expect(await screen.findByRole("option", { name: "Malé" })).toBeInTheDocument()
-    expect(getOnuQueryClient().getQueryCache().getAll().length).toBeGreaterThan(0)
-    await invalidateApiOptions("/api/fallback")
     unmount()
 
     const appClient = newClient()
