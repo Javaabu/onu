@@ -10,6 +10,8 @@ pnpm install
 pnpm dev   # web app at http://localhost:5173
 ```
 
+Branch from `dev` and target `dev` in PRs; `main` is release-only.
+
 Maps in the web app use Google Maps when `VITE_GOOGLE_MAPS_API_KEY` (and optionally `VITE_GOOGLE_MAPS_MAP_ID`) is set, and the keyless placeholder otherwise. Until a Map ID is set (locally or as the `GOOGLE_MAPS_MAP_ID` secret of the demo build), the examples use Google's `DEMO_MAP_ID`, so advanced markers work. The map demos open on Javaabu's office in Malé (`JAVAABU_OFFICE` in `web/src/showcase/maps/_data.ts`). To try the real Google adapter without a key (development mode, watermarked), set `VITE_GOOGLE_MAPS_FORCE=1 VITE_GOOGLE_MAPS_MAP_ID=DEMO_MAP_ID`. See [MapProvider](docs/maps/map-provider.md#verified-against-google-maps-js-api).
 
 ## Definition of done
