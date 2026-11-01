@@ -1,5 +1,11 @@
 # @javaabu/onu-mcp
 
+## 0.2.0
+
+### Patch Changes
+
+- 7b32cb8: `Label`, `HelpText`, `RequiredMarker` and `FieldErrors` are now documented on the `FormField` page, under "Building blocks", instead of a page each. The components are unchanged. A docs page can list the components it covers in its `covers` front matter; `docs/index.json` carries the list, and `onu_get_doc` finds the page by any of those names (`onu_get_doc("HelpText")` returns the FormField page).
+
 ## 0.1.0
 
 ### Minor Changes
