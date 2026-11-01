@@ -36,7 +36,7 @@ Pie and donut slices stay solid, also when other charts use gradient fills: adja
 
 ## Props
 
-Also takes the common chart props (`title`, `description`, `valueFormat`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [CategoryChart](./category-chart).
+Also takes the common chart props (`title` (required), `description`, `hideTitle`, `id`, `valueFormat`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [CategoryChart](./category-chart).
 
 | Prop          | Type                        | Default        | Description                             |
 | ------------- | --------------------------- | -------------- | --------------------------------------- |

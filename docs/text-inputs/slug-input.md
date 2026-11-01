@@ -46,9 +46,9 @@ Slugs are generated with [`@sindresorhus/slugify`](https://github.com/sindresorh
 | `prefix`        | `string`                                    |                             | URL shown before the slug in the preview |
 | `separator`     | `string`                                    | `"-"`                       | Word separator                           |
 | `slugify`       | `(text: string) => string`                  | `toSlug`                    | Custom slug function                     |
-| `classNames`    | `{ wrapper, root, input, toggle, preview }` |                             | Classes for each part                    |
+| `classNames`    | `{ wrapper, root, input, startAddon, endAddon, toggle, preview }` |                             | Classes for each part                    |
 
-Other `<input>` props are passed through; `ref` points at the input. When `readOnly`, the lock button is hidden.
+Other [`TextInput`](./text-input) props (`size`, addons, `name`, …) work too; `ref` points at the input. When `readOnly`, the lock button is hidden.
 
 ## RTL and Thaana
 

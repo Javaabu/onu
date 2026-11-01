@@ -61,11 +61,12 @@ Without a `trigger`, a ⋯ icon button labelled "More actions" opens the menu (4
 | `asChild`                                      | `boolean`                      | `false`        | `openOn="context"`: the child is the area (no wrapping `<span>`) |
 | `disabled`                                     | `boolean`                      | `false`        | Turn the menu off (disables the trigger)                         |
 | `align`                                        | `'start' \| 'center' \| 'end'` | `'end'`        | Alignment to the trigger                                         |
+| `side`                                         | `'top' \| 'bottom' \| 'start' \| 'end'` |                | Side of the trigger; `start` and `end` follow the reading direction |
 | `open`, `defaultOpen`, `onOpenChange`, `modal` |                                |                | Menu state (`open`, `defaultOpen`: dropdown only)                |
 | `className`                                    | `string`                       |                | Classes for the menu                                             |
 | `classNames`                                   | `{ trigger, item }`            |                | Classes for the default trigger (or the area) and items          |
 
-`side` is `top`, `bottom`, `start` or `end`, which follow the reading direction. Other props go to Radix `DropdownMenu.Content` (`sideOffset`, …), or `ContextMenu.Content` with `openOn="context"`, where the menu opens at the pointer and `align`, `side` and `sideOffset` do not apply.
+Other props go to Radix `DropdownMenu.Content` (`sideOffset`, …), or `ContextMenu.Content` with `openOn="context"`, where the menu opens at the pointer and `align`, `side` and `sideOffset` do not apply.
 
 ## Row actions
 

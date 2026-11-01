@@ -32,6 +32,7 @@ import { AccountSwitcher } from "@javaabu/onu"
 | `footer`                 | `ReactNode`                          |             | Below the list                                          |
 | `size`                   | `"default" \| "lg"`                  | `"default"` |                                                         |
 | `sheet`                  | `boolean`                            | `true`      | Bottom sheet on phones (searchable mode)                |
+| `open` / `defaultOpen` / `onOpenChange` | `boolean` / callback            |             | Controlled or uncontrolled open state                   |
 | `classNames`             | `{ trigger, content, item, avatar }` |             |                                                         |
 
 `type` is `"personal"` (default), `"organisation"` or `"delegated"`; the list is grouped in that order. Avatars fall back to initials (or a building icon for organisations).

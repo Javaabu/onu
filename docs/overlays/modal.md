@@ -100,6 +100,7 @@ import {
 | `open`         | `boolean`                                                      |           | Controlled open state                               |
 | `defaultOpen`  | `boolean`                                                      | `false`   | Initial state when uncontrolled                     |
 | `onOpenChange` | `(open: boolean) => void`                                      |           | Called when the modal opens or closes               |
+| `modal`        | `boolean`                                                      | `true`    | Radix `Dialog` modality: `false` leaves the rest of the page interactive |
 | `size`         | `'sm' \| 'default' \| 'lg' \| 'xl' \| 'full'` | `'default'`    | Width from `sm` up                                  |
 | `mobile`       | `'sheet' \| 'fullscreen' \| 'dialog'`                          | `'sheet'` | Presentation on phones                              |
 | `closeButton`  | `boolean`                                                      | `true`    | Show the × button                                   |

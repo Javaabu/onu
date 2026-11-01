@@ -65,6 +65,7 @@ With a `name` (directly or from the `FormField`), a hidden input posts `yyyy-MM-
 | `weekendDays`                           | `number[]`                                              | `[5, 6]`        | Days styled as weekend                            |
 | `showWeekNumber`                        | `boolean`                                               | `false`         | Week number column                                |
 | `name`                                  | `string`                                                |                 | Hidden input with `yyyy-MM-dd`                    |
+| `id`                                    | `string`                                                |                 | Id of the field button (`FormField` sets it)      |
 | `required`                              | `boolean`                                               |                 | Hides Clear, sets `aria-required`                 |
 | `clearable`                             | `boolean`                                               | `!required`     | Show Clear                                        |
 | `disabled`                              | `boolean`                                               |                 | Field does nothing when clicked                   |
@@ -75,6 +76,7 @@ With a `name` (directly or from the `FormField`), a hidden input posts `yyyy-MM-
 | `className`                             | `string`                                                |                 | Classes for the field                             |
 | `classNames`                            | `{ trigger, value, icon, content, footer }`             |                 | Classes for each part                             |
 | `ref`                                   | `Ref<HTMLButtonElement>`                                |                 | The field button                                  |
+| `aria-label` / `aria-labelledby` / `aria-describedby` / `aria-invalid` / `aria-required` | |              | Passed to the field button (`FormField` sets them) |
 
 Every other picker in this group shares the field props from `required` down (`PickerFieldProps`). The table is for `mode="single"`; the other modes change the value and a few props, below.
 

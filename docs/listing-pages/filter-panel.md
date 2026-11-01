@@ -113,6 +113,7 @@ Every definition also accepts `render` (replace the built-in control) and `forma
 | `defaultExpanded`       | `boolean`                                                  | `false`         | Form: start expanded                   |
 | `formLabel`             | `string`                                                   | "Filters"       | Form: accessible name                  |
 | `classNames`            | `{ trigger, badge, content, body, filter, label, footer }` |                 | Classes for each part                  |
+| `className`             | `string`                                                   |                 | Added to the trigger (the form with `variant="form"`) |
 
 ## Accessibility
 

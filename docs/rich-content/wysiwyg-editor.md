@@ -55,7 +55,7 @@ Items: `blockType`, `bold`, `italic`, `underline`, `strike`, `code`, `bulletList
 
 In narrow containers (phones, sidebars) the less common items move into a **More** menu and the rest wrap. Alignment uses logical `start`/`center`/`end`, so it follows the text direction.
 
-`EditorToolbar` is exported too, for building your own layout around a Tiptap editor.
+`EditorToolbar` is exported too, for building your own layout around a Tiptap editor. It takes `editor` (required), `items`, `headingLevels`, `disabled`, `onLink` and `onImage` (each `(trigger: HTMLElement | null) => void`), and other `<div>` props.
 
 ## Images
 
@@ -84,16 +84,18 @@ The image dialog takes a URL and alt text. Pass `onImageUpload` to add an **Uplo
 | `placeholder`       | `string`                          | "Start writing…"  | Shown when empty                                                           |
 | `readOnly`          | `boolean`                         | `false`           | Show the content without editing or toolbar                                |
 | `disabled`          | `boolean`                         | `false`           | Disable editing                                                            |
+| `required`          | `boolean`                         | `false`           | Marks the field as required for assistive tech                             |
 | `thaana`            | `boolean \| ThaanaOptions`        | `false`           | Type Thaana from a Latin keyboard                                          |
 | `toolbar`           | `ToolbarItem[] \| false`          | `DEFAULT_TOOLBAR` | Toolbar controls                                                           |
 | `headingLevels`     | `(1–6)[]`                         | `[1, 2, 3]`       | Levels in the text style menu                                              |
 | `onImageUpload`     | `(file: File) => Promise<string>` |                   | Enables image upload                                                       |
 | `extensions`        | `Extensions`                      |                   | Extra (MIT) Tiptap extensions                                              |
+| `autofocus`         | `boolean \| "start" \| "end"`     |                   | Focus the editor on mount, optionally at the start or end                  |
 | `variant`           | `'default' \| 'ghost'`            | `'default'`       | Bordered or borderless                                                     |
 | `size`              | `'sm' \| 'default' \| 'lg'`       | `'default'`       | Prose size                                                                 |
 | `immediatelyRender` | `boolean`                         | `false`           | Create the editor during the first render (SPA only; keep `false` for SSR) |
 | `onReady`           | `(editor) => void`                |                   | Receives the Tiptap `Editor`                                               |
-| `classNames`        | `{ toolbar, content }`            |                   | Classes for each part                                                      |
+| `classNames`        | `{ toolbar, content, prose }`     |                   | Classes for each part                                                      |
 
 Other `<div>` props go to the root, and `ref` points at the root. `editorVariants` is exported.
 

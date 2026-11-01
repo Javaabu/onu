@@ -45,6 +45,7 @@ Without the `on…Change` handlers each row is read-only (a status badge, an ico
 | `busy`               | `'draft' \| 'publish' \| null`                                 | automatic                 | Force a busy state                              |
 | `disabled`           | `boolean`                                                      | `false`                   | Disable every control                           |
 | `title`              | `ReactNode`                                                    | "Publish"                 | Card title                                      |
+| `now`                | `DateInput`                                                    | current time              | Reference time for deciding "Schedule" vs "Publish" |
 | `classNames`         | `{ header, content, footer, row }`                             |                           | Classes for each part                           |
 
 ## Accessibility

@@ -53,6 +53,8 @@ When the new results arrive, focus moves to the first of them and "3 more News r
 
 Items: `id`, `title`, `description?`, `href?`, `meta?`, `icon?`.
 
+`Highlight` takes `text` and `query` (both required), `classNames: { mark }`, and other `<span>` props.
+
 ## Accessibility
 
 The results are a section labelled by the summary heading, which is a live region ("12 results for “passport”"). Each group is a labelled section with an `h3`. Matches use `<mark>`. Highlighting is case-insensitive and works for Thaana.

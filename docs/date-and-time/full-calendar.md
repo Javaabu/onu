@@ -57,6 +57,7 @@ const events: CalendarEvent[] = [
 | `hideToolbar`                              | `boolean`                                | `false`                      |                                          |
 | `options`                                  | `CalendarOptions`                        |                              | Any other FullCalendar option            |
 | `apiRef`                                   | `Ref<CalendarApi \| null>`               |                              |                                          |
+| `today`                                    | `Date`                                   |                              | Pins "today" (tests, demos)              |
 | `className` / `classNames`                 | `{ toolbar, title, calendar }`           |                              |                                          |
 
 ## Accessibility

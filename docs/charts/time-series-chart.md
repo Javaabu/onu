@@ -87,7 +87,7 @@ Areas fade from the series colour to almost clear at the baseline (stacked bands
 
 ## Props
 
-Also takes the common chart props (`title`, `description`, `config`, `series`, `valueFormat`, `showLegend`, `showGrid`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [CategoryChart](./category-chart).
+Also takes the common chart props (`title` (required), `description`, `hideTitle`, `id`, `config`, `series`, `valueFormat`, `showLegend`, `showGrid`, `height`, `view`, `defaultView`, `onViewChange`, `showTableToggle`, `loading`, `emptyMessage`, `summary`, `animate`, `actions`, `className`, `classNames`); see [CategoryChart](./category-chart).
 
 | Prop                | Type                                   | Default     | Description                             |
 | ------------------- | -------------------------------------- | ----------- | --------------------------------------- |

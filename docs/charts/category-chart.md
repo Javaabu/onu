@@ -171,6 +171,7 @@ The variant-specific props are listed under [Lines and areas](#lines-and-areas) 
 | `actions`              | `ReactNode`                                                  |                      | Extra header controls                                 |
 | `className`            | `string`                                                     |                      | Classes for the `<figure>`                            |
 | `classNames`           | `{ root, header, title, description, toggle, chart, table }` |                      | Classes per part                                      |
+| `id`                   | `string`                                                     | generated            | Id of the `<figure>`, and the base of its parts' ids  |
 
 `ref` points at the `<figure>`. Every Onu chart (`PieChart`, `TimeSeriesChart`, `MapChart`) shares the props from `title` to `classNames` that are not specific to categories.
 

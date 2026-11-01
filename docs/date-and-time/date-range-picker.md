@@ -34,7 +34,7 @@ const [range, setRange] = React.useState<DateRangeValue>({ from: null, to: null 
 | `classNames`                                                                                      | `{ root, field, label, trigger, error }`   |                            | Classes for each part    |
 | `ref`                                                                                             | `Ref<HTMLDivElement>`                      |                            | The group element        |
 
-`name`, `required`, `disabled`, `clearable`, `sheet`, `size`, `today` and `aria-*` apply to both fields.
+`name`, `required`, `disabled`, `clearable`, `sheet`, `size`, `today` and `aria-*` apply to both fields; `className` goes to the root.
 
 ## Accessibility
 

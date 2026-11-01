@@ -54,6 +54,7 @@ Ids: `paragraph`, `heading1`, `heading2`, `heading3`, `bulletList`, `orderedList
 | `onImageUpload` | `(file: File) => Promise<string>` |                       | Enables image upload                         |
 | `readOnly`      | `boolean`                         | `false`               | No editing, handles or toolbar               |
 | `disabled`      | `boolean`                         | `false`               | Disable editing                              |
+| `required`      | `boolean`                         | `false`               | Marks the field as required for assistive tech |
 | `extensions`    | `Extensions`                      |                       | Extra Tiptap extensions                      |
 | `size`          | `'sm' \| 'default' \| 'lg'`       | `'default'`           | Prose size                                   |
 | `classNames`    | `{ toolbar, content }`            |                       | Classes for each part                        |
