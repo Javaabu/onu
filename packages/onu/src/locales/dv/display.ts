@@ -65,7 +65,7 @@ export const display = {
   writeReply: "ޖަވާބެއް ލިޔުއްވާ…",
   edited: "އެޑިޓްކުރެވިފައި",
   editComment: "ކޮމެންޓް އެޑިޓްކުރޭ",
-  deleteComment: "ކޮމެންޓް ފޮހެލާ",
+  deleteComment: "ކޮމެންޓް ނައްތާލުން",
   deleteCommentConfirm: "މި ކޮމެންޓް ފޮހެލަންތޯ؟",
   deleteCannotUndo: "މިކަން އަނބުރާ ނުގެނެވޭނެ.",
   noComments: "އަދި އެއްވެސް ކޮމެންޓެއް ނެތް",
@@ -75,7 +75,7 @@ export const display = {
   addNote: "ނޯޓު އިތުރުކުރޭ",
   writeNote: "އިންޓަރނަލް ނޯޓެއް ލިޔުއްވާ…",
   noNotes: "އަދި އެއްވެސް ނޯޓެއް ނެތް",
-  deleteNote: "ނޯޓު ފޮހެލާ",
+  deleteNote: "ނޯޓު ނައްތާލުން",
   deleteNoteConfirm: "މި ނޯޓު ފޮހެލަންތޯ؟",
   // Share buttons
   share: "ހިއްސާކުރޭ",
@@ -89,8 +89,6 @@ export const display = {
   viber: "ވައިބަރ",
   telegram: "ޓެލެގްރާމް",
   email: "އީމެއިލް",
-  // Content card
-  readMore: "އިތުރަށް ކިޔާ",
   // Error pages
   errorCode: "އެރަރ {code}",
   error403Title: "ހުއްދައެއް ނެތް",

@@ -1,6 +1,3 @@
-export {}
-
-// Text inputs group
 export * from "./signature-pad"
 export * from "./qr-code-scanner"
 export * from "./qr-code"

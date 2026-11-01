@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { useAnnouncer } from "../../a11y/use-announcer"
 import { useIsMobile } from "../../hooks/use-mobile"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
@@ -74,7 +75,26 @@ export interface FilterPanelProps {
  * form's filters, and Expand shows the fields past `collapsedCount`.
  */
 export function FilterPanel(props: FilterPanelProps) {
-  return props.variant === "form" ? <FilterQueryForm {...props} /> : <FilterPopoverPanel {...props} />
+  const { t } = useTranslation()
+  const { announce, region } = useAnnouncer({ role: "status" })
+
+  // Announce changes to the applied filters, wherever they came from (Apply, Reset, chips, tabs).
+  const applied = cleanFilters(props.value)
+  const count = Object.keys(applied).length
+  const signature = JSON.stringify(applied)
+  const lastSignature = React.useRef(signature)
+  React.useEffect(() => {
+    if (lastSignature.current === signature) return
+    lastSignature.current = signature
+    announce(t("listing.filtersApplied", { count }))
+  }, [signature, count, announce, t])
+
+  return (
+    <>
+      {props.variant === "form" ? <FilterQueryForm {...props} /> : <FilterPopoverPanel {...props} />}
+      {region}
+    </>
+  )
 }
 
 function FilterQueryForm({

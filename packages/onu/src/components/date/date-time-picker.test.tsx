@@ -127,7 +127,7 @@ describe("DateTimePicker (§25.3)", () => {
       dir,
     })
     await user.click(screen.getByRole("combobox"))
-    expect(button("ވަގުތު ފޮހެލާ")).toBeInTheDocument()
+    expect(button("ވަގުތު ސާފުކުރުން")).toBeInTheDocument()
     await user.click(button(/ވަގުތު ބަދަލުކުރައްވާ/))
     expect(button("ކެލެންޑަރަށް އެނބުރި")).toBeInTheDocument()
     await expectNoA11yViolations()

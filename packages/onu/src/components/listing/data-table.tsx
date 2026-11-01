@@ -269,6 +269,15 @@ export function DataTable<T extends RowData>({
     )
   }, [sortKey, state.sort, byId, announce, t])
 
+  // Announce when the selection empties, whichever control cleared it.
+  const selectedCount = state.selection.length
+  const lastSelectedCount = React.useRef(selectedCount)
+  React.useEffect(() => {
+    const previous = lastSelectedCount.current
+    lastSelectedCount.current = selectedCount
+    if (previous > 0 && selectedCount === 0) announce(t("listing.selectionCleared"))
+  }, [selectedCount, announce, t])
+
   const allSelected = rows.length > 0 && table.getIsAllPageRowsSelected()
   const someSelected = table.getIsSomePageRowsSelected()
   const headerChecked: boolean | "indeterminate" = allSelected ? true : someSelected ? "indeterminate" : false

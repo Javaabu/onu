@@ -15,9 +15,6 @@ export const listing = {
   sortAscending: "ascending",
   sortDescending: "descending",
   sortedBy: "Sorted by {column}, {direction}",
-  sortByColumn: "Sort by {column}",
-  sortDirection: "Direction",
-  sortNone: "Default order",
 
   // Selection
   selectRow: "Select {name}",
@@ -62,8 +59,6 @@ export const listing = {
   currentPage: "Page {page}, current page",
   previous: "Previous",
   next: "Next",
-  firstPage: "First page",
-  lastPage: "Last page",
 
   // Load more
   loadMore: "Load more",
@@ -114,7 +109,6 @@ export const listing = {
   dateRangeBoth: "{from} → {to}",
   dateRangeFrom: "from {from}",
   dateRangeTo: "until {to}",
-  deletedRecords: "Deleted records",
   trashedHide: "Hide",
   trashedInclude: "Include",
   trashedOnly: "Only",
@@ -123,7 +117,6 @@ export const listing = {
 
   // Filter tabs
   filterTabs: "Filter by status",
-  tabWithCount: "{label} ({count})",
 
   // Views
   view: "View",
@@ -142,7 +135,6 @@ export const listing = {
   exportCsv: "CSV",
   exportExcel: "Excel",
   exportPdf: "PDF",
-  exportAs: "Export as {format}",
   exported: "Export ready",
   exportGenerated: "Generated {date}",
   exportRowCount: { one: "{count} row", other: "{count} rows" },
