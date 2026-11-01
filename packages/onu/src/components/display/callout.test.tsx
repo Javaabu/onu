@@ -74,6 +74,25 @@ describe("Callout", () => {
   })
 })
 
+describe("Callout defaultOpen", () => {
+  it("is shown by default and hides itself when dismissed", async () => {
+    const onOpenChange = vi.fn()
+    renderWithOnu(
+      <Callout dismissible onOpenChange={onOpenChange}>
+        Saved
+      </Callout>,
+    )
+    await userEvent.click(screen.getByRole("button", { name: "Dismiss" }))
+    expect(screen.queryByText("Saved")).not.toBeInTheDocument()
+    expect(onOpenChange).toHaveBeenCalledWith(false)
+  })
+
+  it("can start hidden", () => {
+    renderWithOnu(<Callout defaultOpen={false}>Saved</Callout>)
+    expect(screen.queryByText("Saved")).not.toBeInTheDocument()
+  })
+})
+
 describe("Callout appearance", () => {
   it.each([
     ["neutral", "info", "text-muted-foreground"],

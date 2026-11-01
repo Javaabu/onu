@@ -85,6 +85,8 @@ export interface CalloutProps extends Omit<React.ComponentProps<"div">, "title">
   dismissible?: boolean
   /** Controlled visibility. */
   open?: boolean
+  /** Initial visibility when uncontrolled. Default `true`. */
+  defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
   /** Called after the user dismisses it. */
   onDismiss?: () => void
@@ -111,6 +113,7 @@ export function Callout({
   icon,
   dismissible = false,
   open: openProp,
+  defaultOpen = true,
   onOpenChange,
   onDismiss,
   className,
@@ -119,7 +122,7 @@ export function Callout({
   ...props
 }: CalloutProps) {
   const { t } = useTranslation()
-  const [open, setOpen] = useControllableState(openProp, true, onOpenChange)
+  const [open, setOpen] = useControllableState(openProp, defaultOpen, onOpenChange)
   const v = tone ?? "neutral"
   if (!open) return null
 

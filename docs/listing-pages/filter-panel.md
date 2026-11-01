@@ -104,6 +104,7 @@ Every definition also accepts `render` (replace the built-in control) and `forma
 | `value`                 | `FilterValues`                                             |                 | Applied filters                        |
 | `onApply`               | `(filters) => void`                                        |                 | Apply (and `{}` on Clear all)          |
 | `open` / `onOpenChange` | `boolean` / `(open) => void`                               |                 | Controlled open state                  |
+| `defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled |
 | `sheet`                 | `boolean`                                                  | below 768px     | Force the bottom sheet or the dropdown |
 | `trigger`               | `ReactNode`                                                | Filters + count | Button content                         |
 | `align`                 | `"start" \| "center" \| "end"`                             | `"start"`       | Dropdown alignment                     |

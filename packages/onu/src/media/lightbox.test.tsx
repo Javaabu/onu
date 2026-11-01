@@ -23,6 +23,29 @@ const images: GalleryImage[] = [
 ]
 
 describe("Lightbox", () => {
+  it("is closed by default", () => {
+    renderWithOnu(<Lightbox slides={images} />)
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+  })
+
+  it("opens with defaultOpen, and closes and pages by itself when uncontrolled", async () => {
+    const onIndexChange = vi.fn()
+    renderWithOnu(<Lightbox defaultOpen slides={images} onIndexChange={onIndexChange} />)
+    const dialog = await screen.findByRole("dialog", { name: "Image viewer" })
+    expect(screen.getByRole("group", { name: "1 of 3" })).toBeInTheDocument()
+    await userEvent.click(screen.getByRole("button", { name: "Next image" }))
+    await waitFor(() => expect(onIndexChange).toHaveBeenLastCalledWith(1))
+    fireEvent.keyDown(dialog.querySelector(".yarl__container")!, { key: "Escape" })
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
+  })
+
+  it("treats index as controlled even without onIndexChange", async () => {
+    const { rerender } = renderWithOnu(<Lightbox open slides={images} index={1} />)
+    await screen.findByRole("group", { name: "2 of 3" })
+    rerender(<Lightbox open slides={images} index={2} />)
+    await screen.findByRole("group", { name: "3 of 3" })
+  })
+
   it("opens as a labelled modal dialog with translated controls and closes with Escape", async () => {
     const onOpenChange = vi.fn()
     const onIndexChange = vi.fn()

@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { useControllableState } from "../../hooks/use-controllable-state"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
@@ -35,6 +36,8 @@ export interface LanguageSwitcherProps extends Omit<
 > {
   /** Selected language code. Defaults to the active `OnuProvider` locale. */
   value?: string
+  /** Initial language when uncontrolled. Without it (and `value`), follows the active locale. */
+  defaultValue?: string
   onValueChange?: (code: string) => void
   /** Languages to offer. Defaults to the built-in locales (English, ދިވެހި). */
   languages?: LanguageOption[]
@@ -72,6 +75,7 @@ const DEFAULT_LANGUAGES: LanguageOption[] = BUILT_IN_LOCALES.map((l) => ({
  */
 export function LanguageSwitcher({
   value,
+  defaultValue,
   onValueChange,
   languages = DEFAULT_LANGUAGES,
   variant = "select",
@@ -85,7 +89,11 @@ export function LanguageSwitcher({
   ...props
 }: LanguageSwitcherProps) {
   const { t, locale } = useTranslation()
-  const current = value ?? locale.code
+  const [current, setCurrent] = useControllableState(
+    value ?? (defaultValue === undefined ? locale.code : undefined),
+    defaultValue ?? locale.code,
+    onValueChange,
+  )
   const label = t("layout.language")
   const autoId = React.useId()
   const currentLanguage = languages.find((l) => l.code === current)
@@ -99,7 +107,7 @@ export function LanguageSwitcher({
         variant="outline"
         size={size}
         value={current}
-        onValueChange={(v) => v && onValueChange?.(v)}
+        onValueChange={(v) => v && setCurrent(v)}
         aria-label={label}
         disabled={disabled}
         data-slot="language-switcher"
@@ -143,7 +151,7 @@ export function LanguageSwitcher({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className={cn("min-w-40 w-auto", classNames?.content)}>
-          <DropdownMenuRadioGroup value={current} onValueChange={(v) => onValueChange?.(v)}>
+          <DropdownMenuRadioGroup value={current} onValueChange={setCurrent}>
             {languages.map((language) => (
               <DropdownMenuRadioItem
                 key={language.code}
@@ -178,7 +186,7 @@ export function LanguageSwitcher({
         size={size}
         value={current}
         disabled={disabled}
-        onChange={(e) => onValueChange?.(e.target.value)}
+        onChange={(e) => setCurrent(e.target.value)}
         className={cn("touch:[&_select]:h-11", classNames?.select)}
       >
         {languages.map((language) => (

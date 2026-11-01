@@ -41,6 +41,7 @@ With `appearance` set to `plain`, `subtle` or `bordered`, a callout is a subtle 
 | `icon`         | `string \| ReactNode \| false`                                   | per tone | Icon override; `false` hides it        |
 | `dismissible`  | `boolean`                                                        | `false`     | Show a dismiss (×) button              |
 | `open`         | `boolean`                                                        |             | Controlled visibility                  |
+| `defaultOpen` | `boolean` | `true` | Initial visibility when uncontrolled |
 | `onOpenChange` | `(open) => void`                                                 |             | Called when dismissed                  |
 | `onDismiss`    | `() => void`                                                     |             | Called after dismissing                |
 | `role`         | `string`                                                         | see below   | ARIA role override                     |

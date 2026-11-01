@@ -25,6 +25,7 @@ With Laravel, call your locale route in `onValueChange` (e.g. `router.post('/loc
 | Prop        | Type                             | Default            | Description                               |
 | ----------- | -------------------------------- | ------------------ | ----------------------------------------- |
 | `value`     | `string`                         | active locale code | Selected language                         |
+| `defaultValue` | `string` | | Initial language when uncontrolled; without it, follows the active locale |
 | `onValueChange`  | `(code: string) => void`         |                    | Called with the chosen code               |
 | `languages` | `{ code, name, dir? }[]`         | built-in locales   | Languages to offer                        |
 | `variant`   | `'select' \| 'toggle' \| 'menu'` | `'select'`         | Presentation                              |

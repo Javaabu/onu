@@ -30,6 +30,8 @@ export interface FilterPanelProps {
   onApply: (filters: FilterValues) => void
   /** Controlled open state. */
   open?: boolean
+  /** Initial open state when uncontrolled. Default `false`. */
+  defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
   /** Force the bottom sheet (`true`) or the dropdown (`false`). Defaults to the bottom sheet below 768px. */
   sheet?: boolean
@@ -190,6 +192,7 @@ function FilterPopoverPanel({
   value,
   onApply,
   open: openProp,
+  defaultOpen = false,
   onOpenChange,
   sheet,
   trigger,
@@ -203,7 +206,7 @@ function FilterPopoverPanel({
   const baseId = React.useId()
   const triggerRef = React.useRef<HTMLButtonElement>(null)
 
-  const [open, setOpenState] = useControllableState(openProp, false, onOpenChange)
+  const [open, setOpenState] = useControllableState(openProp, defaultOpen, onOpenChange)
   const [draft, setDraft] = React.useState<FilterValues>(value)
 
   const setOpen = (next: boolean) => {

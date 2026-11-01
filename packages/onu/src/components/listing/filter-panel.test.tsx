@@ -60,6 +60,14 @@ const openPanel = async () => {
 }
 
 describe("FilterPanel", () => {
+  it("is closed by default and can start open with defaultOpen", () => {
+    const { unmount } = renderWithOnu(<FilterPanel filters={userFilters} value={{}} onApply={vi.fn()} sheet={false} />)
+    expect(screen.getByRole("button", { name: /Filters/ })).toHaveAttribute("aria-expanded", "false")
+    unmount()
+    renderWithOnu(<FilterPanel filters={userFilters} value={{}} onApply={vi.fn()} sheet={false} defaultOpen />)
+    expect(screen.getByRole("button", { name: /Filters/, hidden: true })).toHaveAttribute("aria-expanded", "true")
+  })
+
   it("opens a dropdown listing every filter with its control and footer buttons (§25.7)", async () => {
     renderWithOnu(<Harness />)
     const panel = await openPanel()

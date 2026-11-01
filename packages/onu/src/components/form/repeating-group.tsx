@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { useControllableState } from "../../hooks/use-controllable-state"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "./button"
@@ -19,11 +20,16 @@ export interface RepeatingGroupRow<T> {
   canRemove: boolean
 }
 
-export interface RepeatingGroupProps<T> extends Omit<React.ComponentProps<"div">, "children" | "onChange"> {
+export interface RepeatingGroupProps<T> extends Omit<
+  React.ComponentProps<"div">,
+  "children" | "defaultValue" | "onChange"
+> {
   /** The rows: `fields` from react-hook-form's `useFieldArray`, or a plain array. */
   items?: T[]
   /** Plain controlled array: the current rows (use with `onValueChange` and `createItem`). */
   value?: T[]
+  /** Plain uncontrolled array: the initial rows (use with `createItem`). */
+  defaultValue?: T[]
   onValueChange?: (value: T[]) => void
   /** Creates a new row for plain arrays. */
   createItem?: () => T
@@ -89,6 +95,7 @@ type Focus = { index: number; target: "first" | "up" | "down" | "add" }
 export function RepeatingGroup<T>({
   items: itemsProp,
   value,
+  defaultValue = [],
   onValueChange,
   createItem,
   onAdd,
@@ -111,13 +118,16 @@ export function RepeatingGroup<T>({
   ...props
 }: RepeatingGroupProps<T>) {
   const { t } = useTranslation()
-  const items = itemsProp ?? value ?? []
+  const [plainItems, setPlainItems] = useControllableState(value, defaultValue, onValueChange)
+  const items = itemsProp ?? plainItems
+  const uncontrolled = itemsProp === undefined && value === undefined
+  const writable = uncontrolled || !!onValueChange
   const listRef = React.useRef<HTMLOListElement>(null)
   const addRef = React.useRef<HTMLButtonElement>(null)
   const [focusRequest, setFocusRequest] = React.useState<Focus | null>(null)
   const [announcement, setAnnouncement] = React.useState("")
   const labelId = React.useId()
-  const canReorder = reorderable ?? (!!onMove || (!!value && !!onValueChange))
+  const canReorder = reorderable ?? (!!onMove || (itemsProp === undefined && writable))
   const canAdd = !disabled && items.length < max
   const canRemove = !disabled && items.length > min
 
@@ -142,7 +152,7 @@ export function RepeatingGroup<T>({
     if (!canAdd) return
     setFocusRequest({ index: items.length, target: "first" })
     if (onAdd) onAdd()
-    else if (onValueChange && createItem) onValueChange([...items, createItem()])
+    else if (writable && createItem) setPlainItems([...items, createItem()])
     setAnnouncement(t("form.itemAdded", { index: items.length + 1 }))
   }
 
@@ -153,7 +163,7 @@ export function RepeatingGroup<T>({
       remaining === 0 ? { index: 0, target: "add" } : { index: Math.min(index, remaining - 1), target: "first" },
     )
     if (onRemove) onRemove(index)
-    else if (onValueChange) onValueChange(items.filter((_, i) => i !== index))
+    else if (writable) setPlainItems(items.filter((_, i) => i !== index))
     setAnnouncement(t("form.itemRemoved", { index: index + 1 }))
   }
 
@@ -161,7 +171,7 @@ export function RepeatingGroup<T>({
     if (to < 0 || to >= items.length) return
     setFocusRequest({ index: to, target: to < from ? "up" : "down" })
     if (onMove) onMove(from, to)
-    else if (onValueChange) onValueChange(moveItem(items, from, to))
+    else if (writable) setPlainItems(moveItem(items, from, to))
     setAnnouncement(t("form.itemMoved", { index: to + 1 }))
   }
 

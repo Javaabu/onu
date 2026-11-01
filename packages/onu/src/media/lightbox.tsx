@@ -9,6 +9,7 @@ import "yet-another-react-lightbox/styles.css"
 import "yet-another-react-lightbox/plugins/captions.css"
 import "yet-another-react-lightbox/plugins/counter.css"
 
+import { useControllableState } from "../hooks/use-controllable-state"
 import { Icon } from "../icons/icon"
 import { cn } from "../lib/utils"
 import { useTranslation } from "../providers/onu-provider"
@@ -46,11 +47,14 @@ export interface LightboxSlide {
 }
 
 export interface LightboxProps {
-  open: boolean
+  /** Controlled open state. */
+  open?: boolean
+  /** Initial open state when uncontrolled. Default `false`. */
+  defaultOpen?: boolean
   /** Called with `false` when the lightbox closes. */
-  onOpenChange: (open: boolean) => void
+  onOpenChange?: (open: boolean) => void
   slides: LightboxSlide[]
-  /** Slide to show (controlled when `onIndexChange` is passed). */
+  /** Slide to show. Without it, the lightbox keeps track of the slide itself, starting from the first. */
   index?: number
   onIndexChange?: (index: number) => void
   /** Pinch, double-tap, wheel and button zoom. Default `true`. */
@@ -72,10 +76,11 @@ export interface LightboxProps {
  * captions, focus trapping and focus return, translated labels and mirrored arrows in RTL.
  */
 export function Lightbox({
-  open,
+  open: openProp,
+  defaultOpen = false,
   onOpenChange,
   slides,
-  index = 0,
+  index: indexProp,
   onIndexChange,
   zoom = true,
   captions = true,
@@ -86,6 +91,8 @@ export function Lightbox({
   classNames,
 }: LightboxProps) {
   const { t } = useTranslation()
+  const [open, setOpen] = useControllableState(openProp, defaultOpen, onOpenChange)
+  const [index, setIndex] = useControllableState(indexProp, 0, onIndexChange)
 
   const labels = React.useMemo(
     () => ({
@@ -118,7 +125,7 @@ export function Lightbox({
   return (
     <YarlLightbox
       open={open}
-      close={() => onOpenChange(false)}
+      close={() => setOpen(false)}
       index={index}
       slides={slides as never}
       plugins={allPlugins}
@@ -126,7 +133,7 @@ export function Lightbox({
       counter={{ className: classNames?.counter }}
       carousel={{ finite: !loop }}
       controller={{ closeOnBackdropClick: true }}
-      on={{ view: ({ index: i }) => onIndexChange?.(i) }}
+      on={{ view: ({ index: i }) => setIndex(i) }}
       // Theme the lightbox through its documented CSS variables, bound to Onu tokens.
       styles={{ root: THEME_VARS }}
       className={cn(

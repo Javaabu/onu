@@ -62,6 +62,7 @@ const { fields, append, remove, move } = useFieldArray({ control: form.control, 
 | `children`    | `({ item, index, name, remove, canRemove }) => ReactNode` |                | Renders one row's fields                   |
 | `items`       | `T[]`                                                     |                | Rows from `useFieldArray` (`fields`)       |
 | `value`       | `T[]`                                                     |                | Rows of a plain controlled array           |
+| `defaultValue` | `T[]` | | Initial rows of a plain uncontrolled array |
 | `onValueChange`    | `(value: T[]) => void`                                    |                | Plain array updates (add, remove, reorder) |
 | `createItem`  | `() => T`                                                 |                | New row for plain arrays                   |
 | `onAdd`       | `() => void`                                              |                | Add handler (react-hook-form `append`)     |

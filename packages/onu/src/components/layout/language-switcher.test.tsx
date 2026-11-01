@@ -99,4 +99,22 @@ describe("LanguageSwitcher overrides", () => {
     expect(container.querySelector(".s")).toContainElement(screen.getByRole("combobox"))
     expect(screen.getByRole("option", { name: "English" })).toHaveClass("o")
   })
+
+  it("starts from defaultValue and keeps its own selection when uncontrolled", async () => {
+    const onValueChange = vi.fn()
+    renderWithOnu(<LanguageSwitcher defaultValue="dv" onValueChange={onValueChange} />)
+    const select = screen.getByRole<HTMLSelectElement>("combobox")
+    expect(select.value).toBe("dv")
+    await userEvent.selectOptions(select, "en")
+    expect(select.value).toBe("en")
+    expect(onValueChange).toHaveBeenCalledWith("en")
+  })
+
+  it("follows the active locale without value or defaultValue", async () => {
+    renderWithOnu(<LanguageSwitcher />, { locale: "dv" })
+    const select = screen.getByRole<HTMLSelectElement>("combobox")
+    expect(select.value).toBe("dv")
+    await userEvent.selectOptions(select, "en")
+    expect(select.value).toBe("dv")
+  })
 })
