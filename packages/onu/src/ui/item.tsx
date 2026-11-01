@@ -9,8 +9,8 @@ import { Separator } from "./separator"
 
 function ItemGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (
+    // onu: no role="list", because an Item isn't a listitem and axe rejects a list without any.
     <div
-      role="list"
       data-slot="item-group"
       className={cn(
         "gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2 group/item-group flex w-full flex-col",
