@@ -37,6 +37,8 @@ In multiple selection, a parent that isn't selected but has selected rows under 
 | `empty`                                                      | `ReactNode`                                                                      | "No results" |
 | `classNames`                                                 | `{ item, content, chevron, checkbox }`                                           |              |
 
+Other `<div>` props and `ref` go to the tree's root.
+
 ## Accessibility
 
 | Key                         | Action                             |

@@ -861,3 +861,12 @@ describe("FileIcon", () => {
     expect(screen.getByRole("img", { name: "PDF" })).toBeInTheDocument()
   })
 })
+
+describe("FileIcon classNames", () => {
+  it("applies them to the root and icon", () => {
+    const { container } = renderWithOnu(<FileIcon name="a.pdf" classNames={{ root: "r", icon: "i" }} />)
+    const root = container.querySelector('[data-slot="file-icon"]')
+    expect(root).toHaveClass("r")
+    expect(root?.querySelector("svg")).toHaveClass("i")
+  })
+})

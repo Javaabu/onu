@@ -21,6 +21,7 @@ import { FileIcon } from "@javaabu/onu"
 | `kind`  | `FileKind`                  |             | Force a kind                                   |
 | `size`  | `"sm" \| "default" \| "lg"` | `"default"` | Size (`fileIconVariants`)                      |
 | `label` | `string`                    |             | Accessible label; decorative without it        |
+| `classNames` | `{ root, icon }` |  | Classes for each part |
 
 `getFileKind({ type, name })` and `FILE_KIND_ICONS` are exported. Icons used: `file-image`, `file-video`, `file-audio`, `file-text`, `file-spreadsheet`, `file-archive`, `file`.
 

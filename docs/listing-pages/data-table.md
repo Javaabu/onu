@@ -66,6 +66,8 @@ The table always shows the rows it is given (it never sorts or pages by itself):
 | `striped`, `stickyHeader`, `density` | `boolean`, `boolean`, `"compact" \| "default" \| "comfortable"` |                       | Variants (`dataTableVariants`)                        |
 | `classNames`                         | `{ table, header, row, cell, cards, card, footer, toolbar }`    |                       | Classes for each part                                 |
 
+Other `<div>` props and `ref` go to the root.
+
 `DataTableColumn<T>`: `id`, `header` (text), `headerContent?`, `accessor?` (key or function), `cell?`, `sortable?`, `hideable?`, `primary?`, `align?`, `numeric?` (tabular figures, end-aligned), `hideOnCards?`, `className?`, `headerClassName?`.
 
 ## Accessibility

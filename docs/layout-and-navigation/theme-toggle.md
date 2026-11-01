@@ -27,6 +27,9 @@ import { ThemeProvider, ThemeToggle } from "@javaabu/onu"
 | `showSystem` | `boolean`                          | `true`      | Offer the System option |
 | `size`       | `'sm' \| 'default'`                | `'default'` | Size                    |
 | `className`  | `string`                           |             | Classes for the control |
+| `classNames` | `{ root, icon, item, content }` |  | Classes for each part |
+
+Other HTML attributes and `ref` go to the root: the button, or the button group with `variant="segmented"`. With `variant="cycle"`, `onClick` runs first and `preventDefault()` keeps the current theme.
 
 ## Accessibility
 

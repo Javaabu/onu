@@ -36,6 +36,8 @@ export interface BlockRendererProps extends Omit<React.ComponentProps<"div">, "c
   codeBlock?: Omit<CodeBlockProps, "code" | "language">
   /** Shown when there is no content. */
   empty?: React.ReactNode
+  /** `callout`, `image` and `link` style the default renderers, not ones you replace with `nodes` or `marks`. */
+  classNames?: { root?: string; callout?: string; image?: string; link?: string }
 }
 
 const CALLOUT_ICONS: Record<string, string> = { info: "info", success: "success", warning: "warning", error: "error" }
@@ -55,10 +57,14 @@ export function BlockRenderer({
   codeBlock,
   empty = null,
   className,
+  classNames,
   ...props
 }: BlockRendererProps) {
   const { t } = useTranslation()
   const doc = parseJsonContent(content)
+  const calloutClass = classNames?.callout
+  const imageClass = classNames?.image
+  const linkClass = classNames?.link
 
   const rendered = React.useMemo(() => {
     if (!doc) return null
@@ -76,6 +82,7 @@ export function BlockRenderer({
             title={(node.attrs.title as string | null) ?? undefined}
             loading="lazy"
             decoding="async"
+            className={imageClass}
           />
         )
       },
@@ -86,7 +93,7 @@ export function BlockRenderer({
         if (!url) {
           return isSafeUrl(src) ? (
             <p data-type="embed">
-              <a href={src} rel="noopener noreferrer nofollow">
+              <a href={src} rel="noopener noreferrer nofollow" className={linkClass}>
                 {title === t("editor.embeddedContent") ? src : title}
               </a>
             </p>
@@ -109,7 +116,7 @@ export function BlockRenderer({
             data-variant={variant}
             role="note"
             dir={(node.attrs.dir as string | null) ?? "auto"}
-            className="gap-3 flex items-start"
+            className={cn("gap-3 flex items-start", calloutClass)}
           >
             <Icon name={CALLOUT_ICONS[variant]!} className="mt-1.5 size-4 shrink-0" />
             <div className="min-w-0 flex-1">{children}</div>
@@ -124,7 +131,7 @@ export function BlockRenderer({
         if (!isSafeUrl(href)) return <>{children}</>
         const blank = mark.attrs.target === "_blank"
         return (
-          <a href={href} target={blank ? "_blank" : undefined} rel="noopener noreferrer nofollow">
+          <a href={href} target={blank ? "_blank" : undefined} rel="noopener noreferrer nofollow" className={linkClass}>
             {children}
           </a>
         )
@@ -143,11 +150,11 @@ export function BlockRenderer({
     }
     // `doc` is derived from `content`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [content, nodes, marks, extensions, codeBlock, t])
+  }, [content, nodes, marks, extensions, codeBlock, calloutClass, imageClass, linkClass, t])
 
   const isEmpty = !doc || !doc.content?.length
   return (
-    <div data-slot="block-renderer" className={cn(proseVariants({ size }), className)} {...props}>
+    <div data-slot="block-renderer" className={cn(proseVariants({ size }), classNames?.root, className)} {...props}>
       {isEmpty ? empty : rendered}
     </div>
   )

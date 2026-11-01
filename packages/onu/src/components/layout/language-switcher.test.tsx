@@ -1,3 +1,4 @@
+import { createRef } from "react"
 import { fireEvent, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
@@ -70,5 +71,32 @@ describe("LanguageSwitcher", () => {
     renderWithOnu(<LanguageSwitcher />, { locale: "dv", dir })
     expect(screen.getByRole("combobox", { name: "ބަސް" })).toHaveValue("dv")
     await expectNoA11yViolations()
+  })
+})
+
+describe("LanguageSwitcher overrides", () => {
+  it.each(["select", "toggle", "menu"] as const)("passes rest props and ref to the %s root", (variant) => {
+    const ref = createRef<HTMLElement>()
+    renderWithOnu(<LanguageSwitcher variant={variant} ref={ref} data-testid="switcher" title="Pick" />)
+    expect(screen.getByTestId("switcher")).toBe(ref.current)
+    expect(screen.getByTestId("switcher")).toHaveAttribute("title", "Pick")
+  })
+
+  it("puts id on the select with select, and on the root otherwise", () => {
+    const { rerender } = renderWithOnu(<LanguageSwitcher id="lang" />)
+    expect(screen.getByRole("combobox")).toHaveAttribute("id", "lang")
+    rerender(<LanguageSwitcher variant="menu" id="lang" />)
+    expect(screen.getByRole("button")).toHaveAttribute("id", "lang")
+  })
+
+  it("accepts classNames", () => {
+    const { container } = renderWithOnu(
+      <LanguageSwitcher classNames={{ root: "r", icon: "i", label: "l", select: "s", item: "o" }} />,
+    )
+    expect(container.querySelector('[data-slot="language-switcher"]')).toHaveClass("r")
+    expect(container.querySelector("svg.i")).toBeInTheDocument()
+    expect(container.querySelector("label")).toHaveClass("l", "sr-only")
+    expect(container.querySelector(".s")).toContainElement(screen.getByRole("combobox"))
+    expect(screen.getByRole("option", { name: "English" })).toHaveClass("o")
   })
 })

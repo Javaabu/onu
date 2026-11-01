@@ -34,6 +34,8 @@ import { Button, LanguageSwitcher, Logo, OverlayMenu } from "@javaabu/onu"
 | `title`                                 | `string`                                     | "Menu"      | Accessible dialog title             |
 | `classNames`                            | `{ trigger, overlay, content, nav, footer }` |             | Classes for each part               |
 
+Other `<div>` props and `ref` go to the overlay's content element, which is in the page while the menu is open.
+
 The overlay closes after an item is chosen.
 
 ## Accessibility

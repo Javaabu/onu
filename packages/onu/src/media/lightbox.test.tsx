@@ -128,3 +128,14 @@ describe("Gallery", () => {
     await expectNoA11yViolations()
   })
 })
+
+describe("Lightbox classNames", () => {
+  it("applies them to the root, icons and counter", async () => {
+    renderWithOnu(
+      <Lightbox open slides={images} onOpenChange={() => {}} classNames={{ root: "r", icon: "i", counter: "c" }} />,
+    )
+    expect(await screen.findByRole("dialog", { name: "Image viewer" })).toHaveClass("r")
+    expect(screen.getByRole("button", { name: "Close" }).querySelector("svg")).toHaveClass("i", "yarl__icon")
+    expect(document.querySelector(".c")).toHaveTextContent("1 / 3")
+  })
+})

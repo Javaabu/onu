@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Slot } from "radix-ui"
 
 import { useMediaQuery } from "../../hooks/use-media-query"
 import { Icon } from "../../icons/icon"
@@ -25,7 +26,13 @@ export interface BackToTopProps extends Omit<React.ComponentProps<typeof Button>
   position?: "fixed" | "static"
   /** Always render (ignores the threshold), e.g. at the end of an article. */
   alwaysVisible?: boolean
+  /**
+   * Render the child element (e.g. a link to `#top`) as the button. The icon goes
+   * before the child's content; leave it empty unless `showLabel` is on.
+   */
+  asChild?: boolean
   children?: React.ReactNode
+  classNames?: { root?: string; icon?: string }
 }
 
 /**
@@ -39,7 +46,9 @@ export function BackToTop({
   showLabel = false,
   position = "fixed",
   alwaysVisible = false,
+  asChild = false,
   className,
+  classNames,
   children,
   onClick,
   ...props
@@ -79,6 +88,7 @@ export function BackToTop({
   const label = t("layout.backToTop")
   return (
     <Button
+      asChild={asChild}
       data-part="back-to-top"
       data-position={position}
       variant="outline"
@@ -88,12 +98,13 @@ export function BackToTop({
       className={cn(
         "shadow-md touch:min-h-11 touch:min-w-11 rounded-full motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95",
         position === "fixed" && "end-4 fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40",
+        classNames?.root,
         className,
       )}
       {...props}
     >
-      <Icon name="arrow-up" />
-      {showLabel ? (children ?? label) : null}
+      <Icon name="arrow-up" className={classNames?.icon} />
+      {asChild ? <Slot.Slottable>{children}</Slot.Slottable> : showLabel ? (children ?? label) : null}
     </Button>
   )
 }

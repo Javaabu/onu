@@ -43,14 +43,20 @@ export interface FileIconProps
   kind?: FileKind
   /** Accessible label. Without it the icon is decorative. */
   label?: string
+  classNames?: { root?: string; icon?: string }
 }
 
 /** A coloured icon for a file's type (image, PDF, spreadsheet, …), following the configured icon set. */
-export function FileIcon({ type, name, kind: kindProp, size, label, className, ...props }: FileIconProps) {
+export function FileIcon({ type, name, kind: kindProp, size, label, className, classNames, ...props }: FileIconProps) {
   const kind = kindProp ?? getFileKind({ type, name })
   return (
-    <span data-slot="file-icon" data-kind={kind} className={cn(fileIconVariants({ kind, size }), className)} {...props}>
-      <Icon name={FILE_KIND_ICONS[kind]} label={label} />
+    <span
+      data-slot="file-icon"
+      data-kind={kind}
+      className={cn(fileIconVariants({ kind, size }), classNames?.root, className)}
+      {...props}
+    >
+      <Icon name={FILE_KIND_ICONS[kind]} label={label} className={classNames?.icon} />
     </span>
   )
 }

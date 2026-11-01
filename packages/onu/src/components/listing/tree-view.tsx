@@ -34,7 +34,7 @@ export interface TreeNode {
   href?: string
 }
 
-export interface TreeViewProps {
+export interface TreeViewProps extends Omit<React.ComponentProps<"div">, "children"> {
   items: TreeNode[]
   /** Accessible name. */
   "aria-label"?: string
@@ -148,7 +148,7 @@ export function TreeView({
   empty,
   className,
   classNames,
-  ...aria
+  ...props
 }: TreeViewProps) {
   const { t } = useTranslation()
   const { locale, dir } = useOnu()
@@ -259,8 +259,8 @@ export function TreeView({
   return (
     <I18nProvider locale={dir === locale.dir ? locale.code : dir === "rtl" ? "ar" : "en"}>
       <Tree
-        {...aria}
-        aria-label={aria["aria-label"] ?? (aria["aria-labelledby"] ? undefined : t("listing.tree"))}
+        {...props}
+        aria-label={props["aria-label"] ?? (props["aria-labelledby"] ? undefined : t("listing.tree"))}
         data-slot="tree-view"
         items={items}
         selectionMode={selectionMode}

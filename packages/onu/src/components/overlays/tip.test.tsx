@@ -138,3 +138,13 @@ describe("Tip", () => {
     await expectNoA11yViolations()
   })
 })
+
+describe("Tip classNames", () => {
+  it("applies them to the default trigger, its icon and the content", async () => {
+    renderWithOnu(<Tip content="Hint" defaultOpen classNames={{ trigger: "t", icon: "i", content: "c" }} />)
+    const trigger = document.querySelector('[data-slot="tip-trigger"]')
+    expect(trigger).toHaveClass("t")
+    expect(trigger?.querySelector("svg")).toHaveClass("i")
+    await waitFor(() => expect(document.querySelector('[data-slot="tip-content"]')).toHaveClass("c"))
+  })
+})

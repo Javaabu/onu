@@ -14,7 +14,7 @@ import { layout as en_layout } from "../../locales/en/layout"
 
 registerEnglish({ layout: en_layout })
 
-export interface OverlayMenuProps {
+export interface OverlayMenuProps extends Omit<React.ComponentProps<"div">, "children" | "title"> {
   items?: NavItem[]
   groups?: NavGroup[]
   currentHref?: string
@@ -53,6 +53,7 @@ export function OverlayMenu({
   title,
   className,
   classNames,
+  ...props
 }: OverlayMenuProps) {
   const { t } = useTranslation()
   const [inner, setInner] = React.useState(defaultOpen)
@@ -92,6 +93,7 @@ export function OverlayMenu({
             className,
             classNames?.content,
           )}
+          {...props}
         >
           <div className="gap-4 px-4 h-16 sm:px-8 flex shrink-0 items-center justify-between">
             <div className="min-w-0">{logo}</div>

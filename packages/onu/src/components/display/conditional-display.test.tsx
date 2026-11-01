@@ -180,3 +180,34 @@ describe("ConditionalLink", () => {
     expect(ref.current).toBe(screen.getByRole("link"))
   })
 })
+
+describe("ConditionalLink asChild", () => {
+  it("renders the child as the link", () => {
+    const ref = React.createRef<HTMLAnchorElement>()
+    renderWithOnu(
+      <ConditionalLink asChild href="/x" className="c" ref={ref}>
+        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid -- asChild gives it the href. */}
+        <a data-custom="">Go</a>
+      </ConditionalLink>,
+    )
+    const link = screen.getByRole("link", { name: "Go" })
+    expect(link).toBe(ref.current)
+    expect(link).toHaveAttribute("data-custom")
+    expect(link).toHaveAttribute("href", "/x")
+    expect(link).toHaveAttribute("data-linked", "true")
+    expect(link).toHaveClass("c")
+  })
+
+  it("renders only the child's content as plain text without a link", () => {
+    const { container } = renderWithOnu(
+      <ConditionalLink asChild href="/x" when={false}>
+        <a data-custom="" href="/y">
+          Go
+        </a>
+      </ConditionalLink>,
+    )
+    expect(screen.queryByRole("link")).not.toBeInTheDocument()
+    expect(container.querySelector("[data-custom]")).toBeNull()
+    expect(container.querySelector('[data-linked="false"]')).toHaveTextContent("Go")
+  })
+})

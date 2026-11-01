@@ -29,7 +29,7 @@ export type AuthFormValues<V> = V & Record<string, unknown>
 
 export interface AuthFormProps<V> extends Omit<
   CardProps,
-  "onSubmit" | "children" | "title" | "onError" | "href" | "external" | "asChild"
+  "onSubmit" | "children" | "title" | "onError" | "href" | "external" | "asChild" | "classNames"
 > {
   /**
    * Called with the typed values, plus every other named field in the form
@@ -53,6 +53,14 @@ export interface AuthFormProps<V> extends Omit<
   extraFields?: React.ReactNode
   /** Native form props (`action`, `method`, …) for non-JS submission. */
   formProps?: Omit<React.ComponentProps<"form">, "onSubmit" | "onError" | "children">
+  /** The `Card` slots, plus the form's own parts. `sso` is on `SignInForm` only. */
+  classNames?: CardProps["classNames"] & {
+    root?: string
+    form?: string
+    status?: string
+    submit?: string
+    sso?: string
+  }
 }
 
 function str(values: FormValues, key: string) {
@@ -131,6 +139,7 @@ function AuthShell<V>({
   submit,
   after,
   className,
+  classNames,
   defaultValues: _defaultValues,
   submitLabel: _submitLabel,
   extraFields: _extraFields,
@@ -152,7 +161,8 @@ function AuthShell<V>({
       width="sm"
       centered
       headingLevel={2}
-      className={cn("@container/auth", className)}
+      className={cn("@container/auth", classNames?.root, className)}
+      classNames={classNames}
       {...props}
     >
       {/* The card is a region named by its title. */}
@@ -162,20 +172,23 @@ function AuthShell<V>({
           processing={processing}
           onSubmit={onSubmit ? (values: FormValues) => onSubmit({ ...values, ...toValues(values) }) : undefined}
           // asChild leaves the content unpadded: pad the form like CardContent.
-          className="gap-5 px-(--card-spacing)"
+          className={cn("gap-5 px-(--card-spacing)", classNames?.form)}
           {...formProps}
         >
           {status ? (
             <p
               role="status"
-              className="gap-2 p-3 text-sm flex items-start rounded-lg border border-success/30 bg-success/10 text-foreground"
+              className={cn(
+                "gap-2 p-3 text-sm flex items-start rounded-lg border border-success/30 bg-success/10 text-foreground",
+                classNames?.status,
+              )}
             >
               <Icon name="success" className="mt-0.5 size-4 shrink-0 text-success" />
               <span>{status}</span>
             </p>
           ) : null}
           {children}
-          <SubmitButton size="lg" className="touch:min-h-11 w-full">
+          <SubmitButton size="lg" className={cn("touch:min-h-11 w-full", classNames?.submit)}>
             {submit}
           </SubmitButton>
           {after}
@@ -215,6 +228,7 @@ export function SignInForm({
   defaultValues,
   submitLabel,
   extraFields,
+  classNames,
   ...props
 }: SignInFormProps) {
   const { t } = useTranslation()
@@ -230,7 +244,7 @@ export function SignInForm({
             <>
               {/* Lines either side of the label, no background, so it suits any card surface. */}
               <Divider label={t("auth.or")} className="text-sm" />
-              <div data-slot="auth-sso" className="grid">
+              <div data-slot="auth-sso" className={cn("grid", classNames?.sso)}>
                 {sso}
               </div>
             </>
@@ -242,6 +256,7 @@ export function SignInForm({
           ) : null}
         </>
       }
+      classNames={classNames}
       {...props}
     >
       <FormField label={t("auth.email")} name="email" required>

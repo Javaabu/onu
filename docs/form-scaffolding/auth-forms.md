@@ -83,6 +83,7 @@ Fields: hidden `token`, `email`, `password`, `password_confirmation`.
 | `submitLabel`          | `ReactNode`                          | Button text                                      |
 | `extraFields`          | `ReactNode`                          | Extra fields before the button                   |
 | `formProps`            | `<form>` props                       | `action`, `method`, `id` … for non-JS submission |
+| `classNames` | `{ root, form, status, submit, sso }` plus the `Card` slots | Classes for each part (`sso` on `SignInForm` only) |
 
 Plus every [`Card`](../layout-and-navigation/card) prop except `title`, `children`, `href`, `external` and `asChild`. Each form is a centred [form card](../layout-and-navigation/card#form-card) (`width="sm"`, `centered`) and a region named by its title. Links render through the provider's `linkComponent`.
 

@@ -45,6 +45,7 @@ Tapping elsewhere or pressing <kbd>Escape</kbd> closes it.
 | `side` | `"top" \| "bottom" \| "start" \| "end"` | | Side it opens on; `start` and `end` follow the reading direction |
 | `align`, `sideOffset`, … | | | Radix `Tooltip.Content` props |
 | `className`                           | `string`                |          | Classes for the tip                  |
+| `classNames` | `{ trigger, icon, content }` |  | Classes for each part; `trigger` and `icon` style the default ⓘ button |
 
 ## Accessibility
 

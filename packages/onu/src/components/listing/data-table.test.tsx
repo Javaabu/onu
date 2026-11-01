@@ -437,3 +437,22 @@ describe("DataTable", () => {
     await expectNoA11yViolations()
   })
 })
+
+describe("DataTable rest props", () => {
+  it("passes rest props and ref to the root", () => {
+    const ref = React.createRef<HTMLDivElement>()
+    renderWithOnu(
+      <DataTable
+        columns={[{ id: "name", header: "Name" }]}
+        data={[{ id: "1", name: "Aisha" }]}
+        ref={ref}
+        data-testid="table"
+        id="people"
+      />,
+    )
+    const root = screen.getByTestId("table")
+    expect(root).toBe(ref.current)
+    expect(root).toHaveAttribute("data-slot", "data-table")
+    expect(root).toHaveAttribute("id", "people")
+  })
+})

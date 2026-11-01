@@ -46,6 +46,7 @@ The component imports the library's CSS (`yet-another-react-lightbox/styles.css`
 | `loop`          | `boolean`         | `false` | Wrap around                                                    |
 | `plugins`       | `Plugin[]`        |         | Extra library plugins (thumbnails, slideshow, …)               |
 | `className`     | `string`          |         | Class on the viewer root                                       |
+| `classNames` | `{ root, icon, counter }` |  | Classes for each part |
 
 ## Accessibility
 

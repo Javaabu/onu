@@ -64,6 +64,7 @@ export interface LightboxProps {
   /** Extra yet-another-react-lightbox plugins. */
   plugins?: Plugin[]
   className?: string
+  classNames?: { root?: string; icon?: string; counter?: string }
 }
 
 /**
@@ -82,6 +83,7 @@ export function Lightbox({
   loop = false,
   plugins = [],
   className,
+  classNames,
 }: LightboxProps) {
   const { t } = useTranslation()
 
@@ -111,6 +113,8 @@ export function Lightbox({
     ...plugins,
   ]
 
+  const iconClass = cn("yarl__icon", classNames?.icon)
+
   return (
     <YarlLightbox
       open={open}
@@ -119,6 +123,7 @@ export function Lightbox({
       slides={slides as never}
       plugins={allPlugins}
       labels={labels}
+      counter={{ className: classNames?.counter }}
       carousel={{ finite: !loop }}
       controller={{ closeOnBackdropClick: true }}
       on={{ view: ({ index: i }) => onIndexChange?.(i) }}
@@ -126,15 +131,16 @@ export function Lightbox({
       styles={{ root: THEME_VARS }}
       className={cn(
         "[&_button:focus-visible]:rounded-md [&_button:focus-visible]:outline-3 [&_button:focus-visible]:outline-ring [&_button:focus-visible]:outline-solid",
+        classNames?.root,
         className,
       )}
       render={{
         // The lightbox already rotates its arrows in RTL, so the icons must not mirror again.
-        iconPrev: () => <Icon name="chevron-left" flip={false} className="yarl__icon" />,
-        iconNext: () => <Icon name="chevron-right" flip={false} className="yarl__icon" />,
-        iconClose: () => <Icon name="close" className="yarl__icon" />,
-        iconZoomIn: () => <Icon name="zoom-in" className="yarl__icon" />,
-        iconZoomOut: () => <Icon name="zoom-out" className="yarl__icon" />,
+        iconPrev: () => <Icon name="chevron-left" flip={false} className={iconClass} />,
+        iconNext: () => <Icon name="chevron-right" flip={false} className={iconClass} />,
+        iconClose: () => <Icon name="close" className={iconClass} />,
+        iconZoomIn: () => <Icon name="zoom-in" className={iconClass} />,
+        iconZoomOut: () => <Icon name="zoom-out" className={iconClass} />,
       }}
     />
   )

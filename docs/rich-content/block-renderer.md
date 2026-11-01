@@ -46,6 +46,7 @@ Code blocks render with [`CodeBlock`](./code-block); callouts get a status icon 
 | `extensions` | `Extensions`                           |             | Extra node types (same as the editor's) |
 | `codeBlock`  | `Partial<CodeBlockProps>`              |             | Props for every code block              |
 | `empty`      | `ReactNode`                            |             | Shown when there is no content          |
+| `classNames` | `{ root, callout, image, link }` |  | Classes for the root and the default renderers |
 
 Other `<div>` props go to the root. The prose styles are exported as `proseVariants`.
 

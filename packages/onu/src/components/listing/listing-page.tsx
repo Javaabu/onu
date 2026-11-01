@@ -40,7 +40,7 @@ export interface ListingPageLink {
   dotLabel?: string
 }
 
-export interface ListingPageProps<T extends RowData> extends Omit<DataTableProps<T>, "state" | "filters"> {
+export interface ListingPageProps<T extends RowData> extends Omit<DataTableProps<T>, "state" | "filters" | "title"> {
   /** Page title, e.g. "Users". */
   title: React.ReactNode
   description?: React.ReactNode

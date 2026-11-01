@@ -32,7 +32,7 @@ export interface NotificationItem {
   tone?: Tone
 }
 
-export interface NotificationCenterProps {
+export interface NotificationCenterProps extends Omit<React.ComponentProps<"button">, "children"> {
   notifications: NotificationItem[]
   onMarkRead?: (id: string) => void
   onMarkAllRead?: () => void
@@ -79,6 +79,7 @@ export function NotificationCenter({
   now,
   className,
   classNames,
+  ...props
 }: NotificationCenterProps) {
   const { t, locale } = useTranslation()
   const isMobile = useIsMobile()
@@ -114,6 +115,7 @@ export function NotificationCenter({
       aria-label={triggerLabel}
       data-part="notification-center-trigger"
       className={cn("touch:size-11 relative", classNames?.trigger, className)}
+      {...props}
     >
       <Icon name="bell" />
       {count > 0 ? (

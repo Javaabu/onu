@@ -26,6 +26,7 @@ import { ShareButtons } from "@javaabu/onu"
 | `size`     | `'sm' \| 'default' \| 'lg'`                       | `'default'`  | Button size                                                       |
 | `variant`  | `'outline' \| 'ghost' \| 'secondary'`             | `'outline'`  | Button look                                                       |
 | `onShare`  | `(network) => void`                               |              | Called after a share action                                       |
+| `classNames` | `{ root, button, icon }` |  | Classes for each part |
 
 `shareUrl(network, url, title?, text?)` builds the share links.
 

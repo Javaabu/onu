@@ -31,7 +31,7 @@ export interface UserProfileMenuItem {
   variant?: "default" | "destructive"
 }
 
-export interface UserProfileProps {
+export interface UserProfileProps extends Omit<React.ComponentProps<"button">, "children" | "name"> {
   name: string
   /** Role, email or other secondary line. */
   subtitle?: React.ReactNode
@@ -74,6 +74,7 @@ export function UserProfile({
   align = "end",
   className,
   classNames,
+  ...props
 }: UserProfileProps) {
   const { t } = useTranslation()
 
@@ -106,6 +107,7 @@ export function UserProfile({
             classNames?.trigger,
             className,
           )}
+          {...props}
         >
           {avatar}
           {!compact ? (

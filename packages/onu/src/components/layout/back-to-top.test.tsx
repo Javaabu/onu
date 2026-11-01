@@ -90,3 +90,38 @@ describe("BackToTop", () => {
     expect(screen.getByRole("button", { name: "މައްޗަށް" })).toBeInTheDocument()
   })
 })
+
+describe("BackToTop overrides", () => {
+  it("accepts classNames", () => {
+    renderWithOnu(<BackToTop alwaysVisible classNames={{ root: "r", icon: "i" }} />)
+    const button = screen.getByRole("button", { name: "Back to top" })
+    expect(button).toHaveClass("r")
+    expect(button.querySelector("svg")).toHaveClass("i")
+  })
+
+  it("renders its child with asChild, keeping the icon, label and scrolling", () => {
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {})
+    renderWithOnu(
+      <BackToTop alwaysVisible showLabel asChild>
+        <a href="#top">Up</a>
+      </BackToTop>,
+    )
+    const link = screen.getByRole("link", { name: "Up" })
+    expect(screen.queryByRole("button")).not.toBeInTheDocument()
+    expect(link).toHaveAttribute("data-part", "back-to-top")
+    expect(link.querySelector("svg")).toBeInTheDocument()
+    fireEvent.click(link)
+    expect(scrollTo).toHaveBeenCalledOnce()
+    scrollTo.mockRestore()
+  })
+
+  it("names an icon-only asChild link", () => {
+    renderWithOnu(
+      <BackToTop alwaysVisible asChild>
+        {/* eslint-disable-next-line jsx-a11y/anchor-has-content -- BackToTop gives it the icon and aria-label. */}
+        <a href="#top" />
+      </BackToTop>,
+    )
+    expect(screen.getByRole("link", { name: "Back to top" })).toBeInTheDocument()
+  })
+})

@@ -131,3 +131,17 @@ describe("NotificationCenter", () => {
     await expectNoA11yViolations()
   })
 })
+
+describe("NotificationCenter rest props", () => {
+  it("passes rest props and ref to the trigger, which keeps opening the list", async () => {
+    const ref = React.createRef<HTMLButtonElement>()
+    const onClick = vi.fn()
+    renderWithOnu(<NotificationCenter notifications={base} ref={ref} data-testid="bell" onClick={onClick} />)
+    const trigger = screen.getByTestId("bell")
+    expect(trigger).toBe(ref.current)
+    expect(trigger).toHaveAttribute("data-part", "notification-center-trigger")
+    await userEvent.click(trigger)
+    expect(onClick).toHaveBeenCalledOnce()
+    expect(await screen.findByText("Notifications")).toBeInTheDocument()
+  })
+})

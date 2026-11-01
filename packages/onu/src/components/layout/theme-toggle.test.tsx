@@ -1,3 +1,4 @@
+import { createRef, type MouseEvent } from "react"
 import { screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
@@ -77,5 +78,48 @@ describe("ThemeToggle", () => {
     )
     expect(screen.getByRole("button", { name: "ތީމް: އަނދިރި" })).toBeInTheDocument()
     await expectNoA11yViolations()
+  })
+})
+
+describe("ThemeToggle overrides", () => {
+  afterEach(() => localStorage.clear())
+
+  it.each(["menu", "cycle", "segmented"] as const)("passes rest props and ref to the %s root", (variant) => {
+    const ref = createRef<HTMLElement>()
+    renderWithOnu(
+      <ThemeProvider defaultTheme="light">
+        <ThemeToggle variant={variant} ref={ref} data-testid="toggle" title="Pick" />
+      </ThemeProvider>,
+    )
+    expect(screen.getByTestId("toggle")).toBe(ref.current)
+    expect(screen.getByTestId("toggle")).toHaveAttribute("title", "Pick")
+  })
+
+  it("keeps its data-part, and runs onClick before cycling unless it is prevented", async () => {
+    const onClick = vi.fn((event: MouseEvent) => event.preventDefault())
+    renderWithOnu(
+      <ThemeProvider defaultTheme="light">
+        <ThemeToggle variant="cycle" onClick={onClick} />
+      </ThemeProvider>,
+    )
+    const button = screen.getByRole("button", { name: "Theme: Light" })
+    expect(button).toHaveAttribute("data-part", "theme-toggle")
+    await userEvent.click(button)
+    expect(onClick).toHaveBeenCalledOnce()
+    expect(screen.getByRole("button", { name: "Theme: Light" })).toBeInTheDocument()
+  })
+
+  it("accepts classNames", async () => {
+    renderWithOnu(
+      <ThemeProvider defaultTheme="light">
+        <ThemeToggle classNames={{ root: "r", icon: "i", item: "it", content: "c" }} />
+      </ThemeProvider>,
+    )
+    const trigger = screen.getByRole("button", { name: "Theme: Light" })
+    expect(trigger).toHaveClass("r")
+    expect(trigger.querySelector("svg")).toHaveClass("i")
+    await userEvent.click(trigger)
+    expect(await screen.findByRole("menuitemradio", { name: "Dark" })).toHaveClass("it")
+    expect(document.querySelector('[data-slot="dropdown-menu-content"]')).toHaveClass("c")
   })
 })

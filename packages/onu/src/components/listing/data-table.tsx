@@ -81,7 +81,8 @@ export const dataTableVariants = cva("", {
   defaultVariants: { striped: false, stickyHeader: false, density: "default" },
 })
 
-export interface DataTableProps<T extends RowData> extends VariantProps<typeof dataTableVariants> {
+export interface DataTableProps<T extends RowData>
+  extends Omit<React.ComponentProps<"div">, "children">, VariantProps<typeof dataTableVariants> {
   columns: DataTableColumn<T>[]
   /** Rows of the current page. */
   data: T[]
@@ -186,6 +187,7 @@ export function DataTable<T extends RowData>({
   density,
   className,
   classNames,
+  ...props
 }: DataTableProps<T>) {
   const { t } = useTranslation()
   const Link = useLinkComponent()
@@ -529,7 +531,7 @@ export function DataTable<T extends RowData>({
   )
 
   return (
-    <div data-slot="data-table" className={cn("gap-3 min-w-0 grid", className)}>
+    <div data-slot="data-table" className={cn("gap-3 min-w-0 grid", className)} {...props}>
       {region}
       {selectable ? (
         <BulkActionBar

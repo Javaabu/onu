@@ -31,7 +31,10 @@ With Laravel, call your locale route in `onValueChange` (e.g. `router.post('/loc
 | `size`      | `'sm' \| 'default'`              | `'default'`        | Size                                      |
 | `showIcon`  | `boolean`                        | `true`             | Show the languages icon (select and menu) |
 | `disabled`  | `boolean`                        | `false`            | Disable                                   |
-| `id`        | `string`                         | generated          | Id of the select                          |
+| `id`        | `string`                         | generated          | Id of the select; with `toggle` and `menu`, of the root                          |
+| `classNames` | `{ root, icon, label, select, item, content }` |  | Classes for each part |
+
+Other HTML attributes and `ref` go to the root: the wrapper `<div>` with `select`, the button group with `toggle`, the button with `menu`.
 
 ## Accessibility
 

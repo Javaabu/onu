@@ -78,3 +78,16 @@ describe("DeltaIndicator", () => {
     await expectNoA11yViolations(container)
   })
 })
+
+describe("DeltaIndicator classNames", () => {
+  it("applies them to the root, icon, value and context", () => {
+    const { container } = renderWithOnu(
+      <DeltaIndicator value={0.1} context="vs May" classNames={{ root: "r", icon: "i", value: "v", context: "c" }} />,
+    )
+    const root = indicator(container)
+    expect(root).toHaveClass("r")
+    expect(root.querySelector("svg")).toHaveClass("i")
+    expect(root.querySelector(".v")).toHaveTextContent("+")
+    expect(root.querySelector(".c")).toHaveTextContent("vs May")
+  })
+})

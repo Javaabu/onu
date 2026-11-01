@@ -512,7 +512,7 @@ A build-list item is ticked only when all of the following are true:
 - [ ] Looks right in every density mode it supports, and outside admin contexts where relevant
 - [ ] Built on the shadcn component / approved library per §4–§5; any in-house build is justified in the PR
 - [ ] Uses semantic icon names so it follows the configured icon set
-- [ ] `className` / `classNames` / `asChild` overrides as applicable
+- [ ] `className` / `classNames` overrides as applicable; `asChild` where the component renders one element an app may need to replace (links, buttons, triggers)
 - [ ] Meets WCAG 2.2 AA; axe tests pass; keyboard interactions documented
 - [ ] Matches the expected UI behaviour in §25 where that component is specified, with a test for each listed behaviour
 - [ ] Unit tests meeting coverage thresholds

@@ -20,7 +20,7 @@ import { layout as en_layout } from "../../locales/en/layout"
 
 registerEnglish({ layout: en_layout })
 
-export interface ThemeToggleProps {
+export interface ThemeToggleProps extends Omit<React.HTMLAttributes<HTMLElement>, "children" | "defaultValue"> {
   /**
    * `menu`: icon button with a Light / Dark / System menu (default).
    * `segmented`: three toggle buttons. `cycle`: one button that cycles through the themes.
@@ -29,7 +29,11 @@ export interface ThemeToggleProps {
   /** Offer the System option. */
   showSystem?: boolean
   size?: "sm" | "default"
+  /** The root: a button, or the button group with `segmented`. */
+  ref?: React.Ref<HTMLElement>
+  dir?: "ltr" | "rtl"
   className?: string
+  classNames?: { root?: string; icon?: string; item?: string; content?: string }
 }
 
 const ICONS: Record<Theme, string> = { light: "sun", dark: "moon", system: "monitor" }
@@ -43,7 +47,15 @@ const KEYS: Record<Theme, string> = {
  * Light / dark / system switch using `useTheme()` (R10.3). The choice is
  * persisted by `ThemeProvider` and announced to screen readers.
  */
-export function ThemeToggle({ variant = "menu", showSystem = true, size = "default", className }: ThemeToggleProps) {
+export function ThemeToggle({
+  variant = "menu",
+  showSystem = true,
+  size = "default",
+  className,
+  classNames,
+  ref,
+  ...props
+}: ThemeToggleProps) {
   const { t } = useTranslation()
   const { theme, resolvedTheme, setTheme } = useTheme()
   const [announcement, setAnnouncement] = React.useState("")
@@ -65,6 +77,7 @@ export function ThemeToggle({ variant = "menu", showSystem = true, size = "defau
     return (
       <>
         <ToggleGroup
+          ref={ref as React.Ref<HTMLDivElement>}
           type="single"
           variant="outline"
           size={size}
@@ -72,16 +85,17 @@ export function ThemeToggle({ variant = "menu", showSystem = true, size = "defau
           onValueChange={(v) => v && choose(v as Theme)}
           aria-label={label}
           data-slot="theme-toggle"
-          className={className}
+          className={cn(classNames?.root, className)}
+          {...props}
         >
           {themes.map((name) => (
             <ToggleGroupItem
               key={name}
               value={name}
               aria-label={t(KEYS[name])}
-              className="touch:min-h-11 touch:min-w-11"
+              className={cn("touch:min-h-11 touch:min-w-11", classNames?.item)}
             >
-              <Icon name={ICONS[name]} />
+              <Icon name={ICONS[name]} className={classNames?.icon} />
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
@@ -98,14 +112,19 @@ export function ThemeToggle({ variant = "menu", showSystem = true, size = "defau
     return (
       <>
         <Button
+          ref={ref as React.Ref<HTMLButtonElement>}
           variant="ghost"
           size={iconSize}
           data-part="theme-toggle"
           aria-label={`${label}: ${t(KEYS[theme])}`}
-          onClick={() => choose(next)}
-          className={cn("touch:size-11", className)}
+          className={cn("touch:size-11", classNames?.root, className)}
+          {...props}
+          onClick={(event) => {
+            props.onClick?.(event)
+            if (!event.defaultPrevented) choose(next)
+          }}
         >
-          <Icon name={ICONS[theme]} />
+          <Icon name={ICONS[theme]} className={classNames?.icon} />
         </Button>
         {live}
       </>
@@ -117,20 +136,22 @@ export function ThemeToggle({ variant = "menu", showSystem = true, size = "defau
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
+            ref={ref as React.Ref<HTMLButtonElement>}
             variant="ghost"
             size={iconSize}
             data-part="theme-toggle"
             aria-label={`${label}: ${t(KEYS[theme])}`}
-            className={cn("touch:size-11", className)}
+            className={cn("touch:size-11", classNames?.root, className)}
+            {...props}
           >
-            <Icon name={ICONS[current]} />
+            <Icon name={ICONS[current]} className={classNames?.icon} />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="min-w-36 w-auto">
+        <DropdownMenuContent align="end" className={cn("min-w-36 w-auto", classNames?.content)}>
           <DropdownMenuRadioGroup value={theme} onValueChange={(v) => choose(v as Theme)}>
             {themes.map((name) => (
-              <DropdownMenuRadioItem key={name} value={name} className="touch:min-h-11">
-                <Icon name={ICONS[name]} />
+              <DropdownMenuRadioItem key={name} value={name} className={cn("touch:min-h-11", classNames?.item)}>
+                <Icon name={ICONS[name]} className={classNames?.icon} />
                 {t(KEYS[name])}
               </DropdownMenuRadioItem>
             ))}

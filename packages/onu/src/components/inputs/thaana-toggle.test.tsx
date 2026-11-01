@@ -97,3 +97,11 @@ describe("ThaanaToggle", () => {
     await expectNoA11yViolations()
   })
 })
+
+describe("ThaanaToggle classNames", () => {
+  it("applies them to the button and its label", () => {
+    renderWithOnu(<ThaanaToggle enabled onToggle={() => {}} classNames={{ root: "r", label: "l" }} />)
+    expect(button()).toHaveClass("r")
+    expect(button().querySelector("span")).toHaveClass("l")
+  })
+})

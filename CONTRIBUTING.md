@@ -14,7 +14,7 @@ Maps in the web app use Google Maps when `VITE_GOOGLE_MAPS_API_KEY` (and optiona
 
 ## Definition of done
 
-A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `dv` locale, `thaana` prop for free text, tokens-only colours, responsive and touch-friendly, `className`/`classNames`/`asChild` overrides, WCAG 2.2 AA with axe tests, unit tests, a showcase demo in `web/src/showcase`, a docs page in `docs/`, and a changeset.
+A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `dv` locale, `thaana` prop for free text, tokens-only colours, responsive and touch-friendly, `className`/`classNames` overrides, `asChild` where the component renders one element an app may need to replace (links, buttons, triggers), WCAG 2.2 AA with axe tests, unit tests, a showcase demo in `web/src/showcase`, a docs page in `docs/`, and a changeset.
 
 ## Where things go
 

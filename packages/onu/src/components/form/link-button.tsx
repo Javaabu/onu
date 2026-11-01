@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Slot } from "radix-ui"
 
 import { cn } from "../../lib/utils"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
@@ -20,6 +21,11 @@ export interface LinkButtonProps extends Omit<React.ComponentProps<"a">, "href">
   external?: boolean
   /** Render as a non-interactive, dimmed link (`aria-disabled`, no `href`). */
   disabled?: boolean
+  /**
+   * Render the child element as the link: it gets the `href`, classes and icons.
+   * With `disabled` only the child's content is rendered, in a dimmed `<a>` with no `href`.
+   */
+  asChild?: boolean
 }
 
 /**
@@ -34,6 +40,7 @@ export function LinkButton({
   endIcon,
   external = false,
   disabled = false,
+  asChild = false,
   className,
   children,
   ref,
@@ -42,35 +49,53 @@ export function LinkButton({
   const LinkComponent = useLinkComponent()
   const { t } = useTranslation()
   const classes = cn(buttonVariants({ variant, size }), disabled && "pointer-events-none opacity-50", className)
-  const content = (
-    <>
-      {renderIcon(startIcon, "inline-start")}
-      {children}
-      {external ? <span className="sr-only"> {t("form.opensInNewTab")}</span> : null}
-      {renderIcon(endIcon ?? (external ? "external-link" : undefined), "inline-end")}
-    </>
-  )
+  const start = renderIcon(startIcon, "inline-start")
+  const newTab = external ? <span className="sr-only"> {t("form.opensInNewTab")}</span> : null
+  const end = renderIcon(endIcon ?? (external ? "external-link" : undefined), "inline-end")
   const data = { "data-slot": "button", "data-variant": variant, "data-size": size }
 
   if (disabled) {
+    const text =
+      asChild && React.isValidElement<{ children?: React.ReactNode }>(children) ? children.props.children : children
     return (
       <a ref={ref} role="link" aria-disabled="true" className={classes} {...data} {...props}>
-        {content}
+        {start}
+        {text}
+        {newTab}
+        {end}
       </a>
+    )
+  }
+
+  const link = {
+    ref,
+    href,
+    className: classes,
+    ...(external ? { target: "_blank", rel: "noopener noreferrer" } : {}),
+    ...data,
+    ...props,
+  }
+
+  if (asChild) {
+    return (
+      <Slot.Root {...link}>
+        {start}
+        <Slot.Slottable>{children}</Slot.Slottable>
+        {newTab}
+        {end}
+      </Slot.Root>
     )
   }
 
   // createElement: the link component comes from context (Inertia/Next Link), it is not created here.
   return React.createElement(
     external ? "a" : LinkComponent,
-    {
-      ref,
-      href,
-      className: classes,
-      ...(external ? { target: "_blank", rel: "noopener noreferrer" } : {}),
-      ...data,
-      ...props,
-    },
-    content,
+    link,
+    <>
+      {start}
+      {children}
+      {newTab}
+      {end}
+    </>,
   )
 }

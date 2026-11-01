@@ -28,6 +28,7 @@ import { Sparkline } from "@javaabu/onu/charts"
 | `animate`     | `boolean`                        | `false`          | Animate (off under reduced motion, see below)    |
 | `gradient`    | `boolean`                        | `true`           | Fade the area fill towards the baseline          |
 | `className`   | `string`                         |                  | Classes for the wrapper                          |
+| `classNames` | `{ root, chart }` |  | Classes for each part |
 
 Other `<div>` props are passed to the wrapper.
 

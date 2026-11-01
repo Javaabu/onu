@@ -29,7 +29,10 @@ export interface LanguageOption {
   dir?: "ltr" | "rtl"
 }
 
-export interface LanguageSwitcherProps {
+export interface LanguageSwitcherProps extends Omit<
+  React.HTMLAttributes<HTMLElement>,
+  "children" | "defaultValue" | "onChange"
+> {
   /** Selected language code. Defaults to the active `OnuProvider` locale. */
   value?: string
   onValueChange?: (code: string) => void
@@ -41,7 +44,19 @@ export interface LanguageSwitcherProps {
   /** Show the globe icon next to the select or in the menu button. */
   showIcon?: boolean
   disabled?: boolean
+  /** The root: a wrapper `div` with `select`, the button group with `toggle`, a button with `menu`. */
+  ref?: React.Ref<HTMLElement>
+  dir?: "ltr" | "rtl"
   className?: string
+  classNames?: {
+    root?: string
+    icon?: string
+    label?: string
+    select?: string
+    item?: string
+    content?: string
+  }
+  /** With `select`, the id of the `<select>`. Otherwise the root's id. */
   id?: string
 }
 
@@ -64,7 +79,10 @@ export function LanguageSwitcher({
   showIcon = true,
   disabled,
   className,
+  classNames,
   id,
+  ref,
+  ...props
 }: LanguageSwitcherProps) {
   const { t, locale } = useTranslation()
   const current = value ?? locale.code
@@ -75,6 +93,8 @@ export function LanguageSwitcher({
   if (variant === "toggle") {
     return (
       <ToggleGroup
+        ref={ref as React.Ref<HTMLDivElement>}
+        id={id}
         type="single"
         variant="outline"
         size={size}
@@ -83,7 +103,8 @@ export function LanguageSwitcher({
         aria-label={label}
         disabled={disabled}
         data-slot="language-switcher"
-        className={className}
+        className={cn(classNames?.root, className)}
+        {...props}
       >
         {languages.map((language) => (
           <ToggleGroupItem
@@ -91,7 +112,7 @@ export function LanguageSwitcher({
             value={language.code}
             lang={language.code}
             dir={language.dir}
-            className="px-3 touch:min-h-11"
+            className={cn("px-3 touch:min-h-11", classNames?.item)}
           >
             {language.name}
           </ToggleGroupItem>
@@ -105,20 +126,23 @@ export function LanguageSwitcher({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
+            ref={ref as React.Ref<HTMLButtonElement>}
+            id={id}
             variant="ghost"
             size={size === "sm" ? "sm" : "default"}
             disabled={disabled}
             data-part="language-switcher"
             aria-label={`${label}: ${currentLanguage?.name ?? current}`}
-            className={cn("touch:min-h-11", className)}
+            className={cn("touch:min-h-11", classNames?.root, className)}
+            {...props}
           >
-            {showIcon ? <Icon name="languages" /> : null}
-            <span lang={currentLanguage?.code} dir={currentLanguage?.dir}>
+            {showIcon ? <Icon name="languages" className={classNames?.icon} /> : null}
+            <span lang={currentLanguage?.code} dir={currentLanguage?.dir} className={classNames?.label}>
               {currentLanguage?.name ?? current}
             </span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="min-w-40 w-auto">
+        <DropdownMenuContent align="end" className={cn("min-w-40 w-auto", classNames?.content)}>
           <DropdownMenuRadioGroup value={current} onValueChange={(v) => onValueChange?.(v)}>
             {languages.map((language) => (
               <DropdownMenuRadioItem
@@ -126,7 +150,7 @@ export function LanguageSwitcher({
                 value={language.code}
                 lang={language.code}
                 dir={language.dir}
-                className="touch:min-h-11"
+                className={cn("touch:min-h-11", classNames?.item)}
               >
                 {language.name}
               </DropdownMenuRadioItem>
@@ -139,9 +163,14 @@ export function LanguageSwitcher({
 
   const selectId = id ?? autoId
   return (
-    <div data-slot="language-switcher" className={cn("gap-2 inline-flex items-center", className)}>
-      {showIcon ? <Icon name="languages" className="size-4 text-muted-foreground" /> : null}
-      <label htmlFor={selectId} className="sr-only">
+    <div
+      ref={ref as React.Ref<HTMLDivElement>}
+      data-slot="language-switcher"
+      className={cn("gap-2 inline-flex items-center", classNames?.root, className)}
+      {...props}
+    >
+      {showIcon ? <Icon name="languages" className={cn("size-4 text-muted-foreground", classNames?.icon)} /> : null}
+      <label htmlFor={selectId} className={cn("sr-only", classNames?.label)}>
         {label}
       </label>
       <NativeSelect
@@ -150,10 +179,16 @@ export function LanguageSwitcher({
         value={current}
         disabled={disabled}
         onChange={(e) => onValueChange?.(e.target.value)}
-        className="touch:[&_select]:h-11"
+        className={cn("touch:[&_select]:h-11", classNames?.select)}
       >
         {languages.map((language) => (
-          <NativeSelectOption key={language.code} value={language.code} lang={language.code} dir={language.dir}>
+          <NativeSelectOption
+            key={language.code}
+            value={language.code}
+            lang={language.code}
+            dir={language.dir}
+            className={classNames?.item}
+          >
             {language.name}
           </NativeSelectOption>
         ))}

@@ -43,6 +43,8 @@ Notifications are data you own (from Laravel's database notifications, a websock
 | `now`                                   | `Date`                                    |           | Reference time (tests, SSR)                    |
 | `classNames`                            | `{ trigger, count, content, list, item }` |           | Classes for each part                          |
 
+Other `<button>` props and `ref` go to the bell button.
+
 ## Accessibility
 
 - The bell's name includes the count: "Notifications, 3 unread". The visual badge is hidden from screen readers; counts above 99 show "99+".

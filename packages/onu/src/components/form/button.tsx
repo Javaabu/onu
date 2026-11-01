@@ -97,7 +97,13 @@ export function Button({
     renderIcon(startIcon, "inline-start")
   )
   const end = renderIcon(endIcon, "inline-end")
-  const label = loading && loadingText !== undefined ? loadingText : children
+  // With asChild the loading text goes inside the child, which stays the rendered element.
+  const label =
+    loading && loadingText !== undefined
+      ? asChild && React.isValidElement<{ children?: React.ReactNode }>(children)
+        ? React.cloneElement(children, undefined, loadingText)
+        : loadingText
+      : children
 
   return (
     <Comp
