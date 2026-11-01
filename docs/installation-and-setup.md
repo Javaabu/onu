@@ -8,7 +8,7 @@ sidebar_position: 1.2
 Onu needs React 19. First install the NPM package
 
 ```bash
-npm install @javaabu/onu --save
+npm install @javaabu/onu react-hook-form @tanstack/react-query --save
 ```
 
 # Styles

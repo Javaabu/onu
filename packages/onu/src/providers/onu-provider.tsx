@@ -1,5 +1,6 @@
 "use client"
 
+import type { QueryClient } from "@tanstack/react-query"
 import * as React from "react"
 import { Direction } from "radix-ui"
 
@@ -34,6 +35,8 @@ export interface OnuContextValue {
   labelLayout: LabelLayout
   linkComponent: LinkComponent
   maps: MapsConfig
+  /** Holds this provider's fallback QueryClient, created on first use by `ApiSelect`. */
+  queryClientStore?: { client?: QueryClient }
 }
 
 const fallbackContext: OnuContextValue = {
@@ -146,6 +149,7 @@ export function OnuProvider({
     [base, messages],
   )
   const dir = dirProp ?? locale.dir
+  const [queryClientStore] = React.useState<{ client?: QueryClient }>({})
 
   const value = React.useMemo<OnuContextValue>(
     () => ({
@@ -156,8 +160,9 @@ export function OnuProvider({
       labelLayout,
       linkComponent,
       maps: maps ?? {},
+      queryClientStore,
     }),
-    [locale, dir, density, labelLayout, linkComponent, maps],
+    [locale, dir, density, labelLayout, linkComponent, maps, queryClientStore],
   )
 
   React.useEffect(() => {

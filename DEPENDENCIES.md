@@ -22,14 +22,16 @@ Selection order: shadcn/ui component → reputable library (shadcn ecosystem fir
 | `@internationalized/date`                          | Hijri (Umm al-Qura) calendar maths, date/time fields                       | Apache-2.0 | Adobe                                                                                            |
 | `react-aria-components`                            | Tree, colour picker, date/time segment fields                              | Apache-2.0 | Adobe; fills Radix gaps (§4 step 3)                                                              |
 | `embla-carousel-react`                             | Carousel                                                                   | MIT        | shadcn `carousel`                                                                                |
-| `react-hook-form`                                  | Form state                                                                 | MIT        |                                                                                                  |
 | `@tanstack/react-table`, `@tanstack/react-virtual` | Tables, data grid, virtualised lists                                       | MIT        |                                                                                                  |
-| `@tanstack/react-query`                            | API select caching and de-duplication                                      | MIT        | R16.5                                                                                            |
 | `@dnd-kit/react`, `@dnd-kit/helpers`               | Drag and drop (kanban, sortable lists, row reordering) with touch sensors  | MIT        | The maintained successor of `@dnd-kit/core`                                                      |
 | `@dnd-kit/dom`                                     | dnd-kit's `Accessibility` plugin, configured with translated announcements | MIT        | Already installed by `@dnd-kit/react`; imported directly so drag announcements follow the locale |
 | `react-phone-number-input`                         | Phone input (libphonenumber)                                               | MIT        | Default region MV                                                                                |
 | `@sindresorhus/slugify`                            | Slug generator                                                             | MIT        |                                                                                                  |
 | `uqr`                                              | QR code encoding for `QrCode` (media entry); Onu renders the SVG           | MIT        | unjs; zero-dep, typed. Picked over `qrcode` (Node deps), `qrcode-generator` (stale)              |
+
+## Peers (core)
+
+`react-hook-form` (form state, MIT) and `@tanstack/react-query` (API select caching and de-duplication, R16.5, MIT) are required peers, alongside `react` and `react-dom`. Onu reads their React context, so the app and Onu must resolve the same copy. They stay required because the core entry imports them statically.
 
 ## Optional peers (entry points)
 

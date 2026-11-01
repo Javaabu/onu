@@ -3,6 +3,7 @@
 import * as React from "react"
 import { QueryClient, QueryClientContext } from "@tanstack/react-query"
 
+import { useOnu } from "../../providers/onu-provider"
 import type { ChoiceOption } from "./options"
 
 /*
@@ -245,27 +246,28 @@ export function apiOptionsQueryKey(url?: string) {
   return url ? (["onu-api-options", url] as const) : (["onu-api-options"] as const)
 }
 
-let fallbackClient: QueryClient | undefined
-
-/**
- * Onu's own QueryClient, used when the app has no `QueryClientProvider`, so API
- * selects work out of the box. Apps with a provider share their client instead.
- */
-export function getOnuQueryClient() {
-  fallbackClient ??= new QueryClient({ defaultOptions: { queries: { retry: false, refetchOnWindowFocus: false } } })
-  return fallbackClient
+function fallbackClient(store: { client?: QueryClient }) {
+  store.client ??= new QueryClient({ defaultOptions: { queries: { retry: false, refetchOnWindowFocus: false } } })
+  return store.client
 }
 
-/** The app's QueryClient if there is a provider, else Onu's fallback client. */
+/**
+ * The app's QueryClient if there is a `QueryClientProvider`, else one owned by the
+ * nearest `OnuProvider` (or this component, without one), so API selects work out of
+ * the box and a server never shares a cache between requests.
+ */
 export function useOnuQueryClient(explicit?: QueryClient) {
   const context = React.useContext(QueryClientContext)
-  return explicit ?? context ?? getOnuQueryClient()
+  const [own] = React.useState<{ client?: QueryClient }>({})
+  const store = useOnu().queryClientStore ?? own
+  return explicit ?? context ?? fallbackClient(store)
 }
 
 /**
  * Clears cached API options (e.g. after creating a record elsewhere) so open
- * selects refetch. Pass a URL to limit it to one endpoint.
+ * selects refetch. Pass a URL to limit it to one endpoint; `useOnuQueryClient()`
+ * returns the client `ApiSelect` uses.
  */
-export function invalidateApiOptions(url?: string, client: QueryClient = getOnuQueryClient()) {
+export function invalidateApiOptions(client: QueryClient, url?: string) {
   return client.invalidateQueries({ queryKey: apiOptionsQueryKey(url) })
 }
