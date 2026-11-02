@@ -1,0 +1,1 @@
+var e=/^[a-z][a-z0-9+.-]*:/i,t=/^(https?:|mailto:|tel:)/i;function n(n){if(!n)return!1;let r=n.trim().replace(/[\u0000-\u001F\u007F\s]/g,``);return r?!e.test(r)||t.test(r):!1}function r(t,r=`https://`){let i=t.trim();if(!i)return null;let a=e.test(i)||/^[/#?.]/.test(i)?i:r+i;return n(a)?a:null}export{r as n,n as t};

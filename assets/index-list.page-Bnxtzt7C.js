@@ -1,0 +1,1 @@
+import{x as e}from"./button-BN7PFRJW.js";import{t}from"./_index-DheawoBq.js";var n=e();function r(){return(0,n.jsx)(t,{view:`list`})}export{r as default};

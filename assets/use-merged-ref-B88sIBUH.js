@@ -1,0 +1,1 @@
+import{r as e}from"./rolldown-runtime-hePW80VL.js";import{r as t}from"./createLucideIcon-szDhxmRU.js";var n=e(t(),1);function r(e,t){typeof e==`function`?e(t):e&&(e.current=t)}function i(e,t){return n.useCallback(n=>{r(e,n),r(t,n)},[e,t])}export{i as t};

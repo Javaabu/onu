@@ -1,0 +1,84 @@
+# TimePicker
+
+A time field that opens large hour and minute steppers with ▲/▼, an AM/PM switch, a clock-face hour grid and a minute grid (REQUIREMENTS §25.2). Popover on desktop, bottom sheet on phones.
+
+```tsx
+import { TimePicker } from "@javaabu/onu"
+
+;<FormField label="Opens at" name="opens_at">
+  <TimePicker />
+</FormField>
+```
+
+## Values
+
+The value is a `Date` (its date part is kept; changing the hour never changes the date) or `null`. An empty field gets its first time on `referenceDate` (default today). With `name`, a hidden input posts `HH:mm`.
+
+```tsx
+<TimePicker value={time} onValueChange={setTime} />
+<TimePicker hourCycle={24} minuteStep={15} />
+```
+
+- ▲/▼ change the value by one and wrap: ▼ on 12 gives 11, ▲ on 59 minutes gives 00.
+- **AM / PM** keeps the hour on the clock (9 AM ↔ 9 PM). <kbd>A</kbd> and <kbd>P</kbd> switch directly.
+- Clicking the hour opens 12 cells laid out like a clock (00–23 on two rings in 24-hour mode); clicking the minute opens one cell per `minuteStep`. A minute off the grid (07 with a 5-minute step) highlights no cell. **Back** returns without changing anything.
+
+## Props
+
+| Prop                     | Type                            | Default          | Description                               |
+| ------------------------ | ------------------------------- | ---------------- | ----------------------------------------- |
+| `value` / `defaultValue` | `Date \| null`                  |                  | Selected time                             |
+| `onValueChange`               | `(value: Date \| null) => void` |                  |                                           |
+| `hourCycle`              | `12 \| 24`                      | locale           | 12-hour with AM/PM, or 24-hour            |
+| `minuteStep`             | `number`                        | `5`              | Minutes between cells in the minute grid  |
+| `format`                 | `string`                        | `h:mm a`/`HH:mm` | date-fns display format                   |
+| `referenceDate`          | `Date`                          | today            | Date used when an empty field gets a time |
+
+Plus the shared picker field props (`name`, `placeholder`, `required`, `clearable`, `disabled`, `open`, `sheet`, `size`, `className`, `classNames`, `ref`); see [DatePicker](./date-picker.md#props).
+
+## Inline time panel
+
+`TimePanel` is the panel inside the picker (the steppers, the clock-face hour grid and the minute grid), also used by [DateTimePicker](./date-time-picker.md). Use it inline, e.g. in a card or a custom popover.
+
+```tsx
+import { TimePanel, type TimeValue } from "@javaabu/onu"
+
+const [time, setTime] = React.useState<TimeValue | null>({ hours: 9, minutes: 30 })
+<TimePanel value={time} onValueChange={setTime} />
+```
+
+### TimePanel props
+
+| Prop                                    | Type                                 | Default      | Description                 |
+| --------------------------------------- | ------------------------------------ | ------------ | --------------------------- |
+| `value`                                 | `{ hours, minutes } \| null`         |              | `null` shows "--"           |
+| `onValueChange`                              | `(value: TimeValue) => void`         |              |                             |
+| `hourCycle`                             | `12 \| 24`                           | locale       |                             |
+| `minuteStep`                            | `number`                             | `5`          | Minute grid step            |
+| `view` / `defaultView` / `onViewChange` | `"steppers" \| "hours" \| "minutes"` | `"steppers"` | Which part is shown         |
+| `initialFocus`                          | `boolean`                            |              | Focus the hour when mounted |
+| `className`                             | `string`                             |              | Root classes                |
+| `classNames`                            | `{ stepper, number, period, grid }`  |              | Classes for each part       |
+| `ref`                                   | `Ref<HTMLDivElement>`                |              | Root element                |
+
+The panel has the same keyboard model as the picker below; <kbd>A</kbd>/<kbd>P</kbd> switch AM/PM anywhere in it.
+
+## Accessibility
+
+- The hour and minute are `spinbutton`s with `aria-valuenow` / `aria-valuetext` ("2 PM"); ▲/▼ buttons are mouse/touch shortcuts for the same action.
+- AM/PM is a labelled group of toggle buttons with `aria-pressed`.
+- Grids follow the APG grid pattern with roving focus; focus returns to the number that opened them.
+
+| Key                                             | Action                                      |
+| ----------------------------------------------- | ------------------------------------------- |
+| <kbd>↑</kbd> / <kbd>↓</kbd> on a number         | Step it by one (wraps)                      |
+| <kbd>Enter</kbd> / <kbd>Space</kbd> on a number | Open the hour or minute grid                |
+| <kbd>A</kbd> / <kbd>P</kbd>                     | AM / PM (12-hour mode)                      |
+| Arrow keys in a grid                            | Move between cells (clockwise on the clock) |
+| <kbd>Home</kbd> / <kbd>End</kbd> in a grid      | First / last cell (row in the minute grid)  |
+| <kbd>Enter</kbd> in a grid                      | Pick the cell and return to the steppers    |
+| <kbd>Escape</kbd>                               | Close; focus returns to the field           |
+
+## RTL and Dhivehi
+
+In Dhivehi, AM/PM read މކ / މފ and every label is translated. The clock face is never mirrored, since clocks read the same in every script.
