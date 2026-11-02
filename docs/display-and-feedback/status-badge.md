@@ -49,7 +49,7 @@ Unknown statuses fall back to the `neutral` tone with the raw value as the label
 | `statusMap` | `Record<string, StatusDefinition>` |         | `{ tone, label?, icon? }` per status                    |
 | `children`  | `ReactNode`                        |         | Label override                                          |
 | `icon`      | `string \| ReactNode \| false`     |         | Icon override; `false` hides it                         |
-| `size`      | `'sm' \| 'md' \| 'lg'`             | `'md'`  | Size                                                    |
+| `size`      | `'sm' \| 'default' \| 'lg'`             | `'default'`  | Size                                                    |
 | `asChild`   | `boolean`                          | `false` | Render your element (e.g. a link) with the badge styles |
 | `classNames` | `{ root, icon }` |  | Classes for each part |
 

@@ -28,7 +28,7 @@ export default function MapLegendSwatchDemo() {
       </DemoSection>
       <DemoSection title="Sizes" className="gap-4 items-center">
         <MapLegendSwatch size="sm" tone="chart-2" />
-        <MapLegendSwatch size="md" tone="chart-2" />
+        <MapLegendSwatch size="default" tone="chart-2" />
         <MapLegendSwatch size="lg" tone="chart-2" />
       </DemoSection>
       <DemoSection title="Legend" className="gap-8">

@@ -31,12 +31,12 @@ export const bottomSheetVariants = cva(
       /** Maximum width on wider screens; on phones the sheet is always full width. */
       size: {
         sm: "sm:max-w-md",
-        md: "sm:max-w-lg",
+        default: "sm:max-w-lg",
         lg: "sm:max-w-2xl",
         full: "max-w-none",
       },
     },
-    defaultVariants: { size: "md" },
+    defaultVariants: { size: "default" },
   },
 )
 
@@ -77,7 +77,7 @@ export function BottomSheetContent({
       <DrawerOverlay className={overlayClassName} />
       <DrawerPrimitive.Content
         data-slot="bottom-sheet-content"
-        data-size={size ?? "md"}
+        data-size={size ?? "default"}
         data-snapping={snapping || undefined}
         className={cn(
           bottomSheetVariants({ size }),

@@ -52,7 +52,7 @@ import { Button, Hero, SearchBox } from "@javaabu/onu"
 | `media`           | `ReactNode`                                                |           | Image or illustration beside the text                             |
 | `backgroundImage` | `string \| { src, alt?, srcSet?, sizes?, position? }`      |           | Photo behind the content, with a token scrim                      |
 | `tone`            | `"plain" \| "muted" \| "primary"`                          | `"plain"` | Surface colour, or scrim colour over a background image           |
-| `size`            | `"sm" \| "md" \| "lg"`                                     | `"md"`    | Padding and title size (`text-fluid-3xl` / `4xl` / `5xl`)         |
+| `size`            | `"sm" \| "default" \| "lg"`                                     | `"default"`    | Padding and title size (`text-fluid-3xl` / `4xl` / `5xl`)         |
 | `align`           | `"start" \| "center"`                                      | `"start"` | Text alignment (centred only without `media`)                     |
 | `headingLevel`    | `1 \| 2 \| 3`                                              | `1`       | Heading element                                                   |
 | `maxWidth`        | `"3xl" \| "4xl" \| "5xl" \| "6xl" \| "7xl" \| "none"`      | `"6xl"`   | Width of the centred content container                            |

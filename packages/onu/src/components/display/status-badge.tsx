@@ -34,11 +34,11 @@ export const statusBadgeVariants = cva(
       },
       size: {
         sm: "h-5 px-1.5 text-xs [&>svg]:size-3",
-        md: "h-5.5 px-1.75 text-xs [&>svg]:size-3",
+        default: "h-5.5 px-1.75 text-xs [&>svg]:size-3",
         lg: "h-7 px-2.5 text-sm [&>svg]:size-3.5",
       },
     },
-    defaultVariants: { tone: "neutral", size: "md" },
+    defaultVariants: { tone: "neutral", size: "default" },
   },
 )
 
