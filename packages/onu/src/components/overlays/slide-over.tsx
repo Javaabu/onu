@@ -20,13 +20,13 @@ export const slideOverVariants = cva(
     variants: {
       size: {
         sm: "data-[side=left]:sm:max-w-sm data-[side=right]:sm:max-w-sm",
-        md: "data-[side=left]:sm:max-w-md data-[side=right]:sm:max-w-md",
+        default: "data-[side=left]:sm:max-w-md data-[side=right]:sm:max-w-md",
         lg: "data-[side=left]:sm:max-w-xl data-[side=right]:sm:max-w-xl",
         xl: "data-[side=left]:sm:max-w-3xl data-[side=right]:sm:max-w-3xl",
         full: "data-[side=left]:sm:max-w-none data-[side=right]:sm:max-w-none data-[side=left]:w-full data-[side=right]:w-full",
       },
     },
-    defaultVariants: { size: "md" },
+    defaultVariants: { size: "default" },
   },
 )
 
@@ -65,7 +65,7 @@ export function SlideOverContent({
   return (
     <SheetContent
       data-logical-side={side}
-      data-size={size ?? "md"}
+      data-size={size ?? "default"}
       side={physicalSide(side, dir)}
       showCloseButton={false}
       className={cn(slideOverVariants({ size }), className)}

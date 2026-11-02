@@ -298,7 +298,8 @@ export function KanbanBoard<T>({
       {region}
       <div
         data-slot="kanban-board"
-        className={cn("gap-3 pb-2 sm:snap-none flex snap-x snap-mandatory overflow-x-auto", className)}
+        // relative: the columns' absolutely positioned sr-only text must stay clipped, or it widens the page.
+        className={cn("gap-3 pb-2 sm:snap-none relative flex snap-x snap-mandatory overflow-x-auto", className)}
       >
         {columns.map((column) => {
           const ids = layout[column.id] ?? []

@@ -116,15 +116,14 @@ export const statusBadge: KitComponent = {
   page: "Display",
   key: "display-and-feedback/status-badge",
   description: '<StatusBadge status size /> from "@javaabu/onu" (status is a tone or a key of statusMap).',
-  variants: { status: Object.keys(STATUS), size: ["md", "sm", "lg"], dir: DIRS },
-  filter: (v) => v.size === "md" || v.dir === "ltr",
+  variants: { status: Object.keys(STATUS), size: ["default", "sm", "lg"], dir: DIRS },
+  filter: (v) => v.size === "default" || v.dir === "ltr",
   // No TEXT property: each status shows its own default label (edit the layer to override, like `children`).
   width: 1200,
   build(root, v, b) {
     const s = STATUS[v.status!]!
     const look = s.color ? preset(s.color) : TAG_VARIANT.default!
-    // StatusBadge keeps "md" for its middle size; Tag calls the same size "default".
-    const size = TAG_SIZE[v.size === "md" ? "default" : v.size!]!
+    const size = TAG_SIZE[v.size!]!
     b.style(root, {
       h: size.h,
       px: size.px,

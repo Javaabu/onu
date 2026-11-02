@@ -29,7 +29,7 @@ Shapes: `circle`, `square`, `pin`, `area`, `line`, `dashed`, `gradient` (with `c
 | `tone`   | `MapTone`              | `"primary"` | Theme colour                                    |
 | `shape`  | `MapLegendShape`       | `"circle"`  | Sample shape                                    |
 | `colors` | `string[]`             |             | Gradient stops (CSS colours or `toneVar(tone)`) |
-| `size`   | `"sm" \| "md" \| "lg"` | `"md"`      | Size (`mapLegendSwatchVariants`)                |
+| `size`   | `"sm" \| "default" \| "lg"` | `"default"`      | Size (`mapLegendSwatchVariants`)                |
 
 `MapLegend`:
 

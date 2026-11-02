@@ -30,7 +30,7 @@ import { Button, SlideOver, SlideOverClose } from "@javaabu/onu"
 ## Sides and sizes
 
 - `side="end"` (default) is on the right in LTR and on the left in RTL; `side="start"` is the opposite.
-- `size`: `sm`, `md` (default), `lg`, `xl` or `full`. On phones the panel leaves a 2.5rem strip of the page visible (except `full`).
+- `size`: `sm`, `default`, `lg`, `xl` or `full`. On phones the panel leaves a 2.5rem strip of the page visible (except `full`).
 
 ## Composing
 
@@ -45,7 +45,7 @@ import { Button, SlideOver, SlideOverClose } from "@javaabu/onu"
 | `footer`                                       | `ReactNode`                                           |         | Sticky action bar                      |
 | `trigger`                                      | `ReactNode`                                           |         | Element that opens the panel           |
 | `side`                                         | `'start' \| 'end'`                                    | `'end'` | Edge it slides from                    |
-| `size`                                         | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'`              | `'md'`  | Width                                  |
+| `size`                                         | `'sm' \| 'default' \| 'lg' \| 'xl' \| 'full'`              | `'default'`  | Width                                  |
 | `closeButton`                                  | `boolean`                                             | `true`  | Show the × button                      |
 | `open`, `defaultOpen`, `onOpenChange`, `modal` |                                                       |         | Dialog state                           |
 | `className`                                    | `string`                                              |         | Classes for the panel                  |

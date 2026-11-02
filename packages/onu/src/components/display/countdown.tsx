@@ -56,14 +56,14 @@ export const countdownVariants = cva("tabular-nums", {
     },
     size: {
       sm: "",
-      md: "",
+      default: "",
       lg: "",
     },
   },
-  defaultVariants: { variant: "boxes", size: "md" },
+  defaultVariants: { variant: "boxes", size: "default" },
 })
 
-const VALUE_SIZES = { sm: "text-lg", md: "text-2xl", lg: "text-4xl" } as const
+const VALUE_SIZES = { sm: "text-lg", default: "text-2xl", lg: "text-4xl" } as const
 
 export interface CountdownProps
   extends Omit<React.ComponentProps<"div">, "children">, VariantProps<typeof countdownVariants> {
@@ -174,7 +174,7 @@ export function Countdown({
                   classNames?.unit,
                 )}
               >
-                <span className={cn("font-semibold leading-none", VALUE_SIZES[size ?? "md"], classNames?.value)}>
+                <span className={cn("font-semibold leading-none", VALUE_SIZES[size ?? "default"], classNames?.value)}>
                   {pad(value(unit.key))}
                 </span>
                 <span className={cn("mt-1 text-xs text-muted-foreground", classNames?.label)}>

@@ -14,7 +14,7 @@ Onu (`@javaabu/onu`) is Javaabu's React UI library: shadcn/ui (Radix base) and T
 | `web`                 | Docs and demo site: `src/showcase/<group>/<name>.demo.tsx`, `src/pages/<group>/<name>.page.tsx`                            |
 | `docs`                | Markdown docs, one page per component (`docs/<group>/<name>.md`)                                                           |
 | `scripts/llms.mjs`    | Builds `llms.txt`, `llms-full.txt` and `docs/*.md` for AI assistants from `docs/`                                          |
-| `e2e`, `figma`        | Playwright tests, Figma plugin                                                                                             |
+| `e2e`, `figma`        | Playwright tests and the Next.js server-rendering fixture (`e2e/nextjs`), Figma plugin                                     |
 
 ## Commands
 

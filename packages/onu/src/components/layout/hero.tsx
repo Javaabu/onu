@@ -16,7 +16,7 @@ export const heroVariants = cva("@container/hero relative isolate overflow-hidde
     },
     size: {
       sm: "py-10 @3xl/hero:py-14",
-      md: "py-14 @3xl/hero:py-20",
+      default: "py-14 @3xl/hero:py-20",
       lg: "py-16 @3xl/hero:py-28",
     },
     rounded: {
@@ -24,7 +24,7 @@ export const heroVariants = cva("@container/hero relative isolate overflow-hidde
       false: "",
     },
   },
-  defaultVariants: { tone: "plain", size: "md", rounded: false },
+  defaultVariants: { tone: "plain", size: "default", rounded: false },
 })
 
 const OVERLAY: Record<NonNullable<HeroProps["tone"]>, string> = {
@@ -33,7 +33,7 @@ const OVERLAY: Record<NonNullable<HeroProps["tone"]>, string> = {
   primary: "bg-linear-to-t from-primary/95 via-primary/90 to-primary/80",
 }
 
-const TITLE_SIZE = { sm: "text-fluid-3xl", md: "text-fluid-4xl", lg: "text-fluid-5xl" } as const
+const TITLE_SIZE = { sm: "text-fluid-3xl", default: "text-fluid-4xl", lg: "text-fluid-5xl" } as const
 
 export interface HeroBackgroundImage {
   src: string
@@ -188,7 +188,11 @@ export function Hero({
           <Heading
             id={titleId}
             data-slot="hero-title"
-            className={cn("font-semibold tracking-tight text-balance", TITLE_SIZE[size ?? "md"], classNames?.title)}
+            className={cn(
+              "font-semibold tracking-tight text-balance",
+              TITLE_SIZE[size ?? "default"],
+              classNames?.title,
+            )}
           >
             {title}
           </Heading>

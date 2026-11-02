@@ -26,7 +26,7 @@ import { ProgressBar } from "@javaabu/onu"
 | `showValue`   | `boolean`                                                                   | with label  | Show the value text                               |
 | `formatValue` | `(value, max) => string`                                                    | percent     | Custom value text, also used for `aria-valuetext` |
 | `color`       | `'primary' \| 'success' \| 'warning' \| 'destructive' \| 'info' \| 'muted'` | `'primary'` | Indicator colour                                  |
-| `size`        | `'sm' \| 'md' \| 'lg'`                                                      | `'md'`      | Track height                                      |
+| `size`        | `'sm' \| 'default' \| 'lg'`                                                      | `'default'`      | Track height                                      |
 | `aria-label`  | `string`                                                                    | "Progress"  | Name when there is no `label`                     |
 | `className`   | `string`                                                                    |             | Classes for the wrapper                           |
 | `classNames`  | `{ header, label, value, track, indicator }`                                |             | Classes for each part                             |

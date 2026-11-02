@@ -54,12 +54,19 @@ describe("NavTabs", () => {
     expect(edit).toHaveClass("opacity-50")
   })
 
-  it("is scrollable on phones and scrolls the current tab into view", () => {
-    const spy = vi.spyOn(Element.prototype, "scrollIntoView")
+  it("is scrollable on phones and scrolls the current tab into view without scrolling the page", () => {
+    const pageScroll = vi.spyOn(Element.prototype, "scrollIntoView")
+    const boxes = vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+      // The list is 100 px wide, and the current tab ends 50 px past its end.
+      return (this.tagName === "UL" ? { left: 0, right: 100 } : { left: 100, right: 150 }) as DOMRect
+    })
     renderWithOnu(<NavTabs items={items} currentHref="/users/1/activity" />)
-    expect(screen.getByRole("list")).toHaveClass("overflow-x-auto")
-    expect(spy).toHaveBeenCalledWith({ block: "nearest", inline: "nearest" })
-    spy.mockRestore()
+    const list = screen.getByRole("list")
+    expect(list).toHaveClass("overflow-x-auto")
+    expect(list.scrollLeft).toBe(50)
+    expect(pageScroll).not.toHaveBeenCalled()
+    boxes.mockRestore()
+    pageScroll.mockRestore()
   })
 
   it("supports prefix matching, forced state, badges, pill variant and keyboard focus", async () => {

@@ -36,7 +36,7 @@ export default function StatusBadgeDemo() {
       </DemoSection>
       <DemoSection title="Sizes">
         <StatusBadge status="success" size="sm" />
-        <StatusBadge status="success" size="md" />
+        <StatusBadge status="success" size="default" />
         <StatusBadge status="success" size="lg" />
         <StatusBadge status="pending" icon={false}>
           No icon

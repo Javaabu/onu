@@ -56,7 +56,7 @@ Snap points are fractions of the screen height (`0.4`) or pixel strings (`"320px
 | `handleOnly`                                                     | `boolean`                                                             | `false` | Only the handle starts a drag                     |
 | `handle`                                                         | `boolean`                                                             | `true`  | Show the drag handle                              |
 | `closeButton`                                                    | `boolean`                                                             | `true`  | Show the × button                                 |
-| `size`                                                           | `'sm' \| 'md' \| 'lg' \| 'full'`                                      | `'md'`  | Max width on wider screens (full width on phones) |
+| `size`                                                           | `'sm' \| 'default' \| 'lg' \| 'full'`                                      | `'default'`  | Max width on wider screens (full width on phones) |
 | `open`, `defaultOpen`, `onOpenChange`, `modal`                   |                                                                       |         | Dialog state                                      |
 | `classNames`                                                     | `{ handle, header, title, description, body, footer, close, expand }` |         | Classes for each part                             |
 

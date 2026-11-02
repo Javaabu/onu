@@ -1,0 +1,52 @@
+name: Server rendering
+
+# Builds a small Next.js app against the workspace copy of @javaabu/onu, then checks its
+# server-rendered HTML and hydration in English and Dhivehi (R16.1).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - packages/onu/**
+      - e2e/nextjs/**
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - .github/workflows/ssr.yml
+  pull_request:
+    paths:
+      - packages/onu/**
+      - e2e/nextjs/**
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - .github/workflows/ssr.yml
+  workflow_dispatch:
+
+concurrency:
+  group: ssr-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NEXT_TELEMETRY_DISABLED: 1
+
+jobs:
+  nextjs:
+    name: Next.js (build, server HTML, hydration)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Build the library
+        run: pnpm build
+      - name: Build the app
+        run: pnpm --filter onu-nextjs-fixture build
+      - name: Check the server HTML and hydration
+        run: pnpm --filter onu-nextjs-fixture test:ssr

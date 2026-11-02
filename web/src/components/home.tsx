@@ -244,7 +244,7 @@ export function Home() {
         <Hero
           className="bg-transparent"
           align="center"
-          size="md"
+          size="default"
           maxWidth="4xl"
           eyebrow={
             <Link

@@ -14,9 +14,9 @@ registerEnglish({ overlay: en_overlay })
 
 export const progressTrackVariants = cva("relative w-full overflow-hidden rounded-full bg-muted", {
   variants: {
-    size: { sm: "h-1", md: "h-2", lg: "h-3" },
+    size: { sm: "h-1", default: "h-2", lg: "h-3" },
   },
-  defaultVariants: { size: "md" },
+  defaultVariants: { size: "default" },
 })
 
 export const progressIndicatorVariants = cva("ease-out h-full rounded-full transition-[width] duration-300", {

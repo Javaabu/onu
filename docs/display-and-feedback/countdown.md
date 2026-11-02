@@ -19,7 +19,7 @@ import { Countdown } from "@javaabu/onu"
 | `to`            | `Date \| string \| number`         |           | Target date and time                                                  |
 | `onComplete`    | `() => void`                       |           | Called once at zero (straight away if `to` is already past)           |
 | `variant`       | `'boxes' \| 'inline'`              | `'boxes'` | Boxes with labels, or `00:00:00`                                      |
-| `size`          | `'sm' \| 'md' \| 'lg'`             | `'md'`    | Number size (boxes)                                                   |
+| `size`          | `'sm' \| 'default' \| 'lg'`             | `'default'`    | Number size (boxes)                                                   |
 | `showDays`      | `boolean \| 'auto'`                | `'auto'`  | `auto` hides days when there are none left (hours then count past 24) |
 | `showSeconds`   | `boolean`                          | `true`    | Show seconds                                                          |
 | `announceEvery` | `number`                           | `60`      | Seconds between screen reader announcements                           |

@@ -18,11 +18,11 @@ export const mapLegendSwatchVariants = cva("inline-block shrink-0", {
   variants: {
     size: {
       sm: "h-3 w-3",
-      md: "h-4 w-4",
+      default: "h-4 w-4",
       lg: "h-5 w-5",
     },
   },
-  defaultVariants: { size: "md" },
+  defaultVariants: { size: "default" },
 })
 
 export interface MapLegendSwatchProps

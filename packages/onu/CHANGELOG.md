@@ -1,5 +1,14 @@
 # @javaabu/onu
 
+## 0.2.1
+
+### Patch Changes
+
+- a1a7ad9: `WysiwygEditor` and `BlockEditor` no longer throw when they unmount with a dialog open.
+- 15b4633: `KanbanBoard` no longer widens the page when its columns overflow.
+- 2771d3e: `NavTabs` no longer scrolls the page to itself when it mounts below the fold; it scrolls only its own list.
+- ce06e79: `StatusBadge`, `IconText`, `Countdown`, `BottomSheet`, `SlideOver`, `ProgressBar`, `Hero` and `MapLegendSwatch` rename size `md` to `default`.
+
 ## 0.2.0
 
 ### Minor Changes

@@ -65,7 +65,7 @@ describe("SlideOver", () => {
     expect(screen.getByRole("dialog")).toHaveAttribute("data-side", dir === "rtl" ? "right" : "left")
   })
 
-  it.each(["sm", "md", "lg", "xl", "full"] as const)("applies size %s", (size) => {
+  it.each(["sm", "default", "lg", "xl", "full"] as const)("applies size %s", (size) => {
     renderWithOnu(<SlideOver defaultOpen title="Panel" size={size} />)
     expect(screen.getByRole("dialog")).toHaveAttribute("data-size", size)
   })

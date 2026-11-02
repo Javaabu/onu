@@ -62,6 +62,8 @@ E2E (Playwright) runs in two tiers:
 
 Run either locally with `pnpm e2e:chromium`, adding the two spec files for the smoke tier.
 
+Server rendering has its own check. The **Server rendering** workflow builds the Next.js app in `e2e/nextjs` against the workspace copy of Onu, then checks its server HTML and hydration in English and Dhivehi, when a pull request touches `packages/onu/**` or `e2e/nextjs/**`. Run it locally with `pnpm build && pnpm --filter onu-nextjs-fixture build && pnpm --filter onu-nextjs-fixture test:ssr`.
+
 The Chromium job compares a desktop screenshot of every component demo, in light LTR and dark RTL, with baselines stored as the `visual-baselines` Actions artifact (not in git). After an intended visual change, or when you add a component, run **E2E** by hand with **Update the visual baselines** ticked. Look at the screenshots in that run's `visual-baselines` artifact before relying on them. Baselines are kept for 90 days (about 90 MB). If none are stored (the first run, or 90 days after the last update), the run takes new ones instead of comparing.
 
 ```bash
@@ -99,4 +101,4 @@ To release:
 
 The **Release** workflow runs only for `v*` tags. It checks that the tagged commit is on `main` and that every package's version and the plugin's match the tag, then builds and publishes to npm (versions already on npm are skipped). Tags with a pre-release suffix (`v1.0.0-beta.1`) publish under the `next` dist-tag.
 
-Publishing needs an `NPM_TOKEN` repository secret: an npm granular access token with read and write access to the `@javaabu` scope and "bypass 2FA" allowed, from an account that can publish to `@javaabu`. Write tokens expire after about 90 days. Provenance is signed only once the repository is public. After the first release, you can switch to npm trusted publishing (each package's settings on npmjs.com, pointing at `release.yml`) and remove the token.
+Publishing needs an `NPM_TOKEN` repository secret: an npm granular access token with read and write access to the `@javaabu` scope and "bypass 2FA" allowed, from an account that can publish to `@javaabu`. Write tokens expire after about 90 days. Provenance is signed only once the repository is public. Set up npm trusted publishing for each package (its settings on npmjs.com, pointing at `release.yml`): without it, the OIDC exchange fails with only a warning and packages publish with the token and no attestation. The workflow's last step checks for attestations and fails if any are missing; by then the packages are already on npm, so a failure means fixing the setup for the next release, not republishing. Once trusted publishing works, remove the token and the workflow's "Check the npm token" step.

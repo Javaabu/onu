@@ -2,7 +2,7 @@
 (function() {
 
 //#region ../packages/onu/package.json
-	var version = "0.2.0";
+	var version = "0.2.1";
 
 //#endregion
 //#region ../tokens.json
@@ -2356,18 +2356,18 @@
 		variants: {
 			status: Object.keys(STATUS),
 			size: [
-				"md",
+				"default",
 				"sm",
 				"lg"
 			],
 			dir: DIRS
 		},
-		filter: (v) => v.size === "md" || v.dir === "ltr",
+		filter: (v) => v.size === "default" || v.dir === "ltr",
 		width: 1200,
 		build(root, v, b) {
 			const s = STATUS[v.status];
 			const look = s.color ? preset(s.color) : TAG_VARIANT.default;
-			const size = TAG_SIZE[v.size === "md" ? "default" : v.size];
+			const size = TAG_SIZE[v.size];
 			b.style(root, {
 				h: size.h,
 				px: size.px,

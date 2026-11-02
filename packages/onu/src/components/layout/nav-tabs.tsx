@@ -83,8 +83,14 @@ export function NavTabs({
   const activeIndex = items.findIndex((item) => !item.disabled && isActive(item))
   React.useEffect(() => {
     if (activeIndex < 0) return
-    const el = listRef.current?.children[activeIndex] as HTMLElement | undefined
-    el?.scrollIntoView?.({ block: "nearest", inline: "nearest" })
+    const list = listRef.current
+    const el = list?.children[activeIndex]
+    if (!list || !el) return
+    // Scrolls the list only: scrollIntoView would also scroll the page to a NavTabs below the fold.
+    const listBox = list.getBoundingClientRect()
+    const box = el.getBoundingClientRect()
+    if (box.left < listBox.left) list.scrollLeft += box.left - listBox.left
+    else if (box.right > listBox.right) list.scrollLeft += box.right - listBox.right
   }, [activeIndex])
 
   return (

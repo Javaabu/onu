@@ -9,7 +9,7 @@ export const meta = {
   description: "Side panel with logical start/end sides (flips in RTL), sizes, and sticky header and footer.",
 }
 
-const sizes: SlideOverSize[] = ["sm", "md", "lg", "xl", "full"]
+const sizes: SlideOverSize[] = ["sm", "default", "lg", "xl", "full"]
 
 const footer = (
   <>

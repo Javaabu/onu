@@ -68,3 +68,6 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           # npm only signs provenance for public repositories.
           NPM_CONFIG_PROVENANCE: ${{ !github.event.repository.private }}
+      - name: Check the packages carry provenance
+        if: ${{ !github.event.repository.private }}
+        run: node scripts/check-provenance.mjs "${GITHUB_REF_NAME#v}"
