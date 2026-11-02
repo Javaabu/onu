@@ -25,6 +25,8 @@ export default tseslint.config(
       "**/*.config.*",
       "docs/**",
       "**/playwright-report/**",
+      "**/.next/**",
+      "**/next-env.d.ts",
       // Built Figma plugin bundle (generated from figma/plugin/src, committed for designers).
       "figma/plugin/code.js",
     ],

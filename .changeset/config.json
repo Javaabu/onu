@@ -7,5 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["onu-web"]
+  "ignore": ["onu-web", "onu-nextjs-fixture"]
 }

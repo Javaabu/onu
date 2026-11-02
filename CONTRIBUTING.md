@@ -62,6 +62,8 @@ E2E (Playwright) runs in two tiers:
 
 Run either locally with `pnpm e2e:chromium`, adding the two spec files for the smoke tier.
 
+Server rendering has its own check. The **Server rendering** workflow builds the Next.js app in `e2e/nextjs` against the workspace copy of Onu, then checks its server HTML and hydration in English and Dhivehi, when a pull request touches `packages/onu/**` or `e2e/nextjs/**`. Run it locally with `pnpm build && pnpm --filter onu-nextjs-fixture build && pnpm --filter onu-nextjs-fixture test:ssr`.
+
 The Chromium job compares a desktop screenshot of every component demo, in light LTR and dark RTL, with baselines stored as the `visual-baselines` Actions artifact (not in git). After an intended visual change, or when you add a component, run **E2E** by hand with **Update the visual baselines** ticked. Look at the screenshots in that run's `visual-baselines` artifact before relying on them. Baselines are kept for 90 days (about 90 MB). If none are stored (the first run, or 90 days after the last update), the run takes new ones instead of comparing.
 
 ```bash

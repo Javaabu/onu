@@ -1,4 +1,6 @@
 dist
+.next
+next-env.d.ts
 coverage
 pnpm-lock.yaml
 packages/onu/src/ui
