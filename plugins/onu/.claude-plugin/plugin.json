@@ -1,7 +1,7 @@
 {
   "name": "onu",
   "description": "Build UI with Onu (@javaabu/onu): the rules for writing Onu code, and the component docs through the Onu MCP server.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": {
     "name": "Javaabu Pvt. Ltd.",
     "url": "https://javaabu.com"
