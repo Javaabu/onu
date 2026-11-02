@@ -175,6 +175,11 @@ function Board(props: { canMove?: (m: { to: string }) => boolean; onMove?: (m: u
 }
 
 describe("KanbanBoard", () => {
+  it("contains the columns' absolutely positioned sr-only counts, so they can't widen the page", () => {
+    const { container } = renderWithOnu(<Board />)
+    expect(container.querySelector("[data-slot=kanban-board]")).toHaveClass("relative", "overflow-x-auto")
+  })
+
   it("shows columns with counts and cards", async () => {
     renderWithOnu(<Board />)
     const todo = screen.getByRole("region", { name: "To do" })
