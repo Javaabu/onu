@@ -117,7 +117,14 @@ export default function ThemeBuilder() {
       </DemoSection>
 
       <DemoSection title="CSS" className="block">
-        <pre className="p-4 text-sm overflow-auto rounded-lg border bg-muted font-mono" dir="ltr">
+        <pre
+          role="region"
+          aria-label="Generated CSS"
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          tabIndex={0}
+          className="p-4 text-sm overflow-auto rounded-lg border bg-muted font-mono focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+          dir="ltr"
+        >
           <code>{css}</code>
         </pre>
         <Button className="mt-3" variant="outline" onClick={() => void navigator.clipboard?.writeText(css)}>
