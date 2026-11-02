@@ -298,9 +298,20 @@ describe("WysiwygEditor", () => {
     const dialog = await screen.findByRole("dialog", { name: "Insert image" })
     expect(within(dialog).getByLabelText(/Alternative text/)).toHaveAttribute("data-thaana")
     expect(within(dialog).getByLabelText(/Image URL/)).not.toHaveAttribute("data-thaana")
-    // Close it and let focus return, because the dialog would otherwise focus the editor after it unmounts.
-    await user.keyboard("{Escape}")
-    await waitFor(() => expect(button("Image")).toHaveFocus())
+  })
+
+  it("unmounts with a dialog open without touching the destroyed editor", async () => {
+    const onError = vi.fn<(event: ErrorEvent) => void>()
+    window.addEventListener("error", onError)
+    const user = userEvent.setup()
+    const { unmount } = await setup()
+    await user.click(button("Link"))
+    await screen.findByRole("dialog", { name: "Insert link" })
+    unmount()
+    // Radix calls onCloseAutoFocus from a timer after the unmount.
+    await act(() => new Promise((resolve) => setTimeout(resolve, 50)))
+    window.removeEventListener("error", onError)
+    expect(onError).not.toHaveBeenCalled()
   })
 
   it("uploads images through the upload callback and reports failures", async () => {

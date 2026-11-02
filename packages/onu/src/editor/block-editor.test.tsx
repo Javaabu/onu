@@ -194,6 +194,20 @@ describe("BlockEditor", () => {
       expect(editor.getHTML()).not.toContain("<iframe")
     })
 
+    it("unmounts with a dialog open without touching the destroyed editor", async () => {
+      const onError = vi.fn<(event: ErrorEvent) => void>()
+      window.addEventListener("error", onError)
+      const { editor, unmount } = await setup()
+      const list = await openSlash(editor, "image")
+      fireEvent.click(within(list).getByRole("option", { name: /Image/ }))
+      await screen.findByRole("dialog", { name: "Insert image" })
+      unmount()
+      // Radix calls onCloseAutoFocus from a timer after the unmount.
+      await act(() => new Promise((resolve) => setTimeout(resolve, 50)))
+      window.removeEventListener("error", onError)
+      expect(onError).not.toHaveBeenCalled()
+    })
+
     it("does not open inside code blocks", async () => {
       const { editor } = await setup({ defaultValue: "<pre><code>a</code></pre>" })
       act(() => {

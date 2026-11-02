@@ -169,7 +169,8 @@ export function WysiwygEditor({
     event.preventDefault()
     const target = returnFocus.current
     if (target?.isConnected) target.focus()
-    else editor?.commands.focus()
+    // Radix calls this from a timer, which can run after the editor unmounts.
+    else if (editor && !editor.isDestroyed) editor.commands.focus()
   }
 
   return (
