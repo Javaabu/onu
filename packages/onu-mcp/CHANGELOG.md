@@ -1,5 +1,11 @@
 # @javaabu/onu-mcp
 
+## 0.3.0
+
+### Minor Changes
+
+- 26340b5: Ship Laravel Boost guidelines and skills in `resources/boost/` (`javaabu-onu`, `javaabu-onu-mcp`), and an `llms.txt` in `@javaabu/onu-mcp`.
+
 ## 0.2.1
 
 No changes in this release.
