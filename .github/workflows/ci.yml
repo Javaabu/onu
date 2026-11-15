@@ -52,6 +52,8 @@ jobs:
         run: pnpm build:web
       - name: Docs cover every component
         run: node scripts/check-docs.mjs
+      - name: Boost guidelines, skills and llms.txt
+        run: node scripts/boost.mjs --check
       - name: Licences
         run: node scripts/check-licenses.mjs
       - name: Audit

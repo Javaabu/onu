@@ -61,6 +61,24 @@ Other clients (Cursor's `.cursor/mcp.json`, VS Code's `.vscode/mcp.json`, Claude
 
 Set `ONU_DOCS_DIR` to read the docs from another folder.
 
+# Laravel Boost
+
+In a Laravel app, [Laravel Boost](https://laravel.com/docs/boost) picks Onu up by itself. Both packages ship a Boost guideline and skill in `resources/boost/`, which Boost reads from the npm packages the app depends on directly:
+
+| Package | Guideline | Skill |
+| --- | --- | --- |
+| `@javaabu/onu` | Use Onu for UI, read `llms.txt`, logical (RTL) utilities | `javaabu-onu`: load the rules, pick components from the index, read each page, check your work |
+| `@javaabu/onu-mcp` | Call `onu_get_rules`, then `onu_get_doc` per component | `javaabu-onu-mcp`: when and how to use each MCP tool |
+
+Install the package, then run Boost's installer, and choose the guidelines and skills when it asks:
+
+```bash
+npm install @javaabu/onu
+php artisan boost:install
+```
+
+The guideline goes into the app's `AGENTS.md` / `CLAUDE.md`, and the skill into its skills folder. Run `php artisan boost:update` after upgrading Onu so they match the new version. `@javaabu/onu-mcp` is usually run with `npx`; add it to `devDependencies` too if you want Boost to install its guideline and skill.
+
 # Claude Code plugin
 
 The Onu repository is a Claude Code plugin marketplace. The `onu` plugin adds a skill that tells Claude to load the rules and read each component's page before using it, and sets up the MCP server:

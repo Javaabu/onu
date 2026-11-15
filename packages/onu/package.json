@@ -36,6 +36,7 @@
     "docs",
     "llms.txt",
     "llms-full.txt",
+    "resources",
     "README.md"
   ],
   "exports": {
@@ -94,8 +95,9 @@
     "./fonts-optional.css": "./src/styles/fonts-optional.css"
   },
   "scripts": {
-    "build": "vite build && node scripts/build-types.mjs && pnpm llms",
+    "build": "vite build && node scripts/build-types.mjs && pnpm llms && pnpm boost",
     "llms": "node ../../scripts/llms.mjs --out .",
+    "boost": "node ../../scripts/boost.mjs",
     "build:types": "node scripts/build-types.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
