@@ -204,6 +204,8 @@ export function TagsInput({
             {...fieldProps}
             disabled={disabled}
             readOnly={readOnly}
+            // The text box is always emptied into tags, so it is only natively required while there are none.
+            required={!!control.required && tags.length === 0}
             placeholder={tags.length ? undefined : placeholder}
             aria-describedby={
               [control["aria-describedby"], full ? `${combobox.listId}-max` : null].filter(Boolean).join(" ") ||
