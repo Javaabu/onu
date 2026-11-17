@@ -12,6 +12,19 @@ import { TextInput } from "./text-input"
 vi.setConfig({ testTimeout: 30_000 })
 
 describe("toSlug and thaanaToLatin", () => {
+  it("adds its preview to a caller's aria-describedby instead of losing it", () => {
+    renderWithOnu(
+      <>
+        <p id="hint">Lowercase only</p>
+        <SlugInput aria-label="Slug" prefix="https://example.mv/" defaultValue="news" aria-describedby="hint" />
+      </>,
+    )
+    const ids = screen.getByRole("textbox", { name: "Slug" }).getAttribute("aria-describedby")!.split(" ")
+    expect(ids).toContain("hint")
+    expect(ids).toHaveLength(2)
+    expect(document.getElementById(ids[1]!)).toHaveTextContent("https://example.mv/news")
+  })
+
   it("slugifies Latin text", () => {
     expect(toSlug("Hulhumalé Ferry Schedule 2026!")).toBe("hulhumale-ferry-schedule-2026")
     expect(toSlug("A & B", { separator: "_" })).toBe("a-and-b".replace(/-/g, "_"))
