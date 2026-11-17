@@ -10,6 +10,7 @@ import { useIconContext, type IconSource } from "../../icons/icon-context"
 import { cn } from "../../lib/utils"
 import { useOnu, useTranslation } from "../../providers/onu-provider"
 import { NativeSelect, NativeSelectOption } from "../../ui/native-select"
+import { FieldValue } from "../form/_field-value"
 import { useFormFieldControl } from "../form/form-field"
 import { PickerSurface } from "./_picker-surface"
 import { registerEnglish } from "../../i18n/english"
@@ -118,7 +119,15 @@ export function IconPicker({
   const { dir } = useOnu()
   const [value, setValue] = useControllableState<string | null>(valueProp, defaultValue, onValueChange)
   const [open, setOpenState] = useControllableState(openProp, defaultOpen, onOpenChange)
-  const { name, ...control } = useFormFieldControl({ ...props, name: nameProp })
+  // The trigger is a plain button: `required` and `aria-required` aren't allowed on it.
+  const { name, ...wired } = useFormFieldControl({ ...props, name: nameProp })
+  const {
+    required: _required,
+    "aria-required": _ariaRequired,
+    ...control
+  } = wired as typeof wired & {
+    required?: boolean
+  }
   const sets = useIconSets(setsProp)
   const [setKey, setSetKey] = React.useState("all")
   const [loaded, setLoaded] = React.useState<Record<string, string[]>>({})
@@ -423,7 +432,7 @@ export function IconPicker({
           <p className="text-sm text-center text-muted-foreground">{t("input.noIcons")}</p>
         ) : null}
       </PickerSurface>
-      {name ? <input type="hidden" name={name} value={value ?? ""} /> : null}
+      <FieldValue name={name} value={value} control={control.id} disabled={control.disabled} />
     </>
   )
 }

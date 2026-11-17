@@ -82,6 +82,7 @@ export function SlugInput({
   onBlur,
   endAddon,
   ref,
+  "aria-describedby": describedBy,
   ...props
 }: SlugInputProps) {
   const { t } = useTranslation()
@@ -121,7 +122,7 @@ export function SlugInput({
         spellCheck={false}
         classNames={classNames}
         className={classNames?.root}
-        aria-describedby={[props["aria-describedby"], prefix ? previewId : null].filter(Boolean).join(" ") || undefined}
+        aria-describedby={[describedBy, prefix ? previewId : null].filter(Boolean).join(" ") || undefined}
         onChange={(e) => {
           if (auto) {
             setAuto(false)

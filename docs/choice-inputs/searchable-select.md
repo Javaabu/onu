@@ -108,7 +108,7 @@ While `onCreate` runs the row shows "Creating…"; if it throws, the row shows "
 
 ## Dependent fields
 
-A field whose options depend on another (atoll → island): pass `parentValue`. The field is disabled until the parent has a value (the placeholder says which field to fill first) and **clears itself whenever the parent changes**: `onValueChange(null)` (or `[]` for multiple) is called. `options` can then be a map keyed by the parent value or a function of it. For options from an API, [API select](./api-select) takes the same props and sends the parent value with each request.
+A field whose options depend on another (atoll → island): pass `parentValue`. The field is disabled until the parent has a value (the placeholder says which field to fill first) and **clears itself whenever the parent changes**: `onValueChange(null)` (or `[]` for multiple) is called. A value that arrives in the same render as its parent (react-hook-form's `reset(data)`, or an edit page that fetches both) is kept, and so is one set while the field waits for its parent. `options` can then be a map keyed by the parent value or a function of it. For options from an API, [API select](./api-select) takes the same props and sends the parent value with each request.
 
 ```tsx
 import { ApiSelect, SearchableSelect, Select } from '@javaabu/onu';

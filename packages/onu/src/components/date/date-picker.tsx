@@ -15,7 +15,7 @@ import type { Matcher } from "react-day-picker"
 
 import { useOnu } from "../../providers/onu-provider"
 import { DateCalendar } from "./date-calendar"
-import { HiddenInput, PickerShell, type PickerFieldProps } from "./_picker-shell"
+import { PickerShell, type PickerFieldProps } from "./_picker-shell"
 import { DEFAULT_DATE_FORMAT, formatDate, toISODate } from "./_utils"
 import { registerEnglish } from "../../i18n/english"
 import { date as en_date } from "../../locales/en/date"
@@ -149,7 +149,7 @@ function SingleDate({
       placeholder={placeholder ?? t("date.selectDate")}
       panelLabel={t("date.chooseDate")}
       announcement={value ? t("date.selected", { value: formatDate(value, "PPPP", locale.dateFns) }) : ""}
-      hidden={(name) => <HiddenInput name={name} value={value ? toISODate(value) : ""} />}
+      submit={(name) => [[name, value ? toISODate(value) : ""]]}
       onClear={() => setValue(null)}
     >
       {({ close }) => (
@@ -208,13 +208,7 @@ function MultipleDates({
       placeholder={placeholder ?? t("date.selectDates")}
       panelLabel={t("date.chooseDates")}
       announcement={count ? summary : ""}
-      hidden={(name) =>
-        value.length ? (
-          value.map((d) => <HiddenInput key={d.getTime()} name={`${name}[]`} value={toISODate(d)} />)
-        ) : (
-          <HiddenInput name={name} value="" />
-        )
-      }
+      submit={(name) => [[name, value.map(toISODate)]]}
       onClear={() => setValue([])}
     >
       <DateCalendar
@@ -280,7 +274,7 @@ function WeekDates({
       placeholder={placeholder ?? t("date.selectWeek")}
       panelLabel={t("date.chooseWeek")}
       announcement={display ? t("date.selected", { value: display }) : ""}
-      hidden={(name) => <HiddenInput name={name} value={start ? toISODate(start) : ""} />}
+      submit={(name) => [[name, start ? toISODate(start) : ""]]}
       onClear={() => setValue(null)}
     >
       {({ close }) => (
@@ -336,7 +330,7 @@ function PeriodDates({
       placeholder={placeholder ?? t(month ? "date.selectMonth" : "date.selectYear")}
       panelLabel={t(month ? "date.chooseMonth" : "date.chooseYear")}
       announcement={display ? t("date.selected", { value: display }) : ""}
-      hidden={(name) => <HiddenInput name={name} value={value ? formatFns(value, month ? "yyyy-MM" : "yyyy") : ""} />}
+      submit={(name) => [[name, value ? formatFns(value, month ? "yyyy-MM" : "yyyy") : ""]]}
       onClear={() => setValue(null)}
     >
       {({ close }) => (

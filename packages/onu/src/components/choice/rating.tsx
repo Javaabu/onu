@@ -6,6 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useOnu, useTranslation } from "../../providers/onu-provider"
+import { FieldValue } from "../form/_field-value"
 import { useFormField, useFormFieldControl } from "../form/form-field"
 import { registerEnglish } from "../../i18n/english"
 import { choice as en_choice } from "../../locales/en/choice"
@@ -171,7 +172,7 @@ export function Rating({
         className={cn(ratingVariants({ size }), disabled && "opacity-50", className)}
       >
         {stars}
-        {name ? <input type="hidden" name={name} value={value} /> : null}
+        <FieldValue name={name} value={value} control={rest.id} disabled={disabled} />
       </div>
     )
   }
@@ -199,7 +200,7 @@ export function Rating({
       )}
     >
       {stars}
-      {name ? <input type="hidden" name={name} value={value} /> : null}
+      <FieldValue name={name} value={value} control={rest.id} disabled={disabled} />
     </div>
   )
 }

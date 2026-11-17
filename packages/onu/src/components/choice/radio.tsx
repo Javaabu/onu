@@ -91,6 +91,7 @@ export function Radio({
   id: idProp,
   className,
   classNames,
+  "aria-describedby": describedByProp,
   ...props
 }: RadioProps) {
   const group = React.useContext(RadioGroupStyleContext)
@@ -100,6 +101,7 @@ export function Radio({
   const id = idProp ?? `radio-${generated}`
   const labelId = label ? `${id}-label` : undefined
   const descriptionId = description ? `${id}-description` : undefined
+  const describedBy = joinIds(describedByProp, descriptionId)
   const invalid = props["aria-invalid"] ?? (group.invalid || undefined)
 
   if (variant === "image") {
@@ -109,7 +111,7 @@ export function Radio({
         data-slot="radio-image"
         id={id}
         aria-labelledby={labelId}
-        aria-describedby={joinIds(props["aria-describedby"], descriptionId)}
+        aria-describedby={describedBy}
         aria-invalid={invalid}
         {...props}
         className={cn(radioImageVariants(), group.classNames?.item, classNames?.root, className)}
@@ -163,7 +165,7 @@ export function Radio({
         data-size={size}
         id={id}
         aria-labelledby={labelId}
-        aria-describedby={joinIds(props["aria-describedby"], descriptionId)}
+        aria-describedby={describedBy}
         aria-invalid={invalid}
         {...props}
         className={cn(radioCardVariants({ size }), group.classNames?.item, classNames?.root, className)}
@@ -197,7 +199,7 @@ export function Radio({
   const item = (
     <RadioGroupItem
       id={id}
-      aria-describedby={joinIds(props["aria-describedby"], descriptionId)}
+      aria-describedby={describedBy}
       aria-invalid={invalid}
       {...props}
       className={cn(

@@ -1,5 +1,20 @@
 # @javaabu/onu
 
+## 0.3.2
+
+### Patch Changes
+
+- ac87774: `Button` and `LinkButton` keep `data-slot="button"` when a caller passes its own `data-slot`, so the 44px touch-target rule still applies. Use `data-part` to tag a button.
+- b3b347a: `DateRangePicker` submits under `names` (for example `{ from: "start", to: "end" }`) without `name` too. It used to submit nothing unless `name` was also set.
+- aa000a1: Dependent `SearchableSelect` and `ApiSelect` fields (`parentValue`) keep a value that arrives together with the parent, as with react-hook-form's `reset(data)` or an edit page that fetches both, and a value set while the field waits for its parent. They still clear when the parent changes after the value was settled.
+- 4be1c44: `Form` passes the button that submitted it to `onSubmit`'s values, so `<button type="submit" name="action" value="draft">` gives `{ action: "draft" }`, as a native submit would.
+- 37defa6: `SlugInput` and `Radio` add their own description (the URL preview, the radio's `description`) to a caller's `aria-describedby` instead of letting it replace them.
+- b8eda97: `PhoneInput` submits the E.164 value (`+9607771234`) under its `name`, instead of the formatted text in the box (`777-1234`).
+- 0eb7f2c: `ColorPicker` and `IconPicker` no longer put `required` and `aria-required` on their trigger button inside a required `FormField`, which axe reported as `aria-allowed-attr`.
+- 6a2a3dd: `Select` uses the same empty value and callback as `SearchableSelect` and `ApiSelect`: `value` and `defaultValue` are `string | null` (`null` shows the placeholder), and `onValueChange(value, option)` gets the chosen option from `options`, or `(null, null)` when cleared. With `SelectItem` children, `option` is `null`. Code that set `""` or read `""` for an empty select now uses `null`.
+- 97a9565: Composite controls (`NumberInput`, `TagsInput`, `SearchableSelect`, `ApiSelect`, the date and time pickers, `ColorPicker`, `IconPicker`, `SegmentedControl`, `DualListbox`, `Rating`) now submit their value through one shared hidden field. It is left out of the submission when the surrounding `FormField` is disabled, not only when the control itself is. `Form` clears a field's server error when such a control's value changes, and `ValidationSummary` links focus the visible control. A multiple `DatePicker` with no days chosen submits nothing (it used to submit an empty `name`), like `TagsInput` and `DualListbox`.
+- 22dff1a: `TagsInput` with `required` no longer blocks native form submission once it has tags: its text box is required only while there are none.
+
 ## 0.3.1
 
 ### Patch Changes

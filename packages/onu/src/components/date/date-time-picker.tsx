@@ -7,7 +7,7 @@ import { Icon } from "../../icons/icon"
 import { useOnu } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { DateCalendar } from "./date-calendar"
-import { HiddenInput, PickerShell, type PickerFieldProps } from "./_picker-shell"
+import { PickerShell, type PickerFieldProps } from "./_picker-shell"
 import {
   DEFAULT_DATE_FORMAT,
   defaultTimeFormat,
@@ -97,7 +97,7 @@ export function DateTimePicker({
       placeholder={placeholder ?? t("date.selectDateTime")}
       panelLabel={t("date.chooseDateTime")}
       announcement={display ? t("date.selected", { value: display }) : ""}
-      hidden={(name) => <HiddenInput name={name} value={value ? toISODateTime(value) : ""} />}
+      submit={(name) => [[name, value ? toISODateTime(value) : ""]]}
       onClear={() => {
         setValue(null)
         setPendingTime(null)

@@ -217,6 +217,7 @@ export function CollectionIndex({ view }: { view: "list" | "grid" }) {
               options={sortOptions}
               value={sortKey}
               onValueChange={(v) => {
+                if (!v) return
                 const [id, dir] = v.split(":")
                 state.setSort({ id: id!, desc: dir === "desc" })
               }}

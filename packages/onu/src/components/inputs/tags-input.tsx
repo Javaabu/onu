@@ -8,6 +8,7 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
 import { Badge } from "../../ui/badge"
+import { FieldValue } from "../form/_field-value"
 import { useFormFieldControl } from "../form/form-field"
 import {
   SuggestionList,
@@ -203,6 +204,8 @@ export function TagsInput({
             {...fieldProps}
             disabled={disabled}
             readOnly={readOnly}
+            // The text box is always emptied into tags, so it is only natively required while there are none.
+            required={!!control.required && tags.length === 0}
             placeholder={tags.length ? undefined : placeholder}
             aria-describedby={
               [control["aria-describedby"], full ? `${combobox.listId}-max` : null].filter(Boolean).join(" ") ||
@@ -254,9 +257,7 @@ export function TagsInput({
             )}
           />
           {thaanaActive && thaanaToggle ? <ThaanaToggle enabled={thaanaOn} onToggle={toggle} /> : null}
-          {name
-            ? tags.map((tag, i) => <input key={`${i}-${tag}`} type="hidden" name={`${name}[]`} value={tag} />)
-            : null}
+          <FieldValue name={name} value={tags} control={control.id} disabled={disabled} />
           {full ? (
             <span id={`${combobox.listId}-max`} className="sr-only">
               {t("input.tagLimit", { count: max })}

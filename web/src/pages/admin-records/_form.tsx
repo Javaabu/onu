@@ -208,7 +208,8 @@ export function ApplicationFields({
               placeholder={tr("Choose a service", "ޚިދުމަތެއް އިޚްތިޔާރުކުރޭ")}
               options={labels.options.services}
               value={values.service}
-              onValueChange={(service) => {
+              onValueChange={(choice) => {
+                const service = choice ?? ""
                 const fee = SERVICES.find((s) => s.value === service)?.fee
                 onChange(values.amount === null && fee ? { service, amount: fee } : { service })
               }}
@@ -245,7 +246,7 @@ export function ApplicationFields({
               <Select
                 options={labels.options.statuses}
                 value={values.status}
-                onValueChange={(status) => onChange({ status })}
+                onValueChange={(status) => status && onChange({ status })}
               />
             </FormField>
           ) : null}

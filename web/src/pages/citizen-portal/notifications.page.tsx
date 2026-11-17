@@ -67,7 +67,7 @@ export default function NotificationsPage() {
           <Select
             aria-label={tr("Category", "ބާވަތް")}
             value={category}
-            onValueChange={setCategory}
+            onValueChange={(v) => setCategory(v ?? "all")}
             className="sm:w-56"
             options={[
               { value: "all", label: tr("All categories", "ހުރިހާ ބާވަތެއް") },

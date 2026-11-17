@@ -536,7 +536,8 @@ describe('DatePicker — mode="multiple"', () => {
       <DatePicker mode="multiple" aria-label="Training days" name="days" today={TODAY} onValueChange={onChange} />,
     )
     expect(screen.getByRole("combobox")).toHaveTextContent("Select dates")
-    expect(container.querySelector('input[name="days"]')).toHaveValue("")
+    // Nothing is submitted with no days chosen, as a native multi-select would.
+    expect(container.querySelectorAll('input[name^="days"]:not(:disabled)')).toHaveLength(0)
     await user.click(screen.getByRole("combobox"))
     await user.click(day(/March 20th/))
     await user.click(day(/March 5th/))

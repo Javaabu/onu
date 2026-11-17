@@ -77,6 +77,27 @@ describe("Button", () => {
     expect(onClick).not.toHaveBeenCalled()
   })
 
+  it("keeps data-slot=button over a caller's data-slot, so the touch-target rule still matches", () => {
+    const props = { "data-slot": "custom" } as Record<string, string>
+    renderWithOnu(
+      <>
+        <Button {...props}>Save</Button>
+        <LinkButton href="/a" {...props}>
+          Open
+        </LinkButton>
+        <LinkButton href="/b" disabled {...props}>
+          Closed
+        </LinkButton>
+        <LinkButton href="/c" asChild {...props}>
+          <a href="/c">Child</a>
+        </LinkButton>
+      </>,
+    )
+    expect(screen.getByRole("button", { name: "Save" })).toHaveAttribute("data-slot", "button")
+    for (const name of ["Open", "Closed", "Child"])
+      expect(screen.getByRole("link", { name })).toHaveAttribute("data-slot", "button")
+  })
+
   it("supports asChild with icons", () => {
     renderWithOnu(
       <Button asChild startIcon="add" variant="outline">

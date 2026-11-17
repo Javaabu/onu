@@ -8,6 +8,7 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
 import { Button } from "../../ui/button"
+import { FieldValue } from "../form/_field-value"
 import { useFormField, useFormFieldControl } from "../form/form-field"
 import { filterOptions, normalizeOptions, type ChoiceOption, type ChoiceOptionInput } from "./options"
 import { registerEnglish } from "../../i18n/english"
@@ -423,9 +424,7 @@ export function DualListbox({
         </div>
         {pane("chosen")}
       </div>
-      {name
-        ? value.map((v) => <input key={v} type="hidden" name={name.endsWith("[]") ? name : `${name}[]`} value={v} />)
-        : null}
+      <FieldValue name={name} value={value} control={id} disabled={disabled} />
       {region}
     </div>
   )

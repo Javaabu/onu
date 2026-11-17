@@ -107,7 +107,6 @@ export function Button({
 
   return (
     <Comp
-      data-slot="button"
       data-variant={variant}
       data-size={size}
       data-loading={loading || undefined}
@@ -125,6 +124,8 @@ export function Button({
         onClick?.(event)
       }}
       {...props}
+      // Always "button", so the touch-target rule in base.css matches; callers use data-part.
+      data-slot="button"
     >
       {start}
       {asChild ? <Slot.Slottable>{label}</Slot.Slottable> : label}

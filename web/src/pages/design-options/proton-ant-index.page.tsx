@@ -197,7 +197,7 @@ function QueryFilter({
     }
     onQuery(d.q.trim(), next)
   }
-  const set = (key: keyof Draft) => (value: string | undefined) => setDraft((d) => ({ ...d, [key]: value ?? "" }))
+  const set = (key: keyof Draft) => (value: string | null) => setDraft((d) => ({ ...d, [key]: value ?? "" }))
 
   const fields = [
     {
@@ -207,7 +207,7 @@ function QueryFilter({
         <Select
           id={`${id}-service`}
           options={labels.options.services}
-          value={draft.service ?? ""}
+          value={draft.service || null}
           onValueChange={set("service")}
           placeholder={tr("Please select", "އިޚްތިޔާރުކުރައްވާ")}
           clearable
@@ -221,7 +221,7 @@ function QueryFilter({
         <Select
           id={`${id}-island`}
           options={labels.options.islands}
-          value={draft.island ?? ""}
+          value={draft.island || null}
           onValueChange={set("island")}
           placeholder={tr("Please select", "އިޚްތިޔާރުކުރައްވާ")}
           clearable
@@ -235,7 +235,7 @@ function QueryFilter({
         <Select
           id={`${id}-assignee`}
           options={[...labels.options.staff, { value: "none", label: tr("Unassigned", "ޙަވާލުނުކުރެވޭ") }]}
-          value={draft.assignee ?? ""}
+          value={draft.assignee || null}
           onValueChange={set("assignee")}
           placeholder={tr("Please select", "އިޚްތިޔާރުކުރައްވާ")}
           clearable
@@ -359,8 +359,8 @@ export default function ProtonAntIndexPage() {
           size="sm"
           className="w-40"
           options={labels.options.statuses}
-          value={value}
-          onValueChange={onValueChange}
+          value={value ?? null}
+          onValueChange={(v) => onValueChange(v ?? undefined)}
         />
       ),
       run: async (ids, value) => {
@@ -380,8 +380,8 @@ export default function ProtonAntIndexPage() {
           size="sm"
           className="w-44"
           options={labels.options.staff}
-          value={value}
-          onValueChange={onValueChange}
+          value={value ?? null}
+          onValueChange={(v) => onValueChange(v ?? undefined)}
         />
       ),
       run: async (ids, value) => {

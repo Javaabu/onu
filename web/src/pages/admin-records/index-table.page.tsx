@@ -75,8 +75,8 @@ export default function IndexTablePage() {
           size="sm"
           className="w-40"
           options={labels.options.statuses}
-          value={value}
-          onValueChange={onValueChange}
+          value={value ?? null}
+          onValueChange={(v) => onValueChange(v ?? undefined)}
         />
       ),
       run: async (ids, value) => {
@@ -96,8 +96,8 @@ export default function IndexTablePage() {
           size="sm"
           className="w-44"
           options={labels.options.staff}
-          value={value}
-          onValueChange={onValueChange}
+          value={value ?? null}
+          onValueChange={(v) => onValueChange(v ?? undefined)}
         />
       ),
       run: async (ids, value) => {

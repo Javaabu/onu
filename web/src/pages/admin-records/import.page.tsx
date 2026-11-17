@@ -345,7 +345,7 @@ export default function ImportPage() {
                           >
                             <Select
                               value={mapping[h] ?? "skip"}
-                              onValueChange={(v) => setMapping((m) => ({ ...m, [h]: v }))}
+                              onValueChange={(v) => setMapping((m) => ({ ...m, [h]: v ?? "skip" }))}
                               options={[
                                 { value: "skip", label: tr("Don't import", "އިމްޕޯޓް ނުކުރާ") },
                                 ...(Object.keys(fieldLabels) as FieldKey[]).map((f) => ({

@@ -28,8 +28,8 @@ export default function CourseCataloguePage() {
   const dv = useDv()
   const [tab, setTab] = React.useState("all")
   const [query, setQuery] = React.useState("")
-  const [topic, setTopic] = React.useState("")
-  const [level, setLevel] = React.useState("")
+  const [topic, setTopic] = React.useState<string | null>(null)
+  const [level, setLevel] = React.useState<string | null>(null)
 
   const q = query.trim().toLowerCase()
   const base = courses.filter(
@@ -46,8 +46,8 @@ export default function CourseCataloguePage() {
   const inProgress = courses.filter((c) => c.progress !== undefined && c.progress < 100)
 
   const clear = () => {
-    setTopic("")
-    setLevel("")
+    setTopic(null)
+    setLevel(null)
     setTab("all")
   }
 

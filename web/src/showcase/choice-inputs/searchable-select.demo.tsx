@@ -38,7 +38,7 @@ function delay<T>(value: T, ms = 400) {
 }
 
 export default function SearchableSelectDemo() {
-  const [atoll, setAtoll] = React.useState("")
+  const [atoll, setAtoll] = React.useState<string | null>(null)
   const [island, setIsland] = React.useState<string | null>(null)
   const [atoll2, setAtoll2] = React.useState("K")
   return (
@@ -148,7 +148,7 @@ export default function SearchableSelectDemo() {
         className="max-w-md gap-4 grid"
       >
         <FormField label="Atoll">
-          <Select options={atolls} value={atoll2} onValueChange={setAtoll2} />
+          <Select options={atolls} value={atoll2} onValueChange={(v) => setAtoll2(v ?? "K")} />
         </FormField>
         <FormField label="Islands">
           <ApiSelect

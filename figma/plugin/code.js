@@ -2,7 +2,7 @@
 (function() {
 
 //#region ../packages/onu/package.json
-	var version = "0.3.1";
+	var version = "0.3.2";
 
 //#endregion
 //#region ../tokens.json

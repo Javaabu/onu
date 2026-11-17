@@ -122,6 +122,25 @@ describe("DateRangePicker (§25.4)", () => {
     expect(screen.getByText("Check-in")).toHaveClass("label-x")
   })
 
+  it("submits under custom names without a name", () => {
+    const { container } = renderWithOnu(
+      <form>
+        <DateRangePicker
+          aria-label="Stay"
+          names={{ from: "start", to: "end" }}
+          defaultValue={{ from: new Date(2026, 2, 1), to: new Date(2026, 2, 3) }}
+        />
+        <DateRangePicker aria-label="Only from" names={{ from: "since" }} />
+      </form>,
+    )
+    const data = new FormData(container.querySelector("form")!)
+    expect([...data.entries()]).toEqual([
+      ["start", "2026-03-01"],
+      ["end", "2026-03-03"],
+      ["since", ""],
+    ])
+  })
+
   it("is labelled by its FormField and takes its name and state", async () => {
     const { container } = renderWithOnu(
       <FormField label="Leave period" name="leave" help="Inclusive" disabled>

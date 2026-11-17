@@ -190,7 +190,7 @@ export default function MyDocumentsPage() {
             <FormField label={tr("Category", "ބާވަތް")} name="category" required>
               <Select
                 value={form.category}
-                onValueChange={(v) => setForm((f) => ({ ...f, category: v }))}
+                onValueChange={(v) => setForm((f) => ({ ...f, category: v ?? "" }))}
                 placeholder={tr("Choose…", "ހޮވާ…")}
                 options={CATEGORIES.map((c) => ({ value: c, label: categoryLabel[c] }))}
               />

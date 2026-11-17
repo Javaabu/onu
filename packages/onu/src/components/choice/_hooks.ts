@@ -9,21 +9,29 @@ import { choice as en_choice } from "../../locales/en/choice"
 registerEnglish({ choice: en_choice })
 
 /**
- * Calls `callback` whenever `dep` changes after the first render (compared by
- * JSON so inline objects work). Used to clear a child when its parent changes.
+ * Calls `reset` when `parent` changes after the first render (compared by JSON
+ * so inline objects work), to clear a dependent field (R16.5).
+ *
+ * `stale` says whether the field's value was settled under the old parent and
+ * should be cleared: the field was usable then (not `waiting`), and its value
+ * didn't change in the same render. When parent and value arrive together (a
+ * react-hook-form `reset(data)`, a fetch on an edit page) or the value was set
+ * while the field waited for its parent, the value is kept.
  */
-export function useOnChange(dep: unknown, callback: () => void) {
-  const key = JSON.stringify(dep ?? null)
-  const previous = React.useRef(key)
-  const cb = React.useRef(callback)
+export function useParentChange(parent: unknown, value: unknown, waiting: boolean, reset: (stale: boolean) => void) {
+  const parentKey = JSON.stringify(parent ?? null)
+  const valueKey = JSON.stringify(value ?? null)
+  const previous = React.useRef({ parentKey, valueKey, waiting })
+  const cb = React.useRef(reset)
   React.useEffect(() => {
-    cb.current = callback
+    cb.current = reset
   })
   React.useEffect(() => {
-    if (previous.current === key) return
-    previous.current = key
-    cb.current()
-  }, [key])
+    const before = previous.current
+    previous.current = { parentKey, valueKey, waiting }
+    if (before.parentKey === parentKey) return
+    cb.current(!before.waiting && before.valueKey === valueKey)
+  }, [parentKey, valueKey, waiting])
 }
 
 export interface ParentFieldProps {
@@ -43,7 +51,7 @@ const isEmptyValue = (value: unknown) =>
  * The parent of a dependent field (R16.5). A field is dependent when the
  * `parentValue` prop is passed at all, even as `undefined`. `parent` is its
  * value as a string, or `null` while the parent is empty (`waiting`). Clear
- * the field with `useOnChange(parent, …)`.
+ * the field with `useParentChange(parent, …)`.
  */
 export function useParentField(props: ParentFieldProps, placeholder: string | undefined) {
   const { t } = useTranslation()

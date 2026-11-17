@@ -117,7 +117,7 @@ describe("IconPicker", () => {
     expect(onValueChange).toHaveBeenCalledWith(null)
   })
 
-  it("is controlled, submits the id and is wired by a FormField", () => {
+  it("is controlled, submits the id and is wired by a FormField, axe-clean when required", async () => {
     function Controlled() {
       const [v, setV] = React.useState<string | null>("lucide:anchor")
       return (
@@ -131,6 +131,7 @@ describe("IconPicker", () => {
     const { container } = renderWithOnu(<Controlled />)
     expect(screen.getByRole("button", { name: /Menu icon/ })).toHaveTextContent("anchor")
     expect(new FormData(container.querySelector("form")!).get("icon")).toBe("lucide:anchor")
+    await expectNoA11yViolations()
   })
 
   it("keeps working when storage is blocked", async () => {

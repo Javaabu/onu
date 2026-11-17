@@ -102,7 +102,7 @@ export default function ServicesDirectoryPage() {
               size="sm"
               classNames={{ root: "w-auto" }}
               value={sort}
-              onValueChange={setSort}
+              onValueChange={(v) => setSort(v ?? "popular")}
               options={[
                 { value: "popular", label: tr("Most used", "ގިނައިން ބޭނުންކުރާ") },
                 { value: "name", label: tr("Name", "ނަން") },

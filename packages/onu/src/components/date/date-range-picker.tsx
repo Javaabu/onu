@@ -10,7 +10,8 @@ import { Label } from "../../ui/label"
 import { useFormField, useFormFieldControl } from "../form/form-field"
 import { DatePicker } from "./date-picker"
 import { DateTimePicker } from "./date-time-picker"
-import { DetachFromFormField, HiddenInput, type PickerFieldProps } from "./_picker-shell"
+import { FieldValue } from "../form/_field-value"
+import { DetachFromFormField, type PickerFieldProps } from "./_picker-shell"
 import { toISODate, toISODateTime, type DateRangeValue } from "./_utils"
 import { registerEnglish } from "../../i18n/english"
 import { date as en_date } from "../../locales/en/date"
@@ -37,7 +38,7 @@ export interface DateRangePickerProps extends Omit<
   weekendDays?: number[]
   hourCycle?: 12 | 24
   minuteStep?: number
-  /** Hidden input names. Default: `name[from]` and `name[to]`. */
+  /** Submitted field names, with or without `name`. Default: `name[from]` and `name[to]`. */
   names?: { from?: string; to?: string }
   /** Override the "From" / "To" labels. */
   labels?: { from?: React.ReactNode; to?: React.ReactNode }
@@ -172,12 +173,18 @@ export function DateRangePicker({
           {t("date.endBeforeStart")}
         </p>
       ) : null}
-      {name ? (
-        <>
-          <HiddenInput name={names?.from ?? `${name}[from]`} value={iso(value.from)} />
-          <HiddenInput name={names?.to ?? `${name}[to]`} value={iso(value.to)} />
-        </>
-      ) : null}
+      <FieldValue
+        name={names?.from ?? (name ? `${name}[from]` : undefined)}
+        value={iso(value.from)}
+        control={fromId}
+        disabled={control.disabled}
+      />
+      <FieldValue
+        name={names?.to ?? (name ? `${name}[to]` : undefined)}
+        value={iso(value.to)}
+        control={toId}
+        disabled={control.disabled}
+      />
     </div>
   )
 }
