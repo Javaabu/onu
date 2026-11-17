@@ -239,7 +239,7 @@ export function AdminShell({
             </LinkButton>
           }
           footer={
-            <div className="gap-2 pt-3 grid border-t border-shell-border">
+            <div className="gap-2 pt-3 grid border-t border-shell-border group-data-[collapsible=icon]:hidden">
               <ProgressBar
                 size="sm"
                 value={1284}

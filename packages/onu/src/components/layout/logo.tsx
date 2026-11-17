@@ -82,7 +82,11 @@ export function Logo({
   const content = (
     <>
       {mark}
-      {text ? <span className={cn("text-base font-semibold tracking-tight", classNames?.text)}>{text}</span> : null}
+      {text ? (
+        <span data-slot="logo-text" className={cn("text-base font-semibold tracking-tight", classNames?.text)}>
+          {text}
+        </span>
+      ) : null}
     </>
   )
 
