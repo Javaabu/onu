@@ -49,6 +49,20 @@ describe("Form", () => {
     await expectNoA11yViolations()
   })
 
+  it("includes the submit button that was used", async () => {
+    const onSubmit = vi.fn()
+    renderWithOnu(
+      <Form onSubmit={onSubmit}>
+        <Fields />
+        <button type="submit" name="action" value="draft">
+          Save draft
+        </button>
+      </Form>,
+    )
+    await userEvent.click(screen.getByRole("button", { name: "Save draft" }))
+    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ action: "draft" }), expect.anything())
+  })
+
   it("shows a spinner, disables fields and blocks double submits while saving (§25.9 Saving)", async () => {
     const d = deferred()
     const onSubmit = vi.fn(() => d.promise)

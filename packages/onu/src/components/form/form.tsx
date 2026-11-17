@@ -217,7 +217,9 @@ export function Form<T extends FieldValues = FormValues>({
         () => setStatus("error"),
       )(event)
     } else {
-      void run(formDataToObject(new FormData(event.currentTarget)) as unknown as T, event)
+      // Keep the button that submitted (`name="action" value="draft"`), as a native submit would.
+      const submitter = (event.nativeEvent as SubmitEvent).submitter
+      void run(formDataToObject(new FormData(event.currentTarget, submitter)) as unknown as T, event)
     }
   }
 
