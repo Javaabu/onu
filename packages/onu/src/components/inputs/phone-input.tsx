@@ -15,6 +15,7 @@ import { useTranslation } from "../../providers/onu-provider"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../../ui/input-group"
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
+import { FieldValue } from "../form/_field-value"
 import { useFormFieldControl } from "../form/form-field"
 import { registerEnglish } from "../../i18n/english"
 import { input as en_input } from "../../locales/en/input"
@@ -203,29 +204,39 @@ export function PhoneInput({
 }: PhoneInputProps) {
   const { locale } = useTranslation()
   const [value, setValue] = useControllableState<string | undefined>(valueProp, defaultValue, onValueChange)
-  const controlProps = useFormFieldControl(props)
+  // `name` goes on the submitted E.164 value, not on the formatted text box.
+  const { name, ...controlProps } = useFormFieldControl(props)
   const labels = useCountryLabels(locale.code)
 
   return (
-    <PhoneField
-      {...controlProps}
-      value={value ?? ""}
-      onChange={(next?: string) => setValue(next || undefined)}
-      defaultCountry={defaultCountry}
-      countries={countries}
-      international={international}
-      onCountryChange={onCountryChange}
-      labels={labels}
-      flags={flags}
-      addInternationalOption={allowInternational}
-      countrySelectComponent={countrySelect ? CountrySelect : NoCountrySelect}
-      countrySelectProps={{ classNames }}
-      containerComponent={Container}
-      inputComponent={InputGroupInput}
-      numberInputProps={{ className: cn("tabular-nums", classNames?.input), dir: "ltr" }}
-      autoComplete={props.autoComplete ?? "tel"}
-      inputMode="tel"
-      className={cn(classNames?.root, className)}
-    />
+    <>
+      <PhoneField
+        {...controlProps}
+        value={value ?? ""}
+        onChange={(next?: string) => setValue(next || undefined)}
+        defaultCountry={defaultCountry}
+        countries={countries}
+        international={international}
+        onCountryChange={onCountryChange}
+        labels={labels}
+        flags={flags}
+        addInternationalOption={allowInternational}
+        countrySelectComponent={countrySelect ? CountrySelect : NoCountrySelect}
+        countrySelectProps={{ classNames }}
+        containerComponent={Container}
+        inputComponent={InputGroupInput}
+        numberInputProps={{ className: cn("tabular-nums", classNames?.input), dir: "ltr" }}
+        autoComplete={props.autoComplete ?? "tel"}
+        inputMode="tel"
+        className={cn(classNames?.root, className)}
+      />
+      <FieldValue
+        name={name}
+        value={value}
+        control={controlProps.id}
+        disabled={controlProps.disabled}
+        form={props.form}
+      />
+    </>
   )
 }

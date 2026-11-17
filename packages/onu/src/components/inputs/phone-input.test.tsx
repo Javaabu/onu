@@ -26,6 +26,35 @@ describe("PhoneInput", () => {
     await expectNoA11yViolations()
   })
 
+  it.each([
+    ["MV", "7771234", "+9607771234"],
+    ["LK", "0712345678", "+94712345678"],
+  ] as const)("submits the E.164 value, not the display text (%s)", async (country, typed, e164) => {
+    const { container } = renderWithOnu(
+      <form>
+        <FormField label="Mobile" name="mobile">
+          <PhoneInput defaultCountry={country} />
+        </FormField>
+      </form>,
+    )
+    await userEvent.type(screen.getByRole("textbox", { name: "Mobile" }), typed)
+    const data = new FormData(container.querySelector("form")!)
+    expect(data.getAll("mobile")).toEqual([e164])
+  })
+
+  it("submits an E.164 default value and nothing when its FormField is disabled", () => {
+    const { container } = renderWithOnu(
+      <form>
+        <PhoneInput aria-label="Home" name="home" defaultValue="+9603001234" />
+        <FormField label="Mobile" name="mobile" disabled>
+          <PhoneInput defaultValue="+9607771234" />
+        </FormField>
+      </form>,
+    )
+    const data = new FormData(container.querySelector("form")!)
+    expect([...data.entries()]).toEqual([["home", "+9603001234"]])
+  })
+
   it("is forced LTR, even on an RTL page", () => {
     const { container } = renderWithOnu(<PhoneInput aria-label="ފޯނު" />, { dir: "rtl", locale: "dv" })
     expect(container.querySelector("[data-slot=phone-input]")).toHaveAttribute("dir", "ltr")
@@ -81,7 +110,8 @@ describe("PhoneInput", () => {
     expect(screen.queryByRole("button", { name: /Country/ })).not.toBeInTheDocument()
     const input = screen.getByLabelText(/Phone/)
     expect(input).toBe(ref.current)
-    expect(input).toHaveAttribute("name", "phone")
+    expect(input).not.toHaveAttribute("name")
+    expect(document.querySelector('input[type="hidden"][name="phone"]')).toHaveValue("+9603331234")
     expect(input).toHaveAttribute("aria-invalid", "true")
     expect(input).toHaveClass("in-x")
     expect(input).toBeRequired()

@@ -3,7 +3,7 @@ title: PhoneInput
 sidebar_position: 9
 ---
 
-An international phone number input built on [`react-phone-number-input`](https://gitlab.com/catamphetamine/react-phone-number-input) (libphonenumber). It formats the number as you type, defaults to the Maldives (+960), has a searchable country picker built from Onu's `Popover` and `Command`, and returns an [E.164](https://en.wikipedia.org/wiki/E.164) value such as `+9607771234`.
+An international phone number input built on [`react-phone-number-input`](https://gitlab.com/catamphetamine/react-phone-number-input) (libphonenumber). It formats the number as you type, defaults to the Maldives (+960), has a searchable country picker built from Onu's `Popover` and `Command`, and returns an [E.164](https://en.wikipedia.org/wiki/E.164) value such as `+9607771234`. With a `name` (or inside a `FormField`), the form submits that E.164 value, not the formatted text.
 
 ```tsx
 import { PhoneInput } from "@javaabu/onu"
