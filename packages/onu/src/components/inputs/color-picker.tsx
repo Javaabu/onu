@@ -20,6 +20,7 @@ import {
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
+import { FieldValue } from "../form/_field-value"
 import { useFormFieldControl } from "../form/form-field"
 import { PickerSurface } from "./_picker-surface"
 import { registerEnglish } from "../../i18n/english"
@@ -191,7 +192,7 @@ export function ColorPicker({
           ) : null}
         </PickerSurface>
       </AriaColorPicker>
-      {name ? <input type="hidden" name={name} value={hex ?? ""} /> : null}
+      <FieldValue name={name} value={hex} control={control.id} disabled={control.disabled} />
     </I18nProvider>
   )
 }

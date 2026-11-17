@@ -5,6 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { ToggleGroup as ToggleGroupPrimitive } from "radix-ui"
 
 import { cn } from "../../lib/utils"
+import { FieldValue } from "../form/_field-value"
 import { useFormField, useFormFieldControl } from "../form/form-field"
 import { normalizeOptions, type ChoiceOptionInput } from "./options"
 import { useControllableState } from "../../hooks/use-controllable-state"
@@ -118,7 +119,7 @@ export function SegmentedControl({
           </ToggleGroupPrimitive.Item>
         ))}
       </ToggleGroupPrimitive.Root>
-      {name ? <input type="hidden" name={name} value={value} /> : null}
+      <FieldValue name={name} value={value} control={rootProps.id} disabled={rootProps.disabled} />
     </>
   )
 }

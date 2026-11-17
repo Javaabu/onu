@@ -12,6 +12,7 @@ import { Badge } from "../../ui/badge"
 import { Button } from "../../ui/button"
 import { Command, CommandGroup, CommandItem, CommandList, CommandSeparator } from "../../ui/command"
 import { useMergedRef } from "../../hooks/use-merged-ref"
+import { FieldValue } from "../form/_field-value"
 import { Picker, PickerAnchor, PickerContent, PickerTrigger } from "./_picker"
 import { groupOptions, type ChoiceOption } from "./options"
 import { registerEnglish } from "../../i18n/english"
@@ -547,15 +548,12 @@ export function ComboboxCore({
           {list}
         </PickerContent>
       </Picker>
-      {name ? (
-        multiple ? (
-          selected.map((o) => (
-            <input key={o.value} type="hidden" name={name.endsWith("[]") ? name : `${name}[]`} value={o.value} />
-          ))
-        ) : (
-          <input type="hidden" name={name} value={selected[0]?.value ?? ""} />
-        )
-      ) : null}
+      <FieldValue
+        name={name}
+        value={multiple ? selected.map((o) => o.value) : selected[0]?.value}
+        control={triggerProps.id as string | undefined}
+        disabled={disabled}
+      />
       <span role="status" aria-live="polite" className="sr-only">
         {announcement || status}
       </span>

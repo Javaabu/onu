@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import { useOnu } from "../../providers/onu-provider"
-import { HiddenInput, PickerShell, type PickerFieldProps } from "./_picker-shell"
+import { PickerShell, type PickerFieldProps } from "./_picker-shell"
 import { defaultTimeFormat, formatDate, getTimeValue, toISOTime, withTime } from "./_utils"
 import { TimePanel } from "./time-panel"
 import { registerEnglish } from "../../i18n/english"
@@ -57,7 +57,7 @@ export function TimePicker({
       placeholder={placeholder ?? t("date.selectTime")}
       panelLabel={t("date.chooseTime")}
       announcement={display ? t("date.selected", { value: display }) : ""}
-      hidden={(name) => <HiddenInput name={name} value={value ? toISOTime(value) : ""} />}
+      submit={(name) => [[name, value ? toISOTime(value) : ""]]}
       onClear={() => setValue(null)}
     >
       <TimePanel

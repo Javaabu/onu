@@ -11,6 +11,7 @@ import { useOnu } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "../../ui/drawer"
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
+import { FieldValue, type FieldValueValue } from "../form/_field-value"
 import { useFormField, useFormFieldControl } from "../form/form-field"
 import { registerEnglish } from "../../i18n/english"
 import { common as en_common } from "../../locales/en/common"
@@ -85,8 +86,8 @@ interface PickerShellProps extends PickerFieldProps {
   icon?: SemanticIconName
   /** Name of the panel (dialog). */
   panelLabel: string
-  /** Hidden form inputs for a field name. */
-  hidden?: (name: string) => React.ReactNode
+  /** What the field submits for a field name: `[name, value]` pairs, rendered with `FieldValue`. */
+  submit?: (name: string) => [string, FieldValueValue][]
   onClear?: () => void
   /** Extra footer content at the start. */
   footerStart?: React.ReactNode
@@ -106,7 +107,7 @@ export function PickerShell(props: PickerShellProps) {
     announcement,
     icon = "calendar",
     panelLabel,
-    hidden,
+    submit,
     onClear,
     footerStart,
     hideFooter,
@@ -222,7 +223,11 @@ export function PickerShell(props: PickerShellProps) {
           {control["aria-label"]}
         </span>
       ) : null}
-      {control.name && hidden ? hidden(control.name) : null}
+      {control.name && submit
+        ? submit(control.name).map(([name, value]) => (
+            <FieldValue key={name} name={name} value={value} control={control.id} disabled={control.disabled} />
+          ))
+        : null}
       <span className="sr-only" aria-live="polite" aria-atomic="true">
         {announcement}
       </span>
@@ -275,9 +280,4 @@ export function PickerShell(props: PickerShellProps) {
       {extras}
     </>
   )
-}
-
-/** Hidden `<input>` for plain form posts. */
-export function HiddenInput({ name, value }: { name: string; value: string }) {
-  return <input type="hidden" name={name} value={value} data-slot="picker-hidden-input" />
 }

@@ -9,7 +9,7 @@ import { ToggleGroup, ToggleGroupItem } from "../../ui/toggle-group"
 import { DateCalendar } from "./date-calendar"
 import { CalendarHeader } from "./_calendar-header"
 import { PeriodGrid } from "./_period-grid"
-import { HiddenInput, PickerShell, type PickerFieldProps } from "./_picker-shell"
+import { PickerShell, type PickerFieldProps } from "./_picker-shell"
 import { DEFAULT_DATE_FORMAT, formatDate, toISODate, yearBlockStart, type DateRangeValue } from "./_utils"
 import { registerEnglish } from "../../i18n/english"
 import { date as en_date } from "../../locales/en/date"
@@ -125,13 +125,11 @@ export function ReportingPeriodPicker({
       placeholder={placeholder ?? t("date.selectPeriod")}
       panelLabel={t("date.choosePeriod")}
       announcement={display ? t("date.selected", { value: display }) : ""}
-      hidden={(name) => (
-        <>
-          <HiddenInput name={`${name}[type]`} value={value?.type ?? ""} />
-          <HiddenInput name={`${name}[from]`} value={value ? toISODate(value.from) : ""} />
-          <HiddenInput name={`${name}[to]`} value={value ? toISODate(value.to) : ""} />
-        </>
-      )}
+      submit={(name) => [
+        [`${name}[type]`, value?.type ?? ""],
+        [`${name}[from]`, value ? toISODate(value.from) : ""],
+        [`${name}[to]`, value ? toISODate(value.to) : ""],
+      ]}
       onClear={() => {
         setValue(null)
         setPending(null)

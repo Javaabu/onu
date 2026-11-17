@@ -15,6 +15,7 @@ interface FormLayoutContextValue {
 
 const FormLayoutContext = React.createContext<FormLayoutContextValue>({})
 const FormErrorsContext = React.createContext<FormErrors | null>(null)
+const ClearFieldErrorContext = React.createContext<((name: string) => void) | null>(null)
 
 export interface FormLayoutProviderProps extends FormLayoutContextValue {
   children?: React.ReactNode
@@ -48,6 +49,14 @@ export function useFormDisabled() {
 /** Provides server-side errors (e.g. a Laravel 422 response) to every field by name. */
 export function FormErrorsProvider({ errors, children }: { errors?: FormErrors | null; children?: React.ReactNode }) {
   return <FormErrorsContext.Provider value={errors ?? null}>{children}</FormErrorsContext.Provider>
+}
+
+/** Lets controls clear their own server error when their value changes (provided by `Form`). */
+export const ClearFieldErrorProvider = ClearFieldErrorContext.Provider
+
+/** Clears one field's server error in the nearest `Form`, or `null` outside one. */
+export function useClearFieldError() {
+  return React.useContext(ClearFieldErrorContext)
 }
 
 /** Errors for one field name from the nearest FormErrorsProvider. */

@@ -10,6 +10,7 @@ import { useIconContext, type IconSource } from "../../icons/icon-context"
 import { cn } from "../../lib/utils"
 import { useOnu, useTranslation } from "../../providers/onu-provider"
 import { NativeSelect, NativeSelectOption } from "../../ui/native-select"
+import { FieldValue } from "../form/_field-value"
 import { useFormFieldControl } from "../form/form-field"
 import { PickerSurface } from "./_picker-surface"
 import { registerEnglish } from "../../i18n/english"
@@ -423,7 +424,7 @@ export function IconPicker({
           <p className="text-sm text-center text-muted-foreground">{t("input.noIcons")}</p>
         ) : null}
       </PickerSurface>
-      {name ? <input type="hidden" name={name} value={value ?? ""} /> : null}
+      <FieldValue name={name} value={value} control={control.id} disabled={control.disabled} />
     </>
   )
 }

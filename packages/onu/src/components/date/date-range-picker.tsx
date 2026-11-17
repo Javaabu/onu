@@ -10,7 +10,8 @@ import { Label } from "../../ui/label"
 import { useFormField, useFormFieldControl } from "../form/form-field"
 import { DatePicker } from "./date-picker"
 import { DateTimePicker } from "./date-time-picker"
-import { DetachFromFormField, HiddenInput, type PickerFieldProps } from "./_picker-shell"
+import { FieldValue } from "../form/_field-value"
+import { DetachFromFormField, type PickerFieldProps } from "./_picker-shell"
 import { toISODate, toISODateTime, type DateRangeValue } from "./_utils"
 import { registerEnglish } from "../../i18n/english"
 import { date as en_date } from "../../locales/en/date"
@@ -174,8 +175,18 @@ export function DateRangePicker({
       ) : null}
       {name ? (
         <>
-          <HiddenInput name={names?.from ?? `${name}[from]`} value={iso(value.from)} />
-          <HiddenInput name={names?.to ?? `${name}[to]`} value={iso(value.to)} />
+          <FieldValue
+            name={names?.from ?? `${name}[from]`}
+            value={iso(value.from)}
+            control={fromId}
+            disabled={control.disabled}
+          />
+          <FieldValue
+            name={names?.to ?? `${name}[to]`}
+            value={iso(value.to)}
+            control={toId}
+            disabled={control.disabled}
+          />
         </>
       ) : null}
     </div>
