@@ -8,6 +8,7 @@ import { cn } from "../../lib/utils"
 import { useOnu } from "../../providers/onu-provider"
 import { InputGroupButton } from "../../ui/input-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select"
+import { FieldValue } from "../form/_field-value"
 import { useFormFieldControl } from "../form/form-field"
 import { TextInput, type TextInputProps } from "./text-input"
 import { registerEnglish } from "../../i18n/english"
@@ -452,9 +453,7 @@ export function NumberInput(allProps: NumberInputProps) {
         className={cn("tabular-nums", stepper && [numberInputVariants({ size }), "touch:h-12"], props.className)}
         classNames={stepper ? { ...classNames, input: cn("font-medium text-center", classNames?.input) } : classNames}
       />
-      {name ? (
-        <input type="hidden" name={name} value={value ?? ""} form={props.form} disabled={props.disabled} />
-      ) : null}
+      <FieldValue name={name} value={value} control={props.id} disabled={props.disabled} form={props.form} />
     </>
   )
 }

@@ -20,6 +20,20 @@ const methods = [
 ]
 
 describe("RadioGroup", () => {
+  it.each(["default", "card", "image"] as const)(
+    "adds the description to a caller's aria-describedby (%s variant)",
+    (variant) => {
+      renderWithOnu(
+        <RadioGroup aria-label="Plan" variant={variant}>
+          <Radio value="a" label="Basic" description="For one person" aria-describedby="hint" />
+        </RadioGroup>,
+      )
+      const ids = screen.getByRole("radio").getAttribute("aria-describedby")!.split(" ")
+      expect(ids[0]).toBe("hint")
+      expect(document.getElementById(ids[1]!)).toHaveTextContent("For one person")
+    },
+  )
+
   it("renders options and selects with the mouse", async () => {
     const onValueChange = vi.fn()
     renderWithOnu(<RadioGroup aria-label="Delivery" options={methods} onValueChange={onValueChange} />)

@@ -6,7 +6,7 @@ import { useTranslation } from "../../providers/onu-provider"
 import { useFormFieldControl } from "../form/form-field"
 import { ComboboxCore, type ComboboxPresentationProps } from "./_combobox"
 import { useQuickCreate, type QuickCreateProps } from "./_create"
-import { useOnChange, useParentField, type ParentFieldProps } from "./_hooks"
+import { useParentChange, useParentField, type ParentFieldProps } from "./_hooks"
 import { useChoiceSelection, useOpenState, type SelectionProps } from "./_selection"
 import { filterOptions, normalizeOptions, type ChoiceOption, type ChoiceOptionInput } from "./options"
 
@@ -113,8 +113,8 @@ export function SearchableSelect(props: SearchableSelectProps) {
   }, [optionsInput, parent])
   const selection = useChoiceSelection({ multiple, value, defaultValue, onValueChange } as SelectionProps, options)
   // A new parent value: clear the child (R16.5).
-  useOnChange(parent, () => {
-    if (selection.values.length) selection.clear()
+  useParentChange(parent, selection.values, waiting, (stale) => {
+    if (stale && selection.values.length) selection.clear()
     setQuery("")
   })
   const create = useQuickCreate({

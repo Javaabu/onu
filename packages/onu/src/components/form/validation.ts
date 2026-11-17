@@ -97,12 +97,16 @@ type Focusable = HTMLElement & { name?: string; disabled?: boolean }
 export function findField(root: ParentNode | null | undefined, name: string): HTMLElement | null {
   if (!root) return null
   const target = toDotNotation(name)
-  const named = Array.from(root.querySelectorAll<Focusable>("[name]")).find(
-    (el) => el.getAttribute("type") !== "hidden" && toDotNotation(el.getAttribute("name") ?? "") === target,
-  )
-  if (named) return named
-  const byId = Array.from(root.querySelectorAll<HTMLElement>("[id]")).find((el) => el.id === name)
-  return byId ?? null
+  const byId = (id: string) => Array.from(root.querySelectorAll<HTMLElement>("[id]")).find((el) => el.id === id)
+  for (const el of Array.from(root.querySelectorAll<Focusable>("[name]"))) {
+    if (toDotNotation(el.getAttribute("name") ?? "") !== target) continue
+    if (el.getAttribute("type") !== "hidden") return el
+    // A composite control's submitted value (`FieldValue`) points at its visible control.
+    const control = el.getAttribute("data-control")
+    const visible = control ? byId(control) : undefined
+    if (visible) return visible
+  }
+  return byId(name) ?? null
 }
 
 /**

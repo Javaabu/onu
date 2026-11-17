@@ -20,6 +20,7 @@ import {
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
+import { FieldValue } from "../form/_field-value"
 import { useFormFieldControl } from "../form/form-field"
 import { PickerSurface } from "./_picker-surface"
 import { registerEnglish } from "../../i18n/english"
@@ -103,7 +104,15 @@ export function ColorPicker({
     if (v) onValueChange?.(v)
   })
   const [open, setOpen] = useControllableState(openProp, defaultOpen, onOpenChange)
-  const { name, ...control } = useFormFieldControl({ ...props, name: nameProp })
+  // The trigger is a plain button: `required` and `aria-required` aren't allowed on it.
+  const { name, ...wired } = useFormFieldControl({ ...props, name: nameProp })
+  const {
+    required: _required,
+    "aria-required": _ariaRequired,
+    ...control
+  } = wired as typeof wired & {
+    required?: boolean
+  }
   const hex = toHex(value)
   const color = React.useMemo(() => parseColor(hex ?? "#1f7a4d").toFormat("hsb"), [hex])
   const label = hex ? hex.toUpperCase() : (placeholder ?? t("input.noColour"))
@@ -191,7 +200,7 @@ export function ColorPicker({
           ) : null}
         </PickerSurface>
       </AriaColorPicker>
-      {name ? <input type="hidden" name={name} value={hex ?? ""} /> : null}
+      <FieldValue name={name} value={hex} control={control.id} disabled={control.disabled} />
     </I18nProvider>
   )
 }

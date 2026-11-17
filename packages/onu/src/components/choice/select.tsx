@@ -17,7 +17,7 @@ import {
 } from "../../ui/select"
 import { useFormFieldControl } from "../form/form-field"
 import { useMergedRef } from "../../hooks/use-merged-ref"
-import { groupOptions, normalizeOptions, type ChoiceOptionInput } from "./options"
+import { groupOptions, normalizeOptions, type ChoiceOption, type ChoiceOptionInput } from "./options"
 import { registerEnglish } from "../../i18n/english"
 import { choice as en_choice } from "../../locales/en/choice"
 import { useControllableState } from "../../hooks/use-controllable-state"
@@ -27,7 +27,18 @@ registerEnglish({ choice: en_choice })
 type RootProps = React.ComponentProps<typeof SelectPrimitive.Root>
 type TriggerProps = Omit<React.ComponentProps<"button">, "value" | "defaultValue" | "dir" | "children" | "ref">
 
-export interface SelectProps extends Omit<RootProps, "children">, Omit<TriggerProps, keyof RootProps> {
+export interface SelectProps
+  extends
+    Omit<RootProps, "children" | "value" | "defaultValue" | "onValueChange">,
+    Omit<TriggerProps, keyof RootProps> {
+  /** Selected value, or `null` for none. */
+  value?: string | null
+  defaultValue?: string | null
+  /**
+   * Called with the new value (`null` when cleared) and its option from
+   * `options` (`null` when cleared, or with `SelectItem` children).
+   */
+  onValueChange?: (value: string | null, option: ChoiceOption | null) => void
   /** Options as an array. Alternatively pass `SelectItem` / `SelectGroup` children. */
   options?: ReadonlyArray<ChoiceOptionInput>
   /** Text shown when nothing is selected. */
@@ -95,7 +106,13 @@ export function Select({
   const { t } = useTranslation()
   const triggerRef = React.useRef<HTMLButtonElement>(null)
   const mergedRef = useMergedRef(triggerRef, ref)
-  const [value, setValue] = useControllableState<string>(valueProp, defaultValue ?? "", onValueChange)
+  const items = normalizeOptions(options)
+  const [value, setValue] = useControllableState<string | null, [ChoiceOption | null]>(
+    valueProp,
+    defaultValue ?? null,
+    onValueChange,
+  )
+  const select = (next: string | null) => setValue(next, (next !== null && items.find((o) => o.value === next)) || null)
   const control = useFormFieldControl({
     ...triggerRest,
     name,
@@ -105,8 +122,9 @@ export function Select({
   const { name: fieldName, disabled, required, ...triggerProps } = control
 
   const rootProps = {
-    value,
-    onValueChange: setValue,
+    // Radix shows the placeholder for "".
+    value: value ?? "",
+    onValueChange: (next: string) => select(next || null),
     open,
     defaultOpen,
     onOpenChange,
@@ -122,8 +140,7 @@ export function Select({
     return <SelectRoot {...rootProps}>{children}</SelectRoot>
   }
 
-  const items = normalizeOptions(options)
-  const showClear = clearable && !required && !disabled && value !== ""
+  const showClear = clearable && !required && !disabled && value !== null
 
   return (
     <SelectRoot {...rootProps}>
@@ -149,7 +166,7 @@ export function Select({
             data-slot="select-clear"
             aria-label={t("choice.clearSelection")}
             onClick={() => {
-              setValue("")
+              select(null)
               triggerRef.current?.focus()
             }}
             className={cn(

@@ -12,11 +12,11 @@ export const meta = {
 }
 
 export default function SelectDemo() {
-  const [atoll, setAtoll] = React.useState("K")
+  const [atoll, setAtoll] = React.useState<string | null>("K")
   return (
     <DemoPage>
       <DemoSection title="Options array" className="max-w-md gap-4 grid">
-        <FormField label="Atoll" help={`Selected: ${atoll || "none"}`}>
+        <FormField label="Atoll" help={`Selected: ${atoll ?? "none"}`}>
           <Select options={atolls} value={atoll} onValueChange={setAtoll} clearable />
         </FormField>
         <FormField label="Gender" required>

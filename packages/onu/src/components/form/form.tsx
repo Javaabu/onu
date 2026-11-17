@@ -6,7 +6,13 @@ import { FormProvider, type FieldValues, type UseFormReturn } from "react-hook-f
 import { cn } from "../../lib/utils"
 import type { LabelLayout } from "../../providers/onu-provider"
 import { useTranslation } from "../../providers/onu-provider"
-import { FormErrorsProvider, FormLayoutProvider, toDotNotation, type FormErrors } from "./form-context"
+import {
+  ClearFieldErrorProvider,
+  FormErrorsProvider,
+  FormLayoutProvider,
+  toDotNotation,
+  type FormErrors,
+} from "./form-context"
 import {
   errorEntries,
   flattenFieldErrors,
@@ -211,20 +217,26 @@ export function Form<T extends FieldValues = FormValues>({
         () => setStatus("error"),
       )(event)
     } else {
-      void run(formDataToObject(new FormData(event.currentTarget)) as unknown as T, event)
+      // Keep the button that submitted (`name="action" value="draft"`), as a native submit would.
+      const submitter = (event.nativeEvent as SubmitEvent).submitter
+      void run(formDataToObject(new FormData(event.currentTarget, submitter)) as unknown as T, event)
     }
   }
 
-  // Editing a field clears its server error.
+  // Editing a field clears its server error. Composite controls call this through `FieldValue`.
+  const clearFieldError = React.useCallback((name: string) => {
+    setServerErrors((current) => {
+      const key = current && Object.keys(current).find((k) => toDotNotation(k) === toDotNotation(name))
+      if (!current || !key) return current
+      const { [key]: _removed, ...rest } = current
+      return Object.keys(rest).length ? rest : null
+    })
+  }, [])
+
   function handleChange(event: React.ChangeEvent<HTMLFormElement>) {
     onChange?.(event)
     const name = (event.target as unknown as HTMLInputElement).name
-    if (!name || !serverErrors) return
-    const key = Object.keys(serverErrors).find((k) => toDotNotation(k) === toDotNotation(name))
-    if (key) {
-      const { [key]: _removed, ...rest } = serverErrors
-      setServerErrors(Object.keys(rest).length ? rest : null)
-    }
+    if (name) clearFieldError(name)
   }
 
   const ctx = React.useMemo<FormContextValue>(
@@ -236,31 +248,33 @@ export function Form<T extends FieldValues = FormValues>({
     <FormContext.Provider value={ctx}>
       <FormLayoutProvider labelLayout={labelLayout} disabled={disabled || (disableWhileProcessing && processing)}>
         <FormErrorsProvider errors={errors}>
-          <form
-            ref={(node) => {
-              formRef.current = node
-              if (typeof ref === "function") ref(node)
-              else if (ref) ref.current = node
-            }}
-            data-slot="form"
-            data-status={status}
-            aria-busy={processing || undefined}
-            noValidate={noValidate ?? !!form}
-            className={cn("gap-6 grid", className)}
-            onSubmit={handleSubmit}
-            onChange={handleChange}
-            {...props}
-          >
-            {summary ? (
-              <ValidationSummary
-                errors={errors}
-                message={formError}
-                title={summaryTitle}
-                className={classNames?.summary}
-              />
-            ) : null}
-            {children}
-          </form>
+          <ClearFieldErrorProvider value={clearFieldError}>
+            <form
+              ref={(node) => {
+                formRef.current = node
+                if (typeof ref === "function") ref(node)
+                else if (ref) ref.current = node
+              }}
+              data-slot="form"
+              data-status={status}
+              aria-busy={processing || undefined}
+              noValidate={noValidate ?? !!form}
+              className={cn("gap-6 grid", className)}
+              onSubmit={handleSubmit}
+              onChange={handleChange}
+              {...props}
+            >
+              {summary ? (
+                <ValidationSummary
+                  errors={errors}
+                  message={formError}
+                  title={summaryTitle}
+                  className={classNames?.summary}
+                />
+              ) : null}
+              {children}
+            </form>
+          </ClearFieldErrorProvider>
         </FormErrorsProvider>
       </FormLayoutProvider>
     </FormContext.Provider>

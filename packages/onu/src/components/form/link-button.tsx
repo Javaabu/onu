@@ -52,13 +52,14 @@ export function LinkButton({
   const start = renderIcon(startIcon, "inline-start")
   const newTab = external ? <span className="sr-only"> {t("form.opensInNewTab")}</span> : null
   const end = renderIcon(endIcon ?? (external ? "external-link" : undefined), "inline-end")
+  // Spread after the caller's props: data-slot stays "button" so the touch-target rule in base.css matches.
   const data = { "data-slot": "button", "data-variant": variant, "data-size": size }
 
   if (disabled) {
     const text =
       asChild && React.isValidElement<{ children?: React.ReactNode }>(children) ? children.props.children : children
     return (
-      <a ref={ref} role="link" aria-disabled="true" className={classes} {...data} {...props}>
+      <a ref={ref} role="link" aria-disabled="true" className={classes} {...props} {...data}>
         {start}
         {text}
         {newTab}
@@ -72,8 +73,8 @@ export function LinkButton({
     href,
     className: classes,
     ...(external ? { target: "_blank", rel: "noopener noreferrer" } : {}),
-    ...data,
     ...props,
+    ...data,
   }
 
   if (asChild) {

@@ -27,8 +27,8 @@ Options with the same `group` are listed under that heading. Options may be plai
 | Prop                                    | Type                                      | Default            | Description                                                   |
 | --------------------------------------- | ----------------------------------------- | ------------------ | ------------------------------------------------------------- |
 | `options`                               | `(ChoiceOption \| string)[]`              |                    | Options; or pass `SelectItem` / `SelectGroup` children        |
-| `value` / `defaultValue`                | `string`                                  | `""`               | Selected value; `""` shows the placeholder                    |
-| `onValueChange`                         | `(value: string) => void`                 |                    | Also called with `""` when cleared                            |
+| `value` / `defaultValue`                | `string \| null`                          | `null`             | Selected value; `null` shows the placeholder                  |
+| `onValueChange`                         | `(value: string \| null, option) => void` |                    | `(null, null)` when cleared; `option` is `null` for children  |
 | `placeholder`                           | `string`                                  | "Select an option" | Text when empty                                               |
 | `clearable`                             | `boolean`                                 | `false`            | Show a clear button when a value is set; hidden when required |
 | `size`                                  | `"sm" \| "default" \| "lg"`               | `"default"`        | Trigger height                                                |
@@ -42,7 +42,7 @@ Other button props (`aria-label`, `id`, …) and `ref` go to the trigger button.
 
 :::info
 
-`Select` replaces shadcn's `Select` root in the main export. It stays compatible: if its children contain `SelectTrigger` and `SelectContent`, it behaves exactly like the shadcn root. The primitive is still available from `@javaabu/onu/primitives`. Differences: it always manages the value (so it can be cleared), and an empty value is `""`.
+`Select` replaces shadcn's `Select` root in the main export. It stays compatible: if its children contain `SelectTrigger` and `SelectContent`, it behaves exactly like the shadcn root. The primitive is still available from `@javaabu/onu/primitives`. Differences: it always manages the value (so it can be cleared), an empty value is `null`, and `onValueChange` also gets the option, like `SearchableSelect` and `ApiSelect`.
 
 :::
 

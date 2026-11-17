@@ -501,7 +501,7 @@ function Form(
           { value: "S", label: "Seenu" },
         ]}
         value={atoll}
-        onValueChange={setAtoll}
+        onValueChange={(v) => setAtoll(v ?? "")}
       />
       <button type="button" onClick={() => setAtoll("S")}>
         Pick Seenu
@@ -655,6 +655,61 @@ describe("parentValue", () => {
     expect(island).toBeEnabled()
     await userEvent.click(island)
     expect(screen.getAllByRole("option").map((o) => o.textContent)).toEqual(["Malé", "Hulhumalé"])
+  })
+
+  it("keeps a value that arrives together with its parent (an edit page loading)", async () => {
+    const onValueChange = vi.fn()
+    function EditPage() {
+      const [data, setData] = React.useState<{ atoll: string | null; island: string | null }>({
+        atoll: null,
+        island: null,
+      })
+      return (
+        <>
+          <button type="button" onClick={() => setData({ atoll: "K", island: "male" })}>
+            Load
+          </button>
+          <SearchableSelect
+            aria-label="Island"
+            parentValue={data.atoll}
+            options={islandsByAtoll}
+            value={data.island}
+            onValueChange={(v) => {
+              onValueChange(v)
+              setData((d) => ({ ...d, island: v as string | null }))
+            }}
+          />
+        </>
+      )
+    }
+    renderWithOnu(<EditPage />)
+    await userEvent.click(screen.getByRole("button", { name: "Load" }))
+    expect(screen.getByRole("combobox", { name: "Island" })).toHaveTextContent("Malé")
+    expect(onValueChange).not.toHaveBeenCalled()
+  })
+
+  it("keeps a default value while the parent loads, then clears on a real parent change", async () => {
+    const onValueChange = vi.fn()
+    const props = { "aria-label": "Island", options: islandsByAtoll, defaultValue: "male", onValueChange }
+    const { rerender } = renderWithOnu(<SearchableSelect {...props} parentValue={null} />)
+    rerender(<SearchableSelect {...props} parentValue="K" />)
+    expect(screen.getByRole("combobox", { name: "Island" })).toHaveTextContent("Malé")
+    expect(onValueChange).not.toHaveBeenCalled()
+    rerender(<SearchableSelect {...props} parentValue="S" />)
+    expect(onValueChange).toHaveBeenLastCalledWith(null, null)
+  })
+
+  it("keeps an ApiSelect value that arrives together with its parent", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(JSON.stringify({ data: [] }))),
+    )
+    const onValueChange = vi.fn()
+    const client = newClient()
+    const props = { "aria-label": "Island", url: "/api/islands", debounce: 0, queryClient: client, onValueChange }
+    const { rerender } = renderWithOnu(<ApiSelect {...props} parentValue={null} value={null} />)
+    rerender(<ApiSelect {...props} parentValue="S" value="9" />)
+    expect(onValueChange).not.toHaveBeenCalled()
   })
 
   it("sends the parent with ApiSelect requests and clears on change", async () => {

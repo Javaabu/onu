@@ -336,7 +336,7 @@ export default function ProfilePage() {
               <Select
                 options={relationships}
                 value={draft.relationship}
-                onValueChange={(v) => setDraft((d) => ({ ...d, relationship: v }))}
+                onValueChange={(v) => setDraft((d) => ({ ...d, relationship: v ?? "" }))}
                 placeholder={tr("Choose…", "ހޮވާ…")}
               />
             </FormField>

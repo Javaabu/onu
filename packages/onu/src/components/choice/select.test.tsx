@@ -28,7 +28,7 @@ describe("Select", () => {
     await userEvent.click(trigger)
     expect(screen.getByText("North")).toBeInTheDocument()
     await userEvent.click(screen.getByRole("option", { name: "Seenu" }))
-    expect(onValueChange).toHaveBeenCalledWith("S")
+    expect(onValueChange).toHaveBeenCalledWith("S", expect.objectContaining({ value: "S", label: "Seenu" }))
     expect(trigger).toHaveTextContent("Seenu")
   })
 
@@ -74,22 +74,23 @@ describe("Select", () => {
     expect(trigger).toHaveTextContent("B")
     await userEvent.click(trigger)
     await userEvent.click(screen.getByRole("option", { name: "A" }))
-    expect(onValueChange).toHaveBeenCalledWith("a")
+    // SelectItem children have no option object to report.
+    expect(onValueChange).toHaveBeenCalledWith("a", null)
   })
 
   it("clears optional fields, controlled", async () => {
     function Controlled() {
-      const [value, setValue] = React.useState("K")
+      const [value, setValue] = React.useState<string | null>("K")
       return (
         <>
           <Select aria-label="Atoll" options={atolls} value={value} onValueChange={setValue} clearable />
-          <output>[{value}]</output>
+          <output>[{value === null ? "null" : value}]</output>
         </>
       )
     }
     renderWithOnu(<Controlled />)
     await userEvent.click(screen.getByRole("button", { name: "Clear selection" }))
-    expect(screen.getByText("[]")).toBeInTheDocument()
+    expect(screen.getByText("[null]")).toBeInTheDocument()
     expect(screen.getByRole("combobox")).toHaveTextContent("Select an option")
     expect(screen.getByRole("combobox")).toHaveFocus()
   })

@@ -9,7 +9,7 @@ import { DEFAULT_WEEKEND_DAYS } from "./date-calendar"
 import { CalendarHeader } from "./_calendar-header"
 import { addHijriMonths, fromHijri, hijriDaysInMonth, toHijri, type HijriParts } from "./_hijri"
 import { PeriodGrid } from "./_period-grid"
-import { HiddenInput, PickerShell, type PickerFieldProps } from "./_picker-shell"
+import { PickerShell, type PickerFieldProps } from "./_picker-shell"
 import { DEFAULT_DATE_FORMAT, formatDate, isOutOfRange, toISODate, yearBlockStart } from "./_utils"
 import { formatHijriParts, hijriMonthName, type HijriFormat } from "./hijri-date"
 import { registerEnglish } from "../../i18n/english"
@@ -374,7 +374,7 @@ export function HijriDatePicker({
       placeholder={placeholder ?? t("date.selectHijriDate")}
       panelLabel={t("date.chooseDate")}
       announcement={value ? t("date.selected", { value: formatHijriParts(toHijri(value), t, "long") }) : ""}
-      hidden={(name) => <HiddenInput name={name} value={value ? toISODate(value) : ""} />}
+      submit={(name) => [[name, value ? toISODate(value) : ""]]}
       onClear={() => setValue(null)}
     >
       {({ close }) => (

@@ -22,6 +22,21 @@ function typeThaana(el: HTMLElement, data: string) {
 }
 
 describe("TagsInput", () => {
+  it("is required natively only while there are no tags", async () => {
+    const { container } = renderWithOnu(
+      <form>
+        <FormField label="Tags" name="tags" required>
+          <TagsInput />
+        </FormField>
+      </form>,
+    )
+    const form = container.querySelector("form")!
+    expect(form.checkValidity()).toBe(false)
+    await userEvent.type(screen.getByRole("combobox", { name: /Tags/ }), "one{Enter}")
+    expect(form.checkValidity()).toBe(true)
+    expect(screen.getByRole("combobox", { name: /Tags/ })).toHaveAttribute("aria-required", "true")
+  })
+
   it("adds tags with Enter and comma, and announces them", async () => {
     const onValueChange = vi.fn()
     const { container } = renderWithOnu(<TagsInput aria-label="Tags" onValueChange={onValueChange} />)

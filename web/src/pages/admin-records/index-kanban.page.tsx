@@ -110,7 +110,7 @@ export default function IndexKanbanPage() {
             <Select
               aria-label={tr("Service", "ޚިދުމަތް")}
               value={service}
-              onValueChange={setService}
+              onValueChange={(v) => setService(v ?? "all")}
               options={[{ value: "all", label: tr("All services", "ހުރިހާ ޚިދުމަތެއް") }, ...labels.options.services]}
             />
           </div>

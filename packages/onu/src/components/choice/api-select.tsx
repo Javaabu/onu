@@ -8,7 +8,7 @@ import { useTranslation } from "../../providers/onu-provider"
 import { useFormFieldControl } from "../form/form-field"
 import { ComboboxCore, type ComboboxPresentationProps } from "./_combobox"
 import { useQuickCreate, type QuickCreateProps } from "./_create"
-import { useOnChange, useParentField, type ParentFieldProps } from "./_hooks"
+import { useParentChange, useParentField, type ParentFieldProps } from "./_hooks"
 import { useChoiceSelection, useOpenState, type SelectionProps } from "./_selection"
 import {
   apiOptionsQueryKey,
@@ -271,8 +271,8 @@ export function ApiSelect<TItem = unknown>(props: ApiSelectProps<TItem>) {
   })
 
   // A new parent value: clear the child (R16.5 dependent use).
-  useOnChange([dependsOn, parent], () => {
-    if (selection.values.length) selection.clear()
+  useParentChange([dependsOn, parent], selection.values, waiting, (stale) => {
+    if (stale && selection.values.length) selection.clear()
     setQuery("")
   })
 
