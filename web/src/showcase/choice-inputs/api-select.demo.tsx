@@ -54,7 +54,7 @@ export default function ApiSelectDemo() {
         className="max-w-md gap-4 grid"
       >
         <FormField label="Atoll">
-          <Select options={atolls} value={atoll} onValueChange={setAtoll} />
+          <Select options={atolls} value={atoll} onValueChange={(v) => setAtoll(v ?? "S")} />
         </FormField>
         <FormField label="Island">
           <ApiSelect

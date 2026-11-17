@@ -211,7 +211,7 @@ export default function ApplicationWizardPage() {
             />
           </FormField>
           <FormField label={tr("Atoll", "އަތޮޅު")} name="atoll" required>
-            <Select options={atollOptions} value={values.atoll} onValueChange={(v) => set("atoll", v)} />
+            <Select options={atollOptions} value={values.atoll} onValueChange={(v) => set("atoll", v ?? "")} />
           </FormField>
           <FormField label={tr("Island", "ރަށް")} name="island" required>
             <SearchableSelect
@@ -268,7 +268,7 @@ export default function ApplicationWizardPage() {
               <Select
                 options={activities}
                 value={values.activity}
-                onValueChange={(v) => set("activity", v)}
+                onValueChange={(v) => set("activity", v ?? "")}
                 placeholder={tr("Choose…", "ހޮވާ…")}
               />
             </FormField>
@@ -280,7 +280,7 @@ export default function ApplicationWizardPage() {
                   { value: "3", label: tr("3 years", "3 އަހަރު") },
                 ]}
                 value={values.duration}
-                onValueChange={(v) => set("duration", v)}
+                onValueChange={(v) => set("duration", v ?? "")}
               />
             </FormField>
             <div className="pt-6">

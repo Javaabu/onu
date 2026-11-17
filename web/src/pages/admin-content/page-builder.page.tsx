@@ -119,7 +119,11 @@ export default function PageBuilderPage() {
                       />
                     </FormField>
                     <FormField label={tr("Template", "ޓެމްޕްލޭޓް")} name="template">
-                      <Select options={templates} value={values.template} onValueChange={(v) => set("template", v)} />
+                      <Select
+                        options={templates}
+                        value={values.template}
+                        onValueChange={(v) => set("template", v ?? "")}
+                      />
                     </FormField>
                   </FormGroup>
                 </CardContent>

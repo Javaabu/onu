@@ -51,7 +51,13 @@ export default function EventsCalendarPage() {
           <label htmlFor="event-region" className="mb-1.5 text-sm font-medium block">
             {tr("Where", "ކޮންތާކު")}
           </label>
-          <Select id="event-region" value={where} onValueChange={setWhere} options={places} className="bg-background" />
+          <Select
+            id="event-region"
+            value={where}
+            onValueChange={(v) => setWhere(v ?? "all")}
+            options={places}
+            className="bg-background"
+          />
         </div>
       </PortalPageHeader>
 

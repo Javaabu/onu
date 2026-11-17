@@ -501,7 +501,7 @@ function Form(
           { value: "S", label: "Seenu" },
         ]}
         value={atoll}
-        onValueChange={setAtoll}
+        onValueChange={(v) => setAtoll(v ?? "")}
       />
       <button type="button" onClick={() => setAtoll("S")}>
         Pick Seenu

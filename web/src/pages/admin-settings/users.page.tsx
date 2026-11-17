@@ -152,7 +152,13 @@ export default function UsersPage() {
       icon: "edit",
       defaultValue: "officer",
       form: ({ id, value, onValueChange }) => (
-        <Select id={id} size="sm" options={roleOptions} value={value ?? ""} onValueChange={(v) => onValueChange(v)} />
+        <Select
+          id={id}
+          size="sm"
+          options={roleOptions}
+          value={value ?? null}
+          onValueChange={(v) => onValueChange(v ?? undefined)}
+        />
       ),
       run: async (ids, role) => {
         await wait()
@@ -356,7 +362,7 @@ export default function UsersPage() {
             <Select
               options={roleOptions.filter((r) => r.value !== "super-admin")}
               value={invite.role}
-              onValueChange={(role) => setInvite((v) => ({ ...v, role }))}
+              onValueChange={(role) => setInvite((v) => ({ ...v, role: role ?? "" }))}
             />
           </FormField>
           <div className="gap-2 pt-2 flex flex-wrap justify-end">

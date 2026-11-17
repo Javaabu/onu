@@ -214,7 +214,11 @@ export default function UserProfilePage() {
                       />
                     </FormField>
                     <FormField label={tr("Language", "ބަސް")} name="language">
-                      <Select options={languages} value={values.language} onValueChange={(v) => set("language", v)} />
+                      <Select
+                        options={languages}
+                        value={values.language}
+                        onValueChange={(v) => set("language", v ?? "")}
+                      />
                     </FormField>
                   </FormGroup>
                 </div>

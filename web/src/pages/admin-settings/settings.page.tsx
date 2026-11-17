@@ -308,7 +308,7 @@ export default function SettingsPage() {
             <FormField label={tr("Date format", "ތާރީޚު ލިޔާ ގޮތް")} name="date_format">
               <Select
                 value={localisation.values.dateFormat}
-                onValueChange={(v) => localisation.set("dateFormat", v)}
+                onValueChange={(v) => localisation.set("dateFormat", v ?? "")}
                 options={[
                   { value: "d MMM yyyy", label: "7 Oct 2026" },
                   { value: "dd/MM/yyyy", label: "07/10/2026" },
@@ -319,7 +319,7 @@ export default function SettingsPage() {
             <FormField label={tr("Currency", "ފައިސާ")} name="currency">
               <Select
                 value={localisation.values.currency}
-                onValueChange={(v) => localisation.set("currency", v)}
+                onValueChange={(v) => localisation.set("currency", v ?? "")}
                 options={[
                   { value: "MVR", label: tr("Maldivian rufiyaa (MVR)", "ދިވެހި ރުފިޔާ (MVR)") },
                   { value: "USD", label: tr("US dollar (USD)", "އެމެރިކާ ޑޮލަރު (USD)") },
@@ -329,7 +329,7 @@ export default function SettingsPage() {
             <FormField label={tr("Week starts on", "ހަފްތާ ފެށޭ ދުވަސް")} name="week_start">
               <Select
                 value={localisation.values.weekStart}
-                onValueChange={(v) => localisation.set("weekStart", v)}
+                onValueChange={(v) => localisation.set("weekStart", v ?? "")}
                 options={[
                   { value: "0", label: tr("Sunday", "އާދިއްތަ") },
                   { value: "1", label: tr("Monday", "ހޯމަ") },
@@ -467,7 +467,7 @@ export default function SettingsPage() {
             <FormField label={tr("Lock account after", "އެކައުންޓް ތަޅުލާނީ")} name="lock_after">
               <Select
                 value={security.values.lockAfter}
-                onValueChange={(v) => security.set("lockAfter", v)}
+                onValueChange={(v) => security.set("lockAfter", v ?? "")}
                 options={["3", "5", "10"].map((n) => ({
                   value: n,
                   label: tr(`${n} failed attempts`, `${n} ފަހަރު ނާކާމިޔާބުވުމުން`),

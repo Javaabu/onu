@@ -165,7 +165,7 @@ export default function LocationPickerPage() {
                   <FormField label={tr("Category", "ބާވަތް")} name="category" required>
                     <Select
                       value={values.category}
-                      onValueChange={(v) => set("category", v)}
+                      onValueChange={(v) => set("category", v ?? "")}
                       placeholder={tr("Select a category", "ބާވަތެއް ހޮއްވަވާ")}
                       options={LOCATION_CATEGORIES.map((c) => ({ value: c.value, label: tr(c.label, c.dv) }))}
                     />

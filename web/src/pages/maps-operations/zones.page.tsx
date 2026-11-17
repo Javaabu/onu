@@ -144,7 +144,7 @@ function ZoneEditor({
           <FormField label={tr("Service day", "ޚިދުމަތް ދޭ ދުވަސް")} name="day" required>
             <Select
               value={day}
-              onValueChange={setDay}
+              onValueChange={(v) => setDay(v ?? "sun")}
               options={Object.entries(days).map(([value, label]) => ({ value, label }))}
             />
           </FormField>
