@@ -38,7 +38,7 @@ export interface DateRangePickerProps extends Omit<
   weekendDays?: number[]
   hourCycle?: 12 | 24
   minuteStep?: number
-  /** Hidden input names. Default: `name[from]` and `name[to]`. */
+  /** Submitted field names, with or without `name`. Default: `name[from]` and `name[to]`. */
   names?: { from?: string; to?: string }
   /** Override the "From" / "To" labels. */
   labels?: { from?: React.ReactNode; to?: React.ReactNode }
@@ -173,22 +173,18 @@ export function DateRangePicker({
           {t("date.endBeforeStart")}
         </p>
       ) : null}
-      {name ? (
-        <>
-          <FieldValue
-            name={names?.from ?? `${name}[from]`}
-            value={iso(value.from)}
-            control={fromId}
-            disabled={control.disabled}
-          />
-          <FieldValue
-            name={names?.to ?? `${name}[to]`}
-            value={iso(value.to)}
-            control={toId}
-            disabled={control.disabled}
-          />
-        </>
-      ) : null}
+      <FieldValue
+        name={names?.from ?? (name ? `${name}[from]` : undefined)}
+        value={iso(value.from)}
+        control={fromId}
+        disabled={control.disabled}
+      />
+      <FieldValue
+        name={names?.to ?? (name ? `${name}[to]` : undefined)}
+        value={iso(value.to)}
+        control={toId}
+        disabled={control.disabled}
+      />
     </div>
   )
 }

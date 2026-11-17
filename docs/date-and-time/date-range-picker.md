@@ -17,7 +17,7 @@ const [range, setRange] = React.useState<DateRangeValue>({ from: null, to: null 
 - Either end may be `null` for an open-ended range ("from 1 March onwards", "up to 31 March").
 - Without `withTime`, `to` is the **end of that day** (23:59:59.999). With `withTime`, the To field's time defaults to 23:59.
 - If To is before From, the message "End date is before start date" shows under the fields and both triggers are marked invalid.
-- With `name`, hidden inputs post `name[from]` and `name[to]` (`yyyy-MM-dd`, or ISO date-time with `withTime`); override them with `names`.
+- With `name`, hidden inputs post `name[from]` and `name[to]` (`yyyy-MM-dd`, or ISO date-time with `withTime`); override them with `names`, which also works without `name`.
 - The fields stack in narrow containers (container query).
 
 ## Props
