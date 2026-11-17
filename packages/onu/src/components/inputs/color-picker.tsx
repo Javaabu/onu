@@ -104,7 +104,15 @@ export function ColorPicker({
     if (v) onValueChange?.(v)
   })
   const [open, setOpen] = useControllableState(openProp, defaultOpen, onOpenChange)
-  const { name, ...control } = useFormFieldControl({ ...props, name: nameProp })
+  // The trigger is a plain button: `required` and `aria-required` aren't allowed on it.
+  const { name, ...wired } = useFormFieldControl({ ...props, name: nameProp })
+  const {
+    required: _required,
+    "aria-required": _ariaRequired,
+    ...control
+  } = wired as typeof wired & {
+    required?: boolean
+  }
   const hex = toHex(value)
   const color = React.useMemo(() => parseColor(hex ?? "#1f7a4d").toFormat("hsb"), [hex])
   const label = hex ? hex.toUpperCase() : (placeholder ?? t("input.noColour"))

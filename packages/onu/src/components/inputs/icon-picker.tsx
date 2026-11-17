@@ -119,7 +119,15 @@ export function IconPicker({
   const { dir } = useOnu()
   const [value, setValue] = useControllableState<string | null>(valueProp, defaultValue, onValueChange)
   const [open, setOpenState] = useControllableState(openProp, defaultOpen, onOpenChange)
-  const { name, ...control } = useFormFieldControl({ ...props, name: nameProp })
+  // The trigger is a plain button: `required` and `aria-required` aren't allowed on it.
+  const { name, ...wired } = useFormFieldControl({ ...props, name: nameProp })
+  const {
+    required: _required,
+    "aria-required": _ariaRequired,
+    ...control
+  } = wired as typeof wired & {
+    required?: boolean
+  }
   const sets = useIconSets(setsProp)
   const [setKey, setSetKey] = React.useState("all")
   const [loaded, setLoaded] = React.useState<Record<string, string[]>>({})

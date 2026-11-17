@@ -106,7 +106,7 @@ describe("ColorPicker", () => {
     expect(screen.getByRole("heading", { name: "Choose a colour" })).toBeInTheDocument()
   })
 
-  it("submits the hex value and is wired by a FormField", () => {
+  it("submits the hex value and is wired by a FormField, axe-clean when required", async () => {
     const { container } = renderWithOnu(
       <form>
         <FormField label="Theme colour" name="colour" error="Required" required>
@@ -118,6 +118,7 @@ describe("ColorPicker", () => {
     expect(trigger).toHaveAttribute("aria-invalid", "true")
     expect(trigger).toHaveClass("trig-x")
     expect(new FormData(container.querySelector("form")!).get("colour")).toBe("#1f7a4d")
+    await expectNoA11yViolations()
   })
 
   it.each(directions)("uses Dhivehi labels in %s", async (dir) => {
