@@ -6,6 +6,8 @@ import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test
 import { SidebarProvider, SidebarTrigger } from "../../ui/sidebar"
 import { TooltipProvider } from "../../ui/tooltip"
 import { AppSidebar } from "./app-sidebar"
+import { Logo } from "./logo"
+import { UserProfile } from "./user-profile"
 import type { NavGroup } from "./_nav"
 
 // Overlays and axe are slow under parallel coverage runs.
@@ -183,6 +185,26 @@ describe("AppSidebar", () => {
     expect(within(menu).getByRole("menuitem", { name: "All users" })).toHaveAttribute("aria-current", "page")
     expect(within(menu).getByRole("menuitem", { name: "Users" })).toHaveAttribute("href", "/users")
     expect(within(menu).getByRole("menuitem", { name: "Locked" })).toHaveAttribute("aria-disabled", "true")
+  })
+
+  it("fits a Logo and a UserProfile into the header and footer when collapsed to icons", () => {
+    renderSidebar(
+      <AppSidebar
+        groups={groups}
+        header={<Logo alt="Onu" text="Onu Admin" href={null} />}
+        footer={<UserProfile name="Aishath Shifa" subtitle="Admin" />}
+      />,
+      {},
+      false,
+    )
+    const header = document.querySelector("[data-slot=sidebar-header]")!
+    const footer = document.querySelector("[data-slot=sidebar-footer]")!
+    expect(header).toHaveClass("group-data-[collapsible=icon]:overflow-hidden")
+    expect(header).toHaveClass("group-data-[collapsible=icon]:[&_[data-slot=logo-text]]:sr-only")
+    expect(header.querySelector("[data-slot=logo-text]")).toHaveTextContent("Onu Admin")
+    expect(footer).toHaveClass("group-data-[collapsible=icon]:overflow-hidden")
+    expect(footer).toHaveClass("group-data-[collapsible=icon]:[&_[data-slot=user-profile-text]]:hidden")
+    expect(screen.getByRole("button", { name: /Aishath Shifa/ })).toHaveAttribute("data-part", "user-profile")
   })
 
   it("toggles with the sidebar trigger and Ctrl+B", async () => {

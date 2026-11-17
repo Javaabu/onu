@@ -83,7 +83,12 @@ function ShellDemo() {
                   <ActionMenu
                     align="start"
                     trigger={
-                      <Button variant="ghost" size="icon" aria-label={tr("Switch app", "އެޕް ބަދަލުކުރޭ")}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="group-data-[collapsible=icon]:hidden"
+                        aria-label={tr("Switch app", "އެޕް ބަދަލުކުރޭ")}
+                      >
                         <Icon name="grid" />
                       </Button>
                     }
@@ -136,7 +141,7 @@ function ShellDemo() {
                 },
               ]}
               footer={
-                <div className="gap-2 pt-3 grid border-t border-shell-border">
+                <div className="gap-2 pt-3 grid border-t border-shell-border group-data-[collapsible=icon]:hidden">
                   <ProgressBar
                     size="sm"
                     value={1284}

@@ -98,6 +98,21 @@ export interface AppSidebarProps extends Omit<React.ComponentProps<typeof Sideba
   }
 }
 
+/**
+ * Collapsed to icons, the header and footer are only an icon wide: clip
+ * whatever doesn't fit, keep a `Logo`'s mark (its wordmark stays as the
+ * accessible name) and shrink a `UserProfile` to its avatar. Footer content
+ * with no icon form (a quota bar) should hide itself with
+ * `group-data-[collapsible=icon]:hidden`.
+ */
+const COLLAPSED_HEADER =
+  "group-data-[collapsible=icon]:overflow-hidden group-data-[collapsible=icon]:[&_[data-slot=logo-text]]:sr-only"
+const COLLAPSED_FOOTER = cn(
+  "group-data-[collapsible=icon]:overflow-hidden",
+  "group-data-[collapsible=icon]:[&_[data-part=user-profile]]:size-8 group-data-[collapsible=icon]:[&_[data-part=user-profile]]:min-h-0 group-data-[collapsible=icon]:[&_[data-part=user-profile]]:p-0",
+  "group-data-[collapsible=icon]:[&_[data-slot=user-profile-chevron]]:hidden group-data-[collapsible=icon]:[&_[data-slot=user-profile-text]]:hidden",
+)
+
 function plainLabel(label: React.ReactNode) {
   return typeof label === "string" || typeof label === "number" ? String(label) : undefined
 }
@@ -445,7 +460,11 @@ export function AppSidebar({
     <Sidebar collapsible={collapsible} side={side} surface={surface} className={className} {...props}>
       {header || action ? (
         <SidebarHeader
-          className={cn(shell && "gap-4 px-3 pt-4 pb-2 group-data-[collapsible=icon]:px-2", classNames?.header)}
+          className={cn(
+            COLLAPSED_HEADER,
+            shell && "gap-4 px-3 pt-4 pb-2 group-data-[collapsible=icon]:px-2",
+            classNames?.header,
+          )}
         >
           {header}
           {action ? (
@@ -494,7 +513,13 @@ export function AppSidebar({
         </nav>
         {children}
       </SidebarContent>
-      {footer ? <SidebarFooter className={cn(shell && "px-3 pb-3", classNames?.footer)}>{footer}</SidebarFooter> : null}
+      {footer ? (
+        <SidebarFooter
+          className={cn(COLLAPSED_FOOTER, shell && "px-3 pb-3 group-data-[collapsible=icon]:px-2", classNames?.footer)}
+        >
+          {footer}
+        </SidebarFooter>
+      ) : null}
       {rail ? <SidebarRail /> : null}
     </Sidebar>
   )

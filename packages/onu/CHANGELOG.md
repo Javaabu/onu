@@ -1,5 +1,11 @@
 # @javaabu/onu
 
+## 0.3.1
+
+### Patch Changes
+
+- 5a4d06b: `AppSidebar`: collapsed to icons, the header and footer no longer spill out of the sidebar. A `Logo` shows only its mark, a `UserProfile` only its avatar, and anything else is clipped to the sidebar's width.
+
 ## 0.3.0
 
 ### Minor Changes
