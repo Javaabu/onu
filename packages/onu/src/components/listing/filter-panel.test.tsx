@@ -159,6 +159,18 @@ describe("FilterPanel", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
   })
 
+  it("counts and clears only its own filters, keeping tabs and query filters it doesn't show", async () => {
+    renderWithOnu(<Harness initial={{ status: ["banned"], tab: "archived", owner: "me" }} sheet={false} />)
+    const button = screen.getByRole("button", { name: "Filters, 1 applied" })
+    expect(within(button).getByText("1")).toBeInTheDocument()
+    const panel = await openPanel()
+    await userEvent.click(within(panel).getByRole("button", { name: "Clear all" }))
+    expect(applied()).toEqual({ tab: "archived", owner: "me" })
+    expect(screen.getByRole("button", { name: "Filters" })).toBeInTheDocument()
+    await openPanel()
+    expect(screen.getByRole("button", { name: "Clear all" })).toBeDisabled()
+  })
+
   it("each filter has its own Clear link (§25.7)", async () => {
     renderWithOnu(<Harness initial={{ status: ["banned"], email: "x" }} />)
     const panel = await openPanel()

@@ -27,7 +27,10 @@ export interface FilterPanelProps {
   filters: FilterDefinition[]
   /** The applied filters. */
   value: FilterValues
-  /** Called with the new filters on Apply, and with `{}` on Clear all. */
+  /**
+   * Called with the new filters on Apply, and on Clear all with this panel's filters removed.
+   * Values for keys the panel doesn't show (tabs, `queryFilters`) are passed through untouched.
+   */
   onApply: (filters: FilterValues) => void
   /** Controlled open state. */
   open?: boolean
@@ -74,6 +77,13 @@ export interface FilterPanelProps {
  * the page, changes are a draft until Filter (or Enter), Reset clears the
  * form's filters, and Expand shows the fields past `collapsedCount`.
  */
+/** The values with this panel's filters removed, keeping filters it doesn't own (tabs, query filters). */
+function withoutFilters(value: FilterValues, filters: FilterDefinition[]) {
+  const next = { ...value }
+  for (const definition of filters) delete next[definition.key]
+  return cleanFilters(next)
+}
+
 export function FilterPanel(props: FilterPanelProps) {
   const { t } = useTranslation()
   const { announce, region } = useAnnouncer({ role: "status" })
@@ -180,10 +190,9 @@ function FilterQueryForm({
           className="touch:min-h-11"
           onClick={() => {
             // Reset clears this form's fields and keeps any other filters.
-            const next = { ...draft }
-            for (const definition of filters) delete next[definition.key]
+            const next = withoutFilters(draft, filters)
             setDraft(next)
-            onApply(cleanFilters(next))
+            onApply(next)
           }}
         >
           {t("listing.filterReset")}
@@ -241,7 +250,9 @@ function FilterPopoverPanel({
     if (open) setDraft(value)
   }
 
-  const count = Object.values(cleanFilters(value)).length
+  // Only this panel's filters: tabs and query filters on the page are not its to count or clear.
+  const applied = cleanFilters(value)
+  const count = filters.filter((definition) => definition.key in applied).length
   const format = new Intl.NumberFormat(locale.numberLocale)
 
   const apply = () => {
@@ -249,7 +260,7 @@ function FilterPopoverPanel({
     setOpen(false)
   }
   const clearAll = () => {
-    onApply({})
+    onApply(withoutFilters(value, filters))
     setOpen(false)
   }
 
