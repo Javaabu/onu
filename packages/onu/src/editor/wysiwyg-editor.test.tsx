@@ -1,6 +1,6 @@
 import * as React from "react"
 import type { Editor } from "@tiptap/core"
-import { act, fireEvent, screen, waitFor, within } from "@testing-library/react"
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
@@ -9,6 +9,8 @@ import "../../test/prosemirror"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../test/utils"
 import { FormErrorsProvider } from "../components/form/form-context"
 import { FormField } from "../components/form/form-field"
+import { dv } from "../locales/dv"
+import { OnuProvider, type OnuProviderProps } from "../providers/onu-provider"
 import { formatShortcut } from "./_toolbar"
 import { WysiwygEditor, type WysiwygEditorProps } from "./wysiwyg-editor"
 
@@ -464,6 +466,43 @@ describe("WysiwygEditor", () => {
   it("accepts Thaana options", async () => {
     const { editor } = await setup({ thaana: { defaultEnabled: false, toggleShortcut: false } })
     expect(editor.storage.thaanaKeyboard.enabled).toBe(false)
+  })
+
+  it("keeps typed content when thaana is toggled (#66, 4.3)", async () => {
+    const editors: Editor[] = []
+    const ui = (thaana: boolean) => (
+      <WysiwygEditor
+        aria-label="Story"
+        name="body"
+        defaultValue="<p>Hello</p>"
+        thaana={thaana}
+        onReady={(e) => editors.push(e)}
+      />
+    )
+    const { rerender, container } = renderWithOnu(ui(false))
+    await waitFor(() => expect(editors).toHaveLength(1))
+    act(() => {
+      editors[0]!.commands.setContent("<p>Typed text</p>", { emitUpdate: true })
+    })
+    const hidden = container.querySelector<HTMLInputElement>("input[name=body]")!
+    expect(hidden.value).toContain("Typed text")
+    rerender(ui(true))
+    await waitFor(() => expect(editors).toHaveLength(2))
+    expect(editors[1]!.getText()).toBe("Typed text")
+    expect(hidden.value).toContain("Typed text")
+  })
+
+  it("updates the placeholder when the locale changes (#66, 4.3)", async () => {
+    const ui = (locale: OnuProviderProps["locale"]) => (
+      <OnuProvider locale={locale}>
+        <WysiwygEditor aria-label="Story" />
+      </OnuProvider>
+    )
+    const { rerender, container } = render(ui("en"))
+    await screen.findByRole("textbox", { name: "Story" })
+    await waitFor(() => expect(container.querySelector("[data-placeholder='Start writing…']")).toBeInTheDocument())
+    rerender(ui(dv))
+    await waitFor(() => expect(container.querySelector("[data-placeholder='ލިޔަން ފައްޓަވާ…']")).toBeInTheDocument())
   })
 
   it("shows Dhivehi strings", async () => {
