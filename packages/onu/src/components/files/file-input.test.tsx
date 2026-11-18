@@ -694,6 +694,35 @@ describe("FileInput uploads", () => {
     expect(screen.getByText("a.pdf removed")).toBeInTheDocument()
   })
 
+  it("keeps cancelled and replaced uploads out of the value when the uploader ignores the signal", async () => {
+    const calls: { resolve: (v: unknown) => void }[] = []
+    const upload = vi.fn(() => new Promise((resolve) => calls.push({ resolve })))
+    const onUploaded = vi.fn()
+    const { container, unmount } = renderWithOnu(
+      <FileInput multiple aria-label="Docs" name="docs" upload={upload} onUploaded={onUploaded} />,
+    )
+    await user().upload(input(container), [file("a.pdf"), file("b.pdf")])
+    await userEvent.click(screen.getByRole("button", { name: "Cancel upload of a.pdf" }))
+    expect(await screen.findByText("Upload of a.pdf cancelled")).toBeInTheDocument()
+    await userEvent.click(screen.getByRole("button", { name: "Cancel upload of b.pdf" }))
+    await userEvent.click(await screen.findByRole("button", { name: "Remove b.pdf" }))
+    await act(async () => calls[0]!.resolve({ id: 1 }))
+    await act(async () => calls[1]!.resolve({ id: 2 }))
+    expect(hiddenValues(container, "docs")).toEqual([])
+    expect(onUploaded).not.toHaveBeenCalled()
+    expect(screen.getByText("Cancelled")).toBeInTheDocument()
+    unmount()
+
+    // Single mode: the file picked last wins, whichever request finishes last.
+    calls.length = 0
+    const single = renderWithOnu(<FileInput aria-label="Slip" name="slip" upload={upload} />)
+    await user().upload(input(single.container), file("old.pdf"))
+    await user().upload(input(single.container), file("new.pdf"))
+    await act(async () => calls[1]!.resolve({ id: 20 }))
+    await act(async () => calls[0]!.resolve({ id: 10 }))
+    expect(hiddenValues(single.container, "slip")).toEqual(["20"])
+  })
+
   it("shows Laravel errors and calls onError", async () => {
     const { upload, calls } = controllableUploader()
     const onError = vi.fn()
