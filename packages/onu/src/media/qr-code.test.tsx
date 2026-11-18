@@ -272,6 +272,87 @@ describe("QrCode", () => {
     expect(onDownload).not.toHaveBeenCalled()
   })
 
+  it("says when a download fails, and clears it after the next one works", async () => {
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null)
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined)
+    const user = userEvent.setup()
+    renderWithOnu(<QrCode value="hello" download />)
+    await user.click(screen.getByRole("button", { name: "Download PNG" }))
+    expect(await screen.findByRole("alert")).toHaveTextContent("Could not download the QR code")
+    await user.click(screen.getByRole("button", { name: "Download SVG" }))
+    await waitFor(() => expect(screen.queryByRole("alert")).not.toBeInTheDocument())
+  })
+
+  it("downloads dark modules on white with tone transparent in dark mode", async () => {
+    // Dark mode: the current text colour is near-white and the background is transparent.
+    const computed = window.getComputedStyle.bind(window)
+    vi.spyOn(window, "getComputedStyle").mockImplementation((element, pseudo) => {
+      const style = computed(element, pseudo)
+      if (!(element instanceof SVGElement)) return style
+      const overrides: Record<PropertyKey, string> = {
+        color: "rgb(250, 250, 250)",
+        backgroundColor: "rgba(0, 0, 0, 0)",
+      }
+      return new Proxy(style, {
+        get: (target, key) => {
+          if (key in overrides) return overrides[key]
+          const value = Reflect.get(target, key) as unknown
+          return typeof value === "function" ? (value as (...a: unknown[]) => unknown).bind(target) : value
+        },
+      })
+    })
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue({
+      fillStyle: "",
+      fillRect: vi.fn(),
+      getImageData: () => ({ data: [250, 250, 250, 255] }),
+    } as never)
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined)
+    const onDownload = vi.fn()
+    const user = userEvent.setup()
+    renderWithOnu(<QrCode value="hello" tone="transparent" download={["svg"]} onDownload={onDownload} />)
+    await user.click(screen.getByRole("button", { name: "Download SVG" }))
+    await waitFor(() => expect(onDownload).toHaveBeenCalled())
+    const text = await (onDownload.mock.calls[0]![1] as Blob).text()
+    expect(text).toContain('fill="#ffffff"')
+    expect(text).toContain('fill="#000000"')
+    expect(text).not.toContain("#fafafa")
+  })
+
+  it("embeds the logo in the SVG download so the file stands alone", async () => {
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      blob: async () => new Blob(["<svg/>"], { type: "image/svg+xml" }),
+    }))
+    vi.stubGlobal("fetch", fetchMock)
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined)
+    const onDownload = vi.fn()
+    const user = userEvent.setup()
+    renderWithOnu(<QrCode value="hello" logo="/logo.svg" download={["svg"]} onDownload={onDownload} />)
+    await user.click(screen.getByRole("button", { name: "Download SVG" }))
+    await waitFor(() => expect(onDownload).toHaveBeenCalled())
+    expect(fetchMock).toHaveBeenCalledWith("/logo.svg")
+    const text = await (onDownload.mock.calls[0]![1] as Blob).text()
+    expect(text).toMatch(/<image href="data:image\/svg\+xml;base64,[^"]+"/)
+    expect(text).not.toContain('href="/logo.svg"')
+  })
+
+  it("leaves a logo that cannot be fetched out of the SVG download", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => Promise.reject(new TypeError("CORS"))),
+    )
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined)
+    const onDownload = vi.fn()
+    const user = userEvent.setup()
+    renderWithOnu(
+      <QrCode value="hello" logo="https://cdn.example/logo.png" download={["svg"]} onDownload={onDownload} />,
+    )
+    await user.click(screen.getByRole("button", { name: "Download SVG" }))
+    await waitFor(() => expect(onDownload).toHaveBeenCalled())
+    const text = await (onDownload.mock.calls[0]![1] as Blob).text()
+    expect(text).not.toContain("<image")
+  })
+
   it("copies the value and announces it", async () => {
     const user = userEvent.setup()
     const writeText = vi.fn(async () => undefined)

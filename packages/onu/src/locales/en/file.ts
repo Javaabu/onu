@@ -113,6 +113,7 @@ export const file = {
   qrActions: "QR code actions",
   qrDownloadPng: "Download PNG",
   qrDownloadSvg: "Download SVG",
+  qrDownloadFailed: "Could not download the QR code",
   qrCopyValue: "Copy text",
   qrCopied: "Text copied",
   qrCopyFailed: "Could not copy",

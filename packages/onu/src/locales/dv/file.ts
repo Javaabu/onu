@@ -114,6 +114,7 @@ export const file = {
   qrActions: "ކިއުއާރް ކޯޑާ ގުޅޭ ކަންކަން",
   qrDownloadPng: "PNG ޑައުންލޯޑްކުރޭ",
   qrDownloadSvg: "SVG ޑައުންލޯޑްކުރޭ",
+  qrDownloadFailed: "ކިއުއާރް ކޯޑު ޑައުންލޯޑް ނުކުރެވުނު",
   qrCopyValue: "ލިޔުން ކޮޕީކުރޭ",
   qrCopied: "ލިޔުން ކޮޕީކުރެވިއްޖެ",
   qrCopyFailed: "ކޮޕީ ނުކުރެވުނު",
