@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs"
 import { resolve } from "node:path"
 import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
+import { defineConfig, type Plugin } from "vite"
 
 const pkg = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8")) as {
   dependencies?: Record<string, string>
@@ -27,8 +27,26 @@ const entries = {
   "icons/fontawesome/index": "src/icons/fontawesome/index.tsx",
 }
 
+/**
+ * Source modules that start with a `"use client"` directive. Rollup drops module-level
+ * directives, so the banner below puts it back on just those modules (R2.9). The rest (`cn`,
+ * `themeScript`, translators, Thaana conversion, export helpers, barrels) stay callable from
+ * React Server Components.
+ */
+const clientModules = new Set<string>()
+const USE_CLIENT = /^(?:\s|\/\/[^\n]*\n|\/\*[\s\S]*?\*\/)*["']use client["']/
+
+const useClientDirectives: Plugin = {
+  name: "onu:use-client",
+  enforce: "pre",
+  transform(code, id) {
+    if (USE_CLIENT.test(code)) clientModules.add(id)
+    return null
+  },
+}
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [useClientDirectives, react()],
   build: {
     // size-limit measures bundle sizes; skipping Vite's per-file gzip pass saves time and memory.
     reportCompressedSize: false,
@@ -46,8 +64,8 @@ export default defineConfig({
         preserveModules: true,
         preserveModulesRoot: "src",
         entryFileNames: "[name].js",
-        // Every module may run on the client; mark them for React Server Components (R2.9).
-        banner: '"use client";',
+        // With `preserveModules`, each chunk is one source module.
+        banner: (chunk) => (chunk.facadeModuleId && clientModules.has(chunk.facadeModuleId) ? '"use client";' : ""),
       },
     },
   },

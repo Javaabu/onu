@@ -25,6 +25,8 @@ export interface LaravelPaginationMeta {
   from?: number | null
   to?: number | null
   path?: string
+  first_page_url?: string | null
+  last_page_url?: string | null
   next_page_url?: string | null
   prev_page_url?: string | null
   links?: LaravelPaginatorLink[] | LaravelResourceLinks
@@ -63,12 +65,51 @@ export interface PaginationInfo {
   to?: number
   prevUrl?: string | null
   nextUrl?: string | null
-  /** Builds the URL of any page, when the server gave a `path`. */
-  pageUrl?: (page: number) => string
+  /**
+   * The URL of a page, built from the URLs the server sent (keeping its query string and page
+   * name), or from `path` when it sent none. Undefined when neither tells how to reach that page.
+   */
+  pageUrl?: (page: number) => string | undefined
 }
 
 function isResource(input: LaravelResourceCollection | LaravelPaginationMeta): input is LaravelResourceCollection {
   return "meta" in input && typeof input.meta === "object" && input.meta !== null
+}
+
+/** Page number of a `links[]` entry: Laravel 11+ sends `page`, older versions only the label. */
+function linkPage(link: LaravelPaginatorLink) {
+  if (typeof link.page === "number") return link.page
+  return /^\d+$/.test(link.label.trim()) ? Number(link.label.trim()) : undefined
+}
+
+/**
+ * Builds page URLs from the URLs a Laravel paginator sent. Those carry the query string
+ * (`->withQueryString()`) and a custom `pageName`, which `path` alone loses: a page the server
+ * listed uses its URL as is, any other swaps the page number in one of them.
+ */
+function serverPageUrl(known: Map<number, string>, path: string | undefined) {
+  const absolute = (url: string) => /^[a-z][a-z\d+.-]*:/i.test(url)
+  const build = (template: string, param: string, n: number) => {
+    const url = new URL(template, "http://localhost")
+    url.searchParams.set(param, String(n))
+    return absolute(template) ? url.toString() : `${url.pathname}${url.search}${url.hash}`
+  }
+  // The page parameter is the one whose value tracks the page number in every known URL.
+  let template: { url: string; param: string } | undefined
+  const entries = [...known]
+  const [first] = entries
+  if (first) {
+    const params = [...new URL(first[1], "http://localhost").searchParams.keys()]
+    const param = params
+      .filter((key) =>
+        entries.every(([n, url]) => new URL(url, "http://localhost").searchParams.get(key) === String(n)),
+      )
+      .sort((a, b) => Number(b === "page") - Number(a === "page"))[0]
+    if (param) template = { url: first[1], param }
+  }
+  if (!template && path) template = { url: path, param: "page" }
+  if (!known.size && !template) return undefined
+  return (n: number) => known.get(n) ?? (template ? build(template.url, template.param, n) : undefined)
 }
 
 /**
@@ -82,7 +123,19 @@ export function normalizePagination(input: LaravelResourceCollection | LaravelPa
   const page = Number(meta.current_page)
   const lastPage =
     meta.last_page ?? (meta.total !== undefined ? Math.max(1, Math.ceil(meta.total / perPage)) : undefined)
-  const path = meta.path
+  const prevUrl = resourceLinks?.prev ?? meta.prev_page_url ?? null
+  const nextUrl = resourceLinks?.next ?? meta.next_page_url ?? null
+
+  const known = new Map<number, string>()
+  const add = (n: number | undefined, url: string | null | undefined) => {
+    if (n !== undefined && url && !known.has(n)) known.set(n, url)
+  }
+  if (Array.isArray(meta.links)) for (const link of meta.links) add(linkPage(link), link.url)
+  add(1, resourceLinks?.first ?? meta.first_page_url)
+  add(lastPage, resourceLinks?.last ?? meta.last_page_url)
+  add(page - 1, prevUrl)
+  add(page + 1, nextUrl)
+
   return {
     page,
     perPage,
@@ -90,15 +143,9 @@ export function normalizePagination(input: LaravelResourceCollection | LaravelPa
     lastPage,
     from: meta.from ?? undefined,
     to: meta.to ?? undefined,
-    prevUrl: resourceLinks?.prev ?? meta.prev_page_url ?? null,
-    nextUrl: resourceLinks?.next ?? meta.next_page_url ?? null,
-    pageUrl: path
-      ? (n: number) => {
-          const url = new URL(path, "http://localhost")
-          url.searchParams.set("page", String(n))
-          return path.startsWith("http") ? url.toString() : `${url.pathname}${url.search}`
-        }
-      : undefined,
+    prevUrl,
+    nextUrl,
+    pageUrl: serverPageUrl(known, meta.path),
   }
 }
 
@@ -209,10 +256,7 @@ export function Pagination({
 
   const hrefFor = (target: number) => {
     if (target === page) return undefined
-    if (getPageHref) return getPageHref(target)
-    if (target === page - 1 && info?.prevUrl) return info.prevUrl
-    if (target === page + 1 && info?.nextUrl) return info.nextUrl
-    return undefined
+    return getPageHref?.(target)
   }
 
   const go = (target: number) => (event: React.MouseEvent) => {

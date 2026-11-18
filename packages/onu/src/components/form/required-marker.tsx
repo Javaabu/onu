@@ -1,3 +1,5 @@
+"use client"
+
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { registerEnglish } from "../../i18n/english"

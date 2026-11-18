@@ -45,7 +45,7 @@ function registeredNamespaces(code: string) {
 
 const modules = sourceFiles(SRC)
   .map((file) => path.relative(SRC, file).split(path.sep).join("/"))
-  .filter((rel) => !rel.startsWith("locales/") && !rel.startsWith("i18n/"))
+  .filter((rel) => !rel.startsWith("locales/"))
 
 const withStrings = modules.filter((rel) => usedNamespaces(readFileSync(path.join(SRC, rel), "utf8")).size)
 

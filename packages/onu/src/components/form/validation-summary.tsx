@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import { useMergedRef } from "../../hooks/use-merged-ref"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
@@ -47,6 +48,7 @@ export function ValidationSummary({
 }: ValidationSummaryProps) {
   const { t } = useTranslation()
   const local = React.useRef<HTMLDivElement>(null)
+  const mergedRef = useMergedRef(local, ref)
   const titleId = React.useId()
   const payload = isValidationPayload(errors) ? errors : null
   const entries = errorEntries(payload ? payload.errors : (errors as FormErrors | null | undefined))
@@ -73,11 +75,7 @@ export function ValidationSummary({
 
   return (
     <div
-      ref={(node) => {
-        local.current = node
-        if (typeof ref === "function") ref(node)
-        else if (ref) ref.current = node
-      }}
+      ref={mergedRef}
       data-slot="validation-summary"
       role="alert"
       tabIndex={-1}

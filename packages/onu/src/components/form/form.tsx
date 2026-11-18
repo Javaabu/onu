@@ -3,6 +3,7 @@
 import * as React from "react"
 import { FormProvider, type FieldValues, type UseFormReturn } from "react-hook-form"
 
+import { useMergedRef } from "../../hooks/use-merged-ref"
 import { cn } from "../../lib/utils"
 import type { LabelLayout } from "../../providers/onu-provider"
 import { useTranslation } from "../../providers/onu-provider"
@@ -127,6 +128,7 @@ export function Form<T extends FieldValues = FormValues>({
 }: FormProps<T>) {
   const { t } = useTranslation()
   const formRef = React.useRef<HTMLFormElement>(null)
+  const mergedRef = useMergedRef(formRef, ref)
   const busy = React.useRef(false)
   const pendingFocus = React.useRef(false)
   const [submitting, setSubmitting] = React.useState(false)
@@ -250,11 +252,7 @@ export function Form<T extends FieldValues = FormValues>({
         <FormErrorsProvider errors={errors}>
           <ClearFieldErrorProvider value={clearFieldError}>
             <form
-              ref={(node) => {
-                formRef.current = node
-                if (typeof ref === "function") ref(node)
-                else if (ref) ref.current = node
-              }}
+              ref={mergedRef}
               data-slot="form"
               data-status={status}
               aria-busy={processing || undefined}

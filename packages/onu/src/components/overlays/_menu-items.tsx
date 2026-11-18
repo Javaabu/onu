@@ -147,7 +147,8 @@ export function needsConfirm(item: MenuActionItem) {
  * The question to ask before running an item. With a record `name`, `true`
  * (or a `destructive` item) asks "Delete Jane Doe?" (`id: "delete"`),
  * "Permanently delete Jane Doe?" (`id: "force-delete"`) or "Approve Jane Doe?"
- * (the item's label), and given options are laid over that question.
+ * (the item's label, worded by the locale's `listing.actionRecordTitle`), and
+ * given options are laid over that question. Only deletes add "This can't be undone."
  */
 export function useConfirmQuestion(name?: string) {
   const { t } = useTranslation()
@@ -167,9 +168,15 @@ export function useConfirmQuestion(name?: string) {
           variant: "destructive",
           ...custom,
         }
+      const action = textOf(item.label)
+      const isDelete = item.id === "delete"
       return {
-        title: item.id === "delete" ? t("listing.deleteRecordTitle", { name }) : `${textOf(item.label)} ${name}?`,
-        description: t("listing.deleteRecordDescription"),
+        title: isDelete
+          ? t("listing.deleteRecordTitle", { name })
+          : action
+            ? t("listing.actionRecordTitle", { action, name })
+            : undefined,
+        description: isDelete ? t("listing.deleteRecordDescription") : undefined,
         confirmLabel: item.label,
         variant: destructive ? "destructive" : "default",
         ...custom,

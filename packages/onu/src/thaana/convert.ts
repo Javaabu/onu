@@ -25,7 +25,7 @@ export function containsThaana(text: string): boolean {
   return THAANA.test(text)
 }
 
-/** True when every character could have come from a Latin keyboard (printable ASCII). */
+/** True when every character could have come from a Latin keyboard (printable ASCII, tabs and line breaks). */
 export function isLatinKeyboardText(text: string): boolean {
-  return /^[\x20-\x7E]*$/.test(text)
+  return /^[\t\n\r\x20-\x7E]*$/.test(text)
 }

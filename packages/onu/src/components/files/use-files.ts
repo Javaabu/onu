@@ -189,6 +189,8 @@ export function useUploadQueue<R = unknown>(options: UseUploadQueueOptions<R>) {
         onProgress: (progress) => update(id, { progress: Math.max(0, Math.min(100, progress)) }),
       }).then(
         (response) => {
+          // A custom uploader may ignore the signal: a cancelled, removed or replaced upload still resolves.
+          if (controller.signal.aborted) return
           controllers.current.delete(id)
           const patch = { status: "success", progress: 100, response } as const
           update(id, patch)
@@ -196,8 +198,10 @@ export function useUploadQueue<R = unknown>(options: UseUploadQueueOptions<R>) {
           callbacks.current.onUploaded?.({ id, file, ...patch })
         },
         (error: unknown) => {
+          // Cancelling already marked it; a removed or replaced upload has left the list.
+          if (controller.signal.aborted) return
           controllers.current.delete(id)
-          if (isAbortError(error) || controller.signal.aborted) {
+          if (isAbortError(error)) {
             update(id, { status: "cancelled" })
             setAnnouncement(t("file.cancelledFile", { name: file.name }))
             return
@@ -229,7 +233,18 @@ export function useUploadQueue<R = unknown>(options: UseUploadQueueOptions<R>) {
     [start],
   )
 
-  const cancel = React.useCallback((id: string) => controllers.current.get(id)?.abort(), [])
+  const cancel = React.useCallback(
+    (id: string) => {
+      const controller = controllers.current.get(id)
+      if (!controller) return
+      controllers.current.delete(id)
+      controller.abort()
+      update(id, { status: "cancelled" })
+      const item = items.find((i) => i.id === id)
+      if (item) setAnnouncement(t("file.cancelledFile", { name: item.file.name }))
+    },
+    [items, update, t],
+  )
 
   const retry = React.useCallback(
     (id: string) => {
@@ -241,11 +256,13 @@ export function useUploadQueue<R = unknown>(options: UseUploadQueueOptions<R>) {
 
   const remove = React.useCallback((id: string) => {
     controllers.current.get(id)?.abort()
+    controllers.current.delete(id)
     setItems((list) => list.filter((item) => item.id !== id))
   }, [])
 
   const clear = React.useCallback(() => {
     for (const controller of controllers.current.values()) controller.abort()
+    controllers.current.clear()
     setItems([])
   }, [])
 

@@ -12,8 +12,7 @@ export const meta = {
 }
 
 function CustomField() {
-  const ref = React.useRef<HTMLInputElement>(null)
-  const { enabled, toggle } = useThaanaInput(ref)
+  const { ref, enabled, toggle } = useThaanaInput<HTMLInputElement>()
   return (
     <div className="gap-2 flex items-center">
       <input

@@ -3,7 +3,9 @@ import { act, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
+import { hydrateAfterServer, serverThenBrowserZone } from "../../../test/hydrate"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
+import { OnuProvider } from "../../providers/onu-provider"
 import type { DateRangeValue } from "./_utils"
 import { DateCalendar, DEFAULT_WEEKEND_DAYS, type CalendarView, type DateCalendarEvent } from "./date-calendar"
 
@@ -28,6 +30,21 @@ describe("DateCalendar — days view", () => {
     renderWithOnu(<DateCalendar today={TODAY} />)
     expect(caption()).toHaveTextContent("March 2026")
     expect(dayButton(12)).toHaveAccessibleName("Today, Thursday, March 12th, 2026")
+  })
+
+  it("marks the browser's today after hydrating markup from a server in another time zone", async () => {
+    // 20:00 on 11 March in UTC is 01:00 on 12 March in the Maldives.
+    const toBrowser = serverThenBrowserZone(new Date("2026-03-11T20:00:00Z"))
+    const { container, errors } = await hydrateAfterServer(
+      <OnuProvider>
+        <DateCalendar />
+      </OnuProvider>,
+      toBrowser,
+    )
+    expect(errors).toEqual([])
+    const today = within(container).getAllByRole("button", { name: /^Today, / })
+    expect(today).toHaveLength(1)
+    expect(today[0]).toHaveAccessibleName("Today, Thursday, March 12th, 2026")
   })
 
   it("selects a single date", async () => {
@@ -212,6 +229,27 @@ describe("DateCalendar — zooming out (§25.1)", () => {
     await user.click(screen.getByRole("button", { name: "2027: choose a year" }))
     await user.click(screen.getByRole("button", { name: "Previous 12 years" }))
     expect(caption()).toHaveTextContent("2004–2015")
+  })
+
+  it("does not page past min or max from the keyboard in the zoomed views", async () => {
+    const user = userEvent.setup()
+    renderWithOnu(
+      <DateCalendar minView="month" today={TODAY} min={new Date(2026, 0, 1)} max={new Date(2026, 11, 31)} />,
+    )
+    expect(screen.getByRole("button", { name: "Previous year" })).toBeDisabled()
+    const months = screen.getByRole("grid", { name: "Months" })
+    act(() => within(months).getByRole("button", { name: "January 2026" }).focus())
+    await user.keyboard("{PageUp}")
+    expect(caption()).toHaveTextContent("2026")
+    await user.keyboard("{ArrowUp}")
+    expect(caption()).toHaveTextContent("2026")
+    expect(document.activeElement).toHaveAccessibleName("January 2026")
+    act(() => within(months).getByRole("button", { name: "December 2026" }).focus())
+    await user.keyboard("{PageDown}")
+    expect(caption()).toHaveTextContent("2026")
+    await user.keyboard("{ArrowRight}")
+    expect(caption()).toHaveTextContent("2026")
+    expect(document.activeElement).toHaveAccessibleName("December 2026")
   })
 
   it("turns into a month picker with minView", async () => {

@@ -44,6 +44,23 @@ describe("ColumnVisibility", () => {
     await expectNoA11yViolations()
   })
 
+  it("never offers the record column: the primary one, or the first when none is marked", async () => {
+    renderWithOnu(
+      <ColumnVisibility
+        columns={[
+          { id: "name", header: "Name" },
+          { id: "email", header: "Email" },
+          { id: "island", header: "Island", hideable: true },
+        ]}
+        value={{}}
+        onValueChange={vi.fn()}
+      />,
+    )
+    await userEvent.click(screen.getByRole("button", { name: /Columns/ }))
+    const items = await screen.findAllByRole("menuitemcheckbox")
+    expect(items.map((i) => i.textContent)).toEqual(["Email", "Island"])
+  })
+
   it("can be icon-only", () => {
     renderWithOnu(<ColumnVisibility columns={[]} value={{}} onValueChange={vi.fn()} showLabel={false} />)
     expect(screen.getByRole("button", { name: "Show or hide columns" })).toBeInTheDocument()
@@ -66,11 +83,32 @@ describe("ExportMenu", () => {
     await userEvent.click(within(menu).getByRole("menuitem", { name: "Excel" }))
     expect(onExport).toHaveBeenCalledWith("excel")
     const button = screen.getByRole("button", { name: "Exporting…" })
-    expect(button).toBeDisabled()
+    expect(button).toHaveAttribute("aria-disabled", "true")
     expect(button).toHaveAttribute("aria-busy", "true")
     await act(async () => deferred.resolve())
     expect(screen.getByRole("button", { name: "Export" })).toBeEnabled()
     expect(screen.getByText("Export ready")).toBeInTheDocument()
+  })
+
+  it("keeps focus on the trigger while exporting, and doesn't reopen until done", async () => {
+    const deferred = Deferred()
+    const user = userEvent.setup()
+    renderWithOnu(<ExportMenu onExport={() => deferred.promise} />)
+    const trigger = screen.getByRole("button", { name: "Export" })
+    trigger.focus()
+    await user.keyboard("{Enter}")
+    await screen.findByRole("menu")
+    await user.keyboard("{Enter}")
+    await waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument())
+    expect(trigger).toHaveAccessibleName("Exporting…")
+    expect(trigger).toHaveFocus()
+    expect(trigger).toHaveAttribute("aria-disabled", "true")
+    await user.keyboard("{Enter}")
+    await user.click(trigger)
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument()
+    await act(async () => deferred.resolve())
+    expect(trigger).not.toHaveAttribute("aria-disabled")
+    expect(trigger).toHaveFocus()
   })
 
   it("accepts custom options and reports failures", async () => {

@@ -89,6 +89,9 @@ const localeLoaders: Record<Exclude<BuiltInLocaleCode, "en">, () => Promise<OnuL
   dv: () => import("../locales/dv/dv").then((m) => m.dv),
 }
 
+/** Delays before retrying a failed locale load, in ms. */
+const LOCALE_RETRY_DELAYS = [1000, 3000, 10000]
+
 /**
  * Resolves `OnuProvider locale`. Built-in codes other than English load their text
  * on demand; until it arrives, the code and direction are already right and strings
@@ -103,12 +106,29 @@ function useResolvedLocale(prop: OnuLocale | BuiltInLocaleCode): OnuLocale {
     const load = code && code !== "en" ? localeLoaders[code] : undefined
     if (!code || !load || loadedLocales.has(code)) return
     let live = true
-    void load().then((locale) => {
-      loadedLocales.set(code, locale)
-      if (live) rerender()
-    })
+    let timer: ReturnType<typeof setTimeout> | undefined
+    // A failed chunk load (flaky network, a deploy that replaced the chunk) is retried
+    // with a growing delay, then again whenever the browser comes back online.
+    const attempt = (retry: number) => {
+      load().then(
+        (locale) => {
+          loadedLocales.set(code, locale)
+          if (live) rerender()
+        },
+        () => {
+          if (!live) return
+          if (retry < LOCALE_RETRY_DELAYS.length)
+            timer = setTimeout(() => attempt(retry + 1), LOCALE_RETRY_DELAYS[retry])
+          else window.addEventListener("online", onOnline, { once: true })
+        },
+      )
+    }
+    const onOnline = () => attempt(0)
+    attempt(0)
     return () => {
       live = false
+      clearTimeout(timer)
+      window.removeEventListener("online", onOnline)
     }
   }, [code])
 

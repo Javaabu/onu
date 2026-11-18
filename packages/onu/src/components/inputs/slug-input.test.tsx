@@ -28,7 +28,9 @@ describe("toSlug and thaanaToLatin", () => {
   it("slugifies Latin text", () => {
     expect(toSlug("Hulhumalé Ferry Schedule 2026!")).toBe("hulhumale-ferry-schedule-2026")
     expect(toSlug("A & B", { separator: "_" })).toBe("a-and-b".replace(/-/g, "_"))
-    expect(toSlug("trailing ", { preserveTrailing: true })).toBe("trailing")
+    expect(toSlug("trailing ", { preserveTrailing: true })).toBe("trailing-")
+    expect(toSlug("trailing ", { separator: "_", preserveTrailing: true })).toBe("trailing_")
+    expect(toSlug("trailing ")).toBe("trailing")
     expect(toSlug("trailing-", { preserveTrailing: true })).toBe("trailing-")
   })
 
@@ -135,6 +137,26 @@ describe("SlugInput", () => {
     expect(onValueChange).toHaveBeenLastCalledWith("HELLO_WORLD")
     fireEvent.blur(input)
     expect(input).toHaveValue("HELLO_WORLD")
+  })
+
+  it("turns typed spaces into word breaks in manual mode", async () => {
+    renderWithOnu(<SlugInput aria-label="Slug" defaultValue="x" />)
+    const input = screen.getByRole("textbox")
+    await userEvent.clear(input)
+    await userEvent.type(input, "my custom slug")
+    expect(input).toHaveValue("my-custom-slug")
+  })
+
+  it("lets a word break be typed with a custom separator", async () => {
+    renderWithOnu(<SlugInput aria-label="Slug" defaultValue="x" separator="_" />)
+    const input = screen.getByRole("textbox")
+    await userEvent.clear(input)
+    await userEvent.type(input, "my custom_slug")
+    expect(input).toHaveValue("my_custom_slug")
+    await userEvent.type(input, " ")
+    expect(input).toHaveValue("my_custom_slug_")
+    await userEvent.tab()
+    expect(input).toHaveValue("my_custom_slug")
   })
 
   it("trims a trailing separator on blur", async () => {

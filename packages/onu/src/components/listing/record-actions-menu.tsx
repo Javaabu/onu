@@ -84,6 +84,7 @@ export function RecordActionsMenu({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
+                ref={triggerRef}
                 variant="outline"
                 size={size === "sm" ? "icon-sm" : "icon"}
                 aria-label={t("listing.moreActions")}

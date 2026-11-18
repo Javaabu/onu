@@ -26,12 +26,20 @@ function MyToggle() {
 | `forcedTheme` | | Fix the theme, e.g. `"light"` for print pages |
 | `storageKey` | `"onu-theme"` | `localStorage` key |
 
-The provider sets `class="dark"`, `data-theme` and `color-scheme` on `<html>`, so dialogs and menus in portals follow it.
+The provider sets `class="dark"`, `data-theme` and `color-scheme` on `<html>`, so dialogs and menus in portals follow it. A choice made in another tab applies here too.
+
+When server-rendered, the provider hydrates with `defaultTheme` (the server can't read `localStorage`) and switches to the stored theme straight after hydration, so the markup matches and controls such as `ThemeToggle` show the stored choice.
 
 In server-rendered apps, add `themeScript()` to `<head>` to apply the stored theme before the page paints:
 
 ```tsx
 <script dangerouslySetInnerHTML={{ __html: themeScript() }} />
+```
+
+If you pass `defaultTheme`, `forcedTheme` or `storageKey` to the provider, pass the same options to the script, so the first paint matches what the provider applies (a stored value that isn't a theme falls back to `defaultTheme` in both):
+
+```tsx
+<script dangerouslySetInnerHTML={{ __html: themeScript({ defaultTheme: 'dark', storageKey: 'app-theme' }) }} />
 ```
 
 In your own styles use Tailwind's `dark:` variant, which Onu configures for both the class and the attribute.

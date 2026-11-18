@@ -89,7 +89,7 @@ const { t } = useTranslation()
 <ActionMenu name={user.name} items={trashActions(t, { onRestore, onForceDelete })} />
 ```
 
-A destructive action (or `confirm: true`) asks "Delete Jane Doe?" for `id: "delete"`, "Permanently delete Jane Doe?" for `id: "force-delete"`, and "{label} Jane Doe?" otherwise, with "This can't be undone." below; `confirm` options replace any part of that. The dialog is styled even without a `ConfirmProvider`.
+A destructive action (or `confirm: true`) asks "Delete Jane Doe?" for `id: "delete"`, "Permanently delete Jane Doe?" for `id: "force-delete"`, and "{label} Jane Doe?" otherwise (worded by the locale, so Dhivehi puts the name first and ends with "؟"). Only `id: "delete"` and `id: "force-delete"` add a "can't be undone" warning; `confirm` options replace any part of that. The dialog is styled even without a `ConfirmProvider`.
 
 ### `RecordAction`
 

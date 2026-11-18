@@ -108,6 +108,8 @@ interface UseComboboxStateOptions {
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
+  /** Rows the arrow keys skip and Enter never picks. */
+  isDisabled?: (index: number) => boolean
 }
 
 /**
@@ -123,6 +125,15 @@ export function useComboboxState(itemCount: number, options: UseComboboxStateOpt
   const listId = React.useId()
   const optionId = (i: number) => `${listId}-option-${i}`
   const current = active >= itemCount ? -1 : active
+  const isDisabled = options.isDisabled ?? (() => false)
+  // The next enabled row from `from` in direction `step`, wrapping around; -1 when there is none.
+  const nextEnabled = (from: number, step: 1 | -1) => {
+    for (let n = 1; n <= itemCount; n++) {
+      const i = (((from + step * n) % itemCount) + itemCount) % itemCount
+      if (!isDisabled(i)) return i
+    }
+    return -1
+  }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, onPick: (index: number) => void): boolean => {
     if (e.nativeEvent.isComposing) return false
@@ -131,18 +142,18 @@ export function useComboboxState(itemCount: number, options: UseComboboxStateOpt
         e.preventDefault()
         if (!open) {
           setOpen(true)
-          setActive(e.altKey ? -1 : 0)
-        } else setActive(itemCount ? (current + 1) % itemCount : -1)
+          setActive(e.altKey ? -1 : nextEnabled(-1, 1))
+        } else setActive(nextEnabled(current, 1))
         return true
       case "ArrowUp":
         e.preventDefault()
         if (!open) {
           setOpen(true)
-          setActive(itemCount - 1)
-        } else setActive(itemCount ? (current <= 0 ? itemCount - 1 : current - 1) : -1)
+          setActive(nextEnabled(0, -1))
+        } else setActive(nextEnabled(current < 0 ? 0 : current, -1))
         return true
       case "Enter":
-        if (open && current >= 0) {
+        if (open && current >= 0 && !isDisabled(current)) {
           e.preventDefault()
           onPick(current)
           return true

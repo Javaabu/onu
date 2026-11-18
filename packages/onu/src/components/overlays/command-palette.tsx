@@ -175,8 +175,13 @@ export function CommandPalette({
   const [open, setOpenState] = useControllableState(openProp, defaultOpen, onOpenChange)
   const [query, setQuery] = React.useState("")
   const [known, setKnown] = React.useState<Record<string, CommandPaletteItem>>({})
-  const inputRef = React.useRef<HTMLInputElement>(null)
-  const { fieldProps, active: thaanaActive, enabled: thaanaEnabled, toggle } = useThaanaField(inputRef, thaana)
+  const {
+    ref: inputRef,
+    fieldProps,
+    active: thaanaActive,
+    enabled: thaanaEnabled,
+    toggle,
+  } = useThaanaField<HTMLInputElement>(thaana)
 
   const recentKey = (typeof recent === "object" && recent.storageKey) || DEFAULT_RECENT_KEY
   const maxRecent = (typeof recent === "object" && recent.max) || 5

@@ -105,8 +105,11 @@ export function SignaturePad({
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const padRef = React.useRef<SignaturePadLib | null>(null)
   const onValueChangeRef = React.useRef(onValueChange)
+  // `t` changes identity with provider props; the pad must not be recreated (and wiped) for that.
+  const tRef = React.useRef(t)
   React.useEffect(() => {
     onValueChangeRef.current = onValueChange
+    tRef.current = t
   })
   const [innerMode, setInnerMode] = React.useState<SignatureMode>(defaultMode)
   const mode = modeProp ?? innerMode
@@ -132,7 +135,7 @@ export function SignaturePad({
     const onEnd = () => {
       setStrokes(pad.toData().length)
       emit(pad.toDataURL("image/png"))
-      setAnnounce(t("input.signatureCaptured"))
+      setAnnounce(tRef.current("input.signatureCaptured"))
     }
     pad.addEventListener("endStroke", onEnd)
 
@@ -172,7 +175,7 @@ export function SignaturePad({
       padRef.current = null
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Pen settings are applied below without recreating the pad.
-  }, [mode, emit, t])
+  }, [mode, emit])
 
   React.useEffect(() => {
     const pad = padRef.current

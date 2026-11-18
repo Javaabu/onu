@@ -6,6 +6,7 @@ import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button } from "../../ui/button"
+import { primaryColumn } from "./_shared"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -23,7 +24,7 @@ export interface ColumnVisibilityColumn {
   id: string
   /** Text label (a column's `header`). */
   header: string
-  /** `false` keeps the column always visible. Default `true`; `primary` columns can't be hidden. */
+  /** `false` keeps the column always visible. Default `true`. The record column (`primary`, else the first) can't be hidden. */
   hideable?: boolean
   primary?: boolean
 }
@@ -49,7 +50,8 @@ export function ColumnVisibility({
   ...props
 }: ColumnVisibilityProps) {
   const { t } = useTranslation()
-  const hideable = columns.filter((c) => c.hideable !== false && !c.primary)
+  const primary = primaryColumn(columns)
+  const hideable = columns.filter((c) => c !== primary && c.hideable !== false)
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

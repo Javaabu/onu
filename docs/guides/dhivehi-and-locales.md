@@ -16,7 +16,7 @@ import { dv } from '@javaabu/onu/locales/dv';
 Only apps that use Dhivehi download its text (about 15 kB brotli):
 
 - `locale={dv}`, with `dv` imported from `@javaabu/onu/locales/dv`, bundles Dhivehi with your app. The first render is already in Dhivehi. Use this when Dhivehi is the main or a common language.
-- `locale="dv"` loads Dhivehi on demand, as a separate chunk, when the provider first needs it. Direction and `lang` switch at once, and strings show in English until the chunk arrives (usually within the first frames). This suits a language switcher in a mostly English app.
+- `locale="dv"` loads Dhivehi on demand, as a separate chunk, when the provider first needs it. Direction and `lang` switch at once, and strings show in English until the chunk arrives (usually within the first frames). A failed load is retried after 1, 3 and 10 seconds, then again when the browser comes back online. This suits a language switcher in a mostly English app.
 - English needs nothing: leave out `locale` (or pass `"en"`). Each component brings the English text it uses, so a page with a text field does not carry the strings of the data table, the map or the editor.
 
 `import { dv } from '@javaabu/onu'` still works too; it bundles Dhivehi like the `locales/dv` import.

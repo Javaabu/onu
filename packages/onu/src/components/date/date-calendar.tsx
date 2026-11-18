@@ -24,11 +24,18 @@ import { decadeSpanStart, formatDate, isOutOfRange, yearBlockStart, type DateRan
 import { registerEnglish } from "../../i18n/english"
 import { date as en_date } from "../../locales/en/date"
 import { useControllableState } from "../../hooks/use-controllable-state"
+import { useToday } from "../../hooks/use-today"
 
 registerEnglish({ date: en_date })
 
 /** Zoom levels of the calendar (§25.1 "Zooming out"). */
 export type CalendarView = "day" | "month" | "year" | "decade"
+
+/**
+ * Until the browser's date is known (server rendering, hydration), no day is marked as today:
+ * DayPicker always marks one, so it gets a day out of sight (it needs a valid date).
+ */
+const NO_TODAY = new Date(1900, 0, 1)
 
 const ZOOM_ORDER: CalendarView[] = ["day", "month", "year", "decade"]
 
@@ -185,7 +192,7 @@ export function DateCalendar(props: DateCalendarProps) {
     ref,
   } = props
   const { locale, dir, t } = useOnu()
-  const today = todayProp ?? new Date()
+  const today = useToday(todayProp)
   const anchor = readOnly ? null : selectionAnchor(props)
   const [activeDay, setActiveDay] = React.useState<Date | undefined>(undefined)
 
@@ -207,7 +214,7 @@ export function DateCalendar(props: DateCalendarProps) {
 
   const [month, setMonthState] = useControllableState(
     monthProp,
-    startOfMonth(clampDate(defaultMonth ?? anchor ?? today, min, max)),
+    startOfMonth(clampDate(defaultMonth ?? anchor ?? today ?? new Date(), min, max)),
     onMonthChange,
   )
   const [view, setViewState] = useControllableState<CalendarView>(viewProp, defaultView ?? minView, onViewChange)
@@ -288,7 +295,7 @@ export function DateCalendar(props: DateCalendarProps) {
         hideNavigation
         startMonth={min}
         endMonth={max}
-        today={today}
+        today={today ?? NO_TODAY}
         // Moves focus into the calendar when a picker opens (APG dialog pattern), not on page load.
         // eslint-disable-next-line jsx-a11y/no-autofocus
         autoFocus={focusGrid}
@@ -350,6 +357,8 @@ export function DateCalendar(props: DateCalendarProps) {
         label={t(view === "month" ? "date.months" : view === "year" ? "date.years" : "date.decades")}
         initialFocus={focusGrid}
         onPage={(delta) => (delta < 0 ? nav.prev() : nav.next())}
+        canPrev={nav.canPrev}
+        canNext={nav.canNext}
         onSelect={(index) => {
           const target = items[index]!.date
           if (atBottom) {
@@ -561,7 +570,7 @@ function activeIndexFor(view: CalendarView, month: Date, selected: Date[]) {
 
 interface PeriodContext {
   month: Date
-  today: Date
+  today: Date | null
   min?: Date
   max?: Date
   selectedDates: Date[]
@@ -581,7 +590,7 @@ function periodItems(view: CalendarView, ctx: PeriodContext): { item: GridItem; 
           ariaLabel: formatDate(date, "LLLL yyyy", ctx.locale),
           disabled: isOutOfRange(date, ctx.min, ctx.max, "month"),
           selected: ctx.selectedDates.some((d) => isSameMonth(d, date)),
-          current: isSameMonth(ctx.today, date),
+          current: !!ctx.today && isSameMonth(ctx.today, date),
         },
       }
     })
@@ -597,7 +606,7 @@ function periodItems(view: CalendarView, ctx: PeriodContext): { item: GridItem; 
           label: String(start + i),
           disabled: isOutOfRange(new Date(start + i, 0, 1), ctx.min, ctx.max, "year"),
           selected: ctx.selectedDates.some((d) => isSameYear(d, date)),
-          current: ctx.today.getFullYear() === start + i,
+          current: ctx.today?.getFullYear() === start + i,
         },
       }
     })
@@ -614,7 +623,7 @@ function periodItems(view: CalendarView, ctx: PeriodContext): { item: GridItem; 
         label: `${from}–${to}`,
         disabled: (!!ctx.min && to < ctx.min.getFullYear()) || (!!ctx.max && from > ctx.max.getFullYear()),
         selected: ctx.selectedDates.some((d) => inBlock(d.getFullYear())),
-        current: inBlock(ctx.today.getFullYear()),
+        current: !!ctx.today && inBlock(ctx.today.getFullYear()),
         className: "text-xs",
       },
     }

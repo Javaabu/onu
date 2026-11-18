@@ -14,19 +14,19 @@ export type UseThaanaInputOptions = Omit<ThaanaKeyboardOptions, "enabled" | "onT
 
 /**
  * Attaches the Thaana keyboard to an input, textarea or contenteditable (R13.2).
- * Returns the current mode and setters for a Thaana/Latin toggle (R13.5).
+ * Put the returned `ref` on the element; the keyboard follows the DOM node, so
+ * it works on elements that mount later or get replaced. Also returns the
+ * current mode and setters for a Thaana/Latin toggle (R13.5).
  */
-export function useThaanaInput<T extends HTMLElement>(
-  ref: React.RefObject<T | null>,
-  {
-    enabled: enabledProp,
-    defaultEnabled = true,
-    onEnabledChange,
-    keymap,
-    paste,
-    toggleShortcut,
-  }: UseThaanaInputOptions = {},
-) {
+export function useThaanaInput<T extends HTMLElement>({
+  enabled: enabledProp,
+  defaultEnabled = true,
+  onEnabledChange,
+  keymap,
+  paste,
+  toggleShortcut,
+}: UseThaanaInputOptions = {}) {
+  const [element, ref] = React.useState<T | null>(null)
   const [uncontrolled, setUncontrolled] = React.useState(defaultEnabled)
   const enabled = enabledProp ?? uncontrolled
   const controller = React.useRef<ThaanaKeyboardController | null>(null)
@@ -54,9 +54,8 @@ export function useThaanaInput<T extends HTMLElement>(
   // Shortcut objects are often written inline; compare them by value.
   const shortcutKey = JSON.stringify(toggleShortcut ?? null)
   React.useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const c = attachThaanaKeyboard(el, {
+    if (!element) return
+    const c = attachThaanaKeyboard(element, {
       keymap,
       paste,
       toggleShortcut: toggleShortcut === undefined ? undefined : (JSON.parse(shortcutKey) as typeof toggleShortcut),
@@ -69,9 +68,9 @@ export function useThaanaInput<T extends HTMLElement>(
       controller.current = null
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Re-attach only when the element or keyboard settings change.
-  }, [ref, keymap, paste, shortcutKey])
+  }, [element, keymap, paste, shortcutKey])
 
   const toggle = React.useCallback(() => setEnabled(!enabled), [enabled, setEnabled])
 
-  return { enabled, setEnabled, toggle }
+  return { ref: ref as (node: T | null) => void, enabled, setEnabled, toggle }
 }

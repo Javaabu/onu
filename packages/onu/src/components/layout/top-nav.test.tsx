@@ -42,6 +42,27 @@ describe("TopNav", () => {
     expect(screen.getByText("Apply or renew")).toBeInTheDocument()
   })
 
+  it("renders items with only onSelect as buttons, not links to #", async () => {
+    const onHelp = vi.fn()
+    const onFeedback = vi.fn()
+    renderWithOnu(
+      <TopNav
+        items={[
+          { label: "Help", onSelect: onHelp },
+          { label: "More", items: [{ label: "Send feedback", onSelect: onFeedback }] },
+        ]}
+      />,
+    )
+    const nav = screen.getByRole("navigation", { name: "Main" })
+    expect(document.querySelector('a[href="#"]')).toBeNull()
+    await userEvent.click(within(nav).getByRole("button", { name: "Help" }))
+    expect(onHelp).toHaveBeenCalledTimes(1)
+    await userEvent.click(within(nav).getByRole("button", { name: "More" }))
+    await userEvent.click(await screen.findByRole("button", { name: "Send feedback" }))
+    expect(onFeedback).toHaveBeenCalledTimes(1)
+    expect(document.querySelector('a[href="#"]')).toBeNull()
+  })
+
   it("collapses to a menu button that opens a drawer on phones, returning focus on close", async () => {
     renderWithOnu(
       <TopNav items={items} currentHref="/" logo={<span>Portal</span>} mobileFooter={<span>Sign in</span>} />,

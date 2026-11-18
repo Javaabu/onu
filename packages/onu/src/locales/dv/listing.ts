@@ -36,6 +36,7 @@ export const listing = {
   actionsFor: "{name} އާ ގުޅޭ ކަންކަން",
   deleteRecordTitle: "{name} ފޮހެލަންތަ؟",
   deleteRecordDescription: "މިކަން އަނބުރާ ބަދަލެއް ނުކުރެވޭނެ.",
+  actionRecordTitle: "{name} {action}؟",
   restore: "އަނބުރާ ގެންނާ",
   deletePermanently: "ދާއިމީގޮތުން ނައްތާލުން",
   deletePermanentlyTitle: "{name} ދާއިމީގޮތުން ފޮހެލަންތަ؟",

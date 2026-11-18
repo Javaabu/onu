@@ -115,6 +115,27 @@ describe("BulkActionBar", () => {
     expect(run).not.toHaveBeenCalled()
   })
 
+  it("moves focus into an input form when it opens and back to its action when cancelled", async () => {
+    const user = userEvent.setup()
+    renderWithOnu(
+      <Bar
+        actions={[
+          { id: "a", label: "Archive", run: vi.fn() },
+          { id: "s", label: "Change status", form: ({ id }) => <input id={id} />, run: vi.fn() },
+        ]}
+      />,
+    )
+    const action = screen.getByRole("button", { name: "Change status" })
+    action.focus()
+    await user.keyboard("{Enter}")
+    expect(screen.getByRole("textbox", { name: "Change status" })).toHaveFocus()
+    await user.tab()
+    await user.tab()
+    expect(screen.getByRole("button", { name: "Cancel" })).toHaveFocus()
+    await user.keyboard("{Enter}")
+    expect(screen.getByRole("button", { name: "Change status" })).toHaveFocus()
+  })
+
   it.each(directions)("works in %s with Dhivehi strings", async (dir) => {
     renderWithOnu(<Bar actions={[{ id: "delete", label: "ފޮހެލާ", destructive: true, run: vi.fn() }]} />, {
       locale: "dv",
