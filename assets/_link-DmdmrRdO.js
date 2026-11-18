@@ -1,0 +1,1 @@
+import{r as e}from"./rolldown-runtime-hePW80VL.js";import{t}from"./react-Cvdyeg_0.js";import{s as n}from"./button-BXDYzDCB.js";var r=e(t(),1);function i(e){let t=n();return r.createElement(t,e)}export{i as t};

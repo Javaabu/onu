@@ -1,0 +1,1 @@
+import{r as e}from"./rolldown-runtime-hePW80VL.js";import{t}from"./react-Cvdyeg_0.js";var n=e(t(),1),r=typeof window<`u`?n.useLayoutEffect:n.useEffect;export{r as t};

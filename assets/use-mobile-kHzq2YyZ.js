@@ -1,0 +1,1 @@
+import{t as e}from"./use-media-query-CTjN668v.js";function t(){return e(`(max-width: 767px)`)}export{t};

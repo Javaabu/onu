@@ -1,0 +1,1 @@
+import{a as e,o as t}from"./en-US-B2dFQnt7.js";import{t as n}from"./addDays-DKIMWtB-.js";function r(n,r,i){let a=e(n,i?.in);if(isNaN(r))return t(i?.in||n,NaN);if(!r)return a;let o=a.getDate(),s=t(i?.in||n,a.getTime());return s.setMonth(a.getMonth()+r+1,0),o>=s.getDate()?s:(a.setFullYear(s.getFullYear(),s.getMonth(),o),a)}function i(e,t,r){return n(e,t*7,r)}export{r as n,i as t};

@@ -1,0 +1,1 @@
+function e(e,t){return e===`start`?t===`ltr`?`left`:`right`:e===`end`?t===`ltr`?`right`:`left`:e}export{e as t};

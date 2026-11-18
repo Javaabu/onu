@@ -1,0 +1,1 @@
+import{x as e}from"./button-BXDYzDCB.js";import{t}from"./_index-q0xyeZND.js";var n=e();function r(){return(0,n.jsx)(t,{view:`grid`})}export{r as default};

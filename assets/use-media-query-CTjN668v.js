@@ -1,0 +1,1 @@
+import{r as e}from"./rolldown-runtime-hePW80VL.js";import{t}from"./react-Cvdyeg_0.js";var n=e(t(),1);function r(e){let t=n.useCallback(t=>{let n=window.matchMedia(e);return n.addEventListener(`change`,t),()=>n.removeEventListener(`change`,t)},[e]);return n.useSyncExternalStore(t,()=>window.matchMedia(e).matches,()=>!1)}function i(){return r(`(hover: none)`)}export{i as n,r as t};

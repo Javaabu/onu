@@ -1,0 +1,1 @@
+var e={toggle:`Switch between Thaana and Latin typing`,on:`Thaana typing on`,off:`Latin typing on`};export{e as t};

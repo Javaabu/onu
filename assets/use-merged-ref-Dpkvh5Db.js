@@ -1,0 +1,1 @@
+import{r as e}from"./rolldown-runtime-hePW80VL.js";import{t}from"./react-Cvdyeg_0.js";var n=e(t(),1);function r(e,t){if(typeof e==`function`){let n=e(t);return typeof n==`function`?n:()=>e(null)}return e&&(e.current=t),()=>{e&&(e.current=null)}}function i(e,t,i){return n.useCallback(n=>{let a=[r(e,n),r(t,n),r(i,n)];return()=>a.forEach(e=>e())},[e,t,i])}export{i as t};

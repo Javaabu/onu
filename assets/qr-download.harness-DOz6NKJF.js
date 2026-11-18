@@ -1,0 +1,1 @@
+import{x as e}from"./button-BXDYzDCB.js";import{t}from"./qr-code-BZIuEeLZ.js";var n=e();function r(){return(0,n.jsx)(t,{value:`https://example.mv/verify/BL-2026-04417`,label:`Licence QR code`,download:!0})}export{r as default};

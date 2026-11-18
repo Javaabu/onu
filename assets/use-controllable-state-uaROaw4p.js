@@ -1,0 +1,1 @@
+import{r as e}from"./rolldown-runtime-hePW80VL.js";import{t}from"./react-Cvdyeg_0.js";import{t as n}from"./use-isomorphic-layout-effect-C6fVbppV.js";var r=e(t(),1);function i(e,t,i){let[a,o]=r.useState(t),s=e!==void 0,c=r.useRef(i);n(()=>{c.current=i});let l=r.useCallback((e,...t)=>{s||o(e),c.current?.(e,...t)},[s]);return[s?e:a,l]}export{i as t};
