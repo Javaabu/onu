@@ -85,6 +85,12 @@ export function ImageCropper({
   const [zoom, setZoom] = React.useState(1)
   const [rotation, setRotation] = React.useState(0)
   const [aspect, setAspect] = React.useState<number | undefined>(aspectProp)
+  // A new `aspect` from the parent replaces the current one (also one picked from `aspectOptions`).
+  const [previousAspectProp, setPreviousAspectProp] = React.useState(aspectProp)
+  if (previousAspectProp !== aspectProp) {
+    setPreviousAspectProp(aspectProp)
+    setAspect(aspectProp)
+  }
   const [area, setArea] = React.useState<PixelCrop | null>(null)
   const [mediaAspect, setMediaAspect] = React.useState<number>(1)
   const helpId = React.useId()

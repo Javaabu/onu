@@ -38,7 +38,7 @@ The canvas helpers are exported for use without the component: `cropImage(src, p
 | --------------------- | -------------------------------------- | ---------- | -------------------------------------------------------------------- |
 | `src`                 | `string \| Blob`                       |            | Image URL or picked file                                             |
 | `alt`                 | `string`                               | (required) | Names the crop area                                                  |
-| `aspect`              | `number`                               | `1`        | Initial aspect ratio                                                 |
+| `aspect`              | `number`                               | `1`        | Aspect ratio; a new value replaces the one in use                    |
 | `aspectOptions`       | `{ label, value }[]`                   |            | Aspect presets (`undefined` = free, image ratio)                     |
 | `onAspectChange`      | `(aspect) => void`                     |            | A preset was chosen                                                  |
 | `cropShape`           | `"rect" \| "round"`                    | `"rect"`   | Crop shape                                                           |

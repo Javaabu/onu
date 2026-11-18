@@ -145,6 +145,13 @@ describe("ImageCropper", () => {
     await expectNoA11yViolations()
   })
 
+  it("follows a changed `aspect` prop", () => {
+    const { rerender } = renderWithOnu(<ImageCropper src="/photo.jpg" alt="x" aspect={1} />)
+    expect(screen.getByTestId("cropper")).toHaveAttribute("data-aspect", "1")
+    rerender(<ImageCropper src="/photo.jpg" alt="x" aspect={4 / 3} />)
+    expect(screen.getByTestId("cropper")).toHaveAttribute("data-aspect", String(4 / 3))
+  })
+
   it("switches aspect ratios, including free cropping", async () => {
     const onAspectChange = vi.fn()
     renderWithOnu(
