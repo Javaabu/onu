@@ -15,20 +15,16 @@ function setRef<T>(ref: React.Ref<T> | undefined, node: T | null): () => void {
 }
 
 /**
- * Merges a forwarded ref with a local one. Returns a React 19 ref callback with a
+ * Merges a forwarded ref with local ones. Returns a React 19 ref callback with a
  * cleanup, so a ref that returns its own cleanup gets it called on detach.
  */
-export function useMergedRef<T>(a: React.Ref<T> | undefined, b?: React.Ref<T>) {
+export function useMergedRef<T>(a: React.Ref<T> | undefined, b?: React.Ref<T>, c?: React.Ref<T>) {
   return React.useCallback(
     // `node` is null only when an older ref composer detaches by calling with null.
     (node: T | null) => {
-      const undoA = setRef(a, node)
-      const undoB = setRef(b, node)
-      return () => {
-        undoA()
-        undoB()
-      }
+      const undo = [setRef(a, node), setRef(b, node), setRef(c, node)]
+      return () => undo.forEach((fn) => fn())
     },
-    [a, b],
+    [a, b, c],
   )
 }

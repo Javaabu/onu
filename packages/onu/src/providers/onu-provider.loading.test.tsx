@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import { SearchIcon } from "lucide-react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import type * as ProviderModule from "./onu-provider"
 import type * as IconModule from "../icons/icon"
@@ -51,6 +51,63 @@ describe("OnuProvider locales", () => {
     expect(document.documentElement).toHaveAttribute("lang", "dv")
     await waitFor(() => expect(screen.queryByText("(optional)")).not.toBeInTheDocument())
     expect(document.body.textContent).toMatch(/[ހ-޿]/)
+  })
+
+  describe("when the Dhivehi chunk fails to load", () => {
+    const network = { offline: true, attempts: 0 }
+
+    beforeEach(() => {
+      network.offline = true
+      network.attempts = 0
+      vi.useFakeTimers({ shouldAdvanceTime: true })
+      vi.doMock("../locales/dv/dv", async (importOriginal) => {
+        const actual = await importOriginal<typeof import("../locales/dv/dv")>()
+        return {
+          get dv() {
+            network.attempts++
+            if (network.offline) throw new Error("Failed to fetch dynamically imported module")
+            return actual.dv
+          },
+        }
+      })
+    })
+
+    afterEach(() => {
+      vi.doUnmock("../locales/dv/dv")
+      vi.useRealTimers()
+    })
+
+    async function renderDv() {
+      const mod = await load()
+      const Text = textOf(mod)
+      await import("../components/form/label")
+      render(
+        <mod.OnuProvider locale="dv">
+          <Text k="form.optional" />
+        </mod.OnuProvider>,
+      )
+      await waitFor(() => expect(network.attempts).toBeGreaterThan(0))
+    }
+
+    it("retries after a delay", async () => {
+      await renderDv()
+      network.offline = false
+      await vi.advanceTimersByTimeAsync(1000)
+      await waitFor(() => expect(screen.queryByText("(optional)")).not.toBeInTheDocument())
+      expect(document.body.textContent).toMatch(/[ހ-޿]/)
+    })
+
+    it("gives up after a few retries, then tries again when the browser comes back online", async () => {
+      await renderDv()
+      for (let i = 0; i < 4; i++) await vi.advanceTimersByTimeAsync(15_000)
+      const attempts = network.attempts
+      network.offline = false
+      await vi.advanceTimersByTimeAsync(60_000)
+      expect(network.attempts).toBe(attempts)
+      expect(screen.getByText("(optional)")).toBeInTheDocument()
+      window.dispatchEvent(new Event("online"))
+      await waitFor(() => expect(screen.queryByText("(optional)")).not.toBeInTheDocument())
+    })
   })
 
   it("uses a locale object right away", async () => {

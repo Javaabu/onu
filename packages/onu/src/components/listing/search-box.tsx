@@ -63,8 +63,8 @@ export function SearchBox({
 }: SearchBoxProps) {
   const { t } = useTranslation()
   const local = React.useRef<HTMLInputElement>(null)
-  const merged = useMergedRef(local, ref)
-  const { fieldProps } = useThaanaField(local, thaana)
+  const { ref: thaanaRef, fieldProps } = useThaanaField<HTMLInputElement>(thaana)
+  const merged = useMergedRef(local, thaanaRef, ref)
   const controlProps = useFormFieldControl(props)
 
   const [applied, setApplied] = React.useState(value ?? defaultValue)

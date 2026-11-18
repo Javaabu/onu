@@ -421,7 +421,18 @@ describe("ActionMenu with a record name", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "Actions for Form 12" }))
     await userEvent.click(await screen.findByRole("menuitem", { name: "Suspend" }))
-    expect(await screen.findByRole("alertdialog", { name: "Suspend Form 12?" })).toBeInTheDocument()
+    const suspend = await screen.findByRole("alertdialog", { name: "Suspend Form 12?" })
+    expect(within(suspend).queryByText("This can't be undone.")).not.toBeInTheDocument()
+    await userEvent.keyboard("{Escape}")
+  })
+
+  it("words the confirm question in the locale's order", async () => {
+    renderWithOnu(<ActionMenu name="ފޯމް 12" items={[{ id: "suspend", label: "ހުއްޓާލާ", confirm: true }]} />, {
+      locale: "dv",
+    })
+    await userEvent.click(screen.getAllByRole("button")[0]!)
+    await userEvent.click(await screen.findByRole("menuitem", { name: "ހުއްޓާލާ" }))
+    expect(await screen.findByRole("alertdialog", { name: "ފޯމް 12 ހުއްޓާލާ؟" })).toBeInTheDocument()
     await userEvent.keyboard("{Escape}")
   })
 

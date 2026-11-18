@@ -421,6 +421,20 @@ describe("DataTable", () => {
     expect(screen.getByRole("columnheader", { name: /Name/ })).toHaveAttribute("aria-sort", "ascending")
   })
 
+  it("formats dates with Onu's locale, not the browser's", () => {
+    renderWithOnu(
+      <DataTable
+        columns={[
+          { id: "name", header: "ނަން" },
+          { id: "joined", header: "ތާރީޚު" },
+        ]}
+        data={[{ id: "a", name: "ޢަލީ", joined: new Date(2026, 0, 2) }]}
+      />,
+      { locale: "dv" },
+    )
+    expect(screen.getAllByText("2 ޖެނުއަރީ 2026").length).toBeGreaterThan(0)
+  })
+
   it("supports a custom empty state and pagination without a total", () => {
     renderWithOnu(<DataTable columns={userColumns} data={[]} empty={<p>Nothing</p>} pagination />)
     expect(screen.getByText("Nothing")).toBeInTheDocument()

@@ -69,7 +69,7 @@ The table always shows the rows it is given (it never sorts or pages by itself):
 
 Other `<div>` props and `ref` go to the root.
 
-`DataTableColumn<T>`: `id`, `header` (text), `headerContent?`, `accessor?` (key or function), `cell?`, `sortable?`, `hideable?`, `primary?`, `align?`, `numeric?` (tabular figures, end-aligned), `hideOnCards?`, `className?`, `headerClassName?`.
+`DataTableColumn<T>`: `id`, `header` (text), `headerContent?`, `accessor?` (key or function), `cell?`, `sortable?`, `hideable?`, `primary?`, `align?`, `numeric?` (tabular figures, end-aligned), `hideOnCards?`, `className?`, `headerClassName?`. Without `cell`, a `Date` value is shown with Onu's locale (`useFormatDate`, "Jan 2, 2026" / "2 ޖެނުއަރީ 2026"), not the browser's.
 
 ## Accessibility
 

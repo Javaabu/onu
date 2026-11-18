@@ -87,8 +87,7 @@ export function PlaceSearchBox({
   "aria-label": ariaLabel,
 }: PlaceSearchBoxProps) {
   const { t } = useTranslation()
-  const inputRef = React.useRef<HTMLInputElement>(null)
-  const { fieldProps } = useThaanaField(inputRef, thaana)
+  const { ref: inputRef, fieldProps } = useThaanaField<HTMLInputElement>(thaana)
   const { query, setQuery, results, status, reset, retry } = usePlaceSearchBox({ search, minChars, debounce })
   const [open, setOpen] = React.useState(false)
   const [active, setActive] = React.useState(-1)
