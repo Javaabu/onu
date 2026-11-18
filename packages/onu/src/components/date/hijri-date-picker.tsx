@@ -15,6 +15,7 @@ import { formatHijriParts, hijriMonthName, type HijriFormat } from "./hijri-date
 import { registerEnglish } from "../../i18n/english"
 import { date as en_date } from "../../locales/en/date"
 import { useControllableState } from "../../hooks/use-controllable-state"
+import { useToday } from "../../hooks/use-today"
 
 registerEnglish({ date: en_date })
 
@@ -54,11 +55,12 @@ export function HijriCalendar({
   ref,
 }: HijriCalendarProps) {
   const { locale, t, dir } = useOnu()
-  const today = todayProp ?? new Date()
+  const today = useToday(todayProp)
   const weekStartsOn = weekStartsOnProp ?? locale.weekStartsOn
   const [view, setView] = React.useState<HijriView>("day")
-  const [month, setMonth] = React.useState<HijriParts>(() => ({ ...toHijri(selected ?? today), day: 1 }))
-  const [focused, setFocused] = React.useState<Date>(() => selected ?? today)
+  const [month, setMonth] = React.useState<HijriParts>(() => ({ ...toHijri(selected ?? today ?? new Date()), day: 1 }))
+  // `null` until a day is focused: the target is then the selection, today or the 1st.
+  const [focused, setFocused] = React.useState<Date | null>(selected ?? null)
   const [focusGrid, setFocusGrid] = React.useState(!!initialFocus)
   const buttons = React.useRef(new Map<string, HTMLButtonElement>())
   const pendingFocus = React.useRef(!!initialFocus)
@@ -70,7 +72,7 @@ export function HijriCalendar({
   const cells = Array.from({ length: weeks * 7 }, (_, i) => addDays(first, i - lead))
   const lastDay = addDays(first, daysInMonth - 1)
   const inMonth = (d: Date) => d >= first && d <= lastDay
-  const focusTarget = inMonth(focused) ? focused : selected && inMonth(selected) ? selected : first
+  const focusTarget = [focused, selected, today].find((d): d is Date => !!d && inMonth(d)) ?? first
 
   React.useEffect(() => {
     if (view !== "day" || !pendingFocus.current) return
@@ -148,7 +150,7 @@ export function HijriCalendar({
 
   const weekdays = Array.from({ length: 7 }, (_, i) => addDays(cells[0]!, i))
   const selectedHijri = selected ? toHijri(selected) : null
-  const todayHijri = toHijri(today)
+  const todayHijri = today ? toHijri(today) : null
 
   let body: React.ReactNode
   if (view === "day") {
@@ -176,7 +178,7 @@ export function HijriCalendar({
                 const outside = !inMonth(d)
                 const disabled = isOutOfRange(d, min, max)
                 const isSelected = !!selected && isSameDay(d, selected)
-                const isToday = isSameDay(d, today)
+                const isToday = !!today && isSameDay(d, today)
                 const weekend = weekendDays.includes(d.getDay())
                 const iso = toISODate(d)
                 return (
@@ -245,7 +247,7 @@ export function HijriCalendar({
           label: hijriMonthName(t, i + 1),
           ariaLabel: `${hijriMonthName(t, i + 1)} ${month.year}`,
           selected: selectedHijri?.year === month.year && selectedHijri.month === i + 1,
-          current: todayHijri.year === month.year && todayHijri.month === i + 1,
+          current: todayHijri?.year === month.year && todayHijri.month === i + 1,
           className: "text-xs",
         }))}
         onSelect={(i) => {
@@ -271,7 +273,7 @@ export function HijriCalendar({
           key: `hy${start + i}`,
           label: String(start + i),
           selected: selectedHijri?.year === start + i,
-          current: todayHijri.year === start + i,
+          current: todayHijri?.year === start + i,
         }))}
         onSelect={(i) => {
           setMonth({ ...month, year: start + i })

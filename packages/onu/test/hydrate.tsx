@@ -1,7 +1,7 @@
 import { act } from "@testing-library/react"
 import { hydrateRoot, type Root } from "react-dom/client"
 import { renderToString } from "react-dom/server"
-import { onTestFinished } from "vitest"
+import { onTestFinished, vi } from "vitest"
 
 /**
  * Server-renders `ui`, runs `between` (to set up what only the browser has: stored values,
@@ -23,4 +23,22 @@ export async function hydrateAfterServer(ui: React.ReactElement, between?: () =>
     container.remove()
   })
   return { container, errors }
+}
+
+/**
+ * Freezes the clock at `instant` with the process in the server's time zone. Call the returned
+ * function (as `between`) to move to the browser's zone. Both are restored when the test finishes.
+ */
+export function serverThenBrowserZone(instant: Date, server = "UTC", browser = "Indian/Maldives") {
+  const zone = process.env.TZ
+  vi.useFakeTimers({ toFake: ["Date"] })
+  vi.setSystemTime(instant)
+  process.env.TZ = server
+  onTestFinished(() => {
+    process.env.TZ = zone
+    vi.useRealTimers()
+  })
+  return () => {
+    process.env.TZ = browser
+  }
 }
