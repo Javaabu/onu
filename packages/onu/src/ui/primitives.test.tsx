@@ -19,6 +19,7 @@ import {
   PaginationPrevious,
 } from "./pagination"
 import { Progress } from "./progress"
+import { Sidebar, SidebarProvider } from "./sidebar"
 import { Slider } from "./slider"
 import { Spinner } from "./spinner"
 
@@ -151,5 +152,16 @@ describe("vendored primitive patches", () => {
     )
     expect(screen.getByText("1.234,5")).toBeInTheDocument()
     vi.restoreAllMocks()
+  })
+
+  it("passes dir to a Sidebar with collapsible=none", () => {
+    renderWithOnu(
+      <SidebarProvider>
+        <Sidebar collapsible="none" dir="rtl">
+          Menu
+        </Sidebar>
+      </SidebarProvider>,
+    )
+    expect(document.querySelector("[data-slot=sidebar]")).toHaveAttribute("dir", "rtl")
   })
 })

@@ -123,6 +123,39 @@ describe("Pagination", () => {
     expect(screen.getByRole("button", { name: "Go to next page" })).toBeDisabled()
   })
 
+  it("keeps the server's query string and page name in page links", () => {
+    const url = (n: number) => `/users?search=ali&users_page=${n}`
+    renderWithOnu(
+      <Pagination
+        paginator={{
+          current_page: 2,
+          per_page: 15,
+          total: 150,
+          last_page: 10,
+          path: "/users",
+          first_page_url: url(1),
+          last_page_url: url(10),
+          next_page_url: url(3),
+          prev_page_url: url(1),
+          links: [
+            { url: url(1), label: "&laquo; Previous", active: false },
+            { url: url(1), label: "1", active: false },
+            { url: url(2), label: "2", active: true },
+            { url: url(3), label: "3", active: false },
+            { url: null, label: "...", active: false },
+            { url: url(10), label: "10", active: false },
+            { url: url(3), label: "Next &raquo;", active: false },
+          ],
+        }}
+      />,
+    )
+    expect(screen.getByRole("link", { name: "Go to next page" })).toHaveAttribute("href", url(3))
+    expect(screen.getByRole("link", { name: "Go to previous page" })).toHaveAttribute("href", url(1))
+    expect(screen.getByRole("link", { name: "Go to page 10" })).toHaveAttribute("href", url(10))
+    // Page 4 isn't in `links[]`; it is built from the server's URLs, not from `path`.
+    expect(screen.getByRole("link", { name: "Go to page 4" })).toHaveAttribute("href", url(4))
+  })
+
   it("uses hasNextPage when the total is unknown", () => {
     renderWithOnu(<Pagination page={1} hasNextPage />)
     expect(screen.getByRole("button", { name: "Go to next page" })).toBeEnabled()

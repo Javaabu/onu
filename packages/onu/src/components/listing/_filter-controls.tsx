@@ -328,6 +328,34 @@ function TrashedControl({ value, onValueChange, id, labelId }: ControlProps<Filt
   )
 }
 
+/**
+ * A filter's label. For a custom `render` it is a real `<label for>` the control's id, so the
+ * control is named without extra wiring; built-in controls point at it with `aria-labelledby`.
+ */
+export function FilterLabel({
+  definition,
+  id,
+  labelId,
+  className,
+}: {
+  definition: FilterDefinition
+  id: string
+  labelId: string
+  className?: string
+}) {
+  if (definition.render)
+    return (
+      <label id={labelId} htmlFor={id} className={className}>
+        {definition.label}
+      </label>
+    )
+  return (
+    <span id={labelId} className={className}>
+      {definition.label}
+    </span>
+  )
+}
+
 /** The control for one filter: the definition's `render`, or the built-in control for its type. */
 export function FilterControl(props: ControlProps<FilterDefinition>) {
   const { definition } = props
@@ -336,6 +364,7 @@ export function FilterControl(props: ControlProps<FilterDefinition>) {
       value: props.value,
       onValueChange: props.onValueChange,
       id: props.id,
+      labelId: props.labelId,
       definition,
     }
     return <>{definition.render(renderProps)}</>

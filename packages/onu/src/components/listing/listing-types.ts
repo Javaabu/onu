@@ -39,8 +39,10 @@ export interface FilterOption {
 export interface FilterRenderProps<V extends FilterValue = FilterValue> {
   value: V | undefined
   onValueChange: (value: V | undefined) => void
-  /** Id for the control, already wired to the filter's label. */
+  /** Id for the control: the filter's label is a `<label for>` it, so a form control with this id is named. */
   id: string
+  /** Id of the filter's label, for `aria-labelledby` on a control a `<label>` can't name (a group, a custom widget). */
+  labelId: string
   definition: FilterDefinition
 }
 

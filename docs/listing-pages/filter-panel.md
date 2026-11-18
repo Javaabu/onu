@@ -79,7 +79,7 @@ For a classic filter bar that you render yourself (a `GET` form above a server-r
 
 - Changes in the panel are a draft: the list doesn't change until **Apply**.
 - **Cancel**, <kbd>Escape</kbd> or clicking outside close the panel and throw the draft away.
-- **Clear all** removes every filter straight away and closes the panel.
+- **Clear all** removes every filter in the panel straight away and closes the panel. The button's count and Clear all cover only the panel's `filters`: tabs and `queryFilters` in the same `value` are left alone.
 - Each filter has its own **Clear** link.
 - Reopening the panel always shows the filters currently applied.
 
@@ -92,9 +92,9 @@ For a classic filter bar that you render yourself (a `GET` form above a server-r
 | `boolean`    | Any / Yes / No select                                                                                                                   | `"1"` \| `"0"`           |
 | `text`       | A text box (`thaana` supported)                                                                                                         | `string`                 |
 | `trashed`    | Hide / Include / Only                                                                                                                   | `"with"` \| `"only"`     |
-| `custom`     | Your `render({ value, onValueChange, id, definition })`                                                                                      | anything                 |
+| `custom`     | Your `render({ value, onValueChange, id, labelId, definition })`                                                                             | anything                 |
 
-Every definition also accepts `render` (replace the built-in control) and `format(value)` (the pill text).
+Every definition also accepts `render` (replace the built-in control) and `format(value)` (the pill text). The filter's label is a `<label for>` the `id` passed to `render`, so a form control with that id is named; for a group or a custom widget, use `aria-labelledby={labelId}`.
 
 ## Props
 
@@ -102,7 +102,7 @@ Every definition also accepts `render` (replace the built-in control) and `forma
 | ----------------------- | ---------------------------------------------------------- | --------------- | -------------------------------------- |
 | `filters`               | `FilterDefinition[]`                                       |                 | Filters on offer                       |
 | `value`                 | `FilterValues`                                             |                 | Applied filters                        |
-| `onApply`               | `(filters) => void`                                        |                 | Apply (and `{}` on Clear all)          |
+| `onApply`               | `(filters) => void`                                        |                 | Apply, and Clear all (the panel's filters removed) |
 | `open` / `onOpenChange` | `boolean` / `(open) => void`                               |                 | Controlled open state                  |
 | `defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled |
 | `sheet`                 | `boolean`                                                  | below 768px     | Force the bottom sheet or the dropdown |

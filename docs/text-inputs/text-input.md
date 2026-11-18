@@ -53,7 +53,7 @@ Addons sit at the inline start and end, so they swap sides in RTL.
 
 For a sign-in form, pass `autoComplete="username"` to the email field so password managers pair it with the password field.
 
-A URL without a scheme gets `urlProtocol` (default `https://`) when the user leaves the field: `javaabu.com` becomes `https://javaabu.com`. The value is set the way a user would type it (a native input event), so `onChange`, controlled state and `react-hook-form` all see it. `urlProtocol={false}` keeps the value as typed, e.g. for site-relative paths. The same rule is exported as `normalizeUrl(value, protocol?)`.
+A URL without a scheme gets `urlProtocol` (default `https://`) when the user leaves the field: `javaabu.com` becomes `https://javaabu.com`, and `localhost:3000` becomes `https://localhost:3000` (a host and port is not read as a scheme). The value is set the way a user would type it (a native input event), so `onChange`, controlled state and `react-hook-form` all see it. `urlProtocol={false}` keeps the value as typed, e.g. for site-relative paths. The same rule is exported as `normalizeUrl(value, protocol?)`.
 
 ## Props
 

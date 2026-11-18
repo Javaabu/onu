@@ -25,6 +25,7 @@ import { Pagination } from "@javaabu/onu"
 - Previous is disabled on the first page and Next on the last (or when a simple paginator has no `next_page_url`).
 - With numbered pages the previous and next buttons are icon-only (their accessible names stay "Go to previous page" / "Go to next page"). Without a total (simple paginators) or with `numbered={false}` they show their labels.
 - With `getPageHref`, or a paginator with a `path` / `links`, pages are links rendered with `OnuProvider linkComponent` (Inertia, Next). Plain clicks still call `onPageChange` when given.
+- Page links from a paginator come from the URLs the server sent (`links`, `first_page_url`, `prev_page_url`, …), so the query string from `->withQueryString()` and a custom `pageName` are kept. Pages the server didn't list swap the page number in one of those URLs; `path` is used only when the server sent no URLs.
 
 ## Props
 
