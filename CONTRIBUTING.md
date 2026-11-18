@@ -58,10 +58,12 @@ The files in `packages/onu/src/ui` started as shadcn/ui's components (Radix base
 
 E2E (Playwright) runs in two tiers:
 
-- **Smoke, on pull requests.** The **E2E smoke** workflow runs `e2e/a11y.spec.ts` and `e2e/thaana.spec.ts` in Chromium, with no screenshots, when a pull request touches `packages/onu/**`, `web/**` or `e2e/**`.
+- **Smoke, on pull requests.** The **E2E smoke** workflow runs `e2e/a11y.spec.ts`, `e2e/thaana.spec.ts` and `e2e/browser.spec.ts` in Chromium, with no screenshots, when a pull request touches `packages/onu/**`, `web/**` or `e2e/**`.
 - **Full, on demand.** The **E2E** workflow (accessibility in five browsers, and Chromium screenshots) is slow, so CI runs it only when the last commit pushed to `main` starts with `e2e` (for example `e2e: new date picker`), or when you run it by hand from the Actions tab.
 
-Run either locally with `pnpm e2e:chromium`, adding the two spec files for the smoke tier.
+Run either locally with `pnpm e2e:chromium`, adding the three spec files for the smoke tier.
+
+`e2e/browser.spec.ts` covers behaviour jsdom can't show (focus after re-renders, inert modal backgrounds, `IntersectionObserver`, downloads, chart layout). Each scenario is a small page in `web/src/e2e/<name>.harness.tsx`, served at `#/e2e/<name>` and left out of the navigation and the a11y and visual runs.
 
 Server rendering has its own check. The **Server rendering** workflow builds the Next.js app in `e2e/nextjs` against the workspace copy of Onu, then checks its server HTML and hydration in English and Dhivehi, when a pull request touches `packages/onu/**` or `e2e/nextjs/**`. Run it locally with `pnpm build && pnpm --filter onu-nextjs-fixture build && pnpm --filter onu-nextjs-fixture test:ssr`.
 

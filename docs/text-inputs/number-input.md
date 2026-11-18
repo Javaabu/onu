@@ -87,7 +87,7 @@ With a `name` (or inside a `FormField` with `name`), the raw number is submitted
 | `startAddon` / `endAddon` | `ReactNode`                                                                      |                    | Your own addons; the unit sits between them and the number |
 | `classNames`              | `{ root, input, startAddon, endAddon, unit, unitTrigger, decrement, increment }` |                    | Classes for each part                                      |
 
-Also exported: `parseLocaleNumber(text, numberLocale)`, `numberSymbols(numberLocale)`, `numberInputVariants` and the `NumberInputUnitOption`, `NumberInputFieldProps` and `NumberInputStepperProps` types.
+Also exported: `parseLocaleNumber(text, numberLocale)`, `numberSymbols(numberLocale)` (group and decimal separators, and the locale's digits), `numberInputVariants` and the `NumberInputUnitOption`, `NumberInputFieldProps` and `NumberInputStepperProps` types.
 
 ## RTL and Thaana
 
