@@ -9,7 +9,7 @@ export interface PixelCrop {
 export interface CropImageOptions {
   /** Rotation in degrees, applied before cropping. */
   rotation?: number
-  /** Output type. Default `image/jpeg` (`image/png` keeps transparency). */
+  /** Output type. Default `image/jpeg`, where transparent areas become white (`image/png` keeps transparency). */
   type?: string
   /** 0–1 quality for lossy types. Default `0.92`. */
   quality?: number
@@ -76,8 +76,19 @@ export async function cropImage(
   const ctx = out.getContext("2d")
   if (!ctx) throw new Error("Canvas is not supported")
   ctx.imageSmoothingQuality = "high"
+  // JPEG has no alpha: unpainted pixels would export black, so start from white.
+  if (type === "image/jpeg") {
+    ctx.fillStyle = "#fff"
+    ctx.fillRect(0, 0, out.width, out.height)
+  }
   ctx.drawImage(rotated, crop.x, crop.y, crop.width, crop.height, 0, 0, out.width, out.height)
   return canvasToBlob(out, type, quality)
+}
+
+/** The usual file extension for an image type, e.g. `jpg` for `image/jpeg`. */
+export function imageExtension(type: string) {
+  const subtype = type.split("/")[1]?.split(/[+;]/)[0] ?? ""
+  return subtype === "jpeg" ? "jpg" : subtype || "img"
 }
 
 /** Like `cropImage`, but returns a `File` with the given name. */

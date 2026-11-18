@@ -14,7 +14,7 @@ import { useTranslation } from "../providers/onu-provider"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
-import type { CropImageOptions } from "./crop-image"
+import { imageExtension, type CropImageOptions } from "./crop-image"
 import { ImageCropper, type ImageCropperHandle } from "./image-cropper"
 import { registerEnglish } from "../i18n/english"
 import { common as en_common } from "../locales/en/common"
@@ -120,8 +120,9 @@ export function AvatarUpload({
     if (!pending) return
     setSaving(true)
     try {
-      const name = pending.name.replace(/\.[^.]+$/, "") + ".jpg"
-      const file = await cropper.current!.getFile(name, { type: "image/jpeg", maxSize: 512, ...cropOptions })
+      const options = { type: "image/jpeg", maxSize: 512, ...cropOptions }
+      const name = `${pending.name.replace(/\.[^.]+$/, "")}.${imageExtension(options.type)}`
+      const file = await cropper.current!.getFile(name, options)
       setImage(file)
       setPending(null)
     } catch {

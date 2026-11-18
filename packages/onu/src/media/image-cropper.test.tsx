@@ -33,7 +33,14 @@ vi.mock("react-easy-crop", () => ({
 
 /** Fake canvas + image so cropImage runs in jsdom. */
 function mockCanvas() {
-  const ctx = { translate: vi.fn(), rotate: vi.fn(), drawImage: vi.fn(), imageSmoothingQuality: "" }
+  const ctx = {
+    translate: vi.fn(),
+    rotate: vi.fn(),
+    drawImage: vi.fn(),
+    fillRect: vi.fn(),
+    fillStyle: "",
+    imageSmoothingQuality: "",
+  }
   vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(ctx as never)
   vi.spyOn(HTMLCanvasElement.prototype, "toBlob").mockImplementation(function (cb, type) {
     cb(new Blob(["x"], { type: type ?? "image/png" }))
@@ -79,6 +86,17 @@ describe("crop helpers", () => {
     expect(f).toBeInstanceOf(File)
     expect(f.name).toBe("me.png")
     expect(f.type).toBe("image/png")
+  })
+
+  it("puts transparent pixels on white for JPEG, which has no transparency", async () => {
+    const ctx = mockCanvas()
+    await cropImage("/a.png", { x: 0, y: 0, width: 20, height: 10 })
+    expect(ctx.fillStyle).toBe("#fff")
+    expect(ctx.fillRect).toHaveBeenCalledWith(0, 0, 20, 10)
+    expect(ctx.fillRect.mock.invocationCallOrder[0]).toBeLessThan(ctx.drawImage.mock.invocationCallOrder.at(-1)!)
+    ctx.fillRect.mockClear()
+    await cropImage("/a.png", { x: 0, y: 0, width: 20, height: 10 }, { type: "image/png" })
+    expect(ctx.fillRect).not.toHaveBeenCalled()
   })
 
   it("rejects broken images, missing canvas support and failed exports", async () => {
@@ -204,6 +222,26 @@ describe("AvatarUpload", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
     expect(screen.getByRole("button", { name: "Change photo" })).toHaveFocus()
     await expectNoA11yViolations()
+  })
+
+  it("names the cropped file after its output type", async () => {
+    mockCanvas()
+    const onChange = vi.fn()
+    const { container } = renderWithOnu(
+      <AvatarUpload personName="Ali" onValueChange={onChange} cropOptions={{ type: "image/png" }} />,
+    )
+    await userEvent.upload(pick(container), new File(["x"], "me.photo.jpeg", { type: "image/jpeg" }))
+    await screen.findByRole("dialog", { name: "Crop photo" })
+    act(() =>
+      (cropperProps.current!.onCropComplete as (a: unknown, b: unknown) => void)(
+        {},
+        { x: 0, y: 0, width: 10, height: 10 },
+      ),
+    )
+    await userEvent.click(screen.getByRole("button", { name: "Save photo" }))
+    await waitFor(() =>
+      expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ name: "me.photo.png", type: "image/png" })),
+    )
   })
 
   it("falls back to the original file when cropping fails, and can cancel", async () => {
