@@ -90,6 +90,15 @@ describe("AdditionalFilesUpload", () => {
     expect(screen.getByText("b.pdf was not added: only 2 files are allowed.")).toBeInTheDocument()
   })
 
+  it("moves focus to the picker after removing a file at maxFiles", async () => {
+    const { container } = renderWithOnu(<AdditionalFilesUpload maxFiles={1} withName={false} withDescription={false} />)
+    await user().upload(picker(container), [file("a.pdf")])
+    expect(picker(container)).toBeDisabled()
+    await user().click(screen.getByRole("button", { name: "Remove a.pdf" }))
+    expect(picker(container)).toBeEnabled()
+    expect(picker(container)).toHaveFocus()
+  })
+
   it("disables every action when disabled", () => {
     renderWithOnu(<AdditionalFilesUpload existing={existing} disabled />)
     expect(screen.getByRole("button", { name: "Remove Lease agreement.pdf" })).toBeDisabled()

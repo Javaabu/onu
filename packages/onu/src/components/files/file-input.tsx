@@ -8,6 +8,7 @@ import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
 import { Button, buttonVariants } from "../../ui/button"
 import { useFormField, useFormFieldControl } from "../form/form-field"
+import { useFocusAfterRender } from "../../hooks/use-focus-after-render"
 import { useMergedRef } from "../../hooks/use-merged-ref"
 import { FileRow } from "./_file-row"
 import type { ExistingAttachment } from "./additional-files-upload"
@@ -227,7 +228,7 @@ export function FileInput<R = unknown>({
   const [announcement, setAnnouncement] = React.useState("")
   const [dragActive, setDragActive] = React.useState(false)
   // Focus moves back to the input after a removal, once it has re-rendered (it may have been disabled).
-  const [focusRequest, setFocusRequest] = React.useState(0)
+  const refocus = useFocusAfterRender(local)
   const options: FileValidationOptions = { accept, maxSize, minSize, maxFiles }
   const message = useRejectionMessage(options)
   const statusId = React.useId()
@@ -300,10 +301,6 @@ export function FileInput<R = unknown>({
   React.useEffect(() => {
     syncInputFiles(local.current, uploads ? NO_FILES : entries.filter(isLocalFile))
   }, [entries, uploads])
-
-  React.useEffect(() => {
-    if (focusRequest) local.current?.focus()
-  }, [focusRequest])
 
   function setEntries(next: FileInputEntry<R>[]) {
     entriesRef.current = next
@@ -381,8 +378,6 @@ export function FileInput<R = unknown>({
     event.dataTransfer.dropEffect = blocked ? "none" : "copy"
     if (!blocked) setDragActive(true)
   }
-
-  const refocus = () => setFocusRequest((n) => n + 1)
 
   const removeEntry = (entry: FileInputEntry<R>) => {
     setEntries(entriesRef.current.filter((e) => e !== entry))
