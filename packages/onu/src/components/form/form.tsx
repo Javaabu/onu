@@ -123,6 +123,7 @@ export function Form<T extends FieldValues = FormValues>({
   children,
   ref,
   onChange,
+  onFocus,
   noValidate,
   ...props
 }: FormProps<T>) {
@@ -170,6 +171,21 @@ export function Form<T extends FieldValues = FormValues>({
   React.useEffect(() => {
     if (errorEntries(errorsProp).length) pendingFocus.current = true
   }, [errorsProp])
+
+  // Disabling fields while processing blurs the focused one, so an Enter submit drops focus
+  // to <body>. Remember the last focused control and give focus back when processing ends.
+  const lastFocused = React.useRef<HTMLElement | null>(null)
+  const fieldsDisabled = disableWhileProcessing && processing
+  const wasDisabled = React.useRef(fieldsDisabled)
+  React.useEffect(() => {
+    const ended = wasDisabled.current && !fieldsDisabled
+    wasDisabled.current = fieldsDisabled
+    const target = lastFocused.current
+    if (!ended || !target?.isConnected) return
+    const active = document.activeElement
+    if (active && active !== document.body) return
+    target.focus({ preventScroll: true })
+  }, [fieldsDisabled])
 
   React.useEffect(() => {
     if (!pendingFocus.current) return
@@ -260,6 +276,10 @@ export function Form<T extends FieldValues = FormValues>({
               className={cn("gap-6 grid", className)}
               onSubmit={handleSubmit}
               onChange={handleChange}
+              onFocus={(event) => {
+                lastFocused.current = event.target as HTMLElement
+                onFocus?.(event)
+              }}
               {...props}
             >
               {summary ? (

@@ -51,9 +51,19 @@ export function Composer({
     if (focusOnMount) textarea.current?.focus()
   }, [focusOnMount])
   const canSubmit = body.trim().length > 0 && !pending && !disabled
+  // The textarea and button are disabled while posting, which drops focus to <body>.
+  // Once the post settles, put focus back in the textarea, ready for the next one.
+  const refocus = React.useRef(false)
+  React.useEffect(() => {
+    if (pending || !refocus.current) return
+    refocus.current = false
+    const active = document.activeElement
+    if (!active || active === document.body) textarea.current?.focus()
+  }, [pending])
 
   const submit = async () => {
     if (!canSubmit) return
+    refocus.current = true
     setPending(true)
     setFailed(false)
     try {

@@ -22,6 +22,25 @@ test.describe("focus", () => {
     await expect(items.nth(2)).toContainText("Malé")
     await expect(page.getByRole("button", { name: "Drag to reorder Malé" })).toBeFocused()
   })
+
+  test("Form keeps focus in the field after an Enter submit", async ({ page }) => {
+    await open(page, "form-enter")
+    const name = page.getByLabel("Name")
+    await name.click()
+    await page.keyboard.press("Enter")
+    await expect(page.locator("form")).toHaveAttribute("data-status", "success")
+    await expect(name).toBeFocused()
+  })
+
+  test("the top-level comment composer keeps focus after posting", async ({ page }) => {
+    await open(page, "composer")
+    const box = page.getByRole("textbox", { name: "Write a comment…" })
+    await box.fill("First!")
+    await page.getByRole("button", { name: "Comment", exact: true }).click()
+    await expect(page.getByText("First!")).toBeVisible()
+    await expect(box).toHaveValue("")
+    await expect(box).toBeFocused()
+  })
 })
 
 test("LoadMore auto doesn't load again while a load is starting", async ({ page }) => {
