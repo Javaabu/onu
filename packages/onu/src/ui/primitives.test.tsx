@@ -17,6 +17,7 @@ import {
   PaginationPrevious,
 } from "./pagination"
 import { Progress } from "./progress"
+import { Sidebar, SidebarProvider } from "./sidebar"
 import { Slider } from "./slider"
 import { Spinner } from "./spinner"
 
@@ -133,5 +134,16 @@ describe("vendored primitive patches", () => {
     const { container } = renderWithOnu(<Checkbox aria-label="All" checked="indeterminate" />)
     expect(screen.getByRole("checkbox")).toHaveAttribute("aria-checked", "mixed")
     expect(container.querySelector("[data-icon-name=minus]")).toBeInTheDocument()
+  })
+
+  it("passes dir to a Sidebar with collapsible=none", () => {
+    renderWithOnu(
+      <SidebarProvider>
+        <Sidebar collapsible="none" dir="rtl">
+          Menu
+        </Sidebar>
+      </SidebarProvider>,
+    )
+    expect(document.querySelector("[data-slot=sidebar]")).toHaveAttribute("dir", "rtl")
   })
 })
