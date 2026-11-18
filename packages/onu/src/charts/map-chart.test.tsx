@@ -126,6 +126,34 @@ describe("MapChart", () => {
     expect(screen.getByRole("table")).toBeInTheDocument()
   })
 
+  it("updates the selected region's read-out when the data changes", async () => {
+    const options = { provider: { maps: { googleMapsApiKey: "test-key" } } }
+    const { container, rerender } = renderWithOnu(
+      <MapChart title="Population" geojson={geojson} data={data} />,
+      options,
+    )
+    await screen.findByTestId("google-map")
+    const readout = container.querySelector('[data-slot="map-readout"]')!
+    act(() => selectRef.current!(choroplethRegions(geojson, data).regions[1]))
+    expect(readout).toHaveTextContent("Addu City: 500")
+    rerender(
+      <MapChart
+        title="Population"
+        geojson={geojson}
+        data={[
+          { id: "K", value: 100 },
+          { id: "S", value: 650 },
+        ]}
+      />,
+    )
+    expect(readout).toHaveTextContent("Addu City: 650")
+    // A region that no longer exists clears the read-out.
+    rerender(
+      <MapChart title="Population" geojson={{ ...geojson, features: geojson.features.slice(0, 1) }} data={data} />,
+    )
+    expect(readout).toHaveTextContent("Tap or hover over a region")
+  })
+
   it("shows the empty state without features", () => {
     renderWithOnu(<MapChart title="Population" geojson={{ type: "FeatureCollection", features: [] }} data={[]} />)
     expect(screen.getByText("No data to show")).toBeInTheDocument()

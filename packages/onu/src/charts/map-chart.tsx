@@ -69,13 +69,15 @@ export function MapChart({
   const { t, maps } = useOnu()
   const fmt = useChartFormat(valueFormat)
   const apiKey = maps.googleMapsApiKey
-  const [selected, setSelected] = React.useState<ChoroplethRegion | null>(null)
+  // Keep the id, not the region: the read-out shows the region as it is in the current data.
+  const [selectedId, setSelectedId] = React.useState<string | null>(null)
 
   const { regions, scale } = React.useMemo(
     () => choroplethRegions(geojson, data, { idKey, valueKey, featureIdKey, featureNameKey, steps }),
     [geojson, data, idKey, valueKey, featureIdKey, featureNameKey, steps],
   )
   const withData = regions.filter((r) => r.value !== null)
+  const selected = regions.find((r) => r.id === selectedId) ?? null
 
   const summary = [
     t("chart.summary", { type: t("chart.typeMap"), series: 1, count: withData.length }),
@@ -184,7 +186,7 @@ export function MapChart({
               color={color}
               center={center}
               zoom={zoom}
-              onSelect={setSelected}
+              onSelect={(region: ChoroplethRegion | null) => setSelectedId(region?.id ?? null)}
             />
           </React.Suspense>
         </div>
