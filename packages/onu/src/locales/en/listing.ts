@@ -41,6 +41,7 @@ export const listing = {
   actionsFor: "Actions for {name}",
   deleteRecordTitle: "Delete {name}?",
   deleteRecordDescription: "This can't be undone.",
+  actionRecordTitle: "{action} {name}?",
   restore: "Restore",
   deletePermanently: "Delete permanently",
   deletePermanentlyTitle: "Permanently delete {name}?",
