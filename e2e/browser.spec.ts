@@ -41,6 +41,23 @@ test.describe("focus", () => {
     await expect(box).toHaveValue("")
     await expect(box).toBeFocused()
   })
+
+  test("the slash menu works inside a modal dialog", async ({ page }) => {
+    await open(page, "slash-menu-modal")
+    const editor = page.getByRole("dialog").getByRole("textbox", { name: "Page content" })
+    await editor.click()
+    await page.keyboard.type("/head")
+    const option = page.getByRole("option", { name: /Heading 1/ })
+    await expect(option).toBeVisible()
+    // Inside the dialog, and next to the editor rather than thrown off by the dialog's transform.
+    await expect(page.getByRole("dialog").locator("[data-slot=slash-menu]")).toBeVisible()
+    const menu = (await page.locator("[data-slot=slash-menu]").boundingBox())!
+    const field = (await editor.boundingBox())!
+    expect(menu.y).toBeGreaterThan(field.y)
+    expect(menu.y).toBeLessThan(field.y + 120)
+    await option.click()
+    await expect(editor.locator("h1")).toHaveCount(1)
+  })
 })
 
 test("LoadMore auto doesn't load again while a load is starting", async ({ page }) => {

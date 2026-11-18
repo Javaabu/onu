@@ -162,6 +162,10 @@ export function SlashMenuPopup({ store, editor }: { store: SlashMenuStore; edito
 
   if (!open) return null
 
+  // Inside a modal dialog the rest of the page is inert, so a menu portalled to <body>
+  // could not be clicked and would be hidden from assistive technology: portal into the dialog.
+  const container = editor.view.dom.closest<HTMLElement>("[role=dialog], [role=alertdialog]") ?? document.body
+
   return createPortal(
     <div
       ref={ref}
@@ -207,6 +211,6 @@ export function SlashMenuPopup({ store, editor }: { store: SlashMenuStore; edito
         {items.length ? t("editor.blockResults", { count: items.length }) : t("editor.noBlocks")}
       </span>
     </div>,
-    document.body,
+    container,
   )
 }
