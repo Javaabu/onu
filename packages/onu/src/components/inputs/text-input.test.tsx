@@ -70,6 +70,14 @@ describe("TextInput", () => {
     expect(input).toHaveValue("ަހމަދު")
   })
 
+  it("keeps typing Thaana when an end addon replaces the input node", () => {
+    const { rerender } = renderWithOnu(<TextInput aria-label="Name" thaana />)
+    rerender(<TextInput aria-label="Name" thaana endAddon="MVR" />)
+    const input = screen.getByRole("textbox")
+    typeThaana(input, "ahmadu")
+    expect(input).toHaveValue("ަހމަދު")
+  })
+
   it("toggles Thaana with the toggle button and announces it", async () => {
     renderWithOnu(<TextInput aria-label="Name" thaana thaanaToggle />)
     const toggle = screen.getByRole("button", { name: /Thaana and Latin/ })

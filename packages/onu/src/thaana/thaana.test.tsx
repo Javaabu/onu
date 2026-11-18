@@ -258,8 +258,7 @@ describe("insertText", () => {
 
 describe("useThaanaInput", () => {
   function Field(props: { enabled?: boolean; onEnabledChange?: (v: boolean) => void; defaultEnabled?: boolean }) {
-    const ref = React.useRef<HTMLInputElement>(null)
-    const { enabled, toggle } = useThaanaInput(ref, {
+    const { ref, enabled, toggle } = useThaanaInput<HTMLInputElement>({
       ...props,
       toggleShortcut: { code: "KeyT", altKey: true, shiftKey: true },
     })
@@ -296,12 +295,30 @@ describe("useThaanaInput", () => {
     rerender(<Field enabled onEnabledChange={onEnabledChange} />)
     expect(getByRole("button")).toHaveTextContent("on")
   })
+
+  it("follows the element when it mounts later or is replaced", () => {
+    function Late({ show, swap }: { show: boolean; swap?: boolean }) {
+      const { ref } = useThaanaInput<HTMLInputElement>()
+      if (!show) return null
+      return swap ? <textarea ref={ref as never} aria-label="field" /> : <input ref={ref} aria-label="field" />
+    }
+    const { getByLabelText, rerender } = render(<Late show={false} />)
+    rerender(<Late show />)
+    const el = getByLabelText("field") as HTMLInputElement
+    type(el, "m")
+    expect(el.value).toBe("މ")
+    rerender(<Late show swap />)
+    const next = getByLabelText("field") as HTMLTextAreaElement
+    type(next, "m")
+    expect(next.value).toBe("މ")
+    type(el, "m")
+    expect(el.value).toBe("މm")
+  })
 })
 
 describe("useThaanaField", () => {
-  function Field({ thaana }: { thaana?: Parameters<typeof useThaanaField>[1] }) {
-    const ref = React.useRef<HTMLInputElement>(null)
-    const { fieldProps, enabled, active, toggle } = useThaanaField(ref, thaana)
+  function Field({ thaana }: { thaana?: Parameters<typeof useThaanaField>[0] }) {
+    const { ref, fieldProps, enabled, active, toggle } = useThaanaField<HTMLInputElement>(thaana)
     return (
       <>
         <input ref={ref} aria-label="field" {...fieldProps} />

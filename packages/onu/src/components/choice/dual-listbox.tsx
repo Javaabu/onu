@@ -55,8 +55,7 @@ function FilterInput({
   disabled?: boolean
   className?: string
 }) {
-  const ref = React.useRef<HTMLInputElement>(null)
-  const { fieldProps } = useThaanaField(ref, thaana)
+  const { ref, fieldProps } = useThaanaField<HTMLInputElement>(thaana)
   return (
     <div className="relative">
       <Icon

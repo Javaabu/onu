@@ -110,8 +110,7 @@ function SearchInput({
   placeholder: string
   thaana?: ThaanaProp
 }) {
-  const ref = React.useRef<HTMLInputElement>(null)
-  const { fieldProps } = useThaanaField(ref, thaana)
+  const { ref, fieldProps } = useThaanaField<HTMLInputElement>(thaana)
   return (
     <div className="p-1 pb-0">
       <div className="h-8 gap-2 px-2 touch:h-11 flex items-center rounded-lg border border-input/30 bg-input/30">

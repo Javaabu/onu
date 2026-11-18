@@ -44,8 +44,8 @@ Pass your own map with `createKeymap(latinKeys, thaanaCharacters)`.
 import { useThaanaInput, attachThaanaKeyboard, transliterate } from '@javaabu/onu/thaana';
 
 function MyField() {
-    const ref = useRef<HTMLInputElement>(null);
-    const { enabled, toggle } = useThaanaInput(ref, { keymap: 'phonetic' });
+    // `ref` is a callback ref: the keyboard follows the element, even one that mounts later.
+    const { ref, enabled, toggle } = useThaanaInput<HTMLInputElement>({ keymap: 'phonetic' });
     return <input ref={ref} dir={enabled ? 'rtl' : 'auto'} lang="dv" />;
 }
 

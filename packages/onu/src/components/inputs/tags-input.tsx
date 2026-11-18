@@ -83,11 +83,17 @@ export function TagsInput({
   const { t } = useTranslation()
   const local = React.useRef<HTMLInputElement>(null)
   const anchorRef = React.useRef<HTMLDivElement>(null)
-  const merged = useMergedRef(local, ref)
   const [tags, setTags] = useControllableState(valueProp, defaultValue, onValueChange)
   const [text, setText] = React.useState("")
   const [announce, setAnnounce] = React.useState<string | null>(null)
-  const { fieldProps, active: thaanaActive, enabled: thaanaOn, toggle } = useThaanaField(local, thaana)
+  const {
+    ref: thaanaRef,
+    fieldProps,
+    active: thaanaActive,
+    enabled: thaanaOn,
+    toggle,
+  } = useThaanaField<HTMLInputElement>(thaana)
+  const merged = useMergedRef(local, thaanaRef, ref)
   const { name, ...control } = useFormFieldControl({ ...props, disabled: disabledProp })
   const disabled = !!control.disabled
   const full = max !== undefined && tags.length >= max

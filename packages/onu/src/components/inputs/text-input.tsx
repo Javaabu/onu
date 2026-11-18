@@ -94,10 +94,15 @@ export function TextInput({
   ref,
   ...props
 }: TextInputProps) {
-  const local = React.useRef<HTMLInputElement>(null)
-  const merged = useMergedRef(local, ref)
   const latin = props.type === "email" || props.type === "url"
-  const { fieldProps, active, enabled, toggle } = useThaanaField(local, latin ? undefined : thaana)
+  const {
+    ref: thaanaRef,
+    fieldProps,
+    active,
+    enabled,
+    toggle,
+  } = useThaanaField<HTMLInputElement>(latin ? undefined : thaana)
+  const merged = useMergedRef(thaanaRef, ref)
   const controlProps = useFormFieldControl(latin ? latinProps(props, urlProtocol) : props)
   const showToggle = active && thaanaToggle
   const end =
