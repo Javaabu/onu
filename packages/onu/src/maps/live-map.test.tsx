@@ -106,6 +106,37 @@ describe("LiveMap", () => {
     expect(unsubscribe).toHaveBeenCalled()
   })
 
+  it("lets a newer `markers` prop win over an earlier streamed update, and removes markers", () => {
+    let push!: (m: LiveMapMarker) => void
+    let remove!: (id: string) => void
+    const subscribe: LiveMapSubscribe = (p, r) => {
+      push = p
+      remove = r
+      return () => undefined
+    }
+    const list = () => screen.getByRole("region", { name: "Markers" })
+    const { rerender } = renderWithOnu(<LiveMap markers={boats} subscribe={subscribe} animationDuration={0} />)
+    act(() => push({ ...boats[1]!, position: { lat: 4.195, lng: 73.531 } }))
+    act(() => push({ id: "c", title: "Kandu", position: { lat: 4.2, lng: 73.5 } }))
+    expect(list()).toHaveTextContent("4.1950")
+    // The same markers again (a new array from a re-render) keep the streamed position.
+    rerender(<LiveMap markers={boats.map((m) => ({ ...m }))} subscribe={subscribe} animationDuration={0} />)
+    expect(list()).toHaveTextContent("4.1950")
+    // A newer position from the prop (e.g. polling) replaces the streamed one.
+    const polled = [boats[0]!, { ...boats[1]!, position: { lat: 4.21, lng: 73.53 } }]
+    rerender(<LiveMap markers={polled} subscribe={subscribe} animationDuration={0} />)
+    expect(list()).toHaveTextContent("4.2100")
+    expect(list()).not.toHaveTextContent("4.1950")
+    // Dropped from the prop: gone, even though it was streamed.
+    act(() => push({ ...boats[1]!, position: { lat: 4.22, lng: 73.53 } }))
+    rerender(<LiveMap markers={[boats[0]!]} subscribe={subscribe} animationDuration={0} />)
+    expect(list()).not.toHaveTextContent("Raajje")
+    // The stream can remove the markers it added.
+    expect(list()).toHaveTextContent("Kandu")
+    act(() => remove("c"))
+    expect(list()).not.toHaveTextContent("Kandu")
+  })
+
   it("shows an empty state and can hide the list", () => {
     const { rerender } = renderWithOnu(<LiveMap markers={[]} />)
     expect(screen.getByText("Nothing to show yet.")).toBeInTheDocument()

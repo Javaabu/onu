@@ -13,6 +13,8 @@ export interface MapContextValue {
   colorScheme: "light" | "dark"
   /** Language for map tiles and the engine's controls. */
   language: string
+  /** Region (CLDR code, e.g. `"MV"`) that biases geocoding and map borders. */
+  region: string
   /** Theme colours as `#rrggbb`. */
   colors: MapColors
 }

@@ -505,6 +505,65 @@ describe("Google Maps adapter", () => {
     expect(draw.stop).toHaveBeenCalled()
   })
 
+  it("keeps a shape too short to draw (entered with the keyboard) when the map is edited", async () => {
+    const onChange = vi.fn()
+    const pending = { id: "typed", path: [{ lat: 2, lng: 2 }] }
+    const complete = {
+      id: "z1",
+      path: [
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 1 },
+        { lat: 1, lng: 1 },
+      ],
+    }
+    function Draw() {
+      const { adapter } = useMapEngine()
+      const D = adapter.Draw
+      return <D kind="polygon" shapes={[complete, pending]} onValueChange={onChange} mode="edit" />
+    }
+    renderGoogle(
+      <MapView>
+        <Draw />
+      </MapView>,
+    )
+    await waitFor(() => expect(h.draws[0]?.addFeatures).toHaveBeenCalled())
+    const draw = h.draws[0]!
+    // terra-draw only holds the complete polygon.
+    expect(draw.addFeatures.mock.calls[0]![0]).toHaveLength(1)
+    draw.snapshot = [
+      {
+        id: "z1",
+        geometry: {
+          type: "Polygon",
+          coordinates: [
+            [
+              [0, 0],
+              [5, 0],
+              [1, 1],
+              [0, 0],
+            ],
+          ],
+        },
+      },
+    ]
+    act(() => draw.handlers.finish!("z1", { action: "dragCoordinate", mode: "select" }))
+    expect(onChange).toHaveBeenLastCalledWith([
+      {
+        id: "z1",
+        path: [
+          { lat: 0, lng: 0 },
+          { lat: 0, lng: 5 },
+          { lat: 1, lng: 1 },
+        ],
+      },
+      pending,
+    ])
+    // Deleting the polygon on the map still keeps the one being typed.
+    draw.snapshot = []
+    act(() => draw.handlers.change!(["z1"], "delete"))
+    expect(onChange).toHaveBeenLastCalledWith([pending])
+  })
+
   it("reloads the shapes into a new terra-draw instance when the tone changes", async () => {
     const shapes = [
       {
@@ -682,6 +741,28 @@ describe("Google Maps adapter", () => {
     const pending = search!("x", { signal: ac2.signal })
     ac2.abort()
     await expect(pending).rejects.toThrow("Aborted")
+  })
+
+  it("geocodes in the MapProvider's region", async () => {
+    const geocode = vi.fn(async () => ({ results: [] }))
+    h.libraries.geocoding = {
+      Geocoder: class {
+        geocode = geocode
+      },
+    }
+    let search: PlaceSearch | null = null
+    function Probe() {
+      search = useMapEngine().adapter.usePlaceSearch()
+      return null
+    }
+    renderGoogle(
+      <MapProvider region="LK">
+        <Probe />
+      </MapProvider>,
+    )
+    await search!("colombo", { signal: new AbortController().signal })
+    expect(geocode).toHaveBeenCalledWith({ address: "colombo", region: "LK" })
+    expect(last("APIProvider")).toMatchObject({ region: "LK" })
   })
 
   it("routes with the Directions service", async () => {

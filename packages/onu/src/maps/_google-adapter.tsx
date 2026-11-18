@@ -299,9 +299,25 @@ function shapesFromSnapshot(features: DrawFeature[], kind: "polygon" | "linestri
     })
 }
 
+const minPoints = (kind: "polygon" | "linestring") => (kind === "polygon" ? 3 : 2)
+
+/**
+ * The value after an edit on the map. terra-draw only holds shapes with enough points to draw,
+ * so a shorter one (being entered with the keyboard) is kept from the current value.
+ */
+function mergeDrawn(current: DrawShape[], drawn: DrawShape[], kind: "polygon" | "linestring"): DrawShape[] {
+  const byId = new Map(drawn.map((s) => [s.id, s]))
+  const kept = current.flatMap((s) => {
+    const edited = byId.get(s.id)
+    if (edited) return [edited]
+    return s.path.length < minPoints(kind) ? [s] : []
+  })
+  return [...kept, ...drawn.filter((s) => !current.some((c) => c.id === s.id))]
+}
+
 function toFeatures(shapes: DrawShape[], kind: "polygon" | "linestring") {
   return shapes
-    .filter((s) => s.path.length >= (kind === "polygon" ? 3 : 2))
+    .filter((s) => s.path.length >= minPoints(kind))
     .map((s) => {
       const coords = s.path.map(toPosition)
       return {
@@ -333,9 +349,9 @@ function GoogleDraw({
   // Set while the value is pushed into terra-draw: its `clear()` reports a delete,
   // which must not be echoed back as the user removing every shape.
   const syncing = React.useRef(false)
-  const callbacks = React.useRef({ onValueChange, onSelect, onFinish })
+  const callbacks = React.useRef({ onValueChange, onSelect, onFinish, shapes })
   React.useEffect(() => {
-    callbacks.current = { onValueChange, onSelect, onFinish }
+    callbacks.current = { onValueChange, onSelect, onFinish, shapes }
   })
   const color = colors[tone]
 
@@ -395,7 +411,7 @@ function GoogleDraw({
       })
       const emit = () => {
         if (!instance) return
-        const next = shapesFromSnapshot(instance.getSnapshot(), kind)
+        const next = mergeDrawn(callbacks.current.shapes, shapesFromSnapshot(instance.getSnapshot(), kind), kind)
         lastEmitted.current = JSON.stringify(next)
         callbacks.current.onValueChange(next)
       }
@@ -647,18 +663,19 @@ function abortable<T>(promise: Promise<T>, signal: AbortSignal) {
 
 function useGooglePlaceSearch(): PlaceSearch | null {
   const geocoding = useMapsLibrary("geocoding")
+  const { region } = useMapEngine()
   return React.useMemo(() => {
     if (!geocoding) return null
     const geocoder = new geocoding.Geocoder()
     return async (query, { signal }) => {
-      const { results } = await abortable(geocoder.geocode({ address: query, region: "mv" }), signal)
+      const { results } = await abortable(geocoder.geocode({ address: query, region }), signal)
       return results.map((r) => ({
         id: r.place_id,
         label: r.formatted_address,
         position: r.geometry.location.toJSON(),
       }))
     }
-  }, [geocoding])
+  }, [geocoding, region])
 }
 
 function stripHtml(html: string) {
