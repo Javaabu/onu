@@ -368,6 +368,23 @@ describe("WysiwygEditor", () => {
     expect(button("Text style: Paragraph")).toHaveFocus()
   })
 
+  it("keeps a tab stop on the first enabled control when the roving one is disabled", async () => {
+    const { editor } = await setup({ defaultValue: "<pre><code>const a = 1</code></pre>" })
+    act(() => {
+      editor.commands.focus("start")
+    })
+    await waitFor(() => expect(button(/Text style/)).toBeDisabled())
+    await waitFor(() => expect(button("Bold")).toHaveAttribute("tabindex", "0"))
+    const stops = toolbar().querySelectorAll("[data-toolbar-item][tabindex='0']")
+    expect(stops).toHaveLength(1)
+    act(() => {
+      editor.view.someProp("handleKeyDown", (f) =>
+        f(editor.view, new KeyboardEvent("keydown", { key: "F10", altKey: true })),
+      )
+    })
+    expect(button("Bold")).toHaveFocus()
+  })
+
   it.each(directions)("mirrors arrow keys in %s", async (dir) => {
     await setup({}, { dir })
     const first = button("Text style: Paragraph")

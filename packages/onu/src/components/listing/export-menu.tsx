@@ -66,6 +66,7 @@ export function ExportMenu({
   const { t } = useTranslation()
   const [busy, setBusy] = React.useState<ExportFormat | null>(null)
   const [status, setStatus] = React.useState("")
+  const [open, setOpen] = React.useState(false)
 
   const items: ExportOption[] = options.map((o) => (typeof o === "string" ? { format: o } : o))
   const labelOf = (o: ExportOption) => o.label ?? (LABEL_KEYS[o.format] ? t(LABEL_KEYS[o.format] as string) : o.format)
@@ -85,14 +86,17 @@ export function ExportMenu({
 
   return (
     <>
-      <DropdownMenu>
+      {/* The menu doesn't open while a file is being made. */}
+      <DropdownMenu open={open} onOpenChange={(next) => setOpen(next && busy === null)}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
             data-part="export-menu"
-            disabled={disabled || busy !== null}
+            disabled={disabled}
+            // aria-disabled rather than disabled while exporting, so focus can return to the button as the menu closes.
+            aria-disabled={busy !== null || undefined}
             aria-busy={busy !== null || undefined}
-            className={cn("touch:min-h-11", classNames?.trigger, className)}
+            className={cn("touch:min-h-11 aria-disabled:opacity-50", classNames?.trigger, className)}
             {...props}
           >
             {busy ? <Spinner /> : <Icon name="download" />}

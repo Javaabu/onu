@@ -47,4 +47,4 @@ const actions: BulkAction<unknown>[] = [
 
 ## Accessibility
 
-The bar is a region named "Bulk actions"; the count is a polite live region, so "3 selected" is announced. Confirmations are alert dialogs that return focus where they were opened. After success, focus moves to the result message so it isn't lost when the bar goes away; errors are `role="alert"`.
+The bar is a region named "Bulk actions"; the count is a polite live region, so "3 selected" is announced. Confirmations are alert dialogs that return focus where they were opened. Opening an action's form moves focus to its control, and Cancel returns focus to the action. After success, focus moves to the result message so it isn't lost when the bar goes away; errors are `role="alert"`.

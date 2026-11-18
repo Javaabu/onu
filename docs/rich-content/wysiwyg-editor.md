@@ -102,7 +102,7 @@ Other `<div>` props go to the root, and `ref` points at the root. `editorVariant
 ## Accessibility
 
 - The content area is a `role="textbox"` with `aria-multiline`. Inside a `FormField` it is labelled by the field label and described by help and error text; `aria-invalid`, `aria-required`, `aria-readonly` and `aria-disabled` are set.
-- The toolbar follows the WAI-ARIA toolbar pattern: one tab stop, arrow keys move between controls (mirrored in RTL), toggles expose `aria-pressed`.
+- The toolbar follows the WAI-ARIA toolbar pattern: one tab stop, arrow keys move between controls (mirrored in RTL), toggles expose `aria-pressed`. When the control holding the tab stop is disabled (for example "Text style" in a code block), the tab stop moves to the first enabled control.
 - Link and image dialogs return focus to the button that opened them.
 - Toolbar buttons are 44px on touch screens.
 
