@@ -33,13 +33,19 @@ export interface LiveMapMarker {
   updatedAt?: Date | number
 }
 
-/** Call `push` with a marker update (new or changed position). Return an unsubscribe function. */
-export type LiveMapSubscribe = (push: (marker: LiveMapMarker) => void) => () => void
+/**
+ * Call `push` with a marker update (new or changed position) and `remove` with the id of a marker
+ * that has gone. Return an unsubscribe function.
+ */
+export type LiveMapSubscribe = (push: (marker: LiveMapMarker) => void, remove: (id: string) => void) => () => void
 
 export interface LiveMapProps {
   /** Current markers (e.g. from polling or a parent's state). */
   markers?: LiveMapMarker[]
-  /** Or subscribe to a stream (WebSocket, SSE, Echo). Updates merge into `markers` by id. */
+  /**
+   * Or subscribe to a stream (WebSocket, SSE, Echo). Updates merge into `markers` by id until
+   * that marker changes in `markers` (a newer position, e.g. from polling) or leaves it.
+   */
   subscribe?: LiveMapSubscribe
   selectedId?: string | null
   defaultSelectedId?: string | null
@@ -86,8 +92,22 @@ function AnimatedMarker({
   )
 }
 
+const NO_MARKERS: LiveMapMarker[] = []
+
+const epoch = (value: Date | number | undefined) => (value === undefined ? undefined : new Date(value).getTime())
+
+/** Whether a marker from `markers` reports something new: a position, heading or time. */
+function moved(before: LiveMapMarker, after: LiveMapMarker) {
+  return (
+    before.position.lat !== after.position.lat ||
+    before.position.lng !== after.position.lng ||
+    before.heading !== after.heading ||
+    epoch(before.updatedAt) !== epoch(after.updatedAt)
+  )
+}
+
 function LiveMapInner({
-  markers: markersProp = [],
+  markers: markersProp = NO_MARKERS,
   subscribe,
   selectedId: selectedProp,
   defaultSelectedId = null,
@@ -114,8 +134,32 @@ function LiveMapInner({
 
   React.useEffect(() => {
     if (!subscribe) return
-    return subscribe((marker) => setStreamed((prev) => ({ ...prev, [marker.id]: marker })))
+    return subscribe(
+      (marker) => setStreamed((prev) => ({ ...prev, [marker.id]: marker })),
+      (id) =>
+        setStreamed((prev) => {
+          if (!(id in prev)) return prev
+          const { [id]: _removed, ...rest } = prev
+          return rest
+        }),
+    )
   }, [subscribe])
+
+  // A marker that changes in (or leaves) `markers` is newer than its streamed update: drop that.
+  const [previousProp, setPreviousProp] = React.useState(markersProp)
+  if (previousProp !== markersProp) {
+    setPreviousProp(markersProp)
+    const next = new Map(markersProp.map((m) => [m.id, m]))
+    const stale = previousProp.filter((m) => {
+      const after = next.get(m.id)
+      return !after || moved(m, after)
+    })
+    if (stale.some((m) => m.id in streamed)) {
+      const rest = { ...streamed }
+      for (const m of stale) delete rest[m.id]
+      setStreamed(rest)
+    }
+  }
 
   const markers = React.useMemo(() => {
     const byId = new Map(markersProp.map((m) => [m.id, m]))

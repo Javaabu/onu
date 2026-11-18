@@ -154,6 +154,46 @@ describe("SignaturePad", () => {
     expect(lastPad().toData()).toHaveLength(1)
   })
 
+  it("redraws a saved signature after a resize", () => {
+    vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockReturnValue(300)
+    vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockReturnValue(160)
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue({ scale: vi.fn() } as never)
+    renderWithOnu(<SignaturePad defaultValue="data:image/png;base64,saved" name="signature" />)
+    expect(lastPad().fromDataURL).toHaveBeenCalledTimes(1)
+    vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockReturnValue(200)
+    act(() => {
+      window.dispatchEvent(new Event("resize"))
+    })
+    expect(lastPad().fromDataURL).toHaveBeenCalledTimes(2)
+    expect(lastPad().fromDataURL).toHaveBeenLastCalledWith("data:image/png;base64,saved")
+    expect(document.querySelector<HTMLInputElement>("input[name=signature]")!.value).toBe("data:image/png;base64,saved")
+  })
+
+  it("draws and exports with dark ink, even when the theme text is light", async () => {
+    // Dark mode: the text colour is near-white, which would vanish on a white document.
+    const computed = window.getComputedStyle.bind(window)
+    vi.spyOn(window, "getComputedStyle").mockImplementation((element, pseudo) => {
+      const style = computed(element, pseudo)
+      return new Proxy(style, {
+        get: (target, key) => {
+          if (key === "color") return "rgb(250, 250, 250)"
+          const value = Reflect.get(target, key) as unknown
+          return typeof value === "function" ? (value as (...a: unknown[]) => unknown).bind(target) : value
+        },
+      })
+    })
+    const ctx = { font: "", fillStyle: "", measureText: () => ({ width: 1 }), fillText: vi.fn() }
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(ctx as never)
+    vi.spyOn(HTMLCanvasElement.prototype, "toDataURL").mockReturnValue("data:image/png;base64,typed")
+    renderWithOnu(<SignaturePad />)
+    expect(lastPad().penColor).toBe("#000")
+    // On screen the canvas is inverted in dark mode, so the ink still reads.
+    expect(screen.getByRole("img")).toHaveClass("dark:invert")
+    await userEvent.click(screen.getByRole("button", { name: "Type" }))
+    await userEvent.type(screen.getByRole("textbox"), "A")
+    expect(ctx.fillStyle).toBe("#000")
+  })
+
   it("loads a saved signature and follows pen settings and disabled", () => {
     const { rerender } = renderWithOnu(
       <SignaturePad defaultValue="data:image/png;base64,saved" penColor="#0f172a" minWidth={1} />,

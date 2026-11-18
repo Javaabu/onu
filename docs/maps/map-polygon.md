@@ -41,7 +41,7 @@ Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provide
 
 ## Accessibility
 
-- Every area can be created, reviewed and edited from the list with the keyboard; changes are announced ("Point 3 added").
+- Every area can be created, reviewed and edited from the list with the keyboard; changes are announced ("Point 3 added"). An area still being entered (fewer than 3 points, so not yet on the map) is kept when another area is edited on the map.
 - Toolbar buttons are toggle buttons (`aria-pressed`).
 
 | Key                                                 | Action                                                    |

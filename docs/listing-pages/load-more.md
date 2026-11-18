@@ -17,7 +17,7 @@ import { LoadMore } from "@javaabu/onu"
 />
 ```
 
-If `onLoadMore` returns a promise, the button shows a spinner until it settles (no `loading` prop needed).
+If `onLoadMore` returns a promise, the button shows a spinner until it settles (no `loading` prop needed). If the promise rejects, "Couldn’t load more. Try again." appears as an alert and the button stays for another try.
 
 ## Props
 

@@ -19,7 +19,7 @@ import { AvatarUpload } from "@javaabu/onu/media"
 </FormField>
 ```
 
-The cropped image is a square JPEG, 512px by default (`cropOptions`), returned as a `File` through `onValueChange` and kept on the hidden file input for plain form submits. If cropping fails (for example a cross-origin image), the original file is used.
+The cropped image is a square JPEG, 512px by default (`cropOptions`), with transparent areas filled white; pass `cropOptions={{ type: "image/png" }}` to keep transparency. The file is named after the picked one with the output type's extension (`me.png` → `me.jpg`). It is returned as a `File` through `onValueChange` and kept on the hidden file input for plain form submits. If cropping fails (for example a cross-origin image), the original file is used.
 
 ## Props
 

@@ -74,6 +74,28 @@ describe("Wizard", () => {
     expect(onComplete).toHaveBeenCalled()
   })
 
+  it("marks the step when onComplete or validation rejects, without an unhandled rejection", async () => {
+    const onComplete = vi.fn(async () => {
+      throw new Error("server down")
+    })
+    renderWithOnu(<Wizard steps={steps()} onComplete={onComplete} finishLabel="Submit" />)
+    await userEvent.click(screen.getByRole("button", { name: "Next" }))
+    await userEvent.click(screen.getByRole("button", { name: "Next" }))
+    await userEvent.click(screen.getByRole("button", { name: "Submit" }))
+    await waitFor(() => expect(within(stepList()).getAllByRole("listitem")[2]).toHaveTextContent("Has errors"))
+    expect(screen.getByRole("button", { name: "Submit" })).toBeEnabled()
+  })
+
+  it("treats a rejected validate as a failed step", async () => {
+    const validate = vi.fn(async (): Promise<boolean> => {
+      throw new Error("offline")
+    })
+    renderWithOnu(<Wizard steps={steps(validate)} />)
+    await userEvent.click(screen.getByRole("button", { name: "Next" }))
+    await waitFor(() => expect(within(stepList()).getAllByRole("listitem")[0]).toHaveTextContent("Has errors"))
+    expect(screen.getByRole("heading", { name: "Applicant" })).toBeInTheDocument()
+  })
+
   it("jumps back to completed steps only (linear)", async () => {
     renderWithOnu(<Wizard steps={steps()} />)
     expect(within(stepList()).queryByRole("button")).toBeNull()

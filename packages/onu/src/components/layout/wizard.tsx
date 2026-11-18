@@ -166,20 +166,39 @@ export function Wizard({
     if (busy.current) return false
     busy.current = true
     setValidating(true)
-    try {
-      let ok = true
-      if (current.validate) ok = await current.validate()
-      if (ok && onValidateStep) ok = await onValidateStep(index, current)
+    const markFailed = (hasFailed: boolean) =>
       setFailed((prev) => {
         const nextSet = new Set(prev)
-        if (ok) nextSet.delete(index)
-        else nextSet.add(index)
+        if (hasFailed) nextSet.add(index)
+        else nextSet.delete(index)
         return nextSet
       })
+    try {
+      let ok = true
+      try {
+        if (current.validate) ok = await current.validate()
+        if (ok && onValidateStep) ok = await onValidateStep(index, current)
+      } catch {
+        // A validator that rejects (e.g. a failed request) fails the step.
+        ok = false
+      }
+      markFailed(!ok)
       if (!ok) return false
       setCompleted((prev) => new Set(prev).add(index))
-      if (index === total - 1) await onComplete?.()
-      else change(index + 1)
+      if (index === total - 1) {
+        try {
+          await onComplete?.()
+        } catch {
+          // A rejected onComplete (e.g. the submit request failed) marks the last step as failed.
+          setCompleted((prev) => {
+            const nextSet = new Set(prev)
+            nextSet.delete(index)
+            return nextSet
+          })
+          markFailed(true)
+          return false
+        }
+      } else change(index + 1)
       return true
     } finally {
       busy.current = false

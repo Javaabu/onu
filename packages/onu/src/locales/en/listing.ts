@@ -63,6 +63,7 @@ export const listing = {
 
   // Load more
   loadMore: "Load more",
+  loadMoreFailed: "Couldn’t load more. Try again.",
   loadingMore: "Loading more…",
   loadedMore: { one: "Loaded {count} more {noun}", other: "Loaded {count} more {noun}" },
   allLoaded: "All {total} {noun} shown",

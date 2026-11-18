@@ -22,6 +22,8 @@ import { QrCodeScanner } from "@javaabu/onu/media"
 
 The camera only starts after the user presses **Start camera** (or with `autoStart`), and browsers only allow it on HTTPS or `localhost`.
 
+With `continuous`, a code that stays in front of the camera is reported once; the same code counts again after it has been out of view for a second.
+
 ## States
 
 | Status        | Shown                                                      |
@@ -32,6 +34,7 @@ The camera only starts after the user presses **Start camera** (or with `autoSta
 | `denied`      | How to allow the camera, plus manual entry                 |
 | `no-camera`   | No camera found, plus manual entry                         |
 | `unsupported` | The browser cannot scan, plus manual entry                 |
+| `decoder-error` | The code reader could not be loaded; Start tries again   |
 | `error`       | The camera could not be started                            |
 
 ## Props

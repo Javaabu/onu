@@ -29,7 +29,7 @@ import { Wizard } from "@javaabu/onu"
 
 ## Navigation
 
-- **Next** validates the current step (`validate`, then `onValidateStep`) and moves on; on the last step it calls `onComplete`.
+- **Next** validates the current step (`validate`, then `onValidateStep`) and moves on; on the last step it calls `onComplete`. A `validate`, `onValidateStep` or `onComplete` that rejects marks the step as having errors, as a failed validation does.
 - **Back** never validates.
 - With `linear` (default), users can jump back to completed steps, and forward to the furthest unlocked step. `linear={false}` lets them jump anywhere.
 - `errorSteps={["address"]}` marks steps with server-side errors.

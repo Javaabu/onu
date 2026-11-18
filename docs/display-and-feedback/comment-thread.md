@@ -37,6 +37,8 @@ import { CommentThread } from "@javaabu/onu"
 
 As in the thread, only the author may delete a note; pass `canDelete={() => true}` to let anyone delete.
 
+If `onAdd` or `onEdit` returns a promise that rejects, the composer keeps the text and shows "Couldn’t save. Try again." as an alert.
+
 ## Props
 
 | Prop               | Type                                                        | Default    | Description                                      |

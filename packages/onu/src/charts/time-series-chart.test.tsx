@@ -76,6 +76,73 @@ describe("normalizeTimeSeries", () => {
     expect(months).toHaveLength(6)
   })
 
+  it("adds up rows that fall in the same step instead of dropping them", () => {
+    const days = normalizeTimeSeries(
+      [
+        { t: new Date(2026, 0, 1, 9), v: 1, w: null },
+        { t: new Date(2026, 0, 1, 15), v: 2, w: null },
+        { t: new Date(2026, 0, 2, 9), v: 4, w: 3 },
+      ],
+      "t",
+      "day",
+    )
+    expect(days.map((r) => [r[TIME_KEY], r.v, r.w])).toEqual([
+      [new Date(2026, 0, 1).getTime(), 3, null],
+      [new Date(2026, 0, 2).getTime(), 4, 3],
+    ])
+    const months = normalizeTimeSeries(
+      [
+        { t: "2026-01-05", v: 1 },
+        { t: "2026-01-20", v: 2 },
+        { t: "2026-03-02", v: 5 },
+      ],
+      "t",
+      "month",
+    )
+    expect(months.map((r) => r.v)).toEqual([3, undefined, 5])
+  })
+
+  it("can average the rows in a step", () => {
+    const days = normalizeTimeSeries(
+      [
+        { t: new Date(2026, 0, 1, 9), v: 1 },
+        { t: new Date(2026, 0, 1, 15), v: 2 },
+      ],
+      "t",
+      "day",
+      "mean",
+    )
+    expect(days.map((r) => r.v)).toEqual([1.5])
+  })
+
+  it("keeps weekly rows that are not a whole number of weeks after the first", () => {
+    const weeks = normalizeTimeSeries(
+      [
+        { t: new Date(2026, 0, 1), v: 1 },
+        { t: new Date(2026, 0, 4), v: 2 },
+        { t: new Date(2026, 0, 10), v: 4 },
+      ],
+      "t",
+      "week",
+    )
+    expect(weeks.map((r) => [r[TIME_KEY], r.v])).toEqual([
+      [new Date(2026, 0, 1).getTime(), 3],
+      [new Date(2026, 0, 8).getTime(), 4],
+    ])
+  })
+
+  it("keeps the newest rows when the range has too many steps to fill", () => {
+    const hours = normalizeTimeSeries(
+      [
+        { t: new Date(2020, 0, 1), v: 1 },
+        { t: new Date(2026, 0, 1), v: 2 },
+      ],
+      "t",
+      "hour",
+    )
+    expect(hours.map((r) => r.v)).toEqual([1, 2])
+  })
+
   it("leaves single rows alone", () => {
     expect(normalizeTimeSeries([{ date: "2026-01-01" }], "date", "day")).toHaveLength(1)
   })
@@ -145,6 +212,18 @@ describe("TimeSeriesChart", () => {
       />,
     )
     expect(screen.getAllByRole("rowheader")[0]).toHaveTextContent("1 Jan 2026, 9:00 AM")
+  })
+
+  it("combines rows in the same step with `aggregate`", () => {
+    const tax = [
+      { date: new Date(2026, 0, 5), tax: 10 },
+      { date: new Date(2026, 0, 20), tax: 30 },
+    ]
+    const props = { title: "Tax", config: { tax: { label: "Tax" } }, interval: "month", defaultView: "table" } as const
+    const { rerender } = renderWithOnu(<TimeSeriesChart {...props} data={tax} />)
+    expect(screen.getAllByRole("row")[1]).toHaveTextContent("January 2026" + "40")
+    rerender(<TimeSeriesChart {...props} data={tax} aggregate="mean" />)
+    expect(screen.getAllByRole("row")[1]).toHaveTextContent("January 2026" + "20")
   })
 
   it.each(directions)("places the newest date on the correct side in %s", (dir) => {

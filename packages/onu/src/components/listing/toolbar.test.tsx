@@ -132,6 +132,18 @@ describe("ExportMenu", () => {
 })
 
 describe("LoadMore", () => {
+  it("says when loading fails and lets the user try again", async () => {
+    const onLoadMore = vi.fn(async () => {
+      throw new Error("network")
+    })
+    renderWithOnu(<LoadMore loaded={20} total={45} onLoadMore={onLoadMore} />)
+    await userEvent.click(screen.getByRole("button", { name: "Load more" }))
+    expect(await screen.findByText("Couldn’t load more. Try again.")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Load more" })).toBeEnabled()
+    await userEvent.click(screen.getByRole("button", { name: "Load more" }))
+    expect(onLoadMore).toHaveBeenCalledTimes(2)
+  })
+
   it("loads more, shows progress and announces what arrived", async () => {
     function Harness() {
       const [loaded, setLoaded] = React.useState(20)

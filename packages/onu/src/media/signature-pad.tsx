@@ -53,7 +53,10 @@ export interface SignaturePadProps extends Omit<React.ComponentProps<"div">, "de
   onValueChange?: (dataUrl: string | null) => void
   /** A data URL to start from, e.g. a saved signature. */
   defaultValue?: string | null
-  /** Ink colour. Defaults to the text colour (`currentColor`), so it follows the theme. */
+  /**
+   * Ink colour, on screen and in the exported image. Default black, so the signature reads on a
+   * white document; in dark mode the canvas is shown inverted so the ink stays visible.
+   */
   penColor?: string
   /** Fill colour of the exported image. Default transparent. */
   backgroundColor?: string
@@ -82,7 +85,7 @@ export interface SignaturePadProps extends Omit<React.ComponentProps<"div">, "de
 export function SignaturePad({
   onValueChange,
   defaultValue = null,
-  penColor,
+  penColor = "#000",
   backgroundColor = "rgba(0,0,0,0)",
   minWidth = 0.75,
   maxWidth = 2.75,
@@ -115,22 +118,19 @@ export function SignaturePad({
   const [dataUrl, setDataUrl] = React.useState<string | null>(defaultValue)
   const [announce, setAnnounce] = React.useState<string | null>(null)
   const initial = React.useRef(defaultValue)
+  // A loaded saved signature is an image, not strokes; a resize has to draw it again.
+  const image = React.useRef<string | null>(null)
 
   const emit = React.useCallback((url: string | null) => {
     setDataUrl(url)
     onValueChangeRef.current?.(url)
   }, [])
 
-  const ink = React.useCallback(
-    () => penColor ?? (canvasRef.current ? getComputedStyle(canvasRef.current).color : "") ?? "#000",
-    [penColor],
-  )
-
   // Create the pad once the canvas is in the document (draw mode).
   React.useEffect(() => {
     const canvas = canvasRef.current
     if (mode !== "draw" || !canvas) return
-    const pad = new SignaturePadLib(canvas, { penColor: ink() || "#000", backgroundColor, minWidth, maxWidth })
+    const pad = new SignaturePadLib(canvas, { penColor, backgroundColor, minWidth, maxWidth })
     padRef.current = pad
     const onEnd = () => {
       setStrokes(pad.toData().length)
@@ -150,13 +150,19 @@ export function SignaturePad({
       canvas.height = Math.round(height * ratio)
       canvas.getContext("2d")?.scale(ratio, ratio)
       pad.clear()
-      if (data.length) pad.fromData(data)
+      if (image.current) {
+        // Strokes drawn over the saved signature go back on top once it has loaded.
+        void pad
+          .fromDataURL(image.current)
+          .then(() => data.length && pad.fromData(data, { clear: false }))
+          .catch(() => undefined)
+      } else if (data.length) pad.fromData(data)
     }
     resize()
     if (initial.current) {
-      const url = initial.current
+      image.current = initial.current
       initial.current = null
-      void pad.fromDataURL(url).catch(() => undefined)
+      void pad.fromDataURL(image.current).catch(() => undefined)
     }
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize)
     observer?.observe(canvas)
@@ -174,13 +180,13 @@ export function SignaturePad({
   React.useEffect(() => {
     const pad = padRef.current
     if (!pad) return
-    pad.penColor = ink() || "#000"
+    pad.penColor = penColor
     pad.minWidth = minWidth
     pad.maxWidth = maxWidth
     pad.backgroundColor = backgroundColor
     if (disabled) pad.off()
     else pad.on()
-  }, [ink, minWidth, maxWidth, backgroundColor, disabled, mode])
+  }, [penColor, minWidth, maxWidth, backgroundColor, disabled, mode])
 
   const undo = () => {
     const pad = padRef.current
@@ -193,6 +199,7 @@ export function SignaturePad({
   }
 
   const clear = () => {
+    image.current = null
     padRef.current?.clear()
     setStrokes(0)
     setTyped("")
@@ -204,6 +211,7 @@ export function SignaturePad({
     if (next === mode) return
     setInnerMode(next)
     onModeChange?.(next)
+    image.current = null
     setStrokes(0)
     setTyped("")
     emit(null)
@@ -239,14 +247,16 @@ export function SignaturePad({
       ) : null}
 
       {mode === "draw" ? (
-        <div className="relative">
+        <div className="relative rounded-lg border border-input bg-background dark:bg-input/30">
           <canvas
             ref={canvasRef}
             role="img"
             aria-label={t("input.signatureCanvas")}
             data-slot="signature-canvas"
             className={cn(
-              "h-40 w-full cursor-crosshair touch-none rounded-lg border border-input bg-background text-foreground dark:bg-input/30",
+              // The ink is dark for the exported image; inverting (and turning the hue back) keeps
+              // it readable on the dark background.
+              "h-40 block w-full cursor-crosshair touch-none rounded-lg dark:hue-rotate-180 dark:invert",
               "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50",
               classNames?.canvas,
             )}
@@ -272,7 +282,7 @@ export function SignaturePad({
             value={typed}
             onChange={(e) => {
               setTyped(e.target.value)
-              emit(renderTypedSignature(e.target.value, { color: ink() || "#000" }))
+              emit(renderTypedSignature(e.target.value, { color: penColor }))
             }}
           />
           <div

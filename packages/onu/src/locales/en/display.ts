@@ -69,6 +69,7 @@ export const display = {
   deleteCannotUndo: "This can't be undone.",
   noComments: "No comments yet",
   submitHint: "Press Ctrl+Enter to send",
+  composerFailed: "Couldn’t save. Try again.",
   // Comment thread, variant="list"
   notes: "Notes",
   addNote: "Add note",
