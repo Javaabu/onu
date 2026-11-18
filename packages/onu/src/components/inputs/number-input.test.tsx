@@ -274,6 +274,33 @@ describe("NumberInput stepper", () => {
     expect(input).toHaveValue("1")
   })
 
+  it("can be cleared and retyped, clamping only on blur", async () => {
+    const onValueChange = vi.fn()
+    renderWithOnu(<NumberInput stepper aria-label="Qty" defaultValue={3} min={1} onValueChange={onValueChange} />)
+    const input = screen.getByRole("spinbutton")
+    await userEvent.click(input)
+    await userEvent.keyboard("{End}{Backspace}")
+    expect(input).toHaveValue("")
+    await userEvent.keyboard("5")
+    expect(input).toHaveValue("5")
+    await userEvent.tab()
+    expect(input).toHaveValue("5")
+    expect(onValueChange).toHaveBeenLastCalledWith(5)
+  })
+
+  it("steps the same way from the arrow keys and the buttons", async () => {
+    renderWithOnu(<NumberInput stepper aria-label="Qty" defaultValue={10.5} />)
+    const input = screen.getByRole("spinbutton")
+    fireEvent.pointerDown(screen.getByRole("button", { name: "Increase" }), { button: 0 })
+    fireEvent.pointerUp(window)
+    expect(input).toHaveValue("11.5")
+    input.focus()
+    await userEvent.keyboard("{ArrowUp}")
+    expect(input).toHaveValue("12.5")
+    await userEvent.tab()
+    expect(input).toHaveValue("12.5")
+  })
+
   it.each(directions)("uses Dhivehi labels in %s", async (dir) => {
     renderWithOnu(<NumberInput stepper aria-label="އަދަދު" />, { dir, locale: "dv" })
     expect(screen.getByRole("button", { name: "އިތުރުކުރޭ" })).toBeInTheDocument()
