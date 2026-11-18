@@ -64,7 +64,7 @@ import { DateCalendar } from "@javaabu/onu"
 
 ## Accessibility
 
-See the [DatePicker keyboard table](./date-picker#accessibility). The caption is a button ("March 2026: choose a month"); page changes are announced through a polite live region; the current month/year/range has `aria-current="date"`.
+See the [DatePicker keyboard table](./date-picker#accessibility); in every view, Page Up/Down and arrows past the edge stop at `min` and `max` like the Previous and Next buttons. The caption is a button ("March 2026: choose a month"); page changes are announced through a polite live region; the current month/year/range has `aria-current="date"`.
 
 - With `events`, each day's accessible name includes its event count, so the dots (hidden from screen readers) aren't the only signal.
 - With `readOnly`, the clicked day's event list is a polite live region, so it is read out when it changes. <kbd>Enter</kbd> or <kbd>Space</kbd> on a day lists its events.

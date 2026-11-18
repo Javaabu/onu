@@ -350,6 +350,8 @@ export function DateCalendar(props: DateCalendarProps) {
         label={t(view === "month" ? "date.months" : view === "year" ? "date.years" : "date.decades")}
         initialFocus={focusGrid}
         onPage={(delta) => (delta < 0 ? nav.prev() : nav.next())}
+        canPrev={nav.canPrev}
+        canNext={nav.canNext}
         onSelect={(index) => {
           const target = items[index]!.date
           if (atBottom) {
