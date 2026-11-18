@@ -29,6 +29,7 @@ pnpm --filter @javaabu/onu-mcp test        # MCP server tests
 pnpm build && pnpm --filter @javaabu/onu size   # build + bundle budgets
 pnpm build:web                             # docs site
 node scripts/check-docs.mjs                # every component has a docs page with Props + Accessibility
+node scripts/check-pack.mjs                # no test files in the npm tarballs
 pnpm e2e:chromium                          # Playwright (a11y with axe, visual)
 ```
 

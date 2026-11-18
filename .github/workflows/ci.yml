@@ -54,6 +54,8 @@ jobs:
         run: node scripts/check-docs.mjs
       - name: Boost guidelines, skills and llms.txt
         run: node scripts/boost.mjs --check
+      - name: No test files in the npm tarballs
+        run: node scripts/check-pack.mjs
       - name: Licences
         run: node scripts/check-licenses.mjs
       - name: Audit
