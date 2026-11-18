@@ -2,17 +2,40 @@
 
 // Loaded lazily by MapChart only when a Google Maps API key is configured, so the
 // map peers (@vis.gl/react-google-maps, deck.gl) stay out of the main chart bundle.
+// They are optional peers: only type imports here, and `loadMapPeers` imports them
+// inside `try`, so an app without them still builds (bundlers treat them as optional).
 
 import * as React from "react"
-import { GoogleMapsOverlay } from "@deck.gl/google-maps"
-import { GeoJsonLayer } from "@deck.gl/layers"
-import { APIProvider, Map, useMap } from "@vis.gl/react-google-maps"
+import type * as DeckGoogleMaps from "@deck.gl/google-maps"
+import type * as DeckLayers from "@deck.gl/layers"
+import type * as VisGoogleMaps from "@vis.gl/react-google-maps"
 
 import { useOnu } from "../providers/onu-provider"
 import { useTheme } from "../providers/theme-provider"
 import { stepOpacity, type ChoroplethRegion } from "./choropleth"
 
 type Rgba = [number, number, number, number]
+
+/** The optional peers the map needs. */
+export interface MapPeers {
+  vis: typeof VisGoogleMaps
+  deckGoogleMaps: typeof DeckGoogleMaps
+  deckLayers: typeof DeckLayers
+}
+
+/** Loads the map peers, or returns `null` when one is not installed. */
+export async function loadMapPeers(): Promise<MapPeers | null> {
+  try {
+    const [vis, deckGoogleMaps, deckLayers] = await Promise.all([
+      import("@vis.gl/react-google-maps"),
+      import("@deck.gl/google-maps"),
+      import("@deck.gl/layers"),
+    ])
+    return { vis, deckGoogleMaps, deckLayers }
+  } catch {
+    return null
+  }
+}
 
 const FALLBACK: Rgba = [100, 116, 139, 255]
 
@@ -46,6 +69,7 @@ export interface GoogleChoroplethProps {
   center: { lat: number; lng: number }
   zoom: number
   onSelect: (region: ChoroplethRegion | null) => void
+  peers: MapPeers
 }
 
 function ChoroplethOverlay({
@@ -54,12 +78,13 @@ function ChoroplethOverlay({
   color,
   onSelect,
   hostRef,
-}: Pick<GoogleChoroplethProps, "regions" | "steps" | "color" | "onSelect"> & {
+  peers,
+}: Pick<GoogleChoroplethProps, "regions" | "steps" | "color" | "onSelect" | "peers"> & {
   hostRef: React.RefObject<HTMLDivElement | null>
 }) {
-  const map = useMap()
+  const map = peers.vis.useMap()
   const { resolvedTheme } = useTheme()
-  const overlay = React.useMemo(() => new GoogleMapsOverlay({ interleaved: true }), [])
+  const overlay = React.useMemo(() => new peers.deckGoogleMaps.GoogleMapsOverlay({ interleaved: true }), [peers])
 
   React.useEffect(() => {
     if (!map) return
@@ -78,7 +103,7 @@ function ChoroplethOverlay({
     const byFeature = new globalThis.Map(regions.map((r) => [r.feature, r]))
     overlay.setProps({
       layers: [
-        new GeoJsonLayer({
+        new peers.deckLayers.GeoJsonLayer({
           id: "onu-choropleth",
           data: regions.map((r) => r.feature) as never,
           pickable: true,
@@ -101,7 +126,7 @@ function ChoroplethOverlay({
         }),
       ],
     })
-  }, [overlay, regions, steps, color, hostRef, resolvedTheme, onSelect])
+  }, [overlay, regions, steps, color, hostRef, resolvedTheme, onSelect, peers])
 
   return null
 }
@@ -117,7 +142,9 @@ export default function GoogleChoropleth({
   center,
   zoom,
   onSelect,
+  peers,
 }: GoogleChoroplethProps) {
+  const { APIProvider, Map } = peers.vis
   const { locale } = useOnu()
   const { resolvedTheme } = useTheme()
   const hostRef = React.useRef<HTMLDivElement>(null)
@@ -136,7 +163,14 @@ export default function GoogleChoropleth({
           zoomControl
           className="size-full"
         >
-          <ChoroplethOverlay regions={regions} steps={steps} color={color} onSelect={onSelect} hostRef={hostRef} />
+          <ChoroplethOverlay
+            regions={regions}
+            steps={steps}
+            color={color}
+            onSelect={onSelect}
+            hostRef={hostRef}
+            peers={peers}
+          />
         </Map>
       </APIProvider>
     </div>

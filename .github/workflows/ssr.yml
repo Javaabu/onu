@@ -9,6 +9,8 @@ on:
     paths:
       - packages/onu/**
       - e2e/nextjs/**
+      - e2e/optional-peers/**
+      - scripts/check-optional-peers.mjs
       - pnpm-lock.yaml
       - pnpm-workspace.yaml
       - .github/workflows/ssr.yml
@@ -16,6 +18,8 @@ on:
     paths:
       - packages/onu/**
       - e2e/nextjs/**
+      - e2e/optional-peers/**
+      - scripts/check-optional-peers.mjs
       - pnpm-lock.yaml
       - pnpm-workspace.yaml
       - .github/workflows/ssr.yml
@@ -50,3 +54,5 @@ jobs:
         run: pnpm --filter onu-nextjs-fixture build
       - name: Check the server HTML and hydration
         run: pnpm --filter onu-nextjs-fixture test:ssr
+      - name: Build an app without the optional peers (webpack and Turbopack)
+        run: node scripts/check-optional-peers.mjs

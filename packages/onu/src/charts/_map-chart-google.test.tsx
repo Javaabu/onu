@@ -2,7 +2,7 @@ import { render } from "@testing-library/react"
 import * as React from "react"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
-import GoogleChoropleth, { resolveCssColor } from "./_map-chart-google"
+import GoogleChoropleth, { loadMapPeers, resolveCssColor, type MapPeers } from "./_map-chart-google"
 import { choroplethRegions, type GeoJsonFeatureCollection } from "./choropleth"
 
 const overlays: { setMap: ReturnType<typeof vi.fn>; setProps: ReturnType<typeof vi.fn> }[] = []
@@ -82,7 +82,14 @@ describe("resolveCssColor", () => {
 })
 
 describe("GoogleChoropleth", () => {
-  it("adds a deck.gl GeoJsonLayer to the map and reports hover and tap", () => {
+  it("loads the map peers when they are installed", async () => {
+    const peers = await loadMapPeers()
+    expect(peers?.deckLayers.GeoJsonLayer).toBeDefined()
+    expect(peers?.vis.APIProvider).toBeDefined()
+  })
+
+  it("adds a deck.gl GeoJsonLayer to the map and reports hover and tap", async () => {
+    const peers = (await loadMapPeers()) as MapPeers
     vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null)
     const { regions } = choroplethRegions(geojson, [{ id: "K", value: 10 }])
     const onSelect = vi.fn()
@@ -96,6 +103,7 @@ describe("GoogleChoropleth", () => {
         center={{ lat: 3, lng: 73 }}
         zoom={6}
         onSelect={onSelect}
+        peers={peers}
       />,
     )
     expect(getByTestId("api")).toHaveAttribute("data-key", "key")

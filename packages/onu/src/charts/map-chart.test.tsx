@@ -9,6 +9,7 @@ import { MapChart } from "./map-chart"
 const selectRef: { current: ((r: unknown) => void) | null } = { current: null }
 
 vi.mock("./_map-chart-google", () => ({
+  loadMapPeers: async () => ({}),
   default: (props: { regions: unknown[]; onSelect: (r: unknown) => void; apiKey: string }) => {
     selectRef.current = props.onSelect
     return <div data-testid="google-map" data-key={props.apiKey} data-regions={props.regions.length} />
