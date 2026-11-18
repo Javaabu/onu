@@ -31,6 +31,8 @@ Rows may come in any order; they are sorted oldest first. Dates can be `Date` ob
 
 `null` values break the line. With `interval` (`"hour" | "day" | "week" | "month"`), missing steps are inserted too (3 September above), so a missing day is a visible gap rather than a straight line across it. `connectNulls` bridges gaps instead.
 
+`interval` also groups the data: each point sits at the start of its hour, day, week (counted from the first date) or month, and rows that fall in the same step are added up, so no row is dropped. Set `aggregate="mean"` to average them instead (for rates or temperatures). A range longer than 10,000 steps is drawn without the gap rows rather than cut short.
+
 ## Stacked areas and bars
 
 `stacked` adds the series up, so the top edge is the total: use `variant="area"` for stacked areas or `variant="bar"` for stacked bars (a stacked `"line"` chart is drawn as stacked areas). Bars are centred on their date, and the axis is padded by half a step so the first and last bars are whole. The data table and summary still list each series on its own, and the time axis is mirrored in RTL as usual.
@@ -93,7 +95,8 @@ Also takes the common chart props (`title` (required), `description`, `hideTitle
 | ------------------- | -------------------------------------- | ----------- | --------------------------------------- |
 | `data`              | `Record<string, unknown>[]`            | required    | One object per point in time            |
 | `dateKey`           | `string`                               | `"date"`    | Key of the date                         |
-| `interval`          | `"hour" \| "day" \| "week" \| "month"` |             | Fill missing steps with gaps            |
+| `interval`          | `"hour" \| "day" \| "week" \| "month"` |             | Group by step and fill missing steps with gaps |
+| `aggregate`         | `"sum" \| "mean"`                      | `"sum"`     | With `interval`, how rows in one step combine |
 | `dateFormat`        | `string` (date-fns)                    | by interval | Tick format (`d MMM`, `MMM yyyy`, time) |
 | `tooltipDateFormat` | `string` (date-fns)                    | by interval | Tooltip and table format                |
 | `variant`           | `"line" \| "area" \| "bar"`            | `"line"`    | How series are drawn                    |
@@ -104,7 +107,7 @@ Also takes the common chart props (`title` (required), `description`, `hideTitle
 | `gradient`          | `boolean`                              | `true`      | Gradient area and bar fills             |
 | `comparison`        | `ChartComparison`                      |             | This period against the previous one; see [Comparison](#comparison) |
 
-Hourly data uses the locale's `hourCycle`. `normalizeTimeSeries(data, dateKey, interval)` and `toTimestamp(value)` are exported.
+Hourly data uses the locale's `hourCycle`. `normalizeTimeSeries(data, dateKey, interval, aggregate)` and `toTimestamp(value)` are exported.
 
 ## RTL
 
