@@ -24,6 +24,11 @@ export function useNoun(noun: ListingNoun | undefined) {
   )
 }
 
+/** The record's column: the one marked `primary`, else the first. It carries the row link and can't be hidden. */
+export function primaryColumn<C extends { primary?: boolean }>(columns: readonly C[]): C | undefined {
+  return columns.find((c) => c.primary) ?? columns[0]
+}
+
 /**
  * Whether a row's click handler should ignore this click: it landed on (or inside) an interactive
  * element, or outside the row's DOM altogether. React bubbles events from portals (the row's ⋯ menu,

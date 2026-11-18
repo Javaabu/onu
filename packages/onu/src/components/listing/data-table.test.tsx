@@ -408,6 +408,20 @@ describe("DataTable", () => {
     expect(screen.getByRole("columnheader", { name: /Name/ })).toBeInTheDocument()
   })
 
+  it("keeps the record link visible when no column is marked primary", () => {
+    renderWithOnu(
+      <Users
+        all={ALL.slice(0, 1)}
+        columns={userColumns.map(({ primary: _, ...column }) => column)}
+        getRowHref={(u) => `/users/${u.id}`}
+      />,
+    )
+    act(() => controller.setColumnVisibility({ name: false, email: false }))
+    expect(screen.getByRole("columnheader", { name: /Name/ })).toBeInTheDocument()
+    expect(screen.getByRole("link", { name: "Jane Doe" })).toHaveAttribute("href", "/users/1")
+    expect(screen.queryByRole("columnheader", { name: /Email/ })).not.toBeInTheDocument()
+  })
+
   it("works without a state controller and without pagination", async () => {
     renderWithOnu(
       <DataTable

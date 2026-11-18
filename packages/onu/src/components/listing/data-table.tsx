@@ -23,7 +23,7 @@ import { cn } from "../../lib/utils"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
 import { Skeleton } from "../../ui/skeleton"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../../ui/table"
-import { ignoresRowClick } from "./_shared"
+import { ignoresRowClick, primaryColumn } from "./_shared"
 import { SelectionCheckbox } from "./_selection-checkbox"
 import { SortMenu } from "./_sort-menu"
 import { formatFilterLabel, useActiveFilterChips } from "./active-filter-chips"
@@ -55,9 +55,9 @@ export interface DataTableColumn<T extends RowData> {
   cell?: (row: T) => React.ReactNode
   /** Clicking the header sorts by this column. */
   sortable?: boolean
-  /** Whether the column menu may hide this column. Default `true` (the primary column can't be hidden). */
+  /** Whether the column menu may hide this column. Default `true`; the record column (`primary`, else the first) can't be hidden. */
   hideable?: boolean
-  /** The record's name: links to the record and titles the phone card. */
+  /** The record's name: links to the record and titles the phone card. Without one, the first column is. */
   primary?: boolean
   align?: "start" | "center" | "end"
   /** Numbers: tabular figures, aligned to the end. */
@@ -199,7 +199,7 @@ export function DataTable<T extends RowData>({
   const chips = useActiveFilterChips(filters, state.filters)
 
   const selectable = !trash && (selectableProp ?? !!bulkActions?.length)
-  const primary = columns.find((c) => c.primary) ?? columns[0]
+  const primary = primaryColumn(columns)
   const nameOf = React.useCallback(
     (row: T) => getRowName?.(row) ?? String(primary ? (valueOf(primary, row) ?? "") : ""),
     [getRowName, primary],
@@ -213,10 +213,16 @@ export function DataTable<T extends RowData>({
         header: column.header,
         accessorFn: (row: T) => valueOf(column, row) as never,
         enableSorting: !!column.sortable,
-        enableHiding: column.hideable ?? !column.primary,
+        enableHiding: column !== primary && column.hideable !== false,
       })),
-    [columns],
+    [columns, primary],
   )
+  // The record column carries the row link, so it stays visible whatever the saved visibility says.
+  const columnVisibility = React.useMemo<ColumnVisibilityState>(() => {
+    if (!primary || state.columnVisibility[primary.id] !== false) return state.columnVisibility
+    const { [primary.id]: _, ...rest } = state.columnVisibility
+    return rest
+  }, [state.columnVisibility, primary])
   const rowSelection = React.useMemo<RowSelectionState>(
     () => Object.fromEntries(state.selection.map((id) => [id, true])),
     [state.selection],
@@ -231,7 +237,7 @@ export function DataTable<T extends RowData>({
     manualSorting: true,
     enableSortingRemoval: false,
     enableRowSelection: selectable,
-    state: { rowSelection, sorting, columnVisibility: state.columnVisibility },
+    state: { rowSelection, sorting, columnVisibility },
     onRowSelectionChange: (updater: Updater<RowSelectionState>) => {
       const next = typeof updater === "function" ? updater(rowSelection) : updater
       state.setSelection(Object.keys(next).filter((id) => next[id]))
@@ -241,7 +247,7 @@ export function DataTable<T extends RowData>({
       state.setSort(next[0] ?? null)
     },
     onColumnVisibilityChange: (updater: Updater<ColumnVisibilityState>) => {
-      const next = typeof updater === "function" ? updater(state.columnVisibility) : updater
+      const next = typeof updater === "function" ? updater(columnVisibility) : updater
       state.setColumnVisibility(next)
     },
   })
