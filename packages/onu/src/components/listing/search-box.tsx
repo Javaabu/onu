@@ -129,6 +129,8 @@ export function SearchBox({
             size="icon-xs"
             aria-label={t("listing.clearSearchInput")}
             className="touch:size-11"
+            // Keep focus in the box: a blur here would submit the draft just before the click submits "".
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => {
               change("")
               if (applied !== "") submit("")
