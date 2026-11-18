@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
+import { en } from "../../locales/en"
 import { FormField } from "../form/form-field"
 import { NumberInput, numberSymbols, parseLocaleNumber } from "./number-input"
 
@@ -13,6 +14,11 @@ vi.setConfig({ testTimeout: 30_000 })
 afterEach(() => vi.useRealTimers())
 
 describe("parseLocaleNumber", () => {
+  it("reads a locale's own digits, such as Arabic-Indic", () => {
+    expect(parseLocaleNumber("١٬٢٣٤٫٥", "ar-EG")).toBe(1234.5)
+    expect(parseLocaleNumber("١٢3", "ar-EG")).toBe(123)
+  })
+
   it("parses locale-formatted numbers", () => {
     expect(parseLocaleNumber("1,234.5", "en")).toBe(1234.5)
     expect(parseLocaleNumber(" -12 ", "en")).toBe(-12)
@@ -20,11 +26,29 @@ describe("parseLocaleNumber", () => {
     expect(parseLocaleNumber("", "en")).toBeNull()
     expect(parseLocaleNumber("-", "en")).toBeUndefined()
     expect(parseLocaleNumber("1.234,5", "de")).toBe(1234.5)
-    expect(numberSymbols("de")).toEqual({ group: ".", decimal: "," })
+    expect(numberSymbols("de")).toEqual({
+      group: ".",
+      decimal: ",",
+      digits: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+    })
   })
 })
 
 describe("NumberInput", () => {
+  it("edits its own draft with a numberLocale that uses other digits", async () => {
+    const onValueChange = vi.fn()
+    renderWithOnu(<NumberInput aria-label="Amount" defaultValue={12} onValueChange={onValueChange} />, {
+      locale: { ...en, numberLocale: "ar-EG" },
+    })
+    const input = screen.getByRole("spinbutton", { name: "Amount" })
+    await userEvent.click(input)
+    expect(input).toHaveValue("١٢")
+    await userEvent.type(input, "3")
+    expect(onValueChange).toHaveBeenLastCalledWith(123)
+    await userEvent.type(input, "{Backspace}٤")
+    expect(onValueChange).toHaveBeenLastCalledWith(124)
+  })
+
   it("formats when not editing and shows the raw number while editing", async () => {
     const onValueChange = vi.fn()
     renderWithOnu(<NumberInput aria-label="Amount" defaultValue={1234.5} onValueChange={onValueChange} />)
