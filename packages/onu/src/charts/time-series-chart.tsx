@@ -306,6 +306,14 @@ export function TimeSeriesChart({
     setRange(null)
     setBrushKey((k) => k + 1)
   }
+  // The range is row indices: when the rows cover other dates, it no longer means anything.
+  // Compared by extent, not identity, so inline `data` (new each render) keeps the zoom.
+  const extent = `${rtl}:${displayRows.length}:${String(displayRows[0]?.[TIME_KEY])}:${String(displayRows.at(-1)?.[TIME_KEY])}`
+  const [rangeExtent, setRangeExtent] = React.useState(extent)
+  if (rangeExtent !== extent) {
+    setRangeExtent(extent)
+    if (range !== null) resetZoom()
+  }
 
   const first = rows[0]?.[TIME_KEY]
   const last = rows[rows.length - 1]?.[TIME_KEY]

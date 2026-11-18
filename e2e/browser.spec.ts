@@ -80,6 +80,23 @@ test("QrCode downloads PNG and SVG files", async ({ page }) => {
   }
 })
 
+test("TimeSeriesChart drops its zoom range when the data changes", async ({ page }) => {
+  await open(page, "time-series-zoom")
+  const status = page.locator("[data-slot=chart-zoom-status]")
+  const traveller = page.locator(".recharts-brush-traveller").first()
+  const box = (await traveller.boundingBox())!
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(box.x + 250, box.y + box.height / 2, { steps: 10 })
+  await page.mouse.up()
+  await expect(page.getByRole("button", { name: "Reset zoom" })).toBeVisible()
+
+  await page.getByRole("button", { name: "Switch data" }).click()
+  // The new data is 1–10 May: nothing from the old January–March range may remain.
+  await expect(status).not.toContainText(/Jan|Feb|Mar/)
+  await expect(page.getByRole("button", { name: "Reset zoom" })).toHaveCount(0)
+})
+
 test("InlineEdit: clicking Cancel doesn't save", async ({ page }) => {
   await open(page, "inline-edit")
   await page.getByRole("button", { name: /Edit Name/ }).click()
