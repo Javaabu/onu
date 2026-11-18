@@ -276,6 +276,22 @@ describe("DataTable", () => {
     expect(onDelete).toHaveBeenCalledWith("1")
   })
 
+  it("ignores clicks inside the row's portalled menu and confirm dialog", async () => {
+    const onRowClick = vi.fn()
+    renderWithOnu(
+      <Users
+        all={ALL.slice(0, 2)}
+        onRowClick={onRowClick}
+        rowActions={() => [{ id: "delete", label: "Delete", destructive: true, onSelect: vi.fn() }]}
+      />,
+    )
+    await userEvent.click(screen.getByRole("button", { name: "Actions for Jane Doe" }))
+    await userEvent.click(await screen.findByRole("menuitem", { name: "Delete" }))
+    const dialog = await screen.findByRole("alertdialog", { name: "Delete Jane Doe?" })
+    await userEvent.click(within(dialog).getByRole("heading", { name: "Delete Jane Doe?" }))
+    expect(onRowClick).not.toHaveBeenCalled()
+  })
+
   it("opens the record when the row or its name is clicked (§25.6)", async () => {
     const onRowClick = vi.fn()
     const { unmount } = renderWithOnu(

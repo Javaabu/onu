@@ -23,7 +23,7 @@ import { cn } from "../../lib/utils"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
 import { Skeleton } from "../../ui/skeleton"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../../ui/table"
-import { isInteractiveTarget } from "./_shared"
+import { ignoresRowClick } from "./_shared"
 import { SelectionCheckbox } from "./_selection-checkbox"
 import { SortMenu } from "./_sort-menu"
 import { formatFilterLabel, useActiveFilterChips } from "./active-filter-chips"
@@ -283,7 +283,7 @@ export function DataTable<T extends RowData>({
   const headerChecked: boolean | "indeterminate" = allSelected ? true : someSelected ? "indeterminate" : false
 
   const openRow = (row: T, event: React.MouseEvent<HTMLElement>) => {
-    if (isInteractiveTarget(event.target, event.currentTarget)) return
+    if (ignoresRowClick(event)) return
     if (window.getSelection?.()?.toString()) return
     if (onRowClick) onRowClick(row)
     else if (getRowHref?.(row)) event.currentTarget.querySelector<HTMLAnchorElement>("a[data-row-link]")?.click()
