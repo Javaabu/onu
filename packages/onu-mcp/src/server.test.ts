@@ -57,6 +57,19 @@ describe("searchDocs", () => {
   })
 
   it("needs every word to match", () => expect(searchDocs(docs, "thaana xylophone")).toEqual([]))
+
+  it("matches the page path", () => {
+    const top = searchDocs(docs, "date-picker", 5).map((h) => h.page.path)
+    expect(top[0]).toBe("date-and-time/date-picker")
+  })
+
+  it("matches the words of a CamelCase title", () => {
+    expect(searchDocs(docs, "password input")[0]?.page.path).toBe("text-inputs/password-input")
+  })
+
+  it("ranks an exact title word above a title that only contains it", () => {
+    expect(searchDocs(docs, "Button props")[0]?.page.path).toBe("form-scaffolding/button")
+  })
 })
 
 describe("findProjectDocs", () => {

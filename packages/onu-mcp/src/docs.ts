@@ -101,31 +101,50 @@ export interface SearchHit {
   snippet: string
 }
 
-/** Pages matching every word of `query`, best first: title, then description, then body. */
+/** The words of a title or path: `DateRangePicker`, `date-range-picker` and `Date range picker` give `date`, `range`, `picker`. */
+const words = (s: string) =>
+  s
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2")
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter(Boolean)
+
+/**
+ * Pages matching every word of `query`, best first: title and path, then
+ * description, then body. A whole title word counts more than part of one, and
+ * a page whose title words all appear in the query ranks above the rest.
+ */
 export function searchDocs(docs: Docs, query: string, limit = 8): SearchHit[] {
-  const words = query
+  const queryWords = query
     .toLowerCase()
     .split(/\s+/)
     .filter((w) => w.length > 1)
-  if (!words.length) return []
+  if (!queryWords.length) return []
+  const queryTokens = new Set(words(query))
   const hits: SearchHit[] = []
   for (const page of docs.pages) {
-    const title = page.title.toLowerCase()
+    const titleWords = words(page.title)
+    const nameWords = new Set([...titleWords, ...words(page.path.split("/").pop()!)])
+    const names = `${page.title.toLowerCase()} ${titleWords.join(" ")} ${page.path}`
     const description = page.description.toLowerCase()
     const body = docs.read(page).toLowerCase()
     let score = 0
     let all = true
-    for (const word of words) {
+    for (const word of queryWords) {
       const inBody = body.split(word).length - 1
-      if (!inBody && !title.includes(word) && !description.includes(word)) {
+      const inNames = names.includes(word)
+      if (!inBody && !inNames && !description.includes(word)) {
         all = false
         break
       }
-      score += (title.includes(word) ? 20 : 0) + (description.includes(word) ? 5 : 0) + Math.min(inBody, 10)
+      score +=
+        (nameWords.has(word) ? 30 : inNames ? 20 : 0) + (description.includes(word) ? 5 : 0) + Math.min(inBody, 10)
     }
     if (!all) continue
-    if (key(page.title) === key(query)) score += 100
-    hits.push({ page, score, snippet: snippet(docs.read(page), words[0]!) })
+    if (titleWords.every((w) => queryTokens.has(w))) score += 50
+    if (key(page.title) === key(query) || key(page.path.split("/").pop()!) === key(query)) score += 100
+    hits.push({ page, score, snippet: snippet(docs.read(page), queryWords[0]!) })
   }
   return hits.sort((a, b) => b.score - a.score).slice(0, limit)
 }
