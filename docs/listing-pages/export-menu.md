@@ -3,7 +3,7 @@ title: ExportMenu
 sidebar_position: 16
 ---
 
-An **Export** button with a menu of formats (CSV, Excel, PDF). The menu does not build the file: your `onExport(format)` does, either by asking the server with the current filters or in the browser with [`exportRows`](export-rows) from `@javaabu/onu/export`. While the returned promise is pending the button shows a spinner and is disabled.
+An **Export** button with a menu of formats (CSV, Excel, PDF). The menu does not build the file: your `onExport(format)` does, either by asking the server with the current filters or in the browser with [`exportRows`](export-rows) from `@javaabu/onu/export`. While the returned promise is pending the button shows a spinner and won't open the menu.
 
 ```tsx
 import { ExportMenu } from "@javaabu/onu"
@@ -33,4 +33,4 @@ const exportRows = useExportRows()
 
 ## Accessibility
 
-A menu button. "Exporting…" and "Export ready" are announced through a polite live region; the button has `aria-busy` while working.
+A menu button. "Exporting…" and "Export ready" are announced through a polite live region; the button has `aria-busy` and `aria-disabled` while working. It uses `aria-disabled` rather than `disabled`, so focus returns to it when the menu closes.
