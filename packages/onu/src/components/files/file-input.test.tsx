@@ -292,6 +292,8 @@ describe("FileInput appearance=dropzone", () => {
     expect(screen.getByLabelText("Browse file")).toBe(input(container))
     // A file dropped next to the zone does not replace the page.
     expect(fireEvent.drop(document.body, { dataTransfer: filesData([dropped]) })).toBe(false)
+    // Text dropped elsewhere on the page (a textarea, the editor) is left alone.
+    expect(fireEvent.drop(document.body, { dataTransfer: { types: ["text/plain"], files: [] } })).toBe(true)
   })
 
   it("accepts pasted files on the field and, optionally, the document", async () => {

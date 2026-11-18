@@ -364,6 +364,7 @@ export function FileInput<R = unknown>({
       if (hasFiles(e.dataTransfer)) e.preventDefault()
     }
     const drop = (e: DragEvent) => {
+      if (!hasFiles(e.dataTransfer)) return
       const target = e.target as HTMLInputElement | null
       if (!(target?.tagName === "INPUT" && target.type === "file")) e.preventDefault()
     }
