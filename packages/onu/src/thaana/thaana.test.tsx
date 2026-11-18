@@ -166,13 +166,23 @@ describe("attachThaanaKeyboard", () => {
     expect(el.value).toBe("ދިވެހި")
   })
 
-  it("toggles with Alt+Shift+T, a custom shortcut, or not at all", () => {
+  it("leaves the change to onToggle when it is given", () => {
     const el = input()
     const onToggle = vi.fn()
     const kb = attachThaanaKeyboard(el, { onToggle })
     fireEvent.keyDown(el, { code: "KeyT", altKey: true, shiftKey: true })
-    expect(kb.isEnabled()).toBe(false)
     expect(onToggle).toHaveBeenLastCalledWith(false)
+    expect(kb.isEnabled()).toBe(true)
+    kb.setEnabled(false)
+    fireEvent.keyDown(el, { code: "KeyT", altKey: true, shiftKey: true })
+    expect(onToggle).toHaveBeenLastCalledWith(true)
+  })
+
+  it("toggles with Alt+Shift+T, a custom shortcut, or not at all", () => {
+    const el = input()
+    const kb = attachThaanaKeyboard(el)
+    fireEvent.keyDown(el, { code: "KeyT", altKey: true, shiftKey: true })
+    expect(kb.isEnabled()).toBe(false)
     fireEvent.keyDown(el, { code: "KeyT", altKey: true })
     fireEvent.keyDown(el, { code: "KeyX", altKey: true, shiftKey: true })
     expect(kb.isEnabled()).toBe(false)
@@ -303,6 +313,17 @@ describe("useThaanaInput", () => {
     expect(getByRole("button")).toHaveTextContent("off")
     rerender(<Field enabled onEnabledChange={onEnabledChange} />)
     expect(getByRole("button")).toHaveTextContent("on")
+  })
+
+  it("keeps typing in step with a controlled value the parent does not change", () => {
+    const onEnabledChange = vi.fn()
+    const { getByLabelText, getByRole } = render(<Field enabled onEnabledChange={onEnabledChange} />)
+    const el = getByLabelText("field") as HTMLInputElement
+    fireEvent.keyDown(el, { code: "KeyT", altKey: true, shiftKey: true })
+    expect(onEnabledChange).toHaveBeenCalledWith(false)
+    expect(getByRole("button")).toHaveTextContent("on")
+    type(el, "m")
+    expect(el.value).toBe("މ")
   })
 
   it("follows the element when it mounts later or is replaced", () => {

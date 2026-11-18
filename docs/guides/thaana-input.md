@@ -54,6 +54,9 @@ const keyboard = attachThaanaKeyboard(document.querySelector('#name'));
 keyboard.setEnabled(false);
 keyboard.detach();
 
+// Own the state: with onToggle, Alt+Shift+T asks instead of flipping the mode itself.
+const owned = attachThaanaKeyboard(input, { onToggle: (next) => owned.setEnabled(next) });
+
 transliterate('dhivehi'); // "ދހިވެހި"
 ```
 
