@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react"
+import { screen, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
@@ -38,6 +38,18 @@ describe("RecordActionsMenu", () => {
     ).toEqual(["Delete"])
     await userEvent.click(within(menu).getByRole("menuitem"))
     expect(await screen.findByRole("alertdialog", { name: "Delete Jane Doe?" })).toBeInTheDocument()
+  })
+
+  it("returns focus to the More actions button when a confirmation from the menu closes", async () => {
+    setMobile(false)
+    renderWithOnu(<RecordActionsMenu name="Jane Doe" actions={actions} />)
+    const trigger = screen.getByRole("button", { name: "More actions" })
+    await userEvent.click(trigger)
+    await userEvent.click(await screen.findByRole("menuitem", { name: "Delete" }))
+    await screen.findByRole("alertdialog", { name: "Delete Jane Doe?" })
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }))
+    await waitFor(() => expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument())
+    expect(trigger).toHaveFocus()
   })
 
   it("asks before a risky button action", async () => {
