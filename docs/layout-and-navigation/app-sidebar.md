@@ -99,8 +99,8 @@ Inside a panel `AppLayout` (the default) the sidebar uses `surface="shell"`: Pro
 Items use the shared `NavItem` shape: `{ label, href?, icon?, badge?, badgeTone?, color?, isActive?, disabled?, external?, items?, onSelect? }`.
 
 - `icon`: a semantic icon name (`"home"`) or any node.
-- `badge`: a number (shown as a count, "99+" above 99, with "3 new" for screen readers) or any node. On an item with nested items the badge sits inside the button, before the chevron or the submenu toggle, so the two never overlap (LTR and RTL).
-- `items`: nested items. A parent with an `href` gets a separate expand button; without one, the whole row toggles.
+- `badge`: a number (shown as a count, "99+" above 99, with "3 new" for screen readers; `0` shows nothing) or any node. On an item with nested items the badge sits inside the button, before the chevron or the submenu toggle, so the two never overlap (LTR and RTL).
+- `items`: nested items. A parent with an `href` gets a separate expand button; without one, the whole row toggles. A nested item with only `onSelect` is a button. A third level shows as an indented list under its item (a submenu in the collapsed flyout); an item that only heads that level, with no `href` or `onSelect`, is plain text.
 - **Active state**: the item matching `currentHref` gets `aria-current="page"`; its parent starts expanded, and expands when `currentHref` moves into it later. `match="prefix"` (default) keeps `/users` active on `/users/12/edit`; set `isActive` to override. Items whose `href` has a query string (`/users?status=active`) also match on its parameters.
 - **Collapsed to icons**: labels become tooltips and nested items open in a flyout menu.
 - On phones the drawer takes focus itself when it opens (so a filter or search field at the top doesn't bring up the keyboard; <kbd>Tab</kbd> moves into it) and closes after an item is chosen.

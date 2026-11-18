@@ -177,6 +177,68 @@ describe("AppSidebar", () => {
     expect(document.querySelector("[data-slot=sidebar-rail]")).toBeNull()
   })
 
+  it("runs a nested item's onSelect when it has no href, and only marks disabled items disabled", async () => {
+    const onSelect = vi.fn()
+    const onNavigate = vi.fn()
+    renderSidebar(
+      <AppSidebar
+        items={[
+          {
+            label: "Reports",
+            items: [
+              { label: "Export", onSelect },
+              { label: "Locked", disabled: true, onSelect },
+            ],
+          },
+        ]}
+        onNavigate={onNavigate}
+      />,
+    )
+    await userEvent.click(screen.getByRole("button", { name: "Reports" }))
+    const exportButton = screen.getByRole("button", { name: "Export" })
+    expect(exportButton).not.toHaveAttribute("aria-disabled")
+    await userEvent.click(exportButton)
+    expect(onSelect).toHaveBeenCalledTimes(1)
+    expect(onNavigate).toHaveBeenCalledWith(expect.objectContaining({ label: "Export" }))
+    expect(screen.getByRole("button", { name: "Locked" })).toHaveAttribute("aria-disabled", "true")
+    await expectNoA11yViolations()
+  })
+
+  const threeLevels: NavGroup[] = [
+    {
+      items: [
+        {
+          label: "Settings",
+          icon: "settings",
+          items: [
+            { label: "General", href: "/settings" },
+            { label: "Access", items: [{ label: "Roles", href: "/settings/access/roles" }] },
+          ],
+        },
+      ],
+    },
+  ]
+
+  it("shows a third level of items, expanded and collapsed to icons", async () => {
+    const { unmount } = renderSidebar(<AppSidebar groups={threeLevels} currentHref="/settings/access/roles" />)
+    expect(screen.getByRole("link", { name: "Roles" })).toHaveAttribute("aria-current", "page")
+    expect(screen.getByText("Access")).toBeInTheDocument()
+    unmount()
+
+    renderSidebar(<AppSidebar groups={threeLevels} currentHref="/settings/access/roles" />, {}, false)
+    await userEvent.click(screen.getByRole("button", { name: "Settings" }))
+    const menu = await screen.findByRole("menu")
+    await userEvent.click(within(menu).getByRole("menuitem", { name: "Access" }))
+    expect(await screen.findByRole("menuitem", { name: "Roles" })).toHaveAttribute("aria-current", "page")
+  })
+
+  it("draws no badge for a zero count", () => {
+    renderSidebar(<AppSidebar items={[{ label: "Inbox", href: "/inbox", badge: 0 }]} />)
+    expect(
+      screen.getByRole("link", { name: "Inbox" }).closest("li")!.querySelector("[data-sidebar=menu-badge]"),
+    ).toBeNull()
+  })
+
   it("collapses to icons and shows nested items in a flyout menu", async () => {
     renderSidebar(<AppSidebar groups={groups} currentHref="/users/all" />, {}, false)
     expect(document.querySelector("[data-slot=sidebar]")).toHaveAttribute("data-collapsible", "icon")
