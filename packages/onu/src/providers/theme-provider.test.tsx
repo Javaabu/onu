@@ -2,8 +2,10 @@ import { act, render, renderHook, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
+import { hydrateAfterServer } from "../../test/hydrate"
 import { controllableMatchMedia } from "../../test/match-media"
-import { ThemeProvider, themeScript, useTheme, type ThemeProviderProps } from "./theme-provider"
+import { ThemeProvider, useTheme, type ThemeProviderProps } from "./theme-provider"
+import { themeScript } from "./theme-script"
 
 const DARK_QUERY = "(prefers-color-scheme: dark)"
 
@@ -80,6 +82,27 @@ describe("ThemeProvider", () => {
     expect(text("theme")).toBe("light")
   })
 
+  it("hydrates the server's default, then switches to the stored theme without a mismatch", async () => {
+    const { container, errors } = await hydrateAfterServer(
+      <ThemeProvider>
+        <Probe />
+      </ThemeProvider>,
+      () => localStorage.setItem("onu-theme", "dark"),
+    )
+    expect(errors).toEqual([])
+    expect(container.querySelector('[data-testid="theme"]')).toHaveTextContent("dark")
+    expect(html()).toHaveClass("dark")
+  })
+
+  it("follows a theme chosen in another tab", () => {
+    renderTheme({ defaultTheme: "light" })
+    act(() => {
+      localStorage.setItem("onu-theme", "dark")
+      window.dispatchEvent(new StorageEvent("storage", { key: "onu-theme", newValue: "dark" }))
+    })
+    expect(text("theme")).toBe("dark")
+  })
+
   it("forces a theme regardless of the choice", async () => {
     const user = userEvent.setup()
     renderTheme({ forcedTheme: "dark", defaultTheme: "light" })
@@ -137,11 +160,32 @@ describe("themeScript", () => {
 
   it("resolves system and the default, with a custom key", () => {
     media = controllableMatchMedia((q) => q === DARK_QUERY)
-    run("app-theme", "system")
+    run({ storageKey: "app-theme", defaultTheme: "system" })
     expect(html()).toHaveClass("dark")
     localStorage.setItem("app-theme", "light")
-    run("app-theme", "system")
+    run({ storageKey: "app-theme", defaultTheme: "system" })
     expect(html()).not.toHaveClass("dark")
     expect(html()).toHaveAttribute("data-theme", "light")
+  })
+
+  it("falls back to the default for a junk stored value, like the provider", () => {
+    media = controllableMatchMedia(() => false)
+    localStorage.setItem("onu-theme", "purple")
+    run({ defaultTheme: "dark" })
+    expect(html()).toHaveClass("dark")
+    render(
+      <ThemeProvider defaultTheme="dark">
+        <Probe />
+      </ThemeProvider>,
+    )
+    expect(text("resolved")).toBe("dark")
+  })
+
+  it("applies a forced theme over the stored one, like the provider", () => {
+    media = controllableMatchMedia(() => false)
+    localStorage.setItem("onu-theme", "light")
+    run({ forcedTheme: "dark" })
+    expect(html()).toHaveClass("dark")
+    expect(html()).toHaveAttribute("data-theme", "dark")
   })
 })

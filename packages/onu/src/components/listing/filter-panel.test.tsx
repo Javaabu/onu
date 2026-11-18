@@ -159,6 +159,18 @@ describe("FilterPanel", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
   })
 
+  it("counts and clears only its own filters, keeping tabs and query filters it doesn't show", async () => {
+    renderWithOnu(<Harness initial={{ status: ["banned"], tab: "archived", owner: "me" }} sheet={false} />)
+    const button = screen.getByRole("button", { name: "Filters, 1 applied" })
+    expect(within(button).getByText("1")).toBeInTheDocument()
+    const panel = await openPanel()
+    await userEvent.click(within(panel).getByRole("button", { name: "Clear all" }))
+    expect(applied()).toEqual({ tab: "archived", owner: "me" })
+    expect(screen.getByRole("button", { name: "Filters" })).toBeInTheDocument()
+    await openPanel()
+    expect(screen.getByRole("button", { name: "Clear all" })).toBeDisabled()
+  })
+
   it("each filter has its own Clear link (§25.7)", async () => {
     renderWithOnu(<Harness initial={{ status: ["banned"], email: "x" }} />)
     const panel = await openPanel()
@@ -295,6 +307,32 @@ describe("FilterPanel", () => {
     await userEvent.type(within(panel).getByLabelText("Minimum"), "500")
     await userEvent.click(within(panel).getByRole("button", { name: "Apply" }))
     expect(screen.getByText("MVR 500")).toBeInTheDocument()
+  })
+
+  it("names a custom control through the id it is given, in the panel and the query form", async () => {
+    const renderProps = vi.fn()
+    const filters: FilterDefinition[] = [
+      {
+        type: "custom",
+        key: "min",
+        label: "Minimum balance",
+        render: (props) => {
+          renderProps(props)
+          return <input id={props.id} value={(props.value as string) ?? ""} onChange={() => {}} />
+        },
+      },
+    ]
+    const { unmount } = renderWithOnu(<Harness filters={filters} sheet={false} />)
+    const panel = await openPanel()
+    expect(within(panel).getByRole("textbox", { name: "Minimum balance" })).toBeInTheDocument()
+    expect(renderProps).toHaveBeenLastCalledWith(expect.objectContaining({ labelId: expect.any(String) }))
+    const { labelId } = renderProps.mock.lastCall![0] as { labelId: string }
+    expect(document.getElementById(labelId)).toHaveTextContent("Minimum balance")
+    await expectNoA11yViolations()
+    unmount()
+
+    renderWithOnu(<FilterPanel variant="form" filters={filters} value={{}} onApply={vi.fn()} />)
+    expect(screen.getByRole("textbox", { name: "Minimum balance" })).toBeInTheDocument()
   })
 
   it("supports controlled open state and a custom trigger", async () => {

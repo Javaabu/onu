@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 
 /** Subscribes to a CSS media query. Returns `false` during SSR. */

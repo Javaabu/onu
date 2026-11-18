@@ -217,7 +217,7 @@ Reduced motion still wins inside `<ChartAnimationProvider animate>`. `useChartAn
 
 ## Primitives
 
-The shadcn primitives are exported from the same entry for custom charts: `ChartContainer`, `ChartTooltip`, `ChartTooltipContent` (with an Onu `valueFormatter` prop), `ChartLegend`, `ChartLegendContent`, `ChartStyle` and the `ChartConfig` type. They are not exported from the package root, so `recharts` stays optional.
+The shadcn primitives are exported from the same entry for custom charts: `ChartContainer`, `ChartTooltip`, `ChartTooltipContent` (with an Onu `valueFormatter` prop; without it, numbers use Onu's number locale), `ChartLegend`, `ChartLegendContent`, `ChartStyle` and the `ChartConfig` type. They are not exported from the package root, so `recharts` stays optional.
 
 ## RTL
 

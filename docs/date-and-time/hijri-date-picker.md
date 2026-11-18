@@ -36,6 +36,8 @@ Plus the shared picker field props.
 
 `selected`, `onSelect`, `min`, `max`, `weekStartsOn`, `weekendDays`, `showGregorian` (default `true`), `today`, `initialFocus`, `className`, `ref`.
 
+As with `DateCalendar`, without `today` the browser's date is marked once hydrated, not the server's.
+
 ## Accessibility
 
 The days view is an in-house APG grid (react-day-picker has no Hijri support). Day buttons are named with both calendars ("Today, 23 Ramadan 1447 AH, Thursday, March 12th, 2026"); today has `aria-current="date"`; days outside `min`/`max` are `aria-disabled`.

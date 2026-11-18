@@ -61,6 +61,24 @@ describe.each(["list", "grid"] as const)("ListView layout=%s", (layout) => {
     expect(onItemClick).toHaveBeenCalledWith(users[2])
   })
 
+  it("ignores clicks inside the item's portalled confirm dialog", async () => {
+    const onItemClick = vi.fn()
+    renderWithOnu(
+      <ListView
+        layout={layout}
+        items={users.slice(0, 1)}
+        title={(u: User) => u.name}
+        onItemClick={onItemClick}
+        itemActions={() => [{ id: "delete", label: "Delete", destructive: true, onSelect: vi.fn() }]}
+      />,
+    )
+    await userEvent.click(screen.getByRole("button", { name: "Actions for Jane Doe" }))
+    await userEvent.click(await screen.findByRole("menuitem", { name: "Delete" }))
+    const dialog = await screen.findByRole("alertdialog", { name: "Delete Jane Doe?" })
+    await userEvent.click(within(dialog).getByRole("heading", { name: "Delete Jane Doe?" }))
+    expect(onItemClick).not.toHaveBeenCalled()
+  })
+
   it("follows the link when the item is clicked", async () => {
     const clicked = vi.fn((e: Event) => e.preventDefault())
     renderWithOnu(

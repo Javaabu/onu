@@ -44,6 +44,23 @@ describe("ColumnVisibility", () => {
     await expectNoA11yViolations()
   })
 
+  it("never offers the record column: the primary one, or the first when none is marked", async () => {
+    renderWithOnu(
+      <ColumnVisibility
+        columns={[
+          { id: "name", header: "Name" },
+          { id: "email", header: "Email" },
+          { id: "island", header: "Island", hideable: true },
+        ]}
+        value={{}}
+        onValueChange={vi.fn()}
+      />,
+    )
+    await userEvent.click(screen.getByRole("button", { name: /Columns/ }))
+    const items = await screen.findAllByRole("menuitemcheckbox")
+    expect(items.map((i) => i.textContent)).toEqual(["Email", "Island"])
+  })
+
   it("can be icon-only", () => {
     renderWithOnu(<ColumnVisibility columns={[]} value={{}} onValueChange={vi.fn()} showLabel={false} />)
     expect(screen.getByRole("button", { name: "Show or hide columns" })).toBeInTheDocument()

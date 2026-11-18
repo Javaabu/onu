@@ -1,6 +1,6 @@
 import { screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { form as dv_form } from "../../locales/dv/form"
@@ -84,6 +84,20 @@ describe("ValidationSummary", () => {
     renderWithOnu(<ValidationSummary errors={{ name: "ނަން ލިޔުއްވާ" }} />, { locale: "dv", dir })
     expect(screen.getByRole("alert")).toHaveTextContent("މި ފޯމުގައި 1 މައްސަލައެއް ވޭ")
     await expectNoA11yViolations()
+  })
+})
+
+describe("ValidationSummary ref", () => {
+  it("attaches a forwarded ref once and calls its React 19 cleanup (#66, 4.5)", () => {
+    const cleanup = vi.fn()
+    const ref = vi.fn(() => cleanup)
+    const { rerender, unmount } = renderWithOnu(<ValidationSummary errors={payload} ref={ref} />)
+    rerender(<ValidationSummary errors={payload} ref={ref} className="x" />)
+    expect(ref).toHaveBeenCalledTimes(1)
+    expect(ref).toHaveBeenCalledWith(screen.getByRole("alert"))
+    unmount()
+    expect(cleanup).toHaveBeenCalledTimes(1)
+    expect(ref).toHaveBeenCalledTimes(1)
   })
 })
 

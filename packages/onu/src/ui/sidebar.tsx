@@ -181,6 +181,8 @@ function Sidebar({
       <div
         data-slot="sidebar"
         data-surface={surface}
+        // onu: keep `dir`, as the phone drawer does.
+        dir={dir}
         className={cn(
           "flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground",
           surfaceClass,

@@ -11,7 +11,7 @@ import { Badge } from "../../ui/badge"
 import { Button } from "../../ui/button"
 import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "../../ui/drawer"
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
-import { FilterControl } from "./_filter-controls"
+import { FilterControl, FilterLabel } from "./_filter-controls"
 import type { FilterDefinition, FilterValue, FilterValues } from "./listing-types"
 import { cleanFilters, isFilterValueEmpty } from "./use-listing-state"
 import { registerEnglish } from "../../i18n/english"
@@ -27,7 +27,10 @@ export interface FilterPanelProps {
   filters: FilterDefinition[]
   /** The applied filters. */
   value: FilterValues
-  /** Called with the new filters on Apply, and with `{}` on Clear all. */
+  /**
+   * Called with the new filters on Apply, and on Clear all with this panel's filters removed.
+   * Values for keys the panel doesn't show (tabs, `queryFilters`) are passed through untouched.
+   */
   onApply: (filters: FilterValues) => void
   /** Controlled open state. */
   open?: boolean
@@ -74,6 +77,13 @@ export interface FilterPanelProps {
  * the page, changes are a draft until Filter (or Enter), Reset clears the
  * form's filters, and Expand shows the fields past `collapsedCount`.
  */
+/** The values with this panel's filters removed, keeping filters it doesn't own (tabs, query filters). */
+function withoutFilters(value: FilterValues, filters: FilterDefinition[]) {
+  const next = { ...value }
+  for (const definition of filters) delete next[definition.key]
+  return cleanFilters(next)
+}
+
 export function FilterPanel(props: FilterPanelProps) {
   const { t } = useTranslation()
   const { announce, region } = useAnnouncer({ role: "status" })
@@ -147,16 +157,16 @@ function FilterQueryForm({
             data-slot="filter-form-item"
             className={cn("gap-2 sm:grid-cols-[5rem_minmax(0,1fr)] sm:gap-0 grid items-center", classNames?.filter)}
           >
-            <span
-              id={labelId}
+            <FilterLabel
+              definition={definition}
+              id={id}
+              labelId={labelId}
               className={cn(
                 // Ant's horizontal form label: end-aligned, with a colon.
                 "text-sm sm:pe-2 sm:text-end sm:after:ms-0.5 sm:after:content-[':'] truncate text-foreground",
                 classNames?.label,
               )}
-            >
-              {definition.label}
-            </span>
+            />
             <div className="min-w-0 [&>*]:w-full">
               <FilterControl
                 definition={definition}
@@ -180,10 +190,9 @@ function FilterQueryForm({
           className="touch:min-h-11"
           onClick={() => {
             // Reset clears this form's fields and keeps any other filters.
-            const next = { ...draft }
-            for (const definition of filters) delete next[definition.key]
+            const next = withoutFilters(draft, filters)
             setDraft(next)
-            onApply(cleanFilters(next))
+            onApply(next)
           }}
         >
           {t("listing.filterReset")}
@@ -241,7 +250,9 @@ function FilterPopoverPanel({
     if (open) setDraft(value)
   }
 
-  const count = Object.values(cleanFilters(value)).length
+  // Only this panel's filters: tabs and query filters on the page are not its to count or clear.
+  const applied = cleanFilters(value)
+  const count = filters.filter((definition) => definition.key in applied).length
   const format = new Intl.NumberFormat(locale.numberLocale)
 
   const apply = () => {
@@ -249,7 +260,7 @@ function FilterPopoverPanel({
     setOpen(false)
   }
   const clearAll = () => {
-    onApply({})
+    onApply(withoutFilters(value, filters))
     setOpen(false)
   }
 
@@ -264,9 +275,12 @@ function FilterPopoverPanel({
         return (
           <div key={definition.key} className={cn("gap-1.5 grid", classNames?.filter)} data-slot="filter-panel-filter">
             <div className="gap-2 flex items-center justify-between">
-              <span id={labelId} className={cn("text-sm font-medium", classNames?.label)}>
-                {definition.label}
-              </span>
+              <FilterLabel
+                definition={definition}
+                id={id}
+                labelId={labelId}
+                className={cn("text-sm font-medium", classNames?.label)}
+              />
               {!isFilterValueEmpty(current) ? (
                 <Button
                   variant="link"

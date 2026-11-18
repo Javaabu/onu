@@ -10,8 +10,7 @@ import { ThaanaToggle } from "@javaabu/onu"
 import { useThaanaInput } from "@javaabu/onu/thaana"
 
 function MyField() {
-  const ref = useRef<HTMLInputElement>(null)
-  const { enabled, toggle } = useThaanaInput(ref)
+  const { ref, enabled, toggle } = useThaanaInput<HTMLInputElement>()
   return (
     <div className="gap-2 flex">
       <input ref={ref} dir={enabled ? "rtl" : "auto"} />

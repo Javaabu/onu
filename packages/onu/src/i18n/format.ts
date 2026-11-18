@@ -3,7 +3,11 @@
 import * as React from "react"
 import { format as formatDateFns, isValid, parseISO } from "date-fns"
 
+import { common as en_common } from "../locales/en/common"
 import { useOnu } from "../providers/onu-provider"
+import { registerEnglish } from "./english"
+
+registerEnglish({ common: en_common })
 
 /** A date as a `Date`, a timestamp, or an ISO string (`"2026-03-12"`, `"2026-03-12T09:30:00Z"`). */
 export type DateInput = Date | number | string

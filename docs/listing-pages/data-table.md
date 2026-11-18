@@ -32,7 +32,7 @@ The table always shows the rows it is given (it never sorts or pages by itself):
 - **Sorting**: clicking a sortable header sorts ascending and shows an arrow; clicking again reverses; another header starts ascending. Headers expose `aria-sort` and the change is announced ("Sorted by Name, ascending").
 - **Selection**: row checkboxes; the header checkbox selects or clears every row on this page and shows a dash when only some are selected. As soon as a row is selected the bulk bar appears.
 - **Row actions**: `rowActions(row)` lists the ⋯ menu; only `permitted` actions show; destructive ones confirm ("Delete Jane Doe?").
-- **Opening a record**: `getRowHref` makes the primary column a link (through `OnuProvider linkComponent`) and clicking the row follows it; or use `onRowClick`.
+- **Opening a record**: `getRowHref` makes the primary column (or the first, when none is marked) a link (through `OnuProvider linkComponent`) and clicking the row follows it; or use `onRowClick`.
 - **Empty states**: "No users yet" with `emptyAction`, or "No users match your search" naming the search and filters with Clear search / Clear filters.
 - **Trash**: `trash` removes checkboxes and the bulk bar; use `trashActions(t, { onRestore, onForceDelete })` for the ⋯ menu.
 - **Look**: Ant Design's table: a grey (`--muted`, #fafafa) header with semibold labels and short split lines between header cells, 12px 16px cells (`density="compact"` gives 8px, `comfortable` 16px), hairline row dividers, a #fafafa hover and selected rows in the brand's lightest step (`--primary-1`). The table has no outer frame; put it in a [Card](../layout-and-navigation/card) for one. Sort arrows are grey, and brand-coloured on the sorted column.
@@ -69,7 +69,7 @@ The table always shows the rows it is given (it never sorts or pages by itself):
 
 Other `<div>` props and `ref` go to the root.
 
-`DataTableColumn<T>`: `id`, `header` (text), `headerContent?`, `accessor?` (key or function), `cell?`, `sortable?`, `hideable?`, `primary?`, `align?`, `numeric?` (tabular figures, end-aligned), `hideOnCards?`, `className?`, `headerClassName?`.
+`DataTableColumn<T>`: `id`, `header` (text), `headerContent?`, `accessor?` (key or function), `cell?`, `sortable?`, `hideable?`, `primary?`, `align?`, `numeric?` (tabular figures, end-aligned), `hideOnCards?`, `className?`, `headerClassName?`. Without `cell`, a `Date` value is shown with Onu's locale (`useFormatDate`, "Jan 2, 2026" / "2 ޖެނުއަރީ 2026"), not the browser's.
 
 ## Accessibility
 

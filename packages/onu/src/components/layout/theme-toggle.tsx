@@ -5,7 +5,8 @@ import * as React from "react"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
-import { useTheme, type Theme } from "../../providers/theme-provider"
+import { useTheme } from "../../providers/theme-provider"
+import type { Theme } from "../../providers/theme-script"
 import { Button } from "../../ui/button"
 import {
   DropdownMenu,

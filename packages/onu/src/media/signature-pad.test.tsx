@@ -1,8 +1,9 @@
-import { act, screen } from "@testing-library/react"
+import { act, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../test/utils"
+import { OnuProvider } from "../providers/onu-provider"
 import { renderTypedSignature, SignaturePad } from "./signature-pad"
 
 // userEvent-driven tests can be slow when the whole suite runs in parallel with coverage.
@@ -164,6 +165,21 @@ describe("SignaturePad", () => {
     expect(lastPad().penColor).toBe("#dc2626")
     expect(lastPad().enabled).toBe(false)
     expect(screen.getByRole("button", { name: "Draw" })).toBeDisabled()
+  })
+
+  it("keeps the drawing when the translator changes identity (#66, 4.2)", () => {
+    const ui = (maps: object) => (
+      <OnuProvider maps={maps}>
+        <SignaturePad name="signature" />
+      </OnuProvider>
+    )
+    const { rerender } = render(ui({}))
+    act(() => lastPad().stroke())
+    // An inline `maps={{…}}` gives the provider a new `t` on every render.
+    rerender(ui({}))
+    expect(pads).toHaveLength(1)
+    expect(lastPad().toData()).toHaveLength(1)
+    expect(document.querySelector<HTMLInputElement>("input[name=signature]")!.value).toBe("data:image/png;base64,1")
   })
 
   it("offers typing the name as an accessible alternative", async () => {
