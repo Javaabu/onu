@@ -4,6 +4,7 @@
 // Onu changes are marked with "onu:" comments; keep them when re-syncing.
 
 import * as React from "react"
+import { useFormatNumber } from "../i18n/format"
 import { cn } from "../lib/utils"
 import * as RechartsPrimitive from "recharts"
 import type { TooltipValueType } from "recharts"
@@ -133,6 +134,7 @@ function ChartTooltipContent({
     labelKey?: string
   } & Omit<RechartsPrimitive.DefaultTooltipContentProps<TooltipValueType, TooltipNameType>, "accessibilityLayer">) {
   const { config } = useChart()
+  const formatNumber = useFormatNumber()
 
   const tooltipLabel = React.useMemo(() => {
     if (hideLabel || !payload?.length) {
@@ -226,7 +228,7 @@ function ChartTooltipContent({
                           {valueFormatter
                             ? valueFormatter(item.value as number | string, String(item.dataKey ?? item.name ?? ""))
                             : typeof item.value === "number"
-                              ? item.value.toLocaleString()
+                              ? formatNumber(item.value)
                               : String(item.value)}
                         </span>
                       )}

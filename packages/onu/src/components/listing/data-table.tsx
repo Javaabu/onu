@@ -18,6 +18,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { useAnnouncer } from "../../a11y/use-announcer"
 import { useIsMobile } from "../../hooks/use-mobile"
+import { useFormatDate } from "../../i18n/format"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
@@ -143,9 +144,9 @@ function valueOf<T extends RowData>(column: DataTableColumn<T>, row: T): unknown
   return row[key]
 }
 
-function display(value: unknown): React.ReactNode {
+function display(value: unknown, formatDate: (date: Date) => string): React.ReactNode {
   if (value === null || value === undefined || value === "") return null
-  if (value instanceof Date) return value.toLocaleDateString()
+  if (value instanceof Date) return formatDate(value)
   if (typeof value === "string" || typeof value === "number") return value
   return String(value)
 }
@@ -190,6 +191,7 @@ export function DataTable<T extends RowData>({
   ...props
 }: DataTableProps<T>) {
   const { t } = useTranslation()
+  const formatDate = useFormatDate()
   const Link = useLinkComponent()
   const internal = useListingState({ url: false })
   const state = stateProp ?? internal
@@ -291,7 +293,7 @@ export function DataTable<T extends RowData>({
   const clickable = !!onRowClick || !!getRowHref
 
   const renderValue = (column: DataTableColumn<T>, row: T) => {
-    const content = column.cell ? column.cell(row) : display(valueOf(column, row))
+    const content = column.cell ? column.cell(row) : display(valueOf(column, row), formatDate)
     const shown = content ?? <span className="text-muted-foreground">{t("common.emptyValue")}</span>
     if (column !== primary) return shown
     const href = getRowHref?.(row)
