@@ -68,6 +68,7 @@ describe("keymaps", () => {
     expect(containsThaana("ދިވެހި")).toBe(true)
     expect(isLatinKeyboardText("Hello, world!")).toBe(true)
     expect(isLatinKeyboardText("ދ")).toBe(false)
+    expect(isLatinKeyboardText("line one\n\tline two\r\n")).toBe(true)
   })
 })
 
@@ -127,6 +128,14 @@ describe("attachThaanaKeyboard", () => {
     // Already Thaana: left alone.
     expect(type(convert, "ދ", { inputType: "insertFromPaste" }).defaultPrevented).toBe(false)
     expect(type(convert, "", { inputType: "insertFromPaste" }).defaultPrevented).toBe(false)
+  })
+
+  it("transliterates multi-line pastes into a textarea", () => {
+    const el = document.createElement("textarea")
+    document.body.appendChild(el)
+    attachThaanaKeyboard(el, { paste: "transliterate" })
+    type(el, "salAm\n\tdhivehi", { inputType: "insertFromPaste" })
+    expect(el.value).toBe("ސަލާމ\n\tދހިވެހި")
   })
 
   it("converts words composed by predictive (Android) keyboards", () => {
