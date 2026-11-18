@@ -127,6 +127,16 @@ describe("columns", () => {
     expect(toExportCell(3)).toMatchObject({ type: "number" })
   })
 
+  it("leaves a timestamp that is not a real date empty instead of breaking the export", () => {
+    expect(toExportCell(Number.NaN, "date")).toEqual({ type: "empty" })
+    expect(toExportCell(Number.POSITIVE_INFINITY, "datetime")).toEqual({ type: "empty" })
+    expect(toExportCell(1e20, "date")).toEqual({ type: "empty" })
+    const bad = [{ at: Number.NaN }]
+    const cols: ExportColumn<{ at: number }>[] = [{ header: "At", accessor: "at", type: "date" }]
+    expect(toCsv(bad, cols, { bom: false })).toBe("At\r\n\r\n")
+    expect(() => buildPrintDocument(bad, cols)).not.toThrow()
+  })
+
   it("formats display text in the locale", () => {
     const en = resolveExportContext()
     const dv = resolveExportContext({ locale: "dv" })

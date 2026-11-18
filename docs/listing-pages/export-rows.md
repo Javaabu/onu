@@ -95,6 +95,6 @@ The export runs from the [`ExportMenu`](export-menu), which announces "Exporting
 ## RTL and Dhivehi
 
 - With `dir: "rtl"` (automatic for Dhivehi through `useExportRows`), Excel sheets are right to left and the PDF document is `dir="rtl" lang="dv"`.
-- Dates use the locale's date-fns locale in the PDF ("12 މާޗު 2026"); CSV and Excel use ISO dates and real date cells. All three show the same local date and time: a `date` of `"2026-03-12"` is 12 March in every format, whatever the user's time zone.
+- Dates use the locale's date-fns locale in the PDF ("12 މާޗު 2026"); CSV and Excel use ISO dates and real date cells. All three show the same local date and time: a `date` of `"2026-03-12"` is 12 March in every format, whatever the user's time zone. An invalid date (an Invalid `Date`, or a timestamp such as `NaN`) is left empty.
 - Currency follows `common.currency` ("MVR 1,250.00" / "ރ. 1,250.00"); booleans use `common.yes` / `common.no`.
 - Text cells are wrapped in `<bdi>` in the PDF, so Latin and Thaana values each read in their own direction while the column keeps the page alignment.
