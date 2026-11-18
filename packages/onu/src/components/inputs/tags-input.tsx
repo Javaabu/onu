@@ -128,10 +128,10 @@ export function TagsInput({
     local.current?.focus()
   }
 
-  const combobox = useComboboxState(items.length)
+  const combobox = useComboboxState(items.length, { isDisabled: (i) => !!items[i]?.disabled })
   const pick = (index: number) => {
     const option = items[index]
-    if (!option) return
+    if (!option || option.disabled) return
     add([option.value])
     setText("")
     combobox.setActive(-1)
