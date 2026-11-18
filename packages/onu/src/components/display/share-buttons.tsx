@@ -59,6 +59,7 @@ function canNativeShare() {
 }
 
 const noopSubscribe = () => () => {}
+const currentUrl = () => window.location.href
 
 export interface ShareButtonsProps extends Omit<React.ComponentProps<"div">, "title"> {
   /** URL to share. Defaults to the current page. */
@@ -107,7 +108,10 @@ export function ShareButtons({
   const { status, copy } = useCopyToClipboard()
   const copied = status === "copied"
   const hasNative = React.useSyncExternalStore(noopSubscribe, canNativeShare, () => false)
-  const url = urlProp ?? (typeof window !== "undefined" ? window.location.href : "")
+  // The server can't know the page's URL: hydrate with it empty, then fill it in (attributes
+  // aren't patched by hydration, so reading `location` during that render would leave them stale).
+  const pageUrl = React.useSyncExternalStore(noopSubscribe, currentUrl, () => "")
+  const url = urlProp ?? pageUrl
   const showNative = native !== "never" && hasNative
   const showNetworks = native !== "auto" || !hasNative
   const buttonSize = iconOnly ? (size === "sm" ? "icon-sm" : size === "lg" ? "icon-lg" : "icon") : size
