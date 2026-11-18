@@ -135,6 +135,18 @@ describe("ReportingPeriodPicker", () => {
     expect(screen.getByRole("combobox")).toHaveTextContent("03/03/2026 – 17/03/2026")
   })
 
+  it("drops an abandoned custom click when another period is picked", async () => {
+    const onChange = vi.fn()
+    const { user } = setup(<ReportingPeriodPicker aria-label="Period" today={TODAY} onValueChange={onChange} />)
+    await user.click(screen.getByRole("combobox"))
+    await user.click(radio("Custom range"))
+    await user.click(button(/March 12th, 2026/))
+    await user.click(radio("Monthly"))
+    await user.click(button("May 2026"))
+    expect(onChange).toHaveBeenLastCalledWith({ type: "monthly", from: new Date(2026, 4, 1), to: end(2026, 4, 31) })
+    expect(screen.getByRole("combobox")).toHaveTextContent("May 2026")
+  })
+
   it("keeps half a custom range as a one-day range on Done", async () => {
     const onChange = vi.fn()
     const { user } = setup(
