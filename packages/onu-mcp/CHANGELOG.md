@@ -1,8 +1,11 @@
 # @javaabu/onu-mcp
 
-## 0.3.2
+## 0.4.0
 
-No changes in this release.
+### Patch Changes
+
+- 310a7e0: If the project's docs don't load (a wrong `ONU_DOCS_DIR`, a malformed `index.json`, a missing page), the server now warns on stderr and serves its bundled docs instead of crashing. An empty `ONU_DOCS_DIR` counts as unset.
+- 88f248c: `onu_search_docs` and the closest-match hint in `onu_get_doc` now match page paths and the words of CamelCase titles, so `date-picker` finds DatePicker and "Button props" puts Button above SubmitButton.
 
 ## 0.3.1
 

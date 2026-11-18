@@ -1,9 +1,89 @@
 # @javaabu/onu
 
-## 0.3.2
+## 0.4.0
+
+### Minor Changes
+
+- This release fixes the defects from the 0.3.1 review (#66). Some fixes change APIs:
+
+  - `Select`: `value` is `string | null` (`null` when empty) and `onValueChange(value, option)`, like `SearchableSelect` and `ApiSelect`.
+  - `useThaanaInput(options)` and `useThaanaField(thaana)` return a callback `ref` to put on the element, instead of taking a ref.
+  - `themeScript({ defaultTheme, forcedTheme, storageKey })` takes an options object.
+  - `Pagination` builds page links from the URLs the server sent; `PaginationInfo.pageUrl` returns `string | undefined`.
+  - A listing's record column (the `primary` column, or the first) can no longer be hidden.
+  - `SignaturePad` ink defaults to `#000`.
+  - `LiveMap`'s `subscribe` gets a `remove(id)` callback.
+  - `TimeSeriesChart` has an `aggregate` prop, and with `interval` each point sits at the start of its step.
+  - `ScannerStatus` adds `"decoder-error"`.
+  - The build adds `"use client"` only to modules that need it, so `cn`, `themeScript`, `/thaana` and `/export` can be called from Server Components.
 
 ### Patch Changes
 
+- fc5cade: `AdditionalFilesUpload` now returns focus to the "Add files" picker after removing a new file at `maxFiles`, where it used to be lost because the picker was still disabled.
+- 9152c48: `AppSidebar`: nested items with only `onSelect` are working buttons in the expanded sidebar (they were inert and announced as disabled), a third level of `items` is shown instead of dropped, and `badge: 0` no longer draws an empty pill.
+- 07ee776: Rejected async callbacks no longer surface as unhandled rejections: `Wizard` marks the step as having errors when `validate`, `onValidateStep` or `onComplete` rejects, `LoadMore` shows "Couldn’t load more. Try again." and keeps its button, and the `CommentThread` composer keeps the text and shows an error.
+- f698e86: `Autocomplete`: the suggestion list now filters by a controlled `value` set from outside, so resetting the field from the parent shows the full list again.
+- 62dafb2: `AvatarUpload` and `cropImage` no longer give transparent images a black background in JPEG output (transparent areas are white), and the cropped avatar file's extension now matches its type, e.g. `.png` with `cropOptions={{ type: "image/png" }}`.
+- 602b1f2: `BulkActionBar` moves focus to the form control when an action's form opens, and back to the action when the form is cancelled, instead of dropping it to the page body.
+- 6b4c761: Server-rendered `DateCalendar` and `HijriCalendar` now mark the browser's today once hydrated. Before, a server in another time zone (UTC against the Maldives between 00:00 and 05:00) could leave yesterday marked.
+- 3eaf4b3: The confirm question for a named action (`confirm: true` on "Approve", "Suspend" and the like) is now worded by the locale, so Dhivehi reads "{name} {action}؟" instead of an English-ordered title with a Latin "?". Only delete actions add "This can't be undone." below.
+- ac2173e: `DateCalendar`: in the months, years and year-range views, Page Up/Down and arrow keys past the edge no longer page beyond `min` or `max` while the Previous / Next buttons are disabled.
+- a9f1830: The Dhivehi date-fns locale now labels "afternoon" and "evening" as PM and "midnight" and "night" as AM, and parses short and narrow weekday names (`parse("އާދި", "EEE", …)`).
+- f446b09: `WysiwygEditor` and `BlockEditor` keep what was typed when `thaana` is toggled, instead of going back to `defaultValue`, and the placeholder switches language with the locale.
+- 1572a05: The editor toolbar keeps its tab stop when the control holding it is disabled (for example "Text style" with the caret in a code block): Tab and Alt+F10 now reach the first enabled control.
+- 5e069c2: Excel exports now write `date` and `datetime` cells in local time, like CSV and PDF. Before, a user east of UTC saw dates a day early and times shifted by their UTC offset.
+- 6a52fe6: `ExportMenu` keeps focus on its button while a file is being made: the button is now `aria-disabled` instead of `disabled` while exporting, and its menu won't open until the export finishes.
+- dd0b29c: A `NaN` or out-of-range timestamp in a `date` or `datetime` export column now leaves the cell empty. It used to stop the PDF export with an error and write `NaN-NaN-NaN` to CSV.
+- 243964d: A mounted `FileInput` dropzone no longer cancels text dropped elsewhere on the page, such as into a textarea or the editor.
+- 9194803: `FilterPanel`'s count badge and Clear all now cover only the filters in the panel, so tabs and `ListingPage` query filters are no longer counted or cleared by it.
+- a94b567: A custom filter `render` control is now named by the filter's label: the label is a real `<label for>` the `id` it receives, and `render` also gets `labelId` for `aria-labelledby`.
+- 51847f4: Focus no longer drops to the page while a form is busy. `Form` gives focus back to the field you were in after an Enter submit (its fields are disabled while it processes), and `CommentThread`'s composer puts focus back in the text box after posting.
+- d1c0b28: `Form` attaches a forwarded ref once instead of on every render, and calls a React 19 ref cleanup on unmount.
+- f59243e: `useFormatCurrency` now brings its own English text, so it no longer renders the literal `common.currency` in a build where no other module loaded the `common` strings.
+- 5e789a4: A server-rendered `FullCalendar` without `view` or `defaultView` now opens on the agenda on phones once hydrated; before, it stayed on the month view.
+- 117ae86: `HijriDatePicker`: a value or `today` that carries a time on the last day of a Hijri month now opens with that day focused instead of the 1st.
+- ffbe89d: `ImageCropper` follows a changed `aspect` prop instead of keeping the ratio it was mounted with.
+- 3eaa03a: `InlineEdit`: saving or cancelling on blur no longer pulls focus back to the value, so clicking another field after editing lands there. A failing `validate` on blur keeps the error showing without trapping focus in the editor.
+- e86440b: `useListingState` no longer calls `onValueChange` on every render when `paramNames` is passed inline, or on mount under StrictMode; it fires only when the listing state changes.
+- d301f7b: `OnuProvider locale="dv"` now retries a failed Dhivehi chunk load (after 1, 3 and 10 seconds, then when the browser comes back online) instead of staying in English for the rest of the session.
+- 9534fe1: `MapChart` updates the selected region's read-out when `data` or `geojson` changes, instead of showing the value from when it was selected.
+- a2a3aff: Maps: editing a shape on the map no longer deletes a `MapPolygon` or `MapRoute` shape that is still being entered with the keyboard; `LiveMap` lets a newer `markers` prop replace an earlier streamed update, drops markers that leave `markers`, and its `subscribe` gets a `remove(id)` callback; place search on Google Maps uses the `MapProvider` `region` instead of always the Maldives.
+- 8803edd: `MediaPlayer` now plays the new media when `src` changes. Before, it kept playing the first source.
+- a352a06: Inputs that forward a ref now honour React 19 ref cleanup functions: a ref callback that returns a cleanup has it called on unmount instead of being called again with `null`.
+- 9e8faa8: The npm package no longer ships `src/styles/theme.test.ts`.
+- 9b03fe0: `normalizeUrl` (used by `TextInput type="url"` and the editor's link and image dialogs) reads `host:port` as a host, so `localhost:3000` and `example.mv:8080/x` get the protocol instead of being rejected.
+- c7dc663: `NumberInput` reads and edits numbers in a `numberLocale` with its own digits (for example Arabic-Indic `١٢٣` in `ar-EG`). It used to reject them, so it couldn't parse its own draft. `numberSymbols()` also returns the locale's `digits`.
+- 8c13685: `NumberInput`: a stepper field can now be cleared and retyped (it falls back to `min` only on blur), and the arrow keys step exactly like the − / + buttons instead of rounding to the step's decimals.
+- 216caca: `DataTable` date cells and chart tooltip numbers are now formatted with Onu's locale instead of the browser's, so Dhivehi pages show Dhivehi month names and server and client render the same text.
+- bac2b04: An app that uses `@javaabu/onu/charts` without the optional map peers (`@vis.gl/react-google-maps`, deck.gl) now builds with webpack too; it used to fail with "Module not found". `MapChart` loads them on demand and, when they are missing, shows a note and the data table instead of the map.
+- a2116bb: `Pagination` builds page links from the URLs a Laravel paginator sends, so the query string (search, filters) and a custom `pageName` are kept instead of being replaced by `path?page=N`.
+- 156f01d: `QrCode` downloads: `tone="transparent"` in dark mode now saves dark modules on white instead of light modules that do not scan, the SVG download embeds the logo instead of linking to it, and a failed download shows an error under the buttons.
+- d406661: `QrCodeScanner` in `continuous` mode reports a code once while it stays in view instead of four times a second, and when the decoder fails to load it shows a new `decoder-error` status with the Start button to try again.
+- ea5dd9e: `RecordActionsMenu` now returns focus to the "More actions" button when a confirmation opened from its menu closes, instead of leaving it on the page body.
+- 0422b3a: The record column (the `primary` one, or the first when none is marked) can no longer be hidden from the Columns menu or by saved column visibility, so the row link stays on the page.
+- c0f608e: `ReportingPeriodPicker`: a half-picked custom range is dropped when you then pick a month, quarter or year, instead of replacing your choice when the popover closes.
+- 00d6584: Clicking inside a row's actions menu or confirm dialog no longer opens the row in `DataTable`, `ListView` and the other collection views.
+- 7056cce: `SearchBox`: clicking ✕ with unsubmitted text now runs one search for `""`, instead of first searching the draft on blur.
+- a45b44c: Server-rendered `ShareButtons` without a `url` now get the current page's URL after hydration; before, their share links kept the server's empty URL.
+- fd1d094: `Sidebar` with `collapsible="none"` keeps its `dir` prop.
+- 8d707ff: `SignaturePad` now draws with black ink by default (`penColor`), so a signature made in dark mode no longer exports as near-white strokes; in dark mode the canvas is shown inverted so the ink stays visible. A saved signature from `defaultValue` is no longer erased when the pad resizes.
+- 5273494: `SignaturePad` keeps the drawing when the language changes or `OnuProvider` re-renders with new props, so the pad and the submitted value no longer disagree.
+- 892d43e: The `BlockEditor` slash menu works inside a modal: it now opens inside the dialog, so it can be clicked and screen readers can reach it.
+- 2ce3c12: `SlugInput`: typing a space by hand now inserts the separator (`my custom slug` gives `my-custom-slug`), including with a custom `separator` such as `_`. `toSlug(text, { preserveTrailing: true })` keeps a trailing word break for any separator.
+- c9c4bfa: `TagsInput`: Enter no longer adds a disabled suggestion, and the arrow keys skip disabled suggestions.
+- 49b72bc: A controlled `useThaanaInput({ enabled })` no longer drifts out of step when the Thaana shortcut is pressed and the parent keeps the value: the field keeps typing Thaana while it shows `dir="rtl"`. `attachThaanaKeyboard`'s `onToggle` now receives the requested state and leaves the change to you (call `setEnabled`); without `onToggle` the shortcut still flips the mode itself.
+- 50c2041: The Thaana keyboard now attaches to fields that mount later or get replaced, so `CommandPalette thaana` types Thaana and a `TextInput` keeps typing Thaana after an `endAddon` appears. `useThaanaInput(options)` and `useThaanaField(thaana)` now return a callback `ref` to put on the element instead of taking a ref object.
+- b250881: `paste: "transliterate"` now converts pastes that contain line breaks or tabs, so multi-line Latin text pasted into a Thaana `Textarea` becomes Thaana.
+- 75dde1e: Typing on a closed select with `thaana` now starts the search with the Thaana letter (`ކ`, not `k`).
+- bf88978: `ThemeProvider` no longer causes a hydration mismatch when a theme is stored: it hydrates with `defaultTheme` and switches to the stored theme right after, so a server-rendered `ThemeToggle` shows the stored choice. It also follows a theme chosen in another tab.
+- 551a218: `themeScript` now takes the provider's options as an object, `themeScript({ defaultTheme, forcedTheme, storageKey })`, applies `forcedTheme`, and falls back to `defaultTheme` for a stored value that isn't a theme, so the first paint matches `ThemeProvider`.
+- 9b1be31: `TimeSeriesChart` with `interval` no longer drops rows: rows in the same hour, day, week or month are added up (or averaged with the new `aggregate="mean"`), weekly data no longer needs to fall a whole number of weeks after the first date, and a range too long to fill keeps its newest rows.
+- 0fe4713: `TimeSeriesChart` with `brush` resets its zoom when `data` changes to cover other dates, instead of keeping a range (and "Showing …" read-out) from the old data. Inline `data` with the same dates keeps the zoom.
+- 1db377b: `TopNav` items with only `onSelect` (no `href`) render as buttons instead of links to `#`.
+- a6fd17b: A cancelled, removed or replaced upload no longer lands in the `FileInput` value when a custom `upload` ignores its abort signal, and Cancel marks the upload cancelled straight away.
+- 77cc5d9: The build now marks only modules that need the browser with `"use client"`, so Server Components can call pure helpers such as `cn`, `themeScript`, `createTranslator`, `mergeMessages`, the `/thaana` conversion functions and the `/export` builders. `themeScript` no longer needs a client-component wrapper in Next.js.
+- 2b14969: `ValidationSummary` attaches a forwarded ref once instead of on every render, and calls a React 19 ref cleanup on unmount.
+- 27f2536: `Wizard`: Finish stays busy until `onComplete` settles, so a second click can no longer run `onComplete` twice.
 - ac87774: `Button` and `LinkButton` keep `data-slot="button"` when a caller passes its own `data-slot`, so the 44px touch-target rule still applies. Use `data-part` to tag a button.
 - b3b347a: `DateRangePicker` submits under `names` (for example `{ from: "start", to: "end" }`) without `name` too. It used to submit nothing unless `name` was also set.
 - aa000a1: Dependent `SearchableSelect` and `ApiSelect` fields (`parentValue`) keep a value that arrives together with the parent, as with react-hook-form's `reset(data)` or an edit page that fetches both, and a value set while the field waits for its parent. They still clear when the parent changes after the value was settled.
