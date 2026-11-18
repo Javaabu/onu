@@ -109,6 +109,20 @@ function matcher(values: readonly string[]): MatchFn<any> {
   }
 }
 
+// date-fns day periods before noon ("night" is 00:00–03:59 for the `B` token).
+const AM_PERIODS = new Set(["am", "midnight", "night", "morning"])
+
+// Weekday names of every width, longest first so "ބުރާސްފަތި" is not read as "ބު".
+const dayNames = [days, shortDays, narrowDays]
+  .flatMap((names) => names.map((name, value) => ({ name, value })))
+  .sort((a, b) => b.name.length - a.name.length)
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const dayMatcher: MatchFn<any> = (str: string) => {
+  const hit = dayNames.find((d) => str.startsWith(d.name))
+  return hit ? { value: hit.value, rest: str.slice(hit.name.length) } : null
+}
+
 export const dv: Locale = {
   code: "dv",
   formatDistance: (token, count, options) => {
@@ -139,7 +153,7 @@ export const dv: Locale = {
     dayPeriod: (period, options) => {
       const am = options?.width === "wide" ? "މެންދުރުކުރިން" : "މކ"
       const pm = options?.width === "wide" ? "މެންދުރުފަހު" : "މފ"
-      return String(period).startsWith("a") || period === "morning" ? am : pm
+      return AM_PERIODS.has(String(period)) ? am : pm
     },
   },
   match: {
@@ -153,7 +167,7 @@ export const dv: Locale = {
       return m ? { value: Number(m[1]) as 1 | 2 | 3 | 4, rest: str.slice(m[0].length) } : null
     },
     month: matcher(months),
-    day: matcher(days),
+    day: dayMatcher,
     dayPeriod: (str) => {
       if (str.startsWith("މކ") || str.startsWith("މެންދުރުކުރިން"))
         return { value: "am", rest: str.slice(str.startsWith("މކ") ? 2 : 14) }

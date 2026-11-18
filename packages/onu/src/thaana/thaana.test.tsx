@@ -68,6 +68,7 @@ describe("keymaps", () => {
     expect(containsThaana("ދިވެހި")).toBe(true)
     expect(isLatinKeyboardText("Hello, world!")).toBe(true)
     expect(isLatinKeyboardText("ދ")).toBe(false)
+    expect(isLatinKeyboardText("line one\n\tline two\r\n")).toBe(true)
   })
 })
 
@@ -129,6 +130,14 @@ describe("attachThaanaKeyboard", () => {
     expect(type(convert, "", { inputType: "insertFromPaste" }).defaultPrevented).toBe(false)
   })
 
+  it("transliterates multi-line pastes into a textarea", () => {
+    const el = document.createElement("textarea")
+    document.body.appendChild(el)
+    attachThaanaKeyboard(el, { paste: "transliterate" })
+    type(el, "salAm\n\tdhivehi", { inputType: "insertFromPaste" })
+    expect(el.value).toBe("ސަލާމ\n\tދހިވެހި")
+  })
+
   it("converts words composed by predictive (Android) keyboards", () => {
     const el = input("x ")
     attachThaanaKeyboard(el)
@@ -157,13 +166,23 @@ describe("attachThaanaKeyboard", () => {
     expect(el.value).toBe("ދިވެހި")
   })
 
-  it("toggles with Alt+Shift+T, a custom shortcut, or not at all", () => {
+  it("leaves the change to onToggle when it is given", () => {
     const el = input()
     const onToggle = vi.fn()
     const kb = attachThaanaKeyboard(el, { onToggle })
     fireEvent.keyDown(el, { code: "KeyT", altKey: true, shiftKey: true })
-    expect(kb.isEnabled()).toBe(false)
     expect(onToggle).toHaveBeenLastCalledWith(false)
+    expect(kb.isEnabled()).toBe(true)
+    kb.setEnabled(false)
+    fireEvent.keyDown(el, { code: "KeyT", altKey: true, shiftKey: true })
+    expect(onToggle).toHaveBeenLastCalledWith(true)
+  })
+
+  it("toggles with Alt+Shift+T, a custom shortcut, or not at all", () => {
+    const el = input()
+    const kb = attachThaanaKeyboard(el)
+    fireEvent.keyDown(el, { code: "KeyT", altKey: true, shiftKey: true })
+    expect(kb.isEnabled()).toBe(false)
     fireEvent.keyDown(el, { code: "KeyT", altKey: true })
     fireEvent.keyDown(el, { code: "KeyX", altKey: true, shiftKey: true })
     expect(kb.isEnabled()).toBe(false)
@@ -258,8 +277,7 @@ describe("insertText", () => {
 
 describe("useThaanaInput", () => {
   function Field(props: { enabled?: boolean; onEnabledChange?: (v: boolean) => void; defaultEnabled?: boolean }) {
-    const ref = React.useRef<HTMLInputElement>(null)
-    const { enabled, toggle } = useThaanaInput(ref, {
+    const { ref, enabled, toggle } = useThaanaInput<HTMLInputElement>({
       ...props,
       toggleShortcut: { code: "KeyT", altKey: true, shiftKey: true },
     })
@@ -296,12 +314,41 @@ describe("useThaanaInput", () => {
     rerender(<Field enabled onEnabledChange={onEnabledChange} />)
     expect(getByRole("button")).toHaveTextContent("on")
   })
+
+  it("keeps typing in step with a controlled value the parent does not change", () => {
+    const onEnabledChange = vi.fn()
+    const { getByLabelText, getByRole } = render(<Field enabled onEnabledChange={onEnabledChange} />)
+    const el = getByLabelText("field") as HTMLInputElement
+    fireEvent.keyDown(el, { code: "KeyT", altKey: true, shiftKey: true })
+    expect(onEnabledChange).toHaveBeenCalledWith(false)
+    expect(getByRole("button")).toHaveTextContent("on")
+    type(el, "m")
+    expect(el.value).toBe("މ")
+  })
+
+  it("follows the element when it mounts later or is replaced", () => {
+    function Late({ show, swap }: { show: boolean; swap?: boolean }) {
+      const { ref } = useThaanaInput<HTMLInputElement>()
+      if (!show) return null
+      return swap ? <textarea ref={ref as never} aria-label="field" /> : <input ref={ref} aria-label="field" />
+    }
+    const { getByLabelText, rerender } = render(<Late show={false} />)
+    rerender(<Late show />)
+    const el = getByLabelText("field") as HTMLInputElement
+    type(el, "m")
+    expect(el.value).toBe("މ")
+    rerender(<Late show swap />)
+    const next = getByLabelText("field") as HTMLTextAreaElement
+    type(next, "m")
+    expect(next.value).toBe("މ")
+    type(el, "m")
+    expect(el.value).toBe("މm")
+  })
 })
 
 describe("useThaanaField", () => {
-  function Field({ thaana }: { thaana?: Parameters<typeof useThaanaField>[1] }) {
-    const ref = React.useRef<HTMLInputElement>(null)
-    const { fieldProps, enabled, active, toggle } = useThaanaField(ref, thaana)
+  function Field({ thaana }: { thaana?: Parameters<typeof useThaanaField>[0] }) {
+    const { ref, fieldProps, enabled, active, toggle } = useThaanaField<HTMLInputElement>(thaana)
     return (
       <>
         <input ref={ref} aria-label="field" {...fieldProps} />

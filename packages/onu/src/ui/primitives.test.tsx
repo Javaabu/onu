@@ -1,8 +1,10 @@
 import { screen } from "@testing-library/react"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import { expectNoA11yViolations, renderWithOnu } from "../../test/utils"
 import { common as dv_common } from "../locales/dv/common"
+import { en } from "../locales/en"
+import { ChartContainer, ChartTooltipContent } from "./chart"
 import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbList } from "./breadcrumb"
 import { Button } from "./button"
 import { Calendar } from "./calendar"
@@ -134,6 +136,22 @@ describe("vendored primitive patches", () => {
     const { container } = renderWithOnu(<Checkbox aria-label="All" checked="indeterminate" />)
     expect(screen.getByRole("checkbox")).toHaveAttribute("aria-checked", "mixed")
     expect(container.querySelector("[data-icon-name=minus]")).toBeInTheDocument()
+  })
+
+  it("formats chart tooltip values with Onu's number locale", () => {
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue(new DOMRect(0, 0, 300, 200))
+    renderWithOnu(
+      <ChartContainer config={{ sales: { label: "Sales" } }}>
+        <ChartTooltipContent
+          active
+          hideLabel
+          payload={[{ value: 1234.5, name: "sales", dataKey: "sales", payload: {} }] as never}
+        />
+      </ChartContainer>,
+      { locale: { ...en, numberLocale: "de" } },
+    )
+    expect(screen.getByText("1.234,5")).toBeInTheDocument()
+    vi.restoreAllMocks()
   })
 
   it("passes dir to a Sidebar with collapsible=none", () => {

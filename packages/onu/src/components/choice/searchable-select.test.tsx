@@ -93,6 +93,24 @@ describe("SearchableSelect", () => {
     expect(await screen.findByRole("combobox", { name: "Search…" })).toHaveValue("a")
   })
 
+  it("seeds the search with the Thaana letter when typing on a closed thaana field", async () => {
+    const user = userEvent.setup()
+    renderWithOnu(<SearchableSelect aria-label="ރަށް" options={dvIslands} thaana />, { locale: "dv" })
+    screen.getByRole("combobox", { name: "ރަށް" }).focus()
+    await user.keyboard("k")
+    expect(await screen.findByRole("combobox", { name: "ހޯއްދަވާ…" })).toHaveValue("ކ")
+  })
+
+  it("seeds the search with the Latin key when thaana starts off", async () => {
+    const user = userEvent.setup()
+    renderWithOnu(<SearchableSelect aria-label="ރަށް" options={dvIslands} thaana={{ defaultEnabled: false }} />, {
+      locale: "dv",
+    })
+    screen.getByRole("combobox", { name: "ރަށް" }).focus()
+    await user.keyboard("k")
+    expect(await screen.findByRole("combobox", { name: "ހޯއްދަވާ…" })).toHaveValue("k")
+  })
+
   it("is controlled and clearable on optional fields", async () => {
     function Controlled() {
       const [value, setValue] = React.useState<string | null>("male")

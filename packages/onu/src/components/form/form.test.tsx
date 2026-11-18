@@ -251,6 +251,18 @@ describe("Form", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("މި ފޯމުގައި 2 މައްސަލަ ވޭ")
     await expectNoA11yViolations()
   })
+
+  it("attaches a forwarded ref once and calls its React 19 cleanup (#66, 4.5)", () => {
+    const cleanup = vi.fn()
+    const ref = vi.fn(() => cleanup)
+    const { rerender, unmount, container } = renderWithOnu(<Form ref={ref} />)
+    rerender(<Form ref={ref} className="x" />)
+    expect(ref).toHaveBeenCalledTimes(1)
+    expect(ref).toHaveBeenCalledWith(container.querySelector("form"))
+    unmount()
+    expect(cleanup).toHaveBeenCalledTimes(1)
+    expect(ref).toHaveBeenCalledTimes(1)
+  })
 })
 
 describe("Form with react-hook-form", () => {
