@@ -144,6 +144,19 @@ describe("HijriDatePicker", () => {
     }
   })
 
+  it("opens focused on today or the value when it carries a time", async () => {
+    const days = hijriDaysInMonth(1447, 9)
+    const lastDay = fromHijri({ year: 1447, month: 9, day: days })
+    const afternoon = new Date(lastDay.getFullYear(), lastDay.getMonth(), lastDay.getDate(), 15, 30)
+    const { user, unmount } = setup(<HijriDatePicker aria-label="Date" today={afternoon} />)
+    await user.click(screen.getByRole("combobox"))
+    expect(focused()).toHaveAccessibleName(new RegExp(`^(Today, )?${days} Ramadan 1447`))
+    unmount()
+    setup(<HijriDatePicker aria-label="Date" today={TODAY} defaultValue={afternoon} />)
+    await userEvent.click(screen.getByRole("combobox"))
+    expect(focused()).toHaveAccessibleName(new RegExp(`^(Today, )?${days} Ramadan 1447`))
+  })
+
   it("does not pick days outside min/max", async () => {
     const onChange = vi.fn()
     const { user } = setup(
