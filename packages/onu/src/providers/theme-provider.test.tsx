@@ -159,11 +159,32 @@ describe("themeScript", () => {
 
   it("resolves system and the default, with a custom key", () => {
     media = controllableMatchMedia((q) => q === DARK_QUERY)
-    run("app-theme", "system")
+    run({ storageKey: "app-theme", defaultTheme: "system" })
     expect(html()).toHaveClass("dark")
     localStorage.setItem("app-theme", "light")
-    run("app-theme", "system")
+    run({ storageKey: "app-theme", defaultTheme: "system" })
     expect(html()).not.toHaveClass("dark")
     expect(html()).toHaveAttribute("data-theme", "light")
+  })
+
+  it("falls back to the default for a junk stored value, like the provider", () => {
+    media = controllableMatchMedia(() => false)
+    localStorage.setItem("onu-theme", "purple")
+    run({ defaultTheme: "dark" })
+    expect(html()).toHaveClass("dark")
+    render(
+      <ThemeProvider defaultTheme="dark">
+        <Probe />
+      </ThemeProvider>,
+    )
+    expect(text("resolved")).toBe("dark")
+  })
+
+  it("applies a forced theme over the stored one, like the provider", () => {
+    media = controllableMatchMedia(() => false)
+    localStorage.setItem("onu-theme", "light")
+    run({ forcedTheme: "dark" })
+    expect(html()).toHaveClass("dark")
+    expect(html()).toHaveAttribute("data-theme", "dark")
   })
 })

@@ -36,4 +36,10 @@ In server-rendered apps, add `themeScript()` to `<head>` to apply the stored the
 <script dangerouslySetInnerHTML={{ __html: themeScript() }} />
 ```
 
+If you pass `defaultTheme`, `forcedTheme` or `storageKey` to the provider, pass the same options to the script, so the first paint matches what the provider applies (a stored value that isn't a theme falls back to `defaultTheme` in both):
+
+```tsx
+<script dangerouslySetInnerHTML={{ __html: themeScript({ defaultTheme: 'dark', storageKey: 'app-theme' }) }} />
+```
+
 In your own styles use Tailwind's `dark:` variant, which Onu configures for both the class and the attribute.

@@ -118,10 +118,20 @@ export function useTheme(): ThemeContextValue {
   )
 }
 
+export type ThemeScriptOptions = Pick<ThemeProviderProps, "defaultTheme" | "forcedTheme" | "storageKey">
+
 /**
- * Inline script for `<head>` that applies the stored theme before first paint.
+ * Inline script for `<head>` that applies the stored theme before first paint. Pass the same
+ * options as `ThemeProvider` so the two agree.
  * `<script dangerouslySetInnerHTML={{ __html: themeScript() }} />`
  */
-export function themeScript(storageKey = DEFAULT_STORAGE_KEY, defaultTheme: Theme = "system") {
-  return `(function(){try{var t=localStorage.getItem(${JSON.stringify(storageKey)})||${JSON.stringify(defaultTheme)};var d=t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);var e=document.documentElement;e.classList.toggle("dark",d);e.dataset.theme=d?"dark":"light";e.style.colorScheme=d?"dark":"light"}catch(_){}})()`
+export function themeScript({
+  storageKey = DEFAULT_STORAGE_KEY,
+  defaultTheme = "system",
+  forcedTheme,
+}: ThemeScriptOptions = {}) {
+  const pick = forcedTheme
+    ? `var t=${JSON.stringify(forcedTheme)}`
+    : `var t=localStorage.getItem(${JSON.stringify(storageKey)});if(t!=="light"&&t!=="dark"&&t!=="system")t=${JSON.stringify(defaultTheme)}`
+  return `(function(){try{${pick};var d=t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);var e=document.documentElement;e.classList.toggle("dark",d);e.dataset.theme=d?"dark":"light";e.style.colorScheme=d?"dark":"light"}catch(_){}})()`
 }
