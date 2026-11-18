@@ -49,7 +49,7 @@ Set `name` to also render native fields: `name[removed][]` (hidden ids), `name[a
 
 - Each file's buttons are named with the file ("Remove Lease agreement.pdf", "Restore …").
 - Marking a file for removal shows "Will be removed" as text (not only a strike-through), announces it, and moves focus to the Restore button.
-- Removing a new file returns focus to the "Add files" picker.
+- Removing a new file returns focus to the "Add files" picker, also when the picker was disabled at `maxFiles`.
 
 | Key                                          | Action                                                 |
 | -------------------------------------------- | ------------------------------------------------------ |

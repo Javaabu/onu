@@ -6,6 +6,7 @@ import {
   addHours,
   addMonths,
   addWeeks,
+  differenceInCalendarDays,
   format as formatDate,
   startOfDay,
   startOfHour,
@@ -74,8 +75,14 @@ export interface TimeSeriesChartProps extends ChartBaseProps {
   config?: ChartConfig
   series?: string[]
   valueFormat?: ValueFormat
-  /** Insert empty points for missing hours/days/weeks/months so gaps show as breaks in the line. */
+  /**
+   * Group the data by hour, day, week (counted from the first date) or month: each point sits at
+   * the start of its step, rows in the same step are combined (see `aggregate`), and empty points
+   * are inserted for missing steps so gaps show as breaks in the line.
+   */
   interval?: TimeInterval
+  /** With `interval`, how values in the same step are combined: added up or averaged. Default `"sum"`. */
+  aggregate?: TimeAggregate
   /** date-fns pattern for axis ticks. Defaults by `interval` (`d MMM`). */
   dateFormat?: string
   /** date-fns pattern for tooltips and the data table. Defaults by `interval` (`d MMM yyyy`). */
@@ -126,32 +133,84 @@ const STEP: Record<TimeInterval, (date: Date, amount: number) => Date> = {
   month: addMonths,
 }
 
-const START: Record<TimeInterval, (date: Date) => Date> = {
-  hour: startOfHour,
-  day: startOfDay,
-  week: startOfDay,
-  month: startOfMonth,
+/** The start of the step `time` falls in. Weeks count from the first row's day. */
+function stepStart(interval: TimeInterval, time: number, origin: Date): Date {
+  const date = new Date(time)
+  switch (interval) {
+    case "hour":
+      return startOfHour(date)
+    case "day":
+      return startOfDay(date)
+    case "week":
+      return addWeeks(origin, Math.floor(differenceInCalendarDays(date, origin) / 7))
+    case "month":
+      return startOfMonth(date)
+  }
 }
+
+/** How rows that fall in the same step are combined. */
+export type TimeAggregate = "sum" | "mean"
+
+/** Combines the rows of one step: numbers are added up (or averaged), anything else comes from the first row. */
+function combineStep(rows: ChartDatum[], dateKey: string, aggregate: TimeAggregate): ChartDatum {
+  if (rows.length === 1) return { ...rows[0] }
+  const combined: ChartDatum = { [dateKey]: rows[0]![dateKey] }
+  const totals = new Map<string, { sum: number; count: number }>()
+  for (const row of rows) {
+    for (const [key, value] of Object.entries(row)) {
+      if (key === dateKey || key === TIME_KEY) continue
+      if (typeof value === "number" && Number.isFinite(value)) {
+        const total = totals.get(key) ?? { sum: 0, count: 0 }
+        totals.set(key, { sum: total.sum + value, count: total.count + 1 })
+      } else if (!(key in combined)) {
+        combined[key] = value
+      }
+    }
+  }
+  for (const [key, { sum, count }] of totals) combined[key] = aggregate === "mean" ? sum / count : sum
+  return combined
+}
+
+/** Steps filled in at most; a longer range is shown without gap rows rather than cut short. */
+const MAX_STEPS = 10000
 
 export const TIME_KEY = "__time"
 
 /**
- * Normalises time-series rows: adds a numeric `__time` key, drops rows without a valid date,
- * sorts oldest first and, with `interval`, inserts empty rows for missing steps (gaps).
+ * Normalises time-series rows: adds a numeric `__time` key, drops rows without a valid date and
+ * sorts oldest first. With `interval`, each row is placed at the start of its hour/day/week/month,
+ * rows in the same step are combined (`aggregate`: added up by default, or averaged), and empty
+ * rows are inserted for missing steps (gaps).
  */
-export function normalizeTimeSeries(data: ChartDatum[], dateKey: string, interval?: TimeInterval): ChartDatum[] {
+export function normalizeTimeSeries(
+  data: ChartDatum[],
+  dateKey: string,
+  interval?: TimeInterval,
+  aggregate: TimeAggregate = "sum",
+): ChartDatum[] {
   const rows = data
     .map((d) => ({ ...d, [TIME_KEY]: toTimestamp(d[dateKey]) }))
     .filter((d): d is ChartDatum & { [TIME_KEY]: number } => d[TIME_KEY] !== null)
     .sort((a, b) => a[TIME_KEY] - b[TIME_KEY])
-  if (!interval || rows.length < 2) return rows
+  if (!interval || rows.length === 0) return rows
 
-  const start = START[interval]
-  const byStep = new Map(rows.map((r) => [start(new Date(r[TIME_KEY])).getTime(), r]))
+  const origin = startOfDay(new Date(rows[0]![TIME_KEY]))
+  const steps = new Map<number, ChartDatum[]>()
+  for (const row of rows) {
+    const time = stepStart(interval, row[TIME_KEY], origin).getTime()
+    steps.set(time, [...(steps.get(time) ?? []), row])
+  }
+  const byStep = new Map(
+    [...steps].map(([time, group]) => [time, { ...combineStep(group, dateKey, aggregate), [TIME_KEY]: time }]),
+  )
+
+  const times = [...byStep.keys()]
+  const last = times[times.length - 1]!
   const filled: ChartDatum[] = []
-  const last = start(new Date(rows[rows.length - 1]![TIME_KEY])).getTime()
-  // Guard against runaway loops on huge ranges.
-  for (let i = 0, cursor = start(new Date(rows[0]![TIME_KEY])); cursor.getTime() <= last && i < 10000; i++) {
+  let cursor = new Date(times[0]!)
+  while (cursor.getTime() <= last) {
+    // Too many steps to fill: keep every row and skip the gap rows.
+    if (filled.length === MAX_STEPS) return [...byStep.values()]
     const time = cursor.getTime()
     filled.push(byStep.get(time) ?? { [dateKey]: new Date(time), [TIME_KEY]: time })
     cursor = STEP[interval](cursor, 1)
@@ -192,6 +251,7 @@ export function TimeSeriesChart({
   series: seriesKeys,
   valueFormat = "number",
   interval,
+  aggregate = "sum",
   dateFormat,
   tooltipDateFormat,
   variant: variantProp,
@@ -224,7 +284,10 @@ export function TimeSeriesChart({
   const tickPattern = dateFormat ?? formats.tick
   const fullPattern = tooltipDateFormat ?? formats.full
 
-  const rows = React.useMemo(() => normalizeTimeSeries(data, dateKey, interval), [data, dateKey, interval])
+  const rows = React.useMemo(
+    () => normalizeTimeSeries(data, dateKey, interval, aggregate),
+    [data, dateKey, interval, aggregate],
+  )
   // In RTL the newest point is drawn on the left; reversing the rows keeps the brush in the same order.
   const displayRows = React.useMemo(() => (rtl ? [...rows].reverse() : rows), [rows, rtl])
 
@@ -242,6 +305,14 @@ export function TimeSeriesChart({
   const resetZoom = () => {
     setRange(null)
     setBrushKey((k) => k + 1)
+  }
+  // The range is row indices: when the rows cover other dates, it no longer means anything.
+  // Compared by extent, not identity, so inline `data` (new each render) keeps the zoom.
+  const extent = `${rtl}:${displayRows.length}:${String(displayRows[0]?.[TIME_KEY])}:${String(displayRows.at(-1)?.[TIME_KEY])}`
+  const [rangeExtent, setRangeExtent] = React.useState(extent)
+  if (rangeExtent !== extent) {
+    setRangeExtent(extent)
+    if (range !== null) resetZoom()
   }
 
   const first = rows[0]?.[TIME_KEY]

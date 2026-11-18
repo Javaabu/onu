@@ -138,6 +138,9 @@ export function MediaPlayer({
   }, [locale.code, t])
 
   const sources = typeof src === "string" ? [{ src }] : src
+  // A media element ignores changed <source> children until .load(); a new element per
+  // source list loads the new media.
+  const mediaKey = sources.map((s) => s.src).join("\n")
   const mediaProps = {
     slot: "media",
     title,
@@ -184,10 +187,12 @@ export function MediaPlayer({
       {/* Caption tracks come from the `tracks` prop, rendered in `children` (R14.10). */}
       {audio ? (
         // eslint-disable-next-line jsx-a11y/media-has-caption
-        <audio {...mediaProps}>{children}</audio>
+        <audio key={mediaKey} {...mediaProps}>
+          {children}
+        </audio>
       ) : (
         // eslint-disable-next-line jsx-a11y/media-has-caption
-        <video {...mediaProps} poster={poster}>
+        <video key={mediaKey} {...mediaProps} poster={poster}>
           {children}
         </video>
       )}

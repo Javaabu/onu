@@ -25,11 +25,11 @@ import { Wizard } from "@javaabu/onu"
 />
 ```
 
-`validate` can be async (e.g. react-hook-form's `trigger`). While it runs, Next shows a spinner and ignores further clicks. If it returns `false`, the step is marked "Has errors" and the wizard stays.
+`validate` can be async (e.g. react-hook-form's `trigger`). While it runs, and on the last step until `onComplete` settles, Next (or Finish) shows a spinner and ignores further clicks, so `onComplete` runs once. If it returns `false`, the step is marked "Has errors" and the wizard stays.
 
 ## Navigation
 
-- **Next** validates the current step (`validate`, then `onValidateStep`) and moves on; on the last step it calls `onComplete`.
+- **Next** validates the current step (`validate`, then `onValidateStep`) and moves on; on the last step it calls `onComplete`. A `validate`, `onValidateStep` or `onComplete` that rejects marks the step as having errors, as a failed validation does.
 - **Back** never validates.
 - With `linear` (default), users can jump back to completed steps, and forward to the furthest unlocked step. `linear={false}` lets them jump anywhere.
 - `errorSteps={["address"]}` marks steps with server-side errors.

@@ -31,9 +31,8 @@ export function Textarea({
   onChange,
   ...props
 }: TextareaProps) {
-  const local = React.useRef<HTMLTextAreaElement>(null)
-  const merged = useMergedRef(local, ref)
-  const { fieldProps, active, enabled, toggle } = useThaanaField(local, thaana)
+  const { ref: thaanaRef, fieldProps, active, enabled, toggle } = useThaanaField<HTMLTextAreaElement>(thaana)
+  const merged = useMergedRef(thaanaRef, ref)
   const controlProps = useFormFieldControl(props)
   const [typed, setTyped] = React.useState(() => String(props.defaultValue ?? "").length)
   const count = props.value !== undefined ? String(props.value).length : typed

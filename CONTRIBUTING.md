@@ -40,6 +40,7 @@ A component is done only when it meets REQUIREMENTS §21: light/dark, LTR/RTL, `
 - Use `<Icon name="…">` (from `src/icons/icon`) with semantic names, so `OnuProvider icons` overrides apply. Never render a Lucide component directly. When a component always shows the same glyph (a spinner, a close button, a chevron), also pass that Lucide icon as `fallback`, e.g. `<Icon name="loading" fallback={Loader2Icon} />`: overrides still win, and the component keeps its glyph outside `OnuProvider`.
 - Never import `src/icons/lucide-map` in a component. `OnuProvider` loads the default set on demand, so neither a single component nor the provider ships ~250 icons. ESLint and `src/icons/icon-imports.test.ts` enforce this, and `pnpm --filter @javaabu/onu size` checks the bundle budgets.
 - Built-in strings: a module that uses `t("form.…")` registers the English namespaces it uses at the top level, e.g. `registerEnglish({ form: en_form })` with `import { form as en_form } from "../../locales/en/form"`. Never import the whole locale (`src/locales`, `locales/en/messages`) in a component, so a bundle carries only the English text of the components it uses. `src/i18n/english-registry.test.ts` checks this.
+- Start a module with `"use client"` when it uses state, effects or context (its own hooks or Onu's, such as `useTranslation`). The build keeps the directive only on those modules, so pure helpers (`cn`, `themeScript`, `/thaana` conversion, `/export`) stay callable from React Server Components. `src/use-client.test.ts` checks this.
 - Every `package.json` export has a `size-limit` budget (`pnpm --filter @javaabu/onu size`, run in CI). When a change grows an entry on purpose, raise its budget in the same PR and say why; keep budgets a little above the measured size.
 - Prefer shadcn/ui or an approved library (REQUIREMENTS §4) before building from scratch. Record new dependencies in `DEPENDENCIES.md`.
 - Add a changeset: `pnpm changeset`.
@@ -57,10 +58,12 @@ The files in `packages/onu/src/ui` started as shadcn/ui's components (Radix base
 
 E2E (Playwright) runs in two tiers:
 
-- **Smoke, on pull requests.** The **E2E smoke** workflow runs `e2e/a11y.spec.ts` and `e2e/thaana.spec.ts` in Chromium, with no screenshots, when a pull request touches `packages/onu/**`, `web/**` or `e2e/**`.
+- **Smoke, on pull requests.** The **E2E smoke** workflow runs `e2e/a11y.spec.ts`, `e2e/thaana.spec.ts` and `e2e/browser.spec.ts` in Chromium, with no screenshots, when a pull request touches `packages/onu/**`, `web/**` or `e2e/**`.
 - **Full, on demand.** The **E2E** workflow (accessibility in five browsers, and Chromium screenshots) is slow, so CI runs it only when the last commit pushed to `main` starts with `e2e` (for example `e2e: new date picker`), or when you run it by hand from the Actions tab.
 
-Run either locally with `pnpm e2e:chromium`, adding the two spec files for the smoke tier.
+Run either locally with `pnpm e2e:chromium`, adding the three spec files for the smoke tier.
+
+`e2e/browser.spec.ts` covers behaviour jsdom can't show (focus after re-renders, inert modal backgrounds, `IntersectionObserver`, downloads, chart layout). Each scenario is a small page in `web/src/e2e/<name>.harness.tsx`, served at `#/e2e/<name>` and left out of the navigation and the a11y and visual runs.
 
 Server rendering has its own check. The **Server rendering** workflow builds the Next.js app in `e2e/nextjs` against the workspace copy of Onu, then checks its server HTML and hydration in English and Dhivehi, when a pull request touches `packages/onu/**` or `e2e/nextjs/**`. Run it locally with `pnpm build && pnpm --filter onu-nextjs-fixture build && pnpm --filter onu-nextjs-fixture test:ssr`.
 

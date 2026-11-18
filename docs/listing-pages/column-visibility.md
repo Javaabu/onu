@@ -11,7 +11,7 @@ import { ColumnVisibility } from "@javaabu/onu"
 ;<ColumnVisibility columns={columns} value={state.columnVisibility} onValueChange={state.setColumnVisibility} />
 ```
 
-[`DataTable`](data-table) hides columns set to `false` in `state.columnVisibility` (TanStack's column visibility).
+[`DataTable`](data-table) hides columns set to `false` in `state.columnVisibility` (TanStack's column visibility). The record column (the `primary` one, else the first) carries the row link, so the menu never offers it and the table keeps it visible; columns with `hideable: false` aren't offered either.
 
 ## Props
 

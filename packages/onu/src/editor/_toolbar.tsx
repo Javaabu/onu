@@ -6,6 +6,7 @@ import { useEditorState } from "@tiptap/react"
 
 import { ThaanaToggle } from "../components/inputs/thaana-toggle"
 import { Icon } from "../icons/icon"
+import { useIsomorphicLayoutEffect } from "../hooks/use-isomorphic-layout-effect"
 import { cn } from "../lib/utils"
 import { useOnu, useTranslation } from "../providers/onu-provider"
 import { Button } from "../ui/button"
@@ -272,6 +273,13 @@ function useRoving(key: string) {
   } as const
 }
 
+/** The toolbar's controls that can take focus: not disabled, and not hidden by the narrow layout. */
+function focusableControls(toolbar: HTMLElement) {
+  return Array.from(toolbar.querySelectorAll<HTMLElement>("[data-toolbar-item]")).filter(
+    (el) => !(el as HTMLButtonElement).disabled && (el.checkVisibility?.() ?? true),
+  )
+}
+
 const buttonClass =
   "text-muted-foreground aria-pressed:bg-muted aria-pressed:text-foreground aria-expanded:bg-muted touch:size-11"
 
@@ -312,7 +320,7 @@ function ToolbarButton({
   )
 }
 
-export interface EditorToolbarProps extends Omit<React.ComponentProps<"div">, "children"> {
+export interface EditorToolbarProps extends Omit<React.ComponentProps<"div">, "children" | "ref"> {
   editor: Editor
   /** Controls to show. Default {@link DEFAULT_TOOLBAR}. */
   items?: ToolbarItem[]
@@ -343,18 +351,25 @@ export function EditorToolbar({
   const state = useEditorState({ editor, selector: ({ editor: e }) => readState(e) })
   const keys = items.filter((i) => i !== "|")
   const [active, setActive] = React.useState<string>(keys[0] ?? "")
-  const roving = React.useMemo(() => ({ active, setActive }), [active])
+  const roving = React.useMemo(() => ({ active, setActive }), [active, setActive])
   const overflow = keys.filter((i) => OVERFLOW.has(i))
   const hasThaana = !!editor.extensionManager.extensions.find((e) => e.name === "thaanaKeyboard")
+  const toolbarRef = React.useRef<HTMLDivElement>(null)
+
+  // A disabled control can't take focus, so if the tab stop is on one (e.g. "Text style" with the
+  // caret in a code block), move it to the first control that can: the toolbar keeps its tab stop.
+  useIsomorphicLayoutEffect(() => {
+    const controls = toolbarRef.current ? focusableControls(toolbarRef.current) : []
+    const first = controls[0]?.dataset.toolbarItem
+    if (first && !controls.some((el) => el.dataset.toolbarItem === active)) setActive(first)
+  })
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     onKeyDown?.(event)
     if (event.defaultPrevented) return
     const target = event.target as HTMLElement
     if (!target.hasAttribute("data-toolbar-item")) return
-    const controls = Array.from(event.currentTarget.querySelectorAll<HTMLElement>("[data-toolbar-item]")).filter(
-      (el) => !(el as HTMLButtonElement).disabled && (el.checkVisibility?.() ?? true),
-    )
+    const controls = focusableControls(event.currentTarget)
     const index = controls.indexOf(target)
     const forward = dir === "rtl" ? "ArrowLeft" : "ArrowRight"
     const back = dir === "rtl" ? "ArrowRight" : "ArrowLeft"
@@ -454,6 +469,7 @@ export function EditorToolbar({
   return (
     <RovingContext.Provider value={roving}>
       <div
+        ref={toolbarRef}
         role="toolbar"
         aria-label={t("editor.toolbar")}
         aria-orientation="horizontal"

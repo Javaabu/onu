@@ -123,25 +123,35 @@ function decimalsOf(n: number | undefined) {
 /** Locale number symbols, e.g. `{ group: ",", decimal: "." }`. */
 export function numberSymbols(numberLocale: string) {
   const parts = new Intl.NumberFormat(numberLocale).formatToParts(-12345.6)
+  const plain = new Intl.NumberFormat(numberLocale, { useGrouping: false })
   return {
     group: parts.find((p) => p.type === "group")?.value ?? ",",
     decimal: parts.find((p) => p.type === "decimal")?.value ?? ".",
+    /** The locale's own digits 0–9 (e.g. Arabic-Indic `٠`–`٩`), which may differ from ASCII. */
+    digits: Array.from({ length: 10 }, (_, i) => plain.format(i)),
   }
 }
+
+/** Bidi marks some locales put around numbers (ALM, LRM, RLM). */
+const BIDI_MARKS = /[\u061c\u200e\u200f]/g
 
 /**
  * Parses user input in the given locale. Returns `null` for an empty string,
  * and `undefined` when the text is not (yet) a number, e.g. `"-"`.
  */
 export function parseLocaleNumber(text: string, numberLocale: string): number | null | undefined {
-  const { group, decimal } = numberSymbols(numberLocale)
-  const cleaned = text
+  const { group, decimal, digits } = numberSymbols(numberLocale)
+  let cleaned = text
     .trim()
+    .replace(BIDI_MARKS, "")
     .replace(/[\s\u00a0\u202f]/g, "")
     .split(group)
     .join("")
     .replace(decimal, ".")
     .replace(/^[\u2212]/, "-")
+  digits.forEach((digit, i) => {
+    if (digit !== String(i)) cleaned = cleaned.split(digit).join(String(i))
+  })
   if (cleaned === "") return null
   if (!/^[-+]?(\d+\.?\d*|\.\d+)$/.test(cleaned)) return undefined
   const n = Number(cleaned)
@@ -281,10 +291,12 @@ export function NumberInput(allProps: NumberInputProps) {
     if (next !== value) setValue(next)
   }
 
+  // The one stepping rule, shared by the arrow keys and the − / + buttons.
+  const stepFrom = (current: number | null | undefined, delta: number) =>
+    typeof current === "number" ? clamp(Number((current + delta).toFixed(10)), min, max) : clamp(0, min, max)
+
   const stepBy = (delta: number) => {
-    const current = draft !== null ? fromText(draft) : value
-    const next =
-      typeof current === "number" ? clamp(Number((current + delta).toFixed(precision)), min, max) : clamp(0, min, max)
+    const next = stepFrom(draft !== null ? fromText(draft) : value, delta)
     commit(next)
     if (draft !== null) setDraft(toDraft(next), next)
   }
@@ -299,8 +311,7 @@ export function NumberInput(allProps: NumberInputProps) {
     latest.current = value
   }, [value])
   const change = (delta: number) => {
-    const current = latest.current ?? min ?? 0
-    const next = clamp(Number((current + delta).toFixed(10)), min, max)
+    const next = stepFrom(latest.current ?? min ?? 0, delta)
     if (next === latest.current) return false
     latest.current = next
     setValue(next)
@@ -422,10 +433,13 @@ export function NumberInput(allProps: NumberInputProps) {
         }}
         onChange={(e) => {
           const text = e.target.value
-          if (!/^[\d\s\u00a0\u202f.,'\u2019\u066b\u066c+\-\u2212]*$/.test(text)) return
+          // Any script's digits (\p{Nd}), so a numberLocale with its own digits can edit its draft.
+          if (!/^[\p{Nd}\s\u00a0\u202f.,'\u2019\u066b\u066c\u061c\u200e\u200f+\-\u2212]*$/u.test(text)) return
           const parsed = fromText(text)
-          setDraft(text, parsed === undefined ? value : parsed)
-          if (parsed !== undefined) commit(parsed)
+          // An emptied stepper keeps its value until blur, so the field can be cleared and retyped.
+          const settled = parsed !== undefined && !(stepper && parsed === null)
+          setDraft(text, settled ? parsed : value)
+          if (settled) commit(parsed)
           onChange?.(e)
         }}
         onKeyDown={(e) => {

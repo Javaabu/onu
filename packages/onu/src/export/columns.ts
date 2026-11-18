@@ -72,7 +72,11 @@ export function getExportValue<T>(row: T, column: ExportColumn<T>, index: number
 
 function toDate(value: unknown): Date | null {
   if (value instanceof Date) return isValid(value) ? value : null
-  if (typeof value === "number") return new Date(value)
+  if (typeof value === "number") {
+    // NaN, Infinity and timestamps past the Date range make an Invalid Date.
+    const date = new Date(value)
+    return isValid(date) ? date : null
+  }
   if (typeof value === "string" && value) {
     const parsed = parseISO(value)
     return isValid(parsed) ? parsed : null
@@ -121,6 +125,8 @@ export function toExportCell(value: unknown, type?: ExportColumnType, decimals?:
     case "datetime": {
       const date = toDate(value)
       if (date) return { type: kind, value: date }
+      // A timestamp that is not a real date is as empty as an Invalid Date.
+      if (typeof value === "number") return { type: "empty" }
       break
     }
     case "boolean":

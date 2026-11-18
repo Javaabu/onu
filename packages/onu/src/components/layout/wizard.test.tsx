@@ -74,6 +74,28 @@ describe("Wizard", () => {
     expect(onComplete).toHaveBeenCalled()
   })
 
+  it("marks the step when onComplete or validation rejects, without an unhandled rejection", async () => {
+    const onComplete = vi.fn(async () => {
+      throw new Error("server down")
+    })
+    renderWithOnu(<Wizard steps={steps()} onComplete={onComplete} finishLabel="Submit" />)
+    await userEvent.click(screen.getByRole("button", { name: "Next" }))
+    await userEvent.click(screen.getByRole("button", { name: "Next" }))
+    await userEvent.click(screen.getByRole("button", { name: "Submit" }))
+    await waitFor(() => expect(within(stepList()).getAllByRole("listitem")[2]).toHaveTextContent("Has errors"))
+    expect(screen.getByRole("button", { name: "Submit" })).toBeEnabled()
+  })
+
+  it("treats a rejected validate as a failed step", async () => {
+    const validate = vi.fn(async (): Promise<boolean> => {
+      throw new Error("offline")
+    })
+    renderWithOnu(<Wizard steps={steps(validate)} />)
+    await userEvent.click(screen.getByRole("button", { name: "Next" }))
+    await waitFor(() => expect(within(stepList()).getAllByRole("listitem")[0]).toHaveTextContent("Has errors"))
+    expect(screen.getByRole("heading", { name: "Applicant" })).toBeInTheDocument()
+  })
+
   it("jumps back to completed steps only (linear)", async () => {
     renderWithOnu(<Wizard steps={steps()} />)
     expect(within(stepList()).queryByRole("button")).toBeNull()
@@ -131,6 +153,21 @@ describe("Wizard", () => {
     resolve(true)
     expect(await screen.findByRole("heading", { name: "Documents" })).toBeInTheDocument()
     expect(validate).toHaveBeenCalledTimes(1)
+  })
+
+  it("stays busy until onComplete settles, so Finish runs it once", async () => {
+    let resolve: () => void = () => {}
+    const onComplete = vi.fn(() => new Promise<void>((r) => (resolve = r)))
+    renderWithOnu(<Wizard steps={steps()} defaultStep={2} onComplete={onComplete} finishLabel="Submit" />)
+    await userEvent.click(screen.getByRole("button", { name: "Submit" }))
+    const finish = screen.getByRole("button", { name: "Submit" })
+    expect(finish).toBeDisabled()
+    expect(finish).toHaveAttribute("aria-busy", "true")
+    await userEvent.click(finish)
+    expect(onComplete).toHaveBeenCalledTimes(1)
+    resolve()
+    await waitFor(() => expect(screen.getByRole("button", { name: "Submit" })).toBeEnabled())
+    expect(onComplete).toHaveBeenCalledTimes(1)
   })
 
   it.each(directions)("translates in %s", async (dir) => {

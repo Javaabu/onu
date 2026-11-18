@@ -86,6 +86,16 @@ export function BulkActionBar({
   const [confirming, setConfirming] = React.useState<{ action: BulkAction<unknown>; value: unknown } | null>(null)
   const [message, setMessage] = React.useState<{ text: string; tone: "success" | "error" } | null>(null)
   const messageRef = React.useRef<HTMLDivElement>(null)
+  const formRef = React.useRef<HTMLFormElement>(null)
+  const actionRefs = React.useRef(new Map<string, HTMLButtonElement>())
+  // Opening or cancelling a form swaps the buttons out of the bar: once it has re-rendered, move
+  // focus into the form or back to the action, so it doesn't drop to the page.
+  const focusAfterRender = React.useRef<(() => void) | null>(null)
+  React.useEffect(() => {
+    const focus = focusAfterRender.current
+    focusAfterRender.current = null
+    focus?.()
+  })
   // The bar goes away with the selection: keep keyboard focus on the result instead of losing it.
   React.useEffect(() => {
     if (message && (selected.length === 0 || message.tone === "error")) messageRef.current?.focus()
@@ -142,8 +152,23 @@ export function BulkActionBar({
   }
 
   const choose = (action: BulkAction<unknown>) => {
-    if (action.form) setPhase({ kind: "form", action, value: action.defaultValue })
-    else proceed(action, undefined)
+    if (!action.form) {
+      proceed(action, undefined)
+      return
+    }
+    setPhase({ kind: "form", action, value: action.defaultValue })
+    focusAfterRender.current = () => {
+      const form = formRef.current
+      const control =
+        form?.querySelector<HTMLElement>(`[id="${CSS.escape(formId)}"]`) ??
+        form?.querySelector<HTMLElement>("input, select, textarea, button")
+      control?.focus()
+    }
+  }
+
+  const cancelForm = (action: BulkAction<unknown>) => {
+    setPhase({ kind: "idle" })
+    focusAfterRender.current = () => actionRefs.current.get(action.id)?.focus()
   }
 
   const confirmOptions = (action: BulkAction<unknown>): ConfirmOptions => {
@@ -216,6 +241,7 @@ export function BulkActionBar({
 
           {phase.kind === "form" ? (
             <form
+              ref={formRef}
               className={cn("gap-2 flex flex-wrap items-center", classNames?.form)}
               data-slot="bulk-action-form"
               onSubmit={(e) => {
@@ -239,7 +265,7 @@ export function BulkActionBar({
                 size="sm"
                 variant="ghost"
                 className="touch:min-h-11"
-                onClick={() => setPhase({ kind: "idle" })}
+                onClick={() => cancelForm(phase.action)}
               >
                 {t("listing.cancel")}
               </Button>
@@ -249,6 +275,10 @@ export function BulkActionBar({
               {visible.map((action) => (
                 <Button
                   key={action.id}
+                  ref={(el) => {
+                    if (el) actionRefs.current.set(action.id, el)
+                    else actionRefs.current.delete(action.id)
+                  }}
                   size="sm"
                   variant={action.destructive ? "destructive" : "outline"}
                   disabled={running}

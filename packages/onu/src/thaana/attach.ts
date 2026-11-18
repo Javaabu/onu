@@ -23,7 +23,12 @@ export interface ThaanaKeyboardOptions {
    * Default: Alt+Shift+T. Matched on `event.code`, so it works on any layout.
    */
   toggleShortcut?: false | ThaanaShortcut
-  /** Called when the shortcut toggles the mode. */
+  /**
+   * Called with the requested state when the shortcut is pressed. When given,
+   * the keyboard does not flip itself: call `setEnabled` to apply the change,
+   * so a controlled owner stays the source of truth. Without it, the shortcut
+   * flips the mode directly.
+   */
   onToggle?: (enabled: boolean) => void
 }
 
@@ -159,8 +164,8 @@ export function attachThaanaKeyboard(el: ThaanaTarget, options: ThaanaKeyboardOp
       return
     }
     event.preventDefault()
-    enabled = !enabled
-    options.onToggle?.(enabled)
+    if (options.onToggle) options.onToggle(!enabled)
+    else enabled = !enabled
   }
 
   el.addEventListener("beforeinput", onBeforeInput as EventListener)

@@ -8,6 +8,15 @@ describe("normalizeUrl", () => {
     expect(normalizeUrl("x.mv", "http://")).toBe("http://x.mv")
   })
 
+  it("reads host:port as a host, not a scheme", () => {
+    expect(normalizeUrl("localhost:3000")).toBe("https://localhost:3000")
+    expect(normalizeUrl("example.mv:8080/x")).toBe("https://example.mv:8080/x")
+    expect(normalizeUrl("example.mv:8080?a=1", "http://")).toBe("http://example.mv:8080?a=1")
+    // Schemes whose value happens to be digits stay schemes.
+    expect(normalizeUrl("tel:911")).toBe("tel:911")
+    expect(normalizeUrl("javascript:1")).toBeNull()
+  })
+
   it("keeps safe schemes and relative URLs", () => {
     expect(normalizeUrl("http://x.mv")).toBe("http://x.mv")
     expect(normalizeUrl("mailto:a@b.mv")).toBe("mailto:a@b.mv")

@@ -16,6 +16,7 @@ import { syncInputFiles } from "./file-utils"
 import { registerEnglish } from "../../i18n/english"
 import { file as en_file } from "../../locales/en/file"
 import { useControllableState } from "../../hooks/use-controllable-state"
+import { useFocusAfterRender } from "../../hooks/use-focus-after-render"
 
 registerEnglish({ file: en_file })
 
@@ -104,6 +105,8 @@ export function AdditionalFilesUpload({
   const { t } = useTranslation()
   const [state, setState] = useControllableState<AdditionalFilesValue>(value, defaultValue ?? EMPTY, onValueChange)
   const pickerRef = React.useRef<HTMLInputElement>(null)
+  // The picker may be disabled (at maxFiles) until the removal re-renders it.
+  const focusPicker = useFocusAfterRender(pickerRef)
   const rootRef = React.useRef<HTMLDivElement>(null)
   const [announcement, setAnnouncement] = React.useState("")
   const kept = existing.filter((a) => !state.removed.includes(a.id)).length
@@ -143,7 +146,7 @@ export function AdditionalFilesUpload({
   const removeAdded = (item: NewAttachment) => {
     setState({ ...state, added: state.added.filter((a) => a.key !== item.key) })
     setAnnouncement(t("file.removedFile", { name: item.file.name }))
-    pickerRef.current?.focus()
+    focusPicker()
   }
 
   return (

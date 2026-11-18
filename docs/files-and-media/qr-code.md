@@ -39,11 +39,11 @@ The code never mirrors and is rendered with tokens through the `tone` variant (`
 | `theme`                | Follows the theme: light modules on a dark ground in dark mode. Most phone cameras scan this, some older readers do not |
 | `transparent`          | No background; modules use the current text colour. Keep enough contrast with what is behind |
 
-Recolour with `classNames.svg`, e.g. `classNames={{ svg: "text-primary" }}`. Downloads use the colours as rendered (read with `getComputedStyle`).
+Recolour with `classNames.svg`, e.g. `classNames={{ svg: "text-primary" }}`. Downloads use the colours as rendered (read with `getComputedStyle`). Without a background of its own (`tone="transparent"`) the file gets a white one, and light modules (such as the text colour in dark mode) are saved black so the file still scans.
 
 ## Logo
 
-`logo` takes a URL or `{ src, size?, excavate? }`. `size` is the logo width as a fraction of the code (0.1–0.3, default 0.22). The modules behind it are cleared unless `excavate={false}`. A logo always uses error-correction level H, so the code still scans with the centre covered. For the PNG download the image must allow CORS; otherwise the PNG has the cleared area without the logo.
+`logo` takes a URL or `{ src, size?, excavate? }`. `size` is the logo width as a fraction of the code (0.1–0.3, default 0.22). The modules behind it are cleared unless `excavate={false}`. A logo always uses error-correction level H, so the code still scans with the centre covered. For downloads the image must allow CORS: the SVG download embeds it as a data URL so the saved file stands alone, and the PNG draws it. When it cannot be fetched, the file has the cleared area without the logo.
 
 ## Props
 
@@ -74,7 +74,7 @@ Also exported for custom rendering: `encodeQrCode(value, level)`, `qrCodePath(mo
 
 - The code is an `img` named by `label` (default "QR code"); give it a label that says what it is for, e.g. "QR code to verify licence BL-2026-04417".
 - Put the information in text as well (`showValue`, `caption` or nearby text) for people who cannot scan.
-- Download and copy buttons have visible, translated labels and are 44px tall on touch screens. Copying is announced in a polite live region.
+- Download and copy buttons have visible, translated labels and are 44px tall on touch screens. Copying is announced in a polite live region. A failed download shows "Could not download the QR code" as an alert under the buttons.
 - Text that is too long is reported with `role="alert"`.
 
 | Key                                 | Action                          |

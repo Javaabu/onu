@@ -68,10 +68,13 @@ export function useOnuEditor({
   const thaanaOptions = typeof thaana === "object" ? thaana : {}
 
   const [serialized, setSerialized] = React.useState(() => stringifyValue(initial))
-  const latest = React.useRef({ onValueChange, format, shortcuts, onReady })
+  const latest = React.useRef({ onValueChange, format, shortcuts, onReady, placeholder })
   React.useEffect(() => {
-    latest.current = { onValueChange, format, shortcuts, onReady }
+    latest.current = { onValueChange, format, shortcuts, onReady, placeholder }
   })
+  // What the editor holds now, so a recreated editor (thaana or schema change)
+  // starts from the typed content instead of `defaultValue`.
+  const content = React.useRef<EditorValue>(initial)
   // ARIA attributes for the contenteditable; ProseMirror reads them on every update.
   const attributes = React.useRef<Record<string, string>>({})
 
@@ -82,15 +85,16 @@ export function useOnuEditor({
       shouldRerenderOnTransaction: false,
       editable,
       autofocus: autofocus ?? false,
-      content: initial,
+      content: content.current,
       extensions: [
         ...createSchemaExtensions({ headingLevels, blocks }),
         Placeholder.configure({
           placeholder: ({ node }) => {
-            if (typeof placeholder === "function") {
-              return placeholder({ type: node.type.name, level: node.attrs.level as number | undefined })
+            const current = latest.current.placeholder
+            if (typeof current === "function") {
+              return current({ type: node.type.name, level: node.attrs.level as number | undefined })
             }
-            return placeholder ?? ""
+            return current ?? ""
           },
           emptyEditorClass: "is-empty",
           emptyNodeClass: placeholderOnEveryBlock ? "is-empty" : "onu-empty-node",
@@ -129,6 +133,7 @@ export function useOnuEditor({
       onCreate: ({ editor: e }) => latest.current.onReady?.(e),
       onUpdate: ({ editor: e }) => {
         const next = readValue(e, latest.current.format)
+        content.current = next
         setSerialized(e.isEmpty ? "" : stringifyValue(next))
         latest.current.onValueChange?.(next, e)
       },
@@ -176,7 +181,20 @@ export function useOnuEditor({
     if (!editor || editor.isDestroyed || value === undefined) return
     if (sameValue(readValue(editor, format), value)) return
     editor.commands.setContent(value, { emitUpdate: false })
+    content.current = value
   }, [editor, value, format])
+
+  // The placeholder follows the locale: redraw it when its text changes. A function
+  // placeholder is compared by what it returns, since callers pass it inline.
+  const placeholderKey =
+    typeof placeholder === "function"
+      ? JSON.stringify(
+          [{ type: "paragraph" }, ...[1, 2, 3, 4, 5, 6].map((level) => ({ type: "heading", level }))].map(placeholder),
+        )
+      : (placeholder ?? "")
+  React.useEffect(() => {
+    if (editor && !editor.isDestroyed) editor.view.setProps({})
+  }, [editor, placeholderKey])
 
   return {
     editor,

@@ -2,8 +2,7 @@
 
 import * as React from "react"
 
-export type Theme = "light" | "dark" | "system"
-export type ResolvedTheme = "light" | "dark"
+import { DEFAULT_THEME_STORAGE_KEY, type ResolvedTheme, type Theme, type ThemeScriptOptions } from "./theme-script"
 
 interface ThemeContextValue {
   theme: Theme
@@ -13,14 +12,37 @@ interface ThemeContextValue {
 
 const ThemeContext = React.createContext<ThemeContextValue | null>(null)
 
-const DEFAULT_STORAGE_KEY = "onu-theme"
+const storedListeners = new Set<() => void>()
+/** Choices made this visit, for when storage is unavailable (private mode). */
+const unsaved = new Map<string, Theme>()
 
 function readStored(key: string): Theme | null {
   try {
     const value = window.localStorage.getItem(key)
     return value === "light" || value === "dark" || value === "system" ? value : null
   } catch {
-    return null
+    return unsaved.get(key) ?? null
+  }
+}
+
+function writeStored(key: string, theme: Theme) {
+  try {
+    window.localStorage.setItem(key, theme)
+    unsaved.delete(key)
+  } catch {
+    // Storage can be unavailable (private mode); the choice still applies for this visit.
+    unsaved.set(key, theme)
+  }
+  for (const listener of storedListeners) listener()
+}
+
+/** Follows choices made through `setTheme` and, through the `storage` event, in other tabs. */
+function subscribeStored(onChange: () => void) {
+  storedListeners.add(onChange)
+  window.addEventListener("storage", onChange)
+  return () => {
+    storedListeners.delete(onChange)
+    window.removeEventListener("storage", onChange)
   }
 }
 
@@ -40,13 +62,8 @@ function apply(resolved: ResolvedTheme, target: HTMLElement) {
   target.style.colorScheme = resolved
 }
 
-export interface ThemeProviderProps {
+export interface ThemeProviderProps extends ThemeScriptOptions {
   children?: React.ReactNode
-  /** Initial theme when nothing is stored. */
-  defaultTheme?: Theme
-  /** Fix the theme (no persistence, ignores the user's choice). */
-  forcedTheme?: ResolvedTheme
-  storageKey?: string
 }
 
 /**
@@ -58,11 +75,16 @@ export function ThemeProvider({
   children,
   defaultTheme = "system",
   forcedTheme,
-  storageKey = DEFAULT_STORAGE_KEY,
+  storageKey = DEFAULT_THEME_STORAGE_KEY,
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = React.useState<Theme>(() =>
-    typeof window === "undefined" ? defaultTheme : (readStored(storageKey) ?? defaultTheme),
+  // The server and the hydrating client both render `defaultTheme`; the stored choice follows
+  // right after hydration, so the markup matches.
+  const stored = React.useSyncExternalStore(
+    subscribeStored,
+    () => readStored(storageKey),
+    () => null,
   )
+  const theme = stored ?? defaultTheme
   const system = React.useSyncExternalStore(subscribeSystem, systemTheme, () => "light" as const)
 
   const resolvedTheme: ResolvedTheme = forcedTheme ?? (theme === "system" ? system : theme)
@@ -71,17 +93,7 @@ export function ThemeProvider({
     apply(resolvedTheme, document.documentElement)
   }, [resolvedTheme])
 
-  const setTheme = React.useCallback(
-    (next: Theme) => {
-      setThemeState(next)
-      try {
-        window.localStorage.setItem(storageKey, next)
-      } catch {
-        // Storage can be unavailable (private mode); the choice still applies for this visit.
-      }
-    },
-    [storageKey],
-  )
+  const setTheme = React.useCallback((next: Theme) => writeStored(storageKey, next), [storageKey])
 
   const value = React.useMemo(() => ({ theme, resolvedTheme, setTheme }), [theme, resolvedTheme, setTheme])
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
@@ -96,12 +108,4 @@ export function useTheme(): ThemeContextValue {
       setTheme: () => {},
     }
   )
-}
-
-/**
- * Inline script for `<head>` that applies the stored theme before first paint.
- * `<script dangerouslySetInnerHTML={{ __html: themeScript() }} />`
- */
-export function themeScript(storageKey = DEFAULT_STORAGE_KEY, defaultTheme: Theme = "system") {
-  return `(function(){try{var t=localStorage.getItem(${JSON.stringify(storageKey)})||${JSON.stringify(defaultTheme)};var d=t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);var e=document.documentElement;e.classList.toggle("dark",d);e.dataset.theme=d?"dark":"light";e.style.colorScheme=d?"dark":"light"}catch(_){}})()`
 }

@@ -7,6 +7,7 @@ import { cn } from "../lib/utils"
 import { useOnu } from "../providers/onu-provider"
 import { Skeleton } from "../ui/skeleton"
 import { chartColor, ChartFrame, type ChartBaseProps, type ChartDatum } from "./_shared"
+import type { GoogleChoroplethProps } from "./_map-chart-google"
 import { choroplethRegions, stepOpacity, type ChoroplethRegion, type GeoJsonFeatureCollection } from "./choropleth"
 import { useChartFormat, type ValueFormat } from "./format"
 import { registerEnglish } from "../i18n/english"
@@ -42,7 +43,20 @@ export interface MapChartProps extends Omit<ChartBaseProps, "showTableToggle"> {
   showTableToggle?: boolean
 }
 
-const GoogleChoropleth = React.lazy(() => import("./_map-chart-google"))
+type GoogleChoroplethLoaderProps = Omit<GoogleChoroplethProps, "peers"> & { onUnavailable: () => void }
+
+// The map peers are optional: when one is missing, MapChart falls back to the table.
+const GoogleChoropleth = React.lazy(async () => {
+  const { default: GoogleMap, loadMapPeers } = await import("./_map-chart-google")
+  const peers = await loadMapPeers()
+  function GoogleChoroplethLoader({ onUnavailable, ...props }: GoogleChoroplethLoaderProps) {
+    React.useEffect(() => {
+      if (!peers) onUnavailable()
+    }, [onUnavailable])
+    return peers ? <GoogleMap {...props} peers={peers} /> : null
+  }
+  return { default: GoogleChoroplethLoader }
+})
 
 /**
  * Choropleth map on Google Maps with a deck.gl `GeoJsonLayer`. Regions are shaded by value,
@@ -69,13 +83,19 @@ export function MapChart({
   const { t, maps } = useOnu()
   const fmt = useChartFormat(valueFormat)
   const apiKey = maps.googleMapsApiKey
-  const [selected, setSelected] = React.useState<ChoroplethRegion | null>(null)
+  // Set when @vis.gl/react-google-maps or deck.gl is not installed.
+  const [peersMissing, setPeersMissing] = React.useState(false)
+  const onUnavailable = React.useCallback(() => setPeersMissing(true), [])
+  const showMap = !!apiKey && !peersMissing
+  // Keep the id, not the region: the read-out shows the region as it is in the current data.
+  const [selectedId, setSelectedId] = React.useState<string | null>(null)
 
   const { regions, scale } = React.useMemo(
     () => choroplethRegions(geojson, data, { idKey, valueKey, featureIdKey, featureNameKey, steps }),
     [geojson, data, idKey, valueKey, featureIdKey, featureNameKey, steps],
   )
   const withData = regions.filter((r) => r.value !== null)
+  const selected = regions.find((r) => r.id === selectedId) ?? null
 
   const summary = [
     t("chart.summary", { type: t("chart.typeMap"), series: 1, count: withData.length }),
@@ -122,7 +142,7 @@ export function MapChart({
     </div>
   )
 
-  const readout = apiKey ? (
+  const readout = showMap ? (
     <p data-slot="map-readout" aria-live="polite" className="text-sm text-muted-foreground">
       {selected
         ? t("chart.selectedRegion", {
@@ -142,9 +162,9 @@ export function MapChart({
       autoSummary={summary}
       table={table}
       isEmpty={!regions.length}
-      forceTable={!apiKey}
+      forceTable={!showMap}
       lead={
-        apiKey ? (
+        showMap ? (
           legend
         ) : (
           <div
@@ -153,7 +173,7 @@ export function MapChart({
             className="gap-3 p-4 text-sm flex items-start rounded-lg border border-dashed border-border bg-muted/40 text-muted-foreground"
           >
             <Icon name="map-pin" className="mt-0.5 size-4 shrink-0" />
-            <p>{t("chart.mapUnavailable")}</p>
+            <p>{t(apiKey ? "chart.mapPeersMissing" : "chart.mapUnavailable")}</p>
           </div>
         )
       }
@@ -184,7 +204,8 @@ export function MapChart({
               color={color}
               center={center}
               zoom={zoom}
-              onSelect={setSelected}
+              onSelect={(region: ChoroplethRegion | null) => setSelectedId(region?.id ?? null)}
+              onUnavailable={onUnavailable}
             />
           </React.Suspense>
         </div>

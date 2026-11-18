@@ -30,6 +30,8 @@ import { ShareButtons } from "@javaabu/onu"
 
 `shareUrl(network, url, title?, text?)` builds the share links.
 
+When server-rendered without `url`, the links start without a URL (the server doesn't know the page's address) and get the current page's URL straight after hydration. Pass `url` to have it in the server's HTML too.
+
 :::info Brand icons
 Onu's icon sets (Lucide, FontAwesome Free solid) don't include brand logos, so networks use generic icons with their names as text. Pass `icons` (e.g. from Simple Icons via the Iconify adapter) for logos.
 :::

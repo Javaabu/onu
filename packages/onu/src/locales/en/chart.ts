@@ -40,6 +40,8 @@ export const chart = {
   region: "Region",
   legend: "Legend",
   mapUnavailable: "The map cannot be shown because no Google Maps API key is set. The data is in the table below.",
+  mapPeersMissing:
+    "The map cannot be shown because its map packages are not installed. The data is in the table below.",
   mapLoading: "Loading map…",
   selectedRegion: "{name}: {value}",
   mapHint: "Tap or hover over a region to see its value.",

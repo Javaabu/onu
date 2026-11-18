@@ -11,6 +11,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu"
 import {
@@ -135,7 +138,7 @@ const SHELL_BADGE = {
 } as const
 
 function Badge({ item, ctx }: { item: NavItem; ctx: Ctx }) {
-  if (item.badge === undefined || item.badge === null || item.badge === false) return null
+  if (!hasBadge(item)) return null
   return (
     <SidebarMenuBadge
       data-tone={item.badgeTone ?? "brand"}
@@ -193,8 +196,10 @@ function ItemIcon({ item }: { item: NavItem }) {
   return <NavIcon icon={item.icon} />
 }
 
+/** Whether an item has a badge to draw: a zero (or negative) count draws nothing, like `NavBadge`. */
 function hasBadge(item: NavItem) {
-  return !(item.badge === undefined || item.badge === null || item.badge === false || item.badge === 0)
+  if (typeof item.badge === "number") return item.badge > 0
+  return !(item.badge === undefined || item.badge === null || item.badge === false)
 }
 
 /**
@@ -258,6 +263,113 @@ function LeafItem({ item, ctx }: { item: NavItem; ctx: Ctx }) {
   )
 }
 
+/** Nested items in the collapsed sidebar's flyout menu; a deeper level opens as a submenu. */
+function FlyoutItems({ items, ctx }: { items: NavItem[]; ctx: Ctx }) {
+  return items.map((child, i) => {
+    const key = itemKey(child, i)
+    if (child.items?.length) {
+      return (
+        <DropdownMenuSub key={key}>
+          <DropdownMenuSubTrigger disabled={child.disabled}>
+            <NavIcon icon={child.icon} />
+            {child.label}
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className="w-56">
+            <FlyoutItems items={[...(child.href ? [{ ...child, items: undefined }] : []), ...child.items]} ctx={ctx} />
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+      )
+    }
+    const active = isSelfActive(child, ctx.activeHref)
+    return child.href ? (
+      <DropdownMenuItem key={key} asChild disabled={child.disabled}>
+        <NavLink
+          href={child.href}
+          external={child.external}
+          aria-current={active ? "page" : undefined}
+          data-active={active || undefined}
+          className="data-active:font-medium"
+          onClick={(e) => ctx.navigate(child, e)}
+        >
+          <NavIcon icon={child.icon} />
+          {child.label}
+        </NavLink>
+      </DropdownMenuItem>
+    ) : (
+      <DropdownMenuItem key={key} disabled={child.disabled} onClick={(e) => ctx.navigate(child, e)}>
+        <NavIcon icon={child.icon} />
+        {child.label}
+      </DropdownMenuItem>
+    )
+  })
+}
+
+/**
+ * Nested items in the expanded sidebar: links, buttons for `onSelect`-only items, and a
+ * deeper level as an indented list under its item.
+ */
+function SubItems({ items, ctx }: { items: NavItem[]; ctx: Ctx }) {
+  return (
+    <SidebarMenuSub>
+      {items.map((child, i) => {
+        const active = isSelfActive(child, ctx.activeHref)
+        const content = (
+          <>
+            <NavIcon icon={child.icon} />
+            <span>{child.label}</span>
+            <NavBadge
+              badge={child.badge}
+              tone={child.badgeTone}
+              className="text-xs ms-auto text-sidebar-foreground/70 tabular-nums"
+            />
+          </>
+        )
+        const nested = !!child.items?.length
+        let button: React.ReactNode
+        if (child.href && !child.disabled) {
+          button = (
+            <SidebarMenuSubButton asChild isActive={active} className="touch:min-h-11">
+              <NavLink
+                href={child.href}
+                external={child.external}
+                aria-current={active ? "page" : undefined}
+                onClick={(e) => ctx.navigate(child, e)}
+              >
+                {content}
+              </NavLink>
+            </SidebarMenuSubButton>
+          )
+        } else if (nested && !child.onSelect && !child.disabled) {
+          // A heading for the level below: nothing to activate.
+          button = (
+            <SidebarMenuSubButton asChild className="touch:min-h-11 hover:bg-transparent active:bg-transparent">
+              <span>{content}</span>
+            </SidebarMenuSubButton>
+          )
+        } else {
+          button = (
+            <SidebarMenuSubButton asChild className="touch:min-h-11">
+              <button
+                type="button"
+                aria-disabled={child.disabled || undefined}
+                onClick={child.disabled ? undefined : (e) => ctx.navigate(child, e)}
+              >
+                {content}
+              </button>
+            </SidebarMenuSubButton>
+          )
+        }
+        return (
+          <SidebarMenuSubItem key={itemKey(child, i)}>
+            {button}
+            {nested ? <SubItems items={child.items!} ctx={ctx} /> : null}
+          </SidebarMenuSubItem>
+        )
+      })}
+    </SidebarMenuSub>
+  )
+}
+
 function ParentItem({ item, ctx }: { item: NavItem; ctx: Ctx }) {
   const { t } = useTranslation()
   const withinActive = isItemActive(item, ctx.activeHref)
@@ -289,33 +401,7 @@ function ParentItem({ item, ctx }: { item: NavItem; ctx: Ctx }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent side={ctx.menuSide} align="start" className="w-56">
             <DropdownMenuLabel>{item.label}</DropdownMenuLabel>
-            {[...(item.href ? [{ ...item, items: undefined }] : []), ...children].map((child, i) => {
-              const active = isSelfActive(child, ctx.activeHref)
-              return child.href ? (
-                <DropdownMenuItem key={itemKey(child, i)} asChild disabled={child.disabled}>
-                  <NavLink
-                    href={child.href}
-                    external={child.external}
-                    aria-current={active ? "page" : undefined}
-                    data-active={active || undefined}
-                    className="data-active:font-medium"
-                    onClick={(e) => ctx.navigate(child, e)}
-                  >
-                    <NavIcon icon={child.icon} />
-                    {child.label}
-                  </NavLink>
-                </DropdownMenuItem>
-              ) : (
-                <DropdownMenuItem
-                  key={itemKey(child, i)}
-                  disabled={child.disabled}
-                  onClick={(e) => ctx.navigate(child, e)}
-                >
-                  <NavIcon icon={child.icon} />
-                  {child.label}
-                </DropdownMenuItem>
-              )
-            })}
+            <FlyoutItems items={[...(item.href ? [{ ...item, items: undefined }] : []), ...children]} ctx={ctx} />
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
@@ -369,38 +455,7 @@ function ParentItem({ item, ctx }: { item: NavItem; ctx: Ctx }) {
           </CollapsibleTrigger>
         )}
         <CollapsibleContent>
-          <SidebarMenuSub>
-            {children.map((child, i) => {
-              const active = isSelfActive(child, ctx.activeHref)
-              return (
-                <SidebarMenuSubItem key={itemKey(child, i)}>
-                  {child.href && !child.disabled ? (
-                    <SidebarMenuSubButton asChild isActive={active} className="touch:min-h-11">
-                      <NavLink
-                        href={child.href}
-                        external={child.external}
-                        aria-current={active ? "page" : undefined}
-                        onClick={(e) => ctx.navigate(child, e)}
-                      >
-                        <NavIcon icon={child.icon} />
-                        <span>{child.label}</span>
-                        <NavBadge
-                          badge={child.badge}
-                          tone={child.badgeTone}
-                          className="text-xs ms-auto text-sidebar-foreground/70 tabular-nums"
-                        />
-                      </NavLink>
-                    </SidebarMenuSubButton>
-                  ) : (
-                    <SidebarMenuSubButton aria-disabled="true">
-                      <NavIcon icon={child.icon} />
-                      <span>{child.label}</span>
-                    </SidebarMenuSubButton>
-                  )}
-                </SidebarMenuSubItem>
-              )
-            })}
-          </SidebarMenuSub>
+          <SubItems items={children} ctx={ctx} />
         </CollapsibleContent>
       </SidebarMenuItem>
     </Collapsible>

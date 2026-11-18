@@ -101,6 +101,20 @@ function toNavItem(item: TopNavItem): NavItem {
   }
 }
 
+/** An item's link, or a button when it only has `onSelect` (no `href`): never a link to `#`. */
+function ItemAction({
+  href,
+  external,
+  ...props
+}: Omit<React.HTMLAttributes<HTMLElement>, "onClick"> & {
+  href?: string
+  external?: boolean
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void
+}) {
+  if (href) return <NavLink href={href} external={external} {...props} />
+  return <button type="button" {...props} />
+}
+
 function PanelLink({ link, active, className }: { link: TopNavLink; active: boolean; className?: string }) {
   return (
     <NavigationMenuLink asChild active={active}>
@@ -219,8 +233,8 @@ export function TopNav({
                           return (
                             <li key={itemKey(child, ci)}>
                               <NavigationMenuLink asChild active={childActive}>
-                                <NavLink
-                                  href={child.href ?? "#"}
+                                <ItemAction
+                                  href={child.href}
                                   external={child.external}
                                   aria-current={childActive ? "page" : undefined}
                                   onClick={child.onSelect}
@@ -233,7 +247,7 @@ export function TopNav({
                                   {child.description ? (
                                     <span className="text-xs text-muted-foreground">{child.description}</span>
                                   ) : null}
-                                </NavLink>
+                                </ItemAction>
                               </NavigationMenuLink>
                             </li>
                           )
@@ -248,8 +262,8 @@ export function TopNav({
             return (
               <NavigationMenuItem key={itemKey(item, i)}>
                 <NavigationMenuLink asChild active={selfActive}>
-                  <NavLink
-                    href={item.href ?? "#"}
+                  <ItemAction
+                    href={item.href}
                     external={item.external}
                     aria-current={selfActive ? "page" : undefined}
                     onClick={item.onSelect}
@@ -262,7 +276,7 @@ export function TopNav({
                     <NavIcon icon={item.icon} />
                     {item.label}
                     <NavBadge badge={item.badge} className={badgeClass} />
-                  </NavLink>
+                  </ItemAction>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             )

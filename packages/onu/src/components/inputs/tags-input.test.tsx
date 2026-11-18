@@ -136,6 +136,42 @@ describe("TagsInput", () => {
     expect(input).toHaveAttribute("aria-expanded", "false")
   })
 
+  it("never adds a disabled suggestion, and arrow keys skip it", async () => {
+    const { container } = renderWithOnu(
+      <TagsInput
+        aria-label="Tags"
+        suggestions={[
+          "Maafushi",
+          { value: "Malé", disabled: true },
+          "Mahibadhoo",
+          { value: "Madifushi", disabled: true },
+        ]}
+      />,
+    )
+    const input = screen.getByRole("combobox")
+    await userEvent.type(input, "ma")
+    await userEvent.keyboard("{ArrowDown}{ArrowDown}")
+    expect(input).toHaveAttribute("aria-activedescendant", screen.getByRole("option", { name: "Mahibadhoo" }).id)
+    await userEvent.keyboard("{ArrowDown}")
+    expect(input).toHaveAttribute("aria-activedescendant", screen.getByRole("option", { name: "Maafushi" }).id)
+    await userEvent.keyboard("{ArrowUp}")
+    expect(input).toHaveAttribute("aria-activedescendant", screen.getByRole("option", { name: "Mahibadhoo" }).id)
+    await userEvent.keyboard("{Enter}")
+    expect(tagTexts(container)).toEqual(["Mahibadhoo"])
+  })
+
+  it("does not add a disabled suggestion with Enter", async () => {
+    const { container } = renderWithOnu(
+      <TagsInput aria-label="Tags" suggestions={[{ value: "Malé", disabled: true }]} />,
+    )
+    const input = screen.getByRole("combobox")
+    await userEvent.type(input, "ma{ArrowDown}")
+    expect(input).not.toHaveAttribute("aria-activedescendant")
+    // Enter adds what was typed, not the disabled suggestion.
+    await userEvent.keyboard("{Enter}")
+    expect(tagTexts(container)).toEqual(["ma"])
+  })
+
   it("loads async suggestions", async () => {
     const fetcher = vi.fn(async (q: string) => [`${q}-1`, `${q}-2`])
     renderWithOnu(<TagsInput aria-label="Tags" suggestions={fetcher} debounce={0} />)

@@ -57,6 +57,25 @@ function currencyFormat(ctx: ExportContext, decimals: number) {
   return `${quote(template.slice(0, at))}${number}${quote(template.slice(at + "{amount}".length))}`
 }
 
+/**
+ * `write-excel-file` turns a Date into Excel's serial number from its UTC time, but Excel has no
+ * time zones: a cell shows the wall-clock time it holds. Moving the local date and time into UTC
+ * keeps the cell on the same day and hour that CSV and PDF show.
+ */
+function toExcelDate(date: Date) {
+  return new Date(
+    Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds(),
+      date.getMilliseconds(),
+    ),
+  )
+}
+
 function toExcelCell(cell: ExportCell, formatted: string | undefined, ctx: ExportContext): ExcelCell | null {
   switch (cell.type) {
     case "number":
@@ -70,9 +89,9 @@ function toExcelCell(cell: ExportCell, formatted: string | undefined, ctx: Expor
     case "currency":
       return { value: cell.value, type: Number, format: currencyFormat(ctx, cell.decimals ?? 2) }
     case "date":
-      return { value: cell.value, type: Date, format: "yyyy-mm-dd" }
+      return { value: toExcelDate(cell.value), type: Date, format: "yyyy-mm-dd" }
     case "datetime":
-      return { value: cell.value, type: Date, format: "yyyy-mm-dd hh:mm" }
+      return { value: toExcelDate(cell.value), type: Date, format: "yyyy-mm-dd hh:mm" }
     case "empty":
       return formatted ? { value: formatted, type: String } : null
     default:

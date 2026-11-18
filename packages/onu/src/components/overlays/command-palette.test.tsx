@@ -274,6 +274,26 @@ describe("CommandPalette", () => {
     expect(input).toHaveAttribute("lang", "dv")
     expect(input).toHaveAttribute("dir", "rtl")
     expect(screen.getByRole("button", { name: /Thaana and Latin/ })).toBeInTheDocument()
+    fireEvent(
+      input,
+      new InputEvent("beforeinput", { inputType: "insertText", data: "k", cancelable: true, bubbles: true }),
+    )
+    expect(input).toHaveValue("ކ")
+  })
+
+  it("types Thaana each time the palette opens", async () => {
+    renderWithOnu(<CommandPalette thaana groups={groups} />)
+    for (let i = 0; i < 2; i++) {
+      fireEvent.keyDown(document, { key: "k", ctrlKey: true })
+      const input = await screen.findByRole("combobox")
+      fireEvent(
+        input,
+        new InputEvent("beforeinput", { inputType: "insertText", data: "k", cancelable: true, bubbles: true }),
+      )
+      expect(input).toHaveValue("ކ")
+      fireEvent.keyDown(input, { key: "Escape" })
+      await waitFor(() => expect(screen.queryByRole("combobox")).not.toBeInTheDocument())
+    }
   })
 
   it("closes from the phone close button", async () => {

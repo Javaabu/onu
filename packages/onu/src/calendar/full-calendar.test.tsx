@@ -4,8 +4,11 @@ import userEvent from "@testing-library/user-event"
 import { enUS } from "date-fns/locale/en-US"
 import { describe, expect, it, vi } from "vitest"
 
+import { hydrateAfterServer } from "../../test/hydrate"
+import { controllableMatchMedia } from "../../test/match-media"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../test/utils"
 import { dv } from "../locales"
+import { OnuProvider } from "../providers/onu-provider"
 import type { CalendarApi } from "./index"
 import { FullCalendar, rangeTitle, toEventInput, type CalendarEvent } from "./full-calendar"
 import { dvFullCalendarLocale, fullCalendarLocale } from "./full-calendar-locale"
@@ -196,6 +199,25 @@ describe("FullCalendar", () => {
       expect(screen.getByRole("radio", { name: "Agenda" })).toHaveAttribute("aria-checked", "true")
     } finally {
       window.matchMedia = original
+    }
+  })
+
+  it("switches to the agenda on phones after server rendering", async () => {
+    let media: ReturnType<typeof controllableMatchMedia> | undefined
+    try {
+      const { container, errors } = await hydrateAfterServer(
+        <OnuProvider>
+          <FullCalendar events={EVENTS} initialDate={TODAY} today={TODAY} />
+        </OnuProvider>,
+        () => {
+          media = controllableMatchMedia((query) => query.includes("max-width"))
+        },
+      )
+      expect(errors).toEqual([])
+      expect(container.querySelector("[data-slot=full-calendar]")).toHaveAttribute("data-view", "agenda")
+      expect(within(container).getByRole("radio", { name: "Agenda" })).toHaveAttribute("aria-checked", "true")
+    } finally {
+      media?.restore()
     }
   })
 })

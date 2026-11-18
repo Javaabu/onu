@@ -50,7 +50,7 @@ If the thrown error has a `message`, it is shown; otherwise "Couldn’t save. Pl
 
 - The value is a button named "Edit Name: Aishath Shifa".
 - In edit mode the input is labelled by `label` and described by the key hint; errors are announced (`role="alert"`) and linked with `aria-describedby`.
-- After saving or cancelling, focus returns to the value; "Name saved" is announced.
+- After saving or cancelling with the keyboard or the buttons, focus returns to the value; "Name saved" is announced. When focus leaves the editor (`blurBehavior`), it stays where the user moved it, and a failing `validate` keeps the editor open with its error without pulling focus back.
 - While saving, the input is read-only and `aria-busy`.
 
 | Key                                         | Action                       |

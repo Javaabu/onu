@@ -89,6 +89,7 @@ export const input = {
   scanDenied: "Camera access was blocked. Allow it in your browser settings, or enter the code below.",
   scanNoCamera: "No camera was found on this device. Enter the code below.",
   scanUnsupported: "This browser cannot scan codes. Enter the code below.",
+  scanDecoderError: "The code reader could not be loaded. Try again, or enter the code below.",
   scanError: "The camera could not be started.",
   scanTorchOn: "Turn on torch",
   scanTorchOff: "Turn off torch",

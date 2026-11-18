@@ -59,7 +59,7 @@ Other clients (Cursor's `.cursor/mcp.json`, VS Code's `.vscode/mcp.json`, Claude
 }
 ```
 
-Set `ONU_DOCS_DIR` to read the docs from another folder.
+Set `ONU_DOCS_DIR` to read the docs from another folder. If they don't load, the server warns on stderr and uses the docs it was published with.
 
 # Laravel Boost
 

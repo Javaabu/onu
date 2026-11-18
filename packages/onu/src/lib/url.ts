@@ -1,5 +1,7 @@
 const HAS_SCHEME = /^[a-z][a-z0-9+.-]*:/i
 const SAFE_PROTOCOLS = /^(https?:|mailto:|tel:)/i
+/** `localhost:3000`, `example.mv:8080/x`: a host (localhost, or with a dot) and a port, which looks like a scheme. */
+const HOST_PORT = /^(localhost|[a-z\d-]+(\.[a-z\d-]+)+):\d{1,5}(?=$|[/?#])/i
 
 /**
  * True for links that are safe to render: http(s), mailto, tel and relative
@@ -16,12 +18,14 @@ export function isSafeUrl(url: string | null | undefined): url is string {
 }
 
 /**
- * Adds `protocol` to user input without a scheme (`example.mv` → `https://example.mv`). Relative
- * URLs (`/page`, `#top`) stay as they are. Returns `null` when empty or unsafe.
+ * Adds `protocol` to user input without a scheme (`example.mv` → `https://example.mv`,
+ * `localhost:3000` → `https://localhost:3000`). Relative URLs (`/page`, `#top`) stay as they are.
+ * Returns `null` when empty or unsafe.
  */
 export function normalizeUrl(input: string, protocol = "https://"): string | null {
   const value = input.trim()
   if (!value) return null
-  const withProtocol = HAS_SCHEME.test(value) || /^[/#?.]/.test(value) ? value : protocol + value
+  const hasScheme = HAS_SCHEME.test(value) && !HOST_PORT.test(value)
+  const withProtocol = hasScheme || /^[/#?.]/.test(value) ? value : protocol + value
   return isSafeUrl(withProtocol) ? withProtocol : null
 }

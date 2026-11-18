@@ -3,6 +3,7 @@
 import * as React from "react"
 import { FormProvider, type FieldValues, type UseFormReturn } from "react-hook-form"
 
+import { useMergedRef } from "../../hooks/use-merged-ref"
 import { cn } from "../../lib/utils"
 import type { LabelLayout } from "../../providers/onu-provider"
 import { useTranslation } from "../../providers/onu-provider"
@@ -122,11 +123,13 @@ export function Form<T extends FieldValues = FormValues>({
   children,
   ref,
   onChange,
+  onFocus,
   noValidate,
   ...props
 }: FormProps<T>) {
   const { t } = useTranslation()
   const formRef = React.useRef<HTMLFormElement>(null)
+  const mergedRef = useMergedRef(formRef, ref)
   const busy = React.useRef(false)
   const pendingFocus = React.useRef(false)
   const [submitting, setSubmitting] = React.useState(false)
@@ -168,6 +171,21 @@ export function Form<T extends FieldValues = FormValues>({
   React.useEffect(() => {
     if (errorEntries(errorsProp).length) pendingFocus.current = true
   }, [errorsProp])
+
+  // Disabling fields while processing blurs the focused one, so an Enter submit drops focus
+  // to <body>. Remember the last focused control and give focus back when processing ends.
+  const lastFocused = React.useRef<HTMLElement | null>(null)
+  const fieldsDisabled = disableWhileProcessing && processing
+  const wasDisabled = React.useRef(fieldsDisabled)
+  React.useEffect(() => {
+    const ended = wasDisabled.current && !fieldsDisabled
+    wasDisabled.current = fieldsDisabled
+    const target = lastFocused.current
+    if (!ended || !target?.isConnected) return
+    const active = document.activeElement
+    if (active && active !== document.body) return
+    target.focus({ preventScroll: true })
+  }, [fieldsDisabled])
 
   React.useEffect(() => {
     if (!pendingFocus.current) return
@@ -250,11 +268,7 @@ export function Form<T extends FieldValues = FormValues>({
         <FormErrorsProvider errors={errors}>
           <ClearFieldErrorProvider value={clearFieldError}>
             <form
-              ref={(node) => {
-                formRef.current = node
-                if (typeof ref === "function") ref(node)
-                else if (ref) ref.current = node
-              }}
+              ref={mergedRef}
               data-slot="form"
               data-status={status}
               aria-busy={processing || undefined}
@@ -262,6 +276,10 @@ export function Form<T extends FieldValues = FormValues>({
               className={cn("gap-6 grid", className)}
               onSubmit={handleSubmit}
               onChange={handleChange}
+              onFocus={(event) => {
+                lastFocused.current = event.target as HTMLElement
+                onFocus?.(event)
+              }}
               {...props}
             >
               {summary ? (

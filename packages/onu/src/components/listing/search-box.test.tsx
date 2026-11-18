@@ -65,6 +65,17 @@ describe("SearchBox", () => {
     expect(screen.queryByRole("button", { name: "Clear search box" })).not.toBeInTheDocument()
   })
 
+  it("searches once when ✕ is clicked with unsubmitted text", async () => {
+    const onSearch = vi.fn()
+    renderWithOnu(<SearchBox defaultValue="jane" onSearch={onSearch} />)
+    const box = screen.getByRole("searchbox")
+    await userEvent.type(box, "zz")
+    await userEvent.click(screen.getByRole("button", { name: "Clear search box" }))
+    expect(box).toHaveValue("")
+    expect(box).toHaveFocus()
+    expect(onSearch.mock.calls).toEqual([[""]])
+  })
+
   it("follows a controlled value", () => {
     const { rerender } = renderWithOnu(<SearchBox value="a" />)
     rerender(<SearchBox value="b" />)

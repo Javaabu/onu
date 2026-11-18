@@ -25,7 +25,7 @@ import { SignaturePad } from "@javaabu/onu/media"
 | --------------------------------------- | ----------------------------------- | --------------- | ------------------------------------------------------------- |
 | `onValueChange`                         | `(dataUrl: string \| null) => void` |                 | Called after each stroke or typed change; `null` when cleared |
 | `defaultValue`                          | `string \| null`                    |                 | A saved data URL to start from                                |
-| `penColor`                              | `string`                            | text colour     | Ink colour                                                    |
+| `penColor`                              | `string`                            | `"#000"`        | Ink colour, on screen and in the image                        |
 | `backgroundColor`                       | `string`                            | transparent     | Fill of the exported image                                    |
 | `minWidth` / `maxWidth`                 | `number`                            | `0.75` / `2.75` | Stroke width range                                            |
 | `disabled`                              | `boolean`                           | `false`         | Stop drawing and disable the buttons                          |
@@ -39,7 +39,7 @@ import { SignaturePad } from "@javaabu/onu/media"
 Also exported: `renderTypedSignature(text, options?)`.
 
 :::info
-The ink follows the theme's text colour by default, so a signature drawn in dark mode exports with light ink. Pass `penColor` (and `backgroundColor`) when the image will be printed or shown on a fixed background.
+The ink is black by default, so the exported image reads on a white document in either theme. In dark mode the canvas is shown inverted (with the hue turned back), so dark ink appears light on screen while the saved image keeps the real colours. A saved signature passed as `defaultValue` is drawn again when the canvas resizes.
 :::
 
 ## RTL and Thaana

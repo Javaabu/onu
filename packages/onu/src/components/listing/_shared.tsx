@@ -24,10 +24,21 @@ export function useNoun(noun: ListingNoun | undefined) {
   )
 }
 
-/** Whether a click landed on (or inside) an interactive element, so row clicks can ignore it. */
-export function isInteractiveTarget(target: EventTarget | null, stopAt?: Element | null) {
-  let el = target instanceof Element ? target : null
-  while (el && el !== stopAt) {
+/** The record's column: the one marked `primary`, else the first. It carries the row link and can't be hidden. */
+export function primaryColumn<C extends { primary?: boolean }>(columns: readonly C[]): C | undefined {
+  return columns.find((c) => c.primary) ?? columns[0]
+}
+
+/**
+ * Whether a row's click handler should ignore this click: it landed on (or inside) an interactive
+ * element, or outside the row's DOM altogether. React bubbles events from portals (the row's ⋯ menu,
+ * its confirm dialog) through the component tree, so those clicks reach the row too.
+ */
+export function ignoresRowClick(event: React.MouseEvent<HTMLElement>) {
+  const row = event.currentTarget
+  let el = event.target instanceof Element ? event.target : null
+  if (!el || !row.contains(el)) return true
+  while (el && el !== row) {
     if (
       el.matches(
         "a,button,input,select,textarea,label,summary,[role=button],[role=checkbox],[role=menuitem],[role=switch],[contenteditable=true]",

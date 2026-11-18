@@ -159,30 +159,51 @@ export function Wizard({
     return "upcoming"
   }
 
+  // Busy from the first click until validation and, on the last step, `onComplete` have settled.
+  // The ref also blocks a second call made before the busy state has rendered.
+  const busy = React.useRef(false)
   const next = async () => {
-    if (validating) return false
+    if (busy.current) return false
+    busy.current = true
     setValidating(true)
-    let ok = true
+    const markFailed = (hasFailed: boolean) =>
+      setFailed((prev) => {
+        const nextSet = new Set(prev)
+        if (hasFailed) nextSet.add(index)
+        else nextSet.delete(index)
+        return nextSet
+      })
     try {
-      if (current.validate) ok = await current.validate()
-      if (ok && onValidateStep) ok = await onValidateStep(index, current)
+      let ok = true
+      try {
+        if (current.validate) ok = await current.validate()
+        if (ok && onValidateStep) ok = await onValidateStep(index, current)
+      } catch {
+        // A validator that rejects (e.g. a failed request) fails the step.
+        ok = false
+      }
+      markFailed(!ok)
+      if (!ok) return false
+      setCompleted((prev) => new Set(prev).add(index))
+      if (index === total - 1) {
+        try {
+          await onComplete?.()
+        } catch {
+          // A rejected onComplete (e.g. the submit request failed) marks the last step as failed.
+          setCompleted((prev) => {
+            const nextSet = new Set(prev)
+            nextSet.delete(index)
+            return nextSet
+          })
+          markFailed(true)
+          return false
+        }
+      } else change(index + 1)
+      return true
     } finally {
+      busy.current = false
       setValidating(false)
     }
-    setFailed((prev) => {
-      const nextSet = new Set(prev)
-      if (ok) nextSet.delete(index)
-      else nextSet.add(index)
-      return nextSet
-    })
-    if (!ok) return false
-    setCompleted((prev) => new Set(prev).add(index))
-    if (index === total - 1) {
-      await onComplete?.()
-    } else {
-      change(index + 1)
-    }
-    return true
   }
 
   const back = () => {

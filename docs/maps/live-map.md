@@ -10,15 +10,18 @@ import { LiveMap } from "@javaabu/onu/maps"
 
 <LiveMap
   markers={vessels}
-  subscribe={(push) => {
-    const channel = echo.channel("fleet").listen("PositionUpdated", (e) => push(e.vessel))
-    return () => channel.stopListening("PositionUpdated")
+  subscribe={(push, remove) => {
+    const channel = echo
+      .channel("fleet")
+      .listen("PositionUpdated", (e) => push(e.vessel))
+      .listen("VesselDocked", (e) => remove(e.vessel.id))
+    return () => channel.stopListening("PositionUpdated").stopListening("VesselDocked")
   }}
   overlay={<MapInfoPanel open={!!selected} … />}
 />
 ```
 
-Each marker: `{ id, position, title, heading?, tone?, status?, updatedAt? }`. Updates from `subscribe` merge into `markers` by `id`.
+Each marker: `{ id, position, title, heading?, tone?, status?, updatedAt? }`. Updates from `subscribe` merge into `markers` by `id`, and `remove(id)` takes a streamed marker off the map. When a marker changes in `markers` (a new position, heading or `updatedAt`, e.g. from polling) or leaves it, that is newer than its streamed update, so the prop wins.
 
 When the selection changes from the built-in list or from outside the map (a controlled `selectedId`, e.g. picking a vessel in your own table), the map pans to centre that marker. It does not turn on follow mode, and a tap on the marker itself does not move the map. Without `center` or `zoom`, the map fits all the markers once (also when they arrive after the first render, e.g. from a stream).
 
@@ -33,7 +36,7 @@ Verified on the real Google Maps JavaScript API (see [MapProvider](./map-provide
 | Prop                                              | Type                        | Default | Description                                               |
 | ------------------------------------------------- | --------------------------- | ------- | --------------------------------------------------------- |
 | `markers`                                         | `LiveMapMarker[]`           | `[]`    | Current markers                                           |
-| `subscribe`                                       | `(push) => unsubscribe`     |         | Stream of updates                                         |
+| `subscribe`                                       | `(push, remove) => unsubscribe` |         | Stream of updates                                         |
 | `selectedId` / `defaultSelectedId` / `onSelect`   | `string \| null`            |         | Selected marker                                           |
 | `followId` / `defaultFollowId` / `onFollowChange` | `string \| null`            |         | Marker the camera follows                                 |
 | `animationDuration`                               | `number`                    | `1000`  | Glide time in ms (`0` jumps; reduced motion always jumps) |

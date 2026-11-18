@@ -63,6 +63,20 @@ describe("CommentThread", () => {
     await waitFor(() => expect(box).toHaveValue(""))
   })
 
+  it("keeps the text and shows an error when posting fails", async () => {
+    const user = userEvent.setup()
+    const onAdd = vi.fn().mockRejectedValueOnce(new Error("offline")).mockResolvedValueOnce(undefined)
+    renderWithOnu(<CommentThread comments={[]} onAdd={onAdd} />)
+    const box = screen.getByRole("textbox", { name: "Write a comment…" })
+    await user.type(box, "Looks good")
+    await user.click(screen.getByRole("button", { name: "Comment" }))
+    expect(await screen.findByRole("alert")).toHaveTextContent("Couldn’t save. Try again.")
+    expect(box).toHaveValue("Looks good")
+    await user.click(screen.getByRole("button", { name: "Comment" }))
+    await waitFor(() => expect(box).toHaveValue(""))
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument()
+  })
+
   it("submits with Ctrl+Enter", async () => {
     const user = userEvent.setup()
     const onAdd = vi.fn()

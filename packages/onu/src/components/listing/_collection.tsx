@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import { useLinkComponent, useTranslation } from "../../providers/onu-provider"
-import { isInteractiveTarget } from "./_shared"
+import { ignoresRowClick } from "./_shared"
 import { SelectionCheckbox } from "./_selection-checkbox"
 // The dropdown on its own: row menus never open as context menus, so tables don't bundle one.
 import { DropdownActionMenu as ActionMenu } from "../overlays/_action-menu"
@@ -90,7 +90,7 @@ export function useCollectionItem<T>(props: CollectionProps<T>) {
     const clickable = !!props.onItemClick || !!href
     const onClick = clickable
       ? (event: React.MouseEvent<HTMLElement>) => {
-          if (isInteractiveTarget(event.target, event.currentTarget)) return
+          if (ignoresRowClick(event)) return
           if (props.onItemClick) props.onItemClick(item)
           else event.currentTarget.querySelector<HTMLAnchorElement>("a[data-row-link]")?.click()
         }

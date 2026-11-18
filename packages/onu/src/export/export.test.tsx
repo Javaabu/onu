@@ -127,6 +127,16 @@ describe("columns", () => {
     expect(toExportCell(3)).toMatchObject({ type: "number" })
   })
 
+  it("leaves a timestamp that is not a real date empty instead of breaking the export", () => {
+    expect(toExportCell(Number.NaN, "date")).toEqual({ type: "empty" })
+    expect(toExportCell(Number.POSITIVE_INFINITY, "datetime")).toEqual({ type: "empty" })
+    expect(toExportCell(1e20, "date")).toEqual({ type: "empty" })
+    const bad = [{ at: Number.NaN }]
+    const cols: ExportColumn<{ at: number }>[] = [{ header: "At", accessor: "at", type: "date" }]
+    expect(toCsv(bad, cols, { bom: false })).toBe("At\r\n\r\n")
+    expect(() => buildPrintDocument(bad, cols)).not.toThrow()
+  })
+
   it("formats display text in the locale", () => {
     const en = resolveExportContext()
     const dv = resolveExportContext({ locale: "dv" })
@@ -214,7 +224,7 @@ describe("Excel", () => {
     expect(amount).toEqual({ value: 1250.5, type: Number, format: '"MVR "#,##0.00' })
     expect(paid).toEqual({ value: "Yes", type: String })
     expect(date).toMatchObject({ type: Date, format: "yyyy-mm-dd" })
-    expect((date as { value: Date }).value.getDate()).toBe(12)
+    expect((date as { value: Date }).value.getUTCDate()).toBe(12)
     expect(note).toEqual({ value: 'Said "hi", then left', type: String })
     // Text stays text: no formula is created from a "=" value.
     expect(sheet.data[2]![0]).toEqual({ value: '=HYPERLINK("http://evil")', type: String })
@@ -249,6 +259,18 @@ describe("Excel", () => {
       { value: "—", type: String },
       { value: "#x", type: String },
     ])
+  })
+
+  it("writes dates with the local calendar date and clock time, like CSV and PDF", () => {
+    // write-excel-file turns a Date into a serial number from its UTC time, so the cell holds
+    // the local wall-clock time as UTC. Run with TZ=Indian/Maldives (UTC+5) to see the shift.
+    const sheet = buildExcelSheet(rows, [
+      { header: "Date", accessor: "date", type: "date" },
+      { header: "At", accessor: "date", type: "datetime" },
+    ])
+    const value = (cell: unknown) => (cell as { value: Date }).value.toISOString()
+    expect(value(sheet.data[1]![0])).toBe("2026-03-12T00:00:00.000Z")
+    expect(value(sheet.data[2]![1])).toBe("2026-10-07T09:30:00.000Z")
   })
 
   it("cleans sheet names", () => {

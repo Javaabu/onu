@@ -236,7 +236,12 @@ function sameFilters(a: FilterValues, b: FilterValues) {
  */
 export function useListingState(options: UseListingStateOptions = {}): ListingController {
   const { url = true, paramPrefix, paramNames, onValueChange, defaultSelection, defaultColumnVisibility } = options
-  const urlOptions = React.useMemo(() => ({ paramPrefix, paramNames }), [paramPrefix, paramNames])
+  // Compared by value: callers naturally pass `paramNames` inline.
+  const paramNamesKey = JSON.stringify(paramNames ?? {})
+  const urlOptions = React.useMemo(
+    () => ({ paramPrefix, paramNames: JSON.parse(paramNamesKey) as Partial<ListingParamNames> }),
+    [paramPrefix, paramNamesKey],
+  )
 
   const defaults = React.useMemo<ListingState>(
     () => ({ ...BASE_STATE, ...options.defaultState, filters: cleanFilters(options.defaultState?.filters ?? {}) }),
@@ -260,7 +265,6 @@ export function useListingState(options: UseListingStateOptions = {}): ListingCo
   React.useEffect(() => {
     onChangeRef.current = onValueChange
   })
-  const first = React.useRef(true)
   const { search, sort, page, perPage, filters, view } = full
   const stateForEffects = React.useMemo<ListingState>(
     () => ({ search, sort, page, perPage, filters, view }),
@@ -269,12 +273,16 @@ export function useListingState(options: UseListingStateOptions = {}): ListingCo
 
   React.useEffect(() => {
     if (url) writeUrl(stateForEffects, defaults, urlOptions)
-    if (first.current) {
-      first.current = false
-      return
-    }
-    onChangeRef.current?.(stateForEffects)
   }, [stateForEffects, url, defaults, urlOptions])
+
+  // Only a real state change notifies: not mount, not StrictMode's effect replay,
+  // not a re-render with new option identities.
+  const notified = React.useRef(stateForEffects)
+  React.useEffect(() => {
+    if (notified.current === stateForEffects) return
+    notified.current = stateForEffects
+    onChangeRef.current?.(stateForEffects)
+  }, [stateForEffects])
 
   /**
    * Applies a change. Returning the previous object means "nothing changed".

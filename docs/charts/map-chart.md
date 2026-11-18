@@ -6,7 +6,7 @@ sidebar_position: 9
 A choropleth map: regions shaded by value on Google Maps, drawn with a deck.gl `GeoJsonLayer` (`GoogleMapsOverlay`). It has a stepped legend, a tap/hover read-out and a data table. Without a Google Maps API key it shows an accessible notice and the table instead.
 
 :::info
-Needs the optional peers `@vis.gl/react-google-maps`, `@deck.gl/core`, `@deck.gl/layers` and `@deck.gl/google-maps`. The map code is loaded lazily, only when an API key is configured.
+Needs the optional peers `@vis.gl/react-google-maps`, `@deck.gl/core`, `@deck.gl/layers` and `@deck.gl/google-maps`. The map code is loaded lazily, only when an API key is configured. If those peers are not installed, the app still builds (with webpack or Turbopack) and the chart shows a note and the data table instead of the map.
 :::
 
 ```tsx

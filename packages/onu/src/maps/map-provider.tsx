@@ -66,8 +66,8 @@ export function MapProvider({
   const mapId = colorScheme === "dark" ? (darkMapId ?? lightMapId) : lightMapId
 
   const value = React.useMemo<MapContextValue>(
-    () => ({ adapter, apiKey, mapId, colorScheme, language, colors }),
-    [adapter, apiKey, mapId, colorScheme, language, colors],
+    () => ({ adapter, apiKey, mapId, colorScheme, language, region, colors }),
+    [adapter, apiKey, mapId, colorScheme, language, region, colors],
   )
 
   const Provider = adapter.Provider

@@ -70,6 +70,7 @@ export const display = {
   deleteCannotUndo: "މިކަން އަނބުރާ ނުގެނެވޭނެ.",
   noComments: "އަދި އެއްވެސް ކޮމެންޓެއް ނެތް",
   submitHint: "ފޮނުވުމަށް Ctrl+Enter ފިއްތަވާ",
+  composerFailed: "ސޭވް ނުކުރެވުނު. އަލުން މަސައްކަތްކުރައްވާ.",
   // Comment thread, variant="list"
   notes: "ނޯޓުތައް",
   addNote: "ނޯޓު އިތުރުކުރޭ",

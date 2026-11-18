@@ -25,7 +25,7 @@ import { TopNav } from "@javaabu/onu"
 />
 ```
 
-Items use the shared `NavItem` shape: `{ label, href?, icon?, badge?, description?, isActive?, disabled?, external?, items?, onSelect? }`, plus `columns?` and `featured?` (a `TopNavItem`). Links render through `OnuProvider linkComponent` (R16.2).
+Items use the shared `NavItem` shape: `{ label, href?, icon?, badge?, description?, isActive?, disabled?, external?, items?, onSelect? }`, plus `columns?` and `featured?` (a `TopNavItem`). Links render through `OnuProvider linkComponent` (R16.2); an item with `onSelect` and no `href` renders as a button.
 
 ## Active state
 

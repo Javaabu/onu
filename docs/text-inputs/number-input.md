@@ -43,7 +43,7 @@ The selected unit is controlled with `unitValue` / `onUnitChange` (uncontrolled:
 
 ## Stepper
 
-`stepper` adds large − and + buttons at the sides, for cart quantities, tickets and guest counts. Holding a button repeats the step (`repeatDelay`, then every `repeatInterval` ms); arrow keys work in the field as usual.
+`stepper` adds large − and + buttons at the sides, for cart quantities, tickets and guest counts. Holding a button repeats the step (`repeatDelay`, then every `repeatInterval` ms); arrow keys in the field step exactly like the buttons.
 
 ```tsx
 const [tickets, setTickets] = useState(1)
@@ -53,7 +53,7 @@ const [tickets, setTickets] = useState(1)
 </FormField>
 ```
 
-A stepper always holds a number: `min` defaults to `0`, `defaultValue` to `min`, and clearing the field falls back to `min`, so `value` and `onValueChange` use `number` rather than `number | null`. `size="sm" | "default" | "lg"` sets its height and width (variants exported as `numberInputVariants`); on touch screens the buttons are at least 44px in every size, and `lg` suits kiosks. A `unit` can sit next to the number between the buttons.
+A stepper always holds a number: `min` defaults to `0`, `defaultValue` to `min`, and a field left empty falls back to `min` on blur (you can clear it and type a new number), so `value` and `onValueChange` use `number` rather than `number | null`. `size="sm" | "default" | "lg"` sets its height and width (variants exported as `numberInputVariants`); on touch screens the buttons are at least 44px in every size, and `lg` suits kiosks. A `unit` can sit next to the number between the buttons.
 
 ## Form submission
 
@@ -87,7 +87,7 @@ With a `name` (or inside a `FormField` with `name`), the raw number is submitted
 | `startAddon` / `endAddon` | `ReactNode`                                                                      |                    | Your own addons; the unit sits between them and the number |
 | `classNames`              | `{ root, input, startAddon, endAddon, unit, unitTrigger, decrement, increment }` |                    | Classes for each part                                      |
 
-Also exported: `parseLocaleNumber(text, numberLocale)`, `numberSymbols(numberLocale)`, `numberInputVariants` and the `NumberInputUnitOption`, `NumberInputFieldProps` and `NumberInputStepperProps` types.
+Also exported: `parseLocaleNumber(text, numberLocale)`, `numberSymbols(numberLocale)` (group and decimal separators, and the locale's digits), `numberInputVariants` and the `NumberInputUnitOption`, `NumberInputFieldProps` and `NumberInputStepperProps` types.
 
 ## RTL and Thaana
 

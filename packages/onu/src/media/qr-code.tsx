@@ -208,6 +208,38 @@ function saveBlob(blob: Blob, filename: string) {
   setTimeout(() => URL.revokeObjectURL(url), 0)
 }
 
+/**
+ * Fetches an image and returns it as a data URL, so a saved SVG does not depend on the logo's
+ * URL. Resolves `null` when it cannot be fetched (for example a cross-origin image without CORS).
+ */
+async function toDataUrl(src: string): Promise<string | null> {
+  if (src.startsWith("data:")) return src
+  try {
+    const response = await fetch(src)
+    if (!response.ok) return null
+    const blob = await response.blob()
+    return await new Promise((resolve) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : null)
+      reader.onerror = () => resolve(null)
+      reader.readAsDataURL(blob)
+    })
+  } catch {
+    return null
+  }
+}
+
+/** Relative luminance of a `#rrggbb` colour (WCAG), or `null` for anything else. */
+function luminance(hex: string): number | null {
+  const match = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex)
+  if (!match) return null
+  const [r, g, b] = match.slice(1).map((part) => {
+    const c = parseInt(part, 16) / 255
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+  }) as [number, number, number]
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
 function isTransparent(color: string) {
   return !color || color === "transparent" || /^rgba\(.*,\s*0\)$/.test(color) || /\/\s*0%?\s*\)$/.test(color)
 }
@@ -308,6 +340,7 @@ export function QrCode({
   const svgRef = React.useRef<SVGSVGElement>(null)
   const { status, copy } = useCopyToClipboard()
   const [busy, setBusy] = React.useState<QrCodeDownloadFormat | null>(null)
+  const [failed, setFailed] = React.useState(false)
   const logoOptions = typeof logo === "string" ? { src: logo } : logo
   const effectiveLevel: QrCodeLevel = logoOptions ? "H" : level
   const zone = Math.max(0, Math.round(quietZone))
@@ -327,24 +360,35 @@ export function QrCode({
 
   const colours = () => {
     const computed = svgRef.current ? getComputedStyle(svgRef.current) : null
-    const foreground = computed?.color || "black"
+    const foreground = toHexColor(computed?.color || "black")
     const bg = computed?.backgroundColor ?? ""
-    return { foreground: toHexColor(foreground), background: isTransparent(bg) ? "#ffffff" : toHexColor(bg) }
+    if (!isTransparent(bg)) return { foreground, background: toHexColor(bg) }
+    // No background of its own: the file gets a white one, so light modules (the text colour in
+    // dark mode) would not scan. Keep the colour only when it is dark enough to read on white.
+    const light = luminance(foreground)
+    return { foreground: light !== null && light > 0.3 ? "#000000" : foreground, background: "#ffffff" }
   }
 
   const save = async (format: QrCodeDownloadFormat) => {
     if (!matrix) return
     setBusy(format)
+    setFailed(false)
     try {
       const options = { quietZone: zone, logo: logoRender, ...colours() }
-      const blob =
-        format === "svg"
-          ? new Blob([qrCodeToSvg(matrix, options)], { type: "image/svg+xml" })
-          : await qrCodeToPng(matrix, { ...options, pixels: downloadSize })
+      let blob: Blob
+      if (format === "svg") {
+        // Embed the logo: an SVG file that points at a URL shows a broken image once saved.
+        const src = logoRender ? await toDataUrl(logoRender.src) : null
+        const logo = logoRender && src ? { ...logoRender, src } : undefined
+        blob = new Blob([qrCodeToSvg(matrix, { ...options, logo })], { type: "image/svg+xml" })
+      } else {
+        blob = await qrCodeToPng(matrix, { ...options, pixels: downloadSize })
+      }
       saveBlob(blob, `${filename}.${format}`)
       onDownload?.(format, blob)
     } catch {
       // Export can fail (no canvas, a tainted canvas); the on-screen code is unaffected.
+      setFailed(true)
     } finally {
       setBusy(null)
     }
@@ -462,6 +506,15 @@ export function QrCode({
           <LiveRegion>
             {status === "copied" ? t("file.qrCopied") : status === "failed" ? t("file.qrCopyFailed") : null}
           </LiveRegion>
+          {failed ? (
+            <p
+              role="alert"
+              data-slot="qr-code-download-error"
+              className={cn("text-xs w-full text-center text-destructive", classNames?.error)}
+            >
+              {t("file.qrDownloadFailed")}
+            </p>
+          ) : null}
         </div>
       ) : null}
     </div>

@@ -89,6 +89,18 @@ describe("MediaPlayer", () => {
     await expectNoA11yViolations()
   })
 
+  it("loads the new media when `src` changes", () => {
+    // A media element ignores changed <source> children until .load(); a new element loads them.
+    const { container, rerender } = renderWithOnu(<MediaPlayer src="/v/one.mp4" title="Clip" />)
+    const first = container.querySelector("video")
+    rerender(<MediaPlayer src="/v/one.mp4" title="Clip" />)
+    expect(container.querySelector("video")).toBe(first)
+    rerender(<MediaPlayer src={[{ src: "/v/two.webm", type: "video/webm" }]} title="Clip" />)
+    const second = container.querySelector("video")
+    expect(second).not.toBe(first)
+    expect(second?.querySelector("source")).toHaveAttribute("src", "/v/two.webm")
+  })
+
   it("renders audio without fullscreen or captions buttons", () => {
     const { container } = renderWithOnu(
       <MediaPlayer kind="audio" src="/a/bodu-beru.mp3" title="Bodu beru" muted loop />,
