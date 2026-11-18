@@ -3,6 +3,7 @@ import { screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
+import { hydrateAfterServer } from "../../../test/hydrate"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { ThemeProvider } from "../../providers/theme-provider"
 import { ThemeToggle } from "./theme-toggle"
@@ -28,6 +29,18 @@ describe("ThemeToggle", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Theme: Dark")
     expect(screen.getByRole("button", { name: "Theme: Dark" })).toHaveFocus()
     await expectNoA11yViolations()
+  })
+
+  it("selects the stored theme after hydrating server markup", async () => {
+    const { container } = await hydrateAfterServer(
+      <ThemeProvider>
+        <ThemeToggle variant="segmented" />
+      </ThemeProvider>,
+      () => localStorage.setItem("onu-theme", "dark"),
+    )
+    const radio = (name: string) => container.querySelector(`[aria-label="${name}"]`)
+    expect(radio("Dark")).toHaveAttribute("aria-checked", "true")
+    expect(radio("System")).toHaveAttribute("aria-checked", "false")
   })
 
   it("renders segmented buttons", async () => {

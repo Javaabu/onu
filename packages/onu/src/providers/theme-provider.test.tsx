@@ -2,6 +2,7 @@ import { act, render, renderHook, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
+import { hydrateAfterServer } from "../../test/hydrate"
 import { controllableMatchMedia } from "../../test/match-media"
 import { ThemeProvider, themeScript, useTheme, type ThemeProviderProps } from "./theme-provider"
 
@@ -78,6 +79,27 @@ describe("ThemeProvider", () => {
     localStorage.setItem("app-theme", "purple")
     renderTheme({ storageKey: "app-theme", defaultTheme: "light" })
     expect(text("theme")).toBe("light")
+  })
+
+  it("hydrates the server's default, then switches to the stored theme without a mismatch", async () => {
+    const { container, errors } = await hydrateAfterServer(
+      <ThemeProvider>
+        <Probe />
+      </ThemeProvider>,
+      () => localStorage.setItem("onu-theme", "dark"),
+    )
+    expect(errors).toEqual([])
+    expect(container.querySelector('[data-testid="theme"]')).toHaveTextContent("dark")
+    expect(html()).toHaveClass("dark")
+  })
+
+  it("follows a theme chosen in another tab", () => {
+    renderTheme({ defaultTheme: "light" })
+    act(() => {
+      localStorage.setItem("onu-theme", "dark")
+      window.dispatchEvent(new StorageEvent("storage", { key: "onu-theme", newValue: "dark" }))
+    })
+    expect(text("theme")).toBe("dark")
   })
 
   it("forces a theme regardless of the choice", async () => {

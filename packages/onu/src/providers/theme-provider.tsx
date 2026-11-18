@@ -15,12 +15,37 @@ const ThemeContext = React.createContext<ThemeContextValue | null>(null)
 
 const DEFAULT_STORAGE_KEY = "onu-theme"
 
+const storedListeners = new Set<() => void>()
+/** Choices made this visit, for when storage is unavailable (private mode). */
+const unsaved = new Map<string, Theme>()
+
 function readStored(key: string): Theme | null {
   try {
     const value = window.localStorage.getItem(key)
     return value === "light" || value === "dark" || value === "system" ? value : null
   } catch {
-    return null
+    return unsaved.get(key) ?? null
+  }
+}
+
+function writeStored(key: string, theme: Theme) {
+  try {
+    window.localStorage.setItem(key, theme)
+    unsaved.delete(key)
+  } catch {
+    // Storage can be unavailable (private mode); the choice still applies for this visit.
+    unsaved.set(key, theme)
+  }
+  for (const listener of storedListeners) listener()
+}
+
+/** Follows choices made through `setTheme` and, through the `storage` event, in other tabs. */
+function subscribeStored(onChange: () => void) {
+  storedListeners.add(onChange)
+  window.addEventListener("storage", onChange)
+  return () => {
+    storedListeners.delete(onChange)
+    window.removeEventListener("storage", onChange)
   }
 }
 
@@ -60,9 +85,14 @@ export function ThemeProvider({
   forcedTheme,
   storageKey = DEFAULT_STORAGE_KEY,
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = React.useState<Theme>(() =>
-    typeof window === "undefined" ? defaultTheme : (readStored(storageKey) ?? defaultTheme),
+  // The server and the hydrating client both render `defaultTheme`; the stored choice follows
+  // right after hydration, so the markup matches.
+  const stored = React.useSyncExternalStore(
+    subscribeStored,
+    () => readStored(storageKey),
+    () => null,
   )
+  const theme = stored ?? defaultTheme
   const system = React.useSyncExternalStore(subscribeSystem, systemTheme, () => "light" as const)
 
   const resolvedTheme: ResolvedTheme = forcedTheme ?? (theme === "system" ? system : theme)
@@ -71,17 +101,7 @@ export function ThemeProvider({
     apply(resolvedTheme, document.documentElement)
   }, [resolvedTheme])
 
-  const setTheme = React.useCallback(
-    (next: Theme) => {
-      setThemeState(next)
-      try {
-        window.localStorage.setItem(storageKey, next)
-      } catch {
-        // Storage can be unavailable (private mode); the choice still applies for this visit.
-      }
-    },
-    [storageKey],
-  )
+  const setTheme = React.useCallback((next: Theme) => writeStored(storageKey, next), [storageKey])
 
   const value = React.useMemo(() => ({ theme, resolvedTheme, setTheme }), [theme, resolvedTheme, setTheme])
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
