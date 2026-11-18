@@ -133,6 +133,21 @@ describe("Wizard", () => {
     expect(validate).toHaveBeenCalledTimes(1)
   })
 
+  it("stays busy until onComplete settles, so Finish runs it once", async () => {
+    let resolve: () => void = () => {}
+    const onComplete = vi.fn(() => new Promise<void>((r) => (resolve = r)))
+    renderWithOnu(<Wizard steps={steps()} defaultStep={2} onComplete={onComplete} finishLabel="Submit" />)
+    await userEvent.click(screen.getByRole("button", { name: "Submit" }))
+    const finish = screen.getByRole("button", { name: "Submit" })
+    expect(finish).toBeDisabled()
+    expect(finish).toHaveAttribute("aria-busy", "true")
+    await userEvent.click(finish)
+    expect(onComplete).toHaveBeenCalledTimes(1)
+    resolve()
+    await waitFor(() => expect(screen.getByRole("button", { name: "Submit" })).toBeEnabled())
+    expect(onComplete).toHaveBeenCalledTimes(1)
+  })
+
   it.each(directions)("translates in %s", async (dir) => {
     renderWithOnu(
       <Wizard

@@ -54,5 +54,5 @@ With `thaana`, the field types Thaana (`dir="rtl"`, `lang="dv"`), and the Thaana
 | ---------------------------------- | ------------------------------------------------------------ |
 | <kbd>Enter</kbd> / <kbd>,</kbd>    | Add the typed tag (Enter on an empty field submits the form) |
 | <kbd>Backspace</kbd> (empty field) | Remove the last tag                                          |
-| <kbd>↓</kbd> / <kbd>↑</kbd>        | Move through suggestions                                     |
+| <kbd>↓</kbd> / <kbd>↑</kbd>        | Move through suggestions, skipping disabled ones             |
 | <kbd>Esc</kbd>                     | Close suggestions                                            |

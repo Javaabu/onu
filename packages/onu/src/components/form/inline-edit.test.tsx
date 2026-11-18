@@ -121,6 +121,52 @@ describe("InlineEdit", () => {
     expect(onSave).toHaveBeenCalledTimes(1)
   })
 
+  it("leaves focus where the user moved it when blur saves or cancels", async () => {
+    const onSave = vi.fn()
+    const { rerender } = renderWithOnu(
+      <>
+        <InlineEdit label="A" defaultValue="1" onSave={onSave} />
+        <input aria-label="other" />
+      </>,
+    )
+    await userEvent.click(screen.getByRole("button", { name: /Edit A/ }))
+    await userEvent.type(screen.getByRole("textbox", { name: "A" }), "2")
+    await userEvent.click(screen.getByRole("textbox", { name: "other" }))
+    expect(onSave).toHaveBeenCalledWith("12")
+    expect(screen.getByRole("textbox", { name: "other" })).toHaveFocus()
+    // Unchanged: closes on blur without saving, focus still stays put.
+    await userEvent.click(screen.getByRole("button", { name: /Edit A/ }))
+    await userEvent.click(screen.getByRole("textbox", { name: "other" }))
+    expect(screen.getByRole("textbox", { name: "other" })).toHaveFocus()
+    rerender(
+      <>
+        <InlineEdit label="A" defaultValue="1" onSave={onSave} blurBehavior="cancel" />
+        <input aria-label="other" />
+      </>,
+    )
+    await userEvent.click(screen.getByRole("button", { name: /Edit A/ }))
+    await userEvent.click(screen.getByRole("textbox", { name: "other" }))
+    expect(screen.getByRole("textbox", { name: "other" })).toHaveFocus()
+  })
+
+  it("lets the user leave a field that fails validation", async () => {
+    renderWithOnu(
+      <>
+        <InlineEdit label="Name" defaultValue="Ali" validate={(v) => (v ? null : "Required")} />
+        <input aria-label="other" />
+      </>,
+    )
+    await userEvent.click(screen.getByRole("button", { name: /Edit Name/ }))
+    await userEvent.clear(screen.getByRole("textbox", { name: "Name" }))
+    await userEvent.click(screen.getByRole("textbox", { name: "other" }))
+    expect(screen.getByRole("alert")).toHaveTextContent("Required")
+    expect(screen.getByRole("textbox", { name: "other" })).toHaveFocus()
+    // The editor stays open with the error, and Enter still refocuses it.
+    await userEvent.click(screen.getByRole("textbox", { name: "Name" }))
+    await userEvent.keyboard("{Enter}")
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveFocus()
+  })
+
   it("is controlled, multiline (Ctrl+Enter saves) and reports changes", async () => {
     function Controlled() {
       const [value, setValue] = React.useState("Line 1")

@@ -16,6 +16,8 @@ export interface GridKeyboardOptions {
   onPage?: (delta: number) => void
   /** Moving past the first or last cell: page in that direction and land on `index` of the new page. */
   onOverflow?: (delta: number, index: number) => void
+  /** Whether paging in a direction (-1 back, +1 forward) is allowed. When not, PageUp/PageDown do nothing and arrows stop at the edge. */
+  canPage?: (delta: number) => boolean
   /** Wrap around at the ends (clock faces). */
   wrapAround?: boolean
   /** Every arrow moves by one (a clock face has no rows). */
@@ -53,7 +55,7 @@ export function handleGridKey(e: React.KeyboardEvent, o: GridKeyboardOptions): b
     case "PageDown":
       if (!o.onPage) return false
       e.preventDefault()
-      o.onPage(e.key === "PageUp" ? -1 : 1)
+      if (o.canPage?.(e.key === "PageUp" ? -1 : 1) ?? true) o.onPage(e.key === "PageUp" ? -1 : 1)
       return true
     default:
       return false
@@ -61,7 +63,7 @@ export function handleGridKey(e: React.KeyboardEvent, o: GridKeyboardOptions): b
   e.preventDefault()
   if (target < 0 || target >= o.count) {
     if (o.wrapAround) target = wrap(target, o.count)
-    else if (o.onOverflow) {
+    else if (o.onOverflow && (o.canPage?.(target < 0 ? -1 : 1) ?? true)) {
       o.onOverflow(target < 0 ? -1 : 1, wrap(target, o.count))
       return true
     } else target = Math.max(0, Math.min(o.count - 1, target))
@@ -91,6 +93,9 @@ export interface PeriodGridProps {
   label: string
   onSelect: (index: number) => void
   onPage?: (delta: number) => void
+  /** Whether there is a previous / next page; when not, the keyboard stops at this one. Default `true`. */
+  canPrev?: boolean
+  canNext?: boolean
   /** Cell that is focusable first. Defaults to the selected cell, then the current one, then the first. */
   activeIndex?: number
   /** Focus the active cell when mounted. */
@@ -117,6 +122,8 @@ export function PeriodGrid({
   label,
   onSelect,
   onPage,
+  canPrev = true,
+  canNext = true,
   activeIndex,
   initialFocus,
   layout = "grid",
@@ -162,6 +169,7 @@ export function PeriodGrid({
               onPage(delta)
             }
           : undefined,
+      canPage: (delta) => (delta < 0 ? canPrev : canNext),
       wrapAround: clock,
       linear: clock,
     })

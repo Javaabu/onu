@@ -110,6 +110,12 @@ export function Autocomplete({
     onValueChange,
   )
   const [query, setQuery] = React.useState(value)
+  // The list filters by what is in the field, so it follows a value set from outside (a controlled reset).
+  const [prevValue, setPrevValue] = React.useState(value)
+  if (value !== prevValue) {
+    setPrevValue(value)
+    setQuery(value)
+  }
   const [listOpen, setListOpen] = React.useState(openProp ?? defaultOpen ?? false)
   const isAsync = typeof suggestions === "function"
 

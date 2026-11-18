@@ -25,7 +25,7 @@ import { Wizard } from "@javaabu/onu"
 />
 ```
 
-`validate` can be async (e.g. react-hook-form's `trigger`). While it runs, Next shows a spinner and ignores further clicks. If it returns `false`, the step is marked "Has errors" and the wizard stays.
+`validate` can be async (e.g. react-hook-form's `trigger`). While it runs, and on the last step until `onComplete` settles, Next (or Finish) shows a spinner and ignores further clicks, so `onComplete` runs once. If it returns `false`, the step is marked "Has errors" and the wizard stays.
 
 ## Navigation
 

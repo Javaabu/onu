@@ -70,8 +70,9 @@ export function HijriCalendar({
   const lead = (first.getDay() - weekStartsOn + 7) % 7
   const weeks = Math.ceil((lead + daysInMonth) / 7)
   const cells = Array.from({ length: weeks * 7 }, (_, i) => addDays(first, i - lead))
-  const lastDay = addDays(first, daysInMonth - 1)
-  const inMonth = (d: Date) => d >= first && d <= lastDay
+  // Up to the next month's midnight, so a date with a time on the last day still counts.
+  const nextMonth = addDays(first, daysInMonth)
+  const inMonth = (d: Date) => d >= first && d < nextMonth
   const focusTarget = [focused, selected, today].find((d): d is Date => !!d && inMonth(d)) ?? first
 
   React.useEffect(() => {

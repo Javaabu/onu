@@ -231,6 +231,27 @@ describe("DateCalendar — zooming out (§25.1)", () => {
     expect(caption()).toHaveTextContent("2004–2015")
   })
 
+  it("does not page past min or max from the keyboard in the zoomed views", async () => {
+    const user = userEvent.setup()
+    renderWithOnu(
+      <DateCalendar minView="month" today={TODAY} min={new Date(2026, 0, 1)} max={new Date(2026, 11, 31)} />,
+    )
+    expect(screen.getByRole("button", { name: "Previous year" })).toBeDisabled()
+    const months = screen.getByRole("grid", { name: "Months" })
+    act(() => within(months).getByRole("button", { name: "January 2026" }).focus())
+    await user.keyboard("{PageUp}")
+    expect(caption()).toHaveTextContent("2026")
+    await user.keyboard("{ArrowUp}")
+    expect(caption()).toHaveTextContent("2026")
+    expect(document.activeElement).toHaveAccessibleName("January 2026")
+    act(() => within(months).getByRole("button", { name: "December 2026" }).focus())
+    await user.keyboard("{PageDown}")
+    expect(caption()).toHaveTextContent("2026")
+    await user.keyboard("{ArrowRight}")
+    expect(caption()).toHaveTextContent("2026")
+    expect(document.activeElement).toHaveAccessibleName("December 2026")
+  })
+
   it("turns into a month picker with minView", async () => {
     const user = userEvent.setup()
     const onPeriodSelect = vi.fn()

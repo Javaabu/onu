@@ -281,10 +281,12 @@ export function NumberInput(allProps: NumberInputProps) {
     if (next !== value) setValue(next)
   }
 
+  // The one stepping rule, shared by the arrow keys and the − / + buttons.
+  const stepFrom = (current: number | null | undefined, delta: number) =>
+    typeof current === "number" ? clamp(Number((current + delta).toFixed(10)), min, max) : clamp(0, min, max)
+
   const stepBy = (delta: number) => {
-    const current = draft !== null ? fromText(draft) : value
-    const next =
-      typeof current === "number" ? clamp(Number((current + delta).toFixed(precision)), min, max) : clamp(0, min, max)
+    const next = stepFrom(draft !== null ? fromText(draft) : value, delta)
     commit(next)
     if (draft !== null) setDraft(toDraft(next), next)
   }
@@ -299,8 +301,7 @@ export function NumberInput(allProps: NumberInputProps) {
     latest.current = value
   }, [value])
   const change = (delta: number) => {
-    const current = latest.current ?? min ?? 0
-    const next = clamp(Number((current + delta).toFixed(10)), min, max)
+    const next = stepFrom(latest.current ?? min ?? 0, delta)
     if (next === latest.current) return false
     latest.current = next
     setValue(next)
@@ -424,8 +425,10 @@ export function NumberInput(allProps: NumberInputProps) {
           const text = e.target.value
           if (!/^[\d\s\u00a0\u202f.,'\u2019\u066b\u066c+\-\u2212]*$/.test(text)) return
           const parsed = fromText(text)
-          setDraft(text, parsed === undefined ? value : parsed)
-          if (parsed !== undefined) commit(parsed)
+          // An emptied stepper keeps its value until blur, so the field can be cleared and retyped.
+          const settled = parsed !== undefined && !(stepper && parsed === null)
+          setDraft(text, settled ? parsed : value)
+          if (settled) commit(parsed)
           onChange?.(e)
         }}
         onKeyDown={(e) => {

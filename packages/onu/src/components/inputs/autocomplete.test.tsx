@@ -393,6 +393,33 @@ describe("Autocomplete as an editable select", () => {
     expect(screen.getByText("Hello!")).toBeInTheDocument()
   })
 
+  it("filters by a value the parent resets", async () => {
+    function Resettable() {
+      const [value, setValue] = React.useState("")
+      return (
+        <>
+          <Autocomplete
+            aria-label="Fruit"
+            suggestions={["apple", "banana", "cherry"]}
+            value={value}
+            onValueChange={setValue}
+          />
+          <button type="button" onClick={() => setValue("")}>
+            Reset
+          </button>
+        </>
+      )
+    }
+    renderWithOnu(<Resettable />)
+    const input = screen.getByRole("combobox")
+    await userEvent.type(input, "ap")
+    await userEvent.click(screen.getByRole("button", { name: "Reset" }))
+    expect(input).toHaveValue("")
+    await userEvent.click(input)
+    await userEvent.keyboard("{ArrowDown}")
+    expect(screen.getAllByRole("option").map((o) => o.textContent)).toEqual(["apple", "banana", "cherry"])
+  })
+
   it("types Thaana and shows a toggle", async () => {
     renderWithOnu(<Autocomplete aria-label="މަޤާމު" suggestions={["ޑިރެކްޓަރ"]} {...editable} thaana thaanaToggle />, {
       locale: "dv",

@@ -102,25 +102,27 @@ export function InlineEdit({
     setEditing(true)
   }
 
-  function cancel() {
-    returnFocus.current = true
+  // Focus goes back to the value after Enter, Escape or the buttons. When focus left the editor
+  // (blur), it stays where the user moved it, even if the editor stays open with an error.
+  function cancel({ fromBlur = false } = {}) {
+    returnFocus.current = !fromBlur
     setDraft(value)
     setError(null)
     setEditing(false)
     onCancel?.()
   }
 
-  async function save() {
+  async function save({ fromBlur = false } = {}) {
     if (saving) return
     if (draft === value) {
-      returnFocus.current = true
+      returnFocus.current = !fromBlur
       setEditing(false)
       return
     }
     const invalid = validate?.(draft)
     if (invalid) {
       setError(invalid)
-      fieldRef.current?.focus()
+      if (!fromBlur) fieldRef.current?.focus()
       return
     }
     setSaving(true)
@@ -128,12 +130,12 @@ export function InlineEdit({
     try {
       await onSave?.(draft)
       if (valueProp === undefined) setUncontrolled(draft)
-      returnFocus.current = true
+      returnFocus.current = !fromBlur
       setEditing(false)
       setAnnouncement(t("form.inlineEditSaved", { label }))
     } catch (e) {
       setError(e instanceof Error && e.message ? e.message : t("form.inlineEditFailed"))
-      requestAnimationFrame(() => fieldRef.current?.focus())
+      if (!fromBlur) requestAnimationFrame(() => fieldRef.current?.focus())
     } finally {
       setSaving(false)
     }
@@ -154,8 +156,8 @@ export function InlineEdit({
   function onBlur(event: React.FocusEvent) {
     if (blurBehavior === "none" || saving) return
     if (rootRef.current?.contains(event.relatedTarget as Node | null)) return
-    if (blurBehavior === "cancel") cancel()
-    else void save()
+    if (blurBehavior === "cancel") cancel({ fromBlur: true })
+    else void save({ fromBlur: true })
   }
 
   const shown = renderValue ? renderValue(value) : value
@@ -225,7 +227,7 @@ export function InlineEdit({
                 title={t("form.cancelEdit")}
                 disabled={saving}
                 startIcon="close"
-                onClick={cancel}
+                onClick={() => cancel()}
               />
             </div>
           </div>

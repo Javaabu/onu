@@ -18,6 +18,8 @@ const [title, setTitle] = useState("")
 </FormField>
 ```
 
+When the user types the slug by hand it is normalised as they type: a space (or any other word break) becomes the `separator`, and a trailing one is dropped on blur.
+
 On an edit page, pass the saved slug as `defaultValue` (or `value`). It then starts unlocked, so editing the title does not change a published URL until the user locks it again.
 
 ## Thaana titles

@@ -111,6 +111,8 @@ export function ReportingPeriodPicker({
   const display = value ? describe(value) : null
 
   const commit = (next: ReportingPeriod, close: () => void) => {
+    // A custom range left half-picked is abandoned; closing must not turn it into the value.
+    setPending(null)
     setValue({ ...next, from: startOfDay(next.from), to: endOfDay(next.to) })
     close()
   }
@@ -242,7 +244,6 @@ export function ReportingPeriodPicker({
               onSelect={(range) => {
                 setPending(range)
                 if (range.from && range.to && range.from.getTime() !== range.to.getTime()) {
-                  setPending(null)
                   commit({ type: "custom", from: range.from, to: range.to }, close)
                 }
               }}
