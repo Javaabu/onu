@@ -25,6 +25,11 @@ const markup = [
   'data-slot="status-badge"',
   'data-slot="form"',
   'data-slot="form-field"',
+  // Pure helpers called from Server Components: `cn` merged the padding, `themeScript` is in <head>,
+  // and `transliterate` and `toCsv` ran.
+  '<main class="p-6 server-cn"',
+  'localStorage.getItem("onu-theme")',
+  "ދިވެހި|Name",
 ]
 
 const checks = [

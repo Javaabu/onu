@@ -4,7 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { hydrateAfterServer } from "../../test/hydrate"
 import { controllableMatchMedia } from "../../test/match-media"
-import { ThemeProvider, themeScript, useTheme, type ThemeProviderProps } from "./theme-provider"
+import { ThemeProvider, useTheme, type ThemeProviderProps } from "./theme-provider"
+import { themeScript } from "./theme-script"
 
 const DARK_QUERY = "(prefers-color-scheme: dark)"
 

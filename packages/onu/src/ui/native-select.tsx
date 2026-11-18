@@ -1,5 +1,8 @@
+"use client"
+
 // Vendored from shadcn/ui (radix base, nova style, RTL) by scripts/sync-shadcn.mjs.
 // Onu changes are marked with "onu:" comments; keep them when re-syncing.
+// onu: "use client" above, because this file reads Onu's context (translations, form field).
 import * as React from "react"
 import { cn } from "../lib/utils"
 

@@ -1,3 +1,5 @@
+"use client"
+
 import type { SemanticIconName } from "../../icons/types"
 
 /** Broad file categories used for icons, previews and filters. */
