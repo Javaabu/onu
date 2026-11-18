@@ -62,6 +62,8 @@ import { DateCalendar } from "@javaabu/onu"
 
 `DEFAULT_WEEKEND_DAYS` (`[5, 6]`, Friday and Saturday) is exported.
 
+Without `today`, "today" is the browser's date. When server-rendered, no day is marked as today until hydration (a server in another time zone can be on a different day); pass `today` to have it in the server's HTML.
+
 ## Accessibility
 
 See the [DatePicker keyboard table](./date-picker#accessibility). The caption is a button ("March 2026: choose a month"); page changes are announced through a polite live region; the current month/year/range has `aria-current="date"`.

@@ -1,3 +1,5 @@
+"use client"
+
 import { useMediaQuery } from "./use-media-query"
 
 const MOBILE_BREAKPOINT = 768

@@ -3,6 +3,7 @@ export { cn } from "./lib/utils"
 export * from "./icons"
 export * from "./providers/onu-provider"
 export * from "./providers/theme-provider"
+export { themeScript, type ResolvedTheme, type Theme, type ThemeScriptOptions } from "./providers/theme-script"
 export { createTranslator, mergeMessages } from "./i18n/translate"
 export {
   useFormatCurrency,

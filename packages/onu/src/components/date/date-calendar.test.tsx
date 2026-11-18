@@ -3,7 +3,9 @@ import { act, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
+import { hydrateAfterServer, serverThenBrowserZone } from "../../../test/hydrate"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
+import { OnuProvider } from "../../providers/onu-provider"
 import type { DateRangeValue } from "./_utils"
 import { DateCalendar, DEFAULT_WEEKEND_DAYS, type CalendarView, type DateCalendarEvent } from "./date-calendar"
 
@@ -28,6 +30,21 @@ describe("DateCalendar — days view", () => {
     renderWithOnu(<DateCalendar today={TODAY} />)
     expect(caption()).toHaveTextContent("March 2026")
     expect(dayButton(12)).toHaveAccessibleName("Today, Thursday, March 12th, 2026")
+  })
+
+  it("marks the browser's today after hydrating markup from a server in another time zone", async () => {
+    // 20:00 on 11 March in UTC is 01:00 on 12 March in the Maldives.
+    const toBrowser = serverThenBrowserZone(new Date("2026-03-11T20:00:00Z"))
+    const { container, errors } = await hydrateAfterServer(
+      <OnuProvider>
+        <DateCalendar />
+      </OnuProvider>,
+      toBrowser,
+    )
+    expect(errors).toEqual([])
+    const today = within(container).getAllByRole("button", { name: /^Today, / })
+    expect(today).toHaveLength(1)
+    expect(today[0]).toHaveAccessibleName("Today, Thursday, March 12th, 2026")
   })
 
   it("selects a single date", async () => {

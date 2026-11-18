@@ -3,7 +3,9 @@ import { screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
+import { hydrateAfterServer } from "../../../test/hydrate"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
+import { OnuProvider } from "../../providers/onu-provider"
 import { ShareButtons, shareUrl } from "./share-buttons"
 
 const URL_ = "https://gov.mv/news/1"
@@ -41,6 +43,21 @@ describe("ShareButtons", () => {
       expect(screen.getByRole("link", { name: `Share on ${name}` })).toHaveAttribute("target", "_blank")
     }
     expect(screen.getByRole("link", { name: "Share by email" })).not.toHaveAttribute("target")
+  })
+
+  it("fills the current page's URL into server-rendered links when hydrating", async () => {
+    const start = window.location.href
+    const { container } = await hydrateAfterServer(
+      <OnuProvider>
+        <ShareButtons native="never" networks={["facebook"]} />
+      </OnuProvider>,
+      // The server doesn't know the browser's URL.
+      () => window.history.pushState(null, "", "/news/42"),
+    )
+    expect(container.querySelector('[data-network="facebook"]')?.getAttribute("href")).toBe(
+      shareUrl("facebook", window.location.href),
+    )
+    window.history.pushState(null, "", start)
   })
 
   it("uses the native share sheet when available", async () => {

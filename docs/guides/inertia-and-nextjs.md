@@ -38,7 +38,7 @@ Render `<html lang dir>` from the Blade root view so right-to-left pages are cor
 
 # Next.js App Router
 
-Every Onu component file is marked `"use client"`, so Server Components can render Onu components directly, as long as every prop is serialisable (strings, numbers, elements). Anything that takes a function (`onSubmit`, `onChange`, `linkComponent`) belongs in a `"use client"` file.
+Every Onu module that needs the browser (state, effects, context) is marked `"use client"`, so Server Components can render Onu components directly, as long as every prop is serialisable (strings, numbers, elements). Anything that takes a function (`onSubmit`, `onChange`, `linkComponent`) belongs in a `"use client"` file. Pure helpers are not client modules, so Server Components can call them: `cn`, `themeScript`, `createTranslator`, `mergeMessages`, the `/thaana` conversion functions (`transliterate`, `containsThaana`) and the `/export` builders (`toCsv`).
 
 Put `ThemeProvider`, `OnuProvider` and `TooltipProvider` in a client component, and render the layout's `<html lang dir>` on the server so right-to-left pages are correct in the first HTML:
 
@@ -60,27 +60,18 @@ export function Providers({ locale, children }) {
 }
 ```
 
-Because the package is a client module, `themeScript()` can't be called from a Server Component. Render it from a small client component instead, which puts the script in the server-rendered HTML:
-
-```tsx
-// components/theme-script.tsx
-'use client';
-
-import { themeScript } from '@javaabu/onu';
-
-export function ThemeScript() {
-    return <script dangerouslySetInnerHTML={{ __html: themeScript() }} suppressHydrationWarning />;
-}
-```
+Call `themeScript()` in the layout's `<head>` to apply the stored theme before the first paint:
 
 ```tsx
 // app/layout.tsx (a Server Component)
+import { themeScript } from '@javaabu/onu';
+
 export default async function RootLayout({ children }) {
     const locale = (await cookies()).get('locale')?.value === 'dv' ? 'dv' : 'en';
     return (
         <html lang={locale} dir={locale === 'dv' ? 'rtl' : 'ltr'} suppressHydrationWarning>
             <head>
-                <ThemeScript />
+                <script dangerouslySetInnerHTML={{ __html: themeScript() }} />
             </head>
             <body>
                 <Providers locale={locale}>{children}</Providers>

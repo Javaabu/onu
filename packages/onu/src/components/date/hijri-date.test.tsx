@@ -3,6 +3,7 @@ import { renderHook, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
+import { hydrateAfterServer, serverThenBrowserZone } from "../../../test/hydrate"
 import { directions, expectNoA11yViolations, renderWithOnu } from "../../../test/utils"
 import { dv } from "../../locales/dv"
 import { OnuProvider } from "../../providers/onu-provider"
@@ -170,5 +171,21 @@ describe("HijriCalendar", () => {
     renderWithOnu(<HijriCalendar today={TODAY} showGregorian={false} weekStartsOn={6} className="cal-x" />)
     expect(screen.getAllByRole("columnheader")[0]).toHaveTextContent("Sa")
     expect(screen.getByRole("grid").closest("[data-slot=hijri-calendar]")).toHaveClass("cal-x")
+  })
+
+  it("marks and focuses the browser's today after hydrating markup from a server in another time zone", async () => {
+    // 20:00 on 11 March in UTC is 01:00 on 12 March in the Maldives.
+    const toBrowser = serverThenBrowserZone(new Date("2026-03-11T20:00:00Z"))
+    const { container, errors } = await hydrateAfterServer(
+      <OnuProvider>
+        <HijriCalendar />
+      </OnuProvider>,
+      toBrowser,
+    )
+    expect(errors).toEqual([])
+    const today = container.querySelectorAll("[data-today]")
+    expect(today).toHaveLength(1)
+    expect(within(today[0] as HTMLElement).getByRole("button")).toHaveAccessibleName(/March 12th, 2026/)
+    expect(within(today[0] as HTMLElement).getByRole("button")).toHaveAttribute("tabindex", "0")
   })
 })

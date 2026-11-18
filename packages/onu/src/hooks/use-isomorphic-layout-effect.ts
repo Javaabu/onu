@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 
 /** `useLayoutEffect` in the browser, `useEffect` on the server, where layout effects warn. */

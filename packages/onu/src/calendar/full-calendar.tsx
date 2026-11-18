@@ -28,7 +28,6 @@ import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group"
 import { fullCalendarLocale } from "./full-calendar-locale"
 import { registerEnglish } from "../i18n/english"
 import { date as en_date } from "../locales/en/date"
-import { useControllableState } from "../hooks/use-controllable-state"
 
 registerEnglish({ date: en_date })
 
@@ -224,11 +223,14 @@ export function FullCalendar({
   const { locale, dir, t } = useOnu()
   const isMobile = useIsMobile()
   const calendarRef = React.useRef<FullCalendarBase>(null)
-  const [view, setView] = useControllableState<FullCalendarView>(
-    viewProp,
-    defaultView ?? (isMobile ? "agenda" : "month"),
-    onViewChange,
-  )
+  // Until a view is picked, the default follows the screen. Seeding state with `isMobile` would
+  // keep the server's answer: it is `false` while hydrating.
+  const [picked, setPicked] = React.useState<FullCalendarView | null>(null)
+  const view = viewProp ?? picked ?? defaultView ?? (isMobile ? "agenda" : "month")
+  const setView = (next: FullCalendarView) => {
+    setPicked(next)
+    onViewChange?.(next)
+  }
   const [range, setRange] = React.useState<{ start: Date; end: Date } | null>(null)
 
   const fcLocale = React.useMemo(
