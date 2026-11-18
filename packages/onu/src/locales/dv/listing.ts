@@ -55,6 +55,7 @@ export const listing = {
   next: "ދެން އޮތް",
 
   loadMore: "އިތުރަށް ލޯޑުކުރޭ",
+  loadMoreFailed: "އިތުރަށް ލޯޑެއް ނުކުރެވުނު. އަލުން މަސައްކަތްކުރައްވާ.",
   loadingMore: "އިތުރަށް ލޯޑުވަނީ…",
   loadedMore: { one: "އިތުރު {count} {noun} ލޯޑުވެއްޖެ", other: "އިތުރު {count} {noun} ލޯޑުވެއްޖެ" },
   allLoaded: "ހުރިހާ {total} {noun} ދައްކައިފި",

@@ -44,6 +44,7 @@ export function Composer({
   const { t } = useTranslation()
   const [body, setBody] = React.useState(defaultValue)
   const [pending, setPending] = React.useState(false)
+  const [failed, setFailed] = React.useState(false)
   const hintId = React.useId()
   const textarea = React.useRef<HTMLTextAreaElement>(null)
   React.useEffect(() => {
@@ -54,9 +55,13 @@ export function Composer({
   const submit = async () => {
     if (!canSubmit) return
     setPending(true)
+    setFailed(false)
     try {
       await onSubmit(body.trim())
       setBody("")
+    } catch {
+      // Keep the text so nothing is lost; the user can try again.
+      setFailed(true)
     } finally {
       setPending(false)
     }
@@ -93,6 +98,11 @@ export function Composer({
         disabled={disabled || pending}
         className="min-h-20"
       />
+      {failed ? (
+        <p role="alert" className="text-sm text-destructive">
+          {t("display.composerFailed")}
+        </p>
+      ) : null}
       <div className="gap-2 flex flex-wrap items-center justify-end">
         <span id={hintId} className="text-xs max-sm:sr-only me-auto text-muted-foreground">
           {t("display.submitHint")}

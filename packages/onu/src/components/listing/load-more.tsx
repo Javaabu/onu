@@ -48,6 +48,7 @@ export function LoadMore({
   const nounFor = useNoun(noun)
   const format = new Intl.NumberFormat(locale.numberLocale)
   const [pending, setPending] = React.useState(false)
+  const [failed, setFailed] = React.useState(false)
   const loading = loadingProp ?? pending
   const hasMore = hasMoreProp ?? (total !== undefined ? loaded < total : true)
   const buttonRef = React.useRef<HTMLButtonElement>(null)
@@ -63,12 +64,17 @@ export function LoadMore({
 
   const load = React.useCallback(async () => {
     if (loading) return
+    setFailed(false)
     setBefore(loaded)
     const result = onLoadMore()
     if (result && typeof (result as Promise<unknown>).then === "function") {
       setPending(true)
       try {
         await result
+      } catch {
+        // The button stays for another try; say what happened.
+        setBefore(null)
+        setFailed(true)
       } finally {
         setPending(false)
       }
@@ -111,6 +117,11 @@ export function LoadMore({
           {loading ? <Spinner /> : null}
           {loading ? t("listing.loadingMore") : t("listing.loadMore")}
         </Button>
+      ) : null}
+      {failed ? (
+        <p role="alert" className="text-sm text-destructive">
+          {t("listing.loadMoreFailed")}
+        </p>
       ) : null}
       <span className="sr-only" role="status" aria-live="polite">
         {message}

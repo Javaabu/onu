@@ -166,6 +166,9 @@ export function Wizard({
     try {
       if (current.validate) ok = await current.validate()
       if (ok && onValidateStep) ok = await onValidateStep(index, current)
+    } catch {
+      // A validator that rejects (e.g. a failed request) fails the step.
+      ok = false
     } finally {
       setValidating(false)
     }
@@ -178,7 +181,18 @@ export function Wizard({
     if (!ok) return false
     setCompleted((prev) => new Set(prev).add(index))
     if (index === total - 1) {
-      await onComplete?.()
+      try {
+        await onComplete?.()
+      } catch {
+        // A rejected onComplete (e.g. the submit request failed) marks the last step as failed.
+        setCompleted((prev) => {
+          const nextSet = new Set(prev)
+          nextSet.delete(index)
+          return nextSet
+        })
+        setFailed((prev) => new Set(prev).add(index))
+        return false
+      }
     } else {
       change(index + 1)
     }
