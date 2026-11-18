@@ -1,3 +1,4 @@
+import * as React from "react"
 import { act, renderHook } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -145,6 +146,25 @@ describe("useListingState", () => {
     expect(onValueChange).not.toHaveBeenCalled()
     act(() => result.current.setPage(2))
     expect(onValueChange).toHaveBeenCalledWith(expect.objectContaining({ page: 2 }))
+  })
+
+  it("does not call onValueChange on re-renders with an inline paramNames object (#66, 4.1)", () => {
+    const onValueChange = vi.fn()
+    const { result, rerender } = renderHook(() => useListingState({ paramNames: { search: "q" }, onValueChange }))
+    rerender()
+    rerender()
+    expect(onValueChange).not.toHaveBeenCalled()
+    act(() => result.current.setSearch("ali"))
+    expect(onValueChange).toHaveBeenCalledTimes(1)
+    rerender()
+    expect(onValueChange).toHaveBeenCalledTimes(1)
+    expect(window.location.search).toBe("?q=ali")
+  })
+
+  it("does not call onValueChange on mount under StrictMode (#66, 4.1)", () => {
+    const onValueChange = vi.fn()
+    renderHook(() => useListingState({ url: false, onValueChange }), { wrapper: React.StrictMode })
+    expect(onValueChange).not.toHaveBeenCalled()
   })
 
   it("keeps search, filters, sort and page in the URL with replaceState (§25.6 browser behaviour)", () => {
