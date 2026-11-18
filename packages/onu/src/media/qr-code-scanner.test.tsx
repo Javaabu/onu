@@ -113,6 +113,51 @@ describe("QrCodeScanner", () => {
     expect(track.stop).toHaveBeenCalled()
   })
 
+  it("reports a code once while it stays in view in continuous mode", async () => {
+    const { stream } = fakeStream()
+    mockCamera(async () => stream)
+    let now = 0
+    vi.spyOn(Date, "now").mockImplementation(() => now)
+    const onScan = vi.fn()
+    renderWithOnu(
+      <QrCodeScanner
+        onScan={onScan}
+        continuous
+        scanInterval={5}
+        createDetector={detectorReturning([["A"], ["A"], ["A"], ["B"], ["A"], ["A"]])}
+      />,
+    )
+    await userEvent.click(screen.getByRole("button", { name: "Start camera" }))
+    await waitFor(() => expect(onScan).toHaveBeenCalledTimes(3))
+    // Let more frames with the same code pass.
+    await new Promise((r) => setTimeout(r, 60))
+    expect(onScan.mock.calls.map(([value]) => value)).toEqual(["A", "B", "A"])
+    // After the code has been out of view for a while, it counts again.
+    now = 5000
+    await waitFor(() => expect(onScan).toHaveBeenCalledTimes(4))
+  })
+
+  it("offers a retry when the decoder fails to load", async () => {
+    const { stream } = fakeStream()
+    mockCamera(async () => stream)
+    const onScan = vi.fn()
+    let attempts = 0
+    renderWithOnu(
+      <QrCodeScanner
+        onScan={onScan}
+        scanInterval={5}
+        createDetector={async () => {
+          if (attempts++ === 0) throw new Error("network")
+          return detectorReturning([["OK"]])()
+        }}
+      />,
+    )
+    await userEvent.click(screen.getByRole("button", { name: "Start camera" }))
+    expect(await screen.findByRole("alert")).toHaveTextContent(/code reader could not be loaded/)
+    await userEvent.click(screen.getByRole("button", { name: "Start camera" }))
+    await waitFor(() => expect(onScan).toHaveBeenCalledWith("OK"))
+  })
+
   it("shows the torch toggle only when the camera supports it", async () => {
     const { stream, track } = fakeStream({ torch: true })
     mockCamera(async () => stream)
@@ -170,8 +215,9 @@ describe("QrCodeScanner", () => {
       />,
     )
     await userEvent.click(screen.getByRole("button", { name: "Start camera" }))
-    expect(await screen.findByRole("alert")).toHaveTextContent(/cannot scan codes/)
+    expect(await screen.findByRole("alert")).toHaveTextContent(/code reader could not be loaded/)
     expect(track.stop).toHaveBeenCalled()
+    expect(screen.getByRole("button", { name: "Start camera" })).toBeInTheDocument()
   })
 
   it("stops the camera on unmount, even while the permission prompt is open", async () => {

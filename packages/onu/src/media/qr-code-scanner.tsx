@@ -37,14 +37,25 @@ export async function createBarcodeDetector(formats: string[] = ["qr_code"]): Pr
   return new BarcodeDetector({ formats: formats as never }) as unknown as BarcodeDetectorLike
 }
 
-export type ScannerStatus = "idle" | "requesting" | "scanning" | "denied" | "no-camera" | "unsupported" | "error"
+/**
+ * `unsupported`: no camera API. `decoder-error`: the camera works but the decoder could not be
+ * loaded (for example the polyfill failed to download); Start tries again.
+ */
+export type ScannerStatus =
+  "idle" | "requesting" | "scanning" | "denied" | "no-camera" | "unsupported" | "decoder-error" | "error"
+
+/** In continuous mode, a code still in view is not reported again until it has been gone this long. */
+const REPEAT_AFTER_MS = 1000
 
 export interface QrCodeScannerProps extends Omit<React.ComponentProps<"div">, "onError"> {
   /** Called with the decoded text (from the camera or manual entry). */
   onScan: (value: string) => void
   /** Barcode formats to detect. Default `["qr_code"]`. */
   formats?: string[]
-  /** Keep scanning after a result. Default `false`: the camera stops after the first code. */
+  /**
+   * Keep scanning after a result. Default `false`: the camera stops after the first code. A code
+   * that stays in view is reported once; it counts again after being out of view for a second.
+   */
   continuous?: boolean
   /** Start the camera on mount (still subject to the permission prompt). Default `false`. */
   autoStart?: boolean
@@ -164,7 +175,7 @@ export function QrCodeScanner({
     } catch (error) {
       if (run !== runRef.current) return
       release()
-      setStatus("unsupported")
+      setStatus("decoder-error")
       latest.current.onError?.(error)
       return
     }
@@ -175,6 +186,7 @@ export function QrCodeScanner({
     setStatus("scanning")
 
     let busy = false
+    let last: { value: string; seen: number } | null = null
     timerRef.current = setInterval(async () => {
       const el = videoRef.current
       if (busy || !el || el.readyState < 2) return
@@ -183,6 +195,10 @@ export function QrCodeScanner({
         const codes = await detector.detect(el)
         const value = codes[0]?.rawValue
         if (value && run === runRef.current) {
+          const now = Date.now()
+          const repeat = last?.value === value && now - last.seen < REPEAT_AFTER_MS
+          last = { value, seen: now }
+          if (repeat) return
           if (!latest.current.continuous) stop()
           found(value)
         }
@@ -226,9 +242,15 @@ export function QrCodeScanner({
     denied: t("input.scanDenied"),
     "no-camera": t("input.scanNoCamera"),
     unsupported: t("input.scanUnsupported"),
+    "decoder-error": t("input.scanDecoderError"),
     error: t("input.scanError"),
   }
-  const problem = status === "denied" || status === "no-camera" || status === "unsupported" || status === "error"
+  const problem =
+    status === "denied" ||
+    status === "no-camera" ||
+    status === "unsupported" ||
+    status === "decoder-error" ||
+    status === "error"
 
   return (
     <div data-slot="qr-code-scanner" data-status={status} className={cn("gap-3 grid", className)} {...props}>
