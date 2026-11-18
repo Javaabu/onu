@@ -309,6 +309,32 @@ describe("FilterPanel", () => {
     expect(screen.getByText("MVR 500")).toBeInTheDocument()
   })
 
+  it("names a custom control through the id it is given, in the panel and the query form", async () => {
+    const renderProps = vi.fn()
+    const filters: FilterDefinition[] = [
+      {
+        type: "custom",
+        key: "min",
+        label: "Minimum balance",
+        render: (props) => {
+          renderProps(props)
+          return <input id={props.id} value={(props.value as string) ?? ""} onChange={() => {}} />
+        },
+      },
+    ]
+    const { unmount } = renderWithOnu(<Harness filters={filters} sheet={false} />)
+    const panel = await openPanel()
+    expect(within(panel).getByRole("textbox", { name: "Minimum balance" })).toBeInTheDocument()
+    expect(renderProps).toHaveBeenLastCalledWith(expect.objectContaining({ labelId: expect.any(String) }))
+    const { labelId } = renderProps.mock.lastCall![0] as { labelId: string }
+    expect(document.getElementById(labelId)).toHaveTextContent("Minimum balance")
+    await expectNoA11yViolations()
+    unmount()
+
+    renderWithOnu(<FilterPanel variant="form" filters={filters} value={{}} onApply={vi.fn()} />)
+    expect(screen.getByRole("textbox", { name: "Minimum balance" })).toBeInTheDocument()
+  })
+
   it("supports controlled open state and a custom trigger", async () => {
     const onOpenChange = vi.fn()
     renderWithOnu(

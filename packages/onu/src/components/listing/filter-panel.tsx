@@ -11,7 +11,7 @@ import { Badge } from "../../ui/badge"
 import { Button } from "../../ui/button"
 import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "../../ui/drawer"
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover"
-import { FilterControl } from "./_filter-controls"
+import { FilterControl, FilterLabel } from "./_filter-controls"
 import type { FilterDefinition, FilterValue, FilterValues } from "./listing-types"
 import { cleanFilters, isFilterValueEmpty } from "./use-listing-state"
 import { registerEnglish } from "../../i18n/english"
@@ -157,16 +157,16 @@ function FilterQueryForm({
             data-slot="filter-form-item"
             className={cn("gap-2 sm:grid-cols-[5rem_minmax(0,1fr)] sm:gap-0 grid items-center", classNames?.filter)}
           >
-            <span
-              id={labelId}
+            <FilterLabel
+              definition={definition}
+              id={id}
+              labelId={labelId}
               className={cn(
                 // Ant's horizontal form label: end-aligned, with a colon.
                 "text-sm sm:pe-2 sm:text-end sm:after:ms-0.5 sm:after:content-[':'] truncate text-foreground",
                 classNames?.label,
               )}
-            >
-              {definition.label}
-            </span>
+            />
             <div className="min-w-0 [&>*]:w-full">
               <FilterControl
                 definition={definition}
@@ -275,9 +275,12 @@ function FilterPopoverPanel({
         return (
           <div key={definition.key} className={cn("gap-1.5 grid", classNames?.filter)} data-slot="filter-panel-filter">
             <div className="gap-2 flex items-center justify-between">
-              <span id={labelId} className={cn("text-sm font-medium", classNames?.label)}>
-                {definition.label}
-              </span>
+              <FilterLabel
+                definition={definition}
+                id={id}
+                labelId={labelId}
+                className={cn("text-sm font-medium", classNames?.label)}
+              />
               {!isFilterValueEmpty(current) ? (
                 <Button
                   variant="link"
