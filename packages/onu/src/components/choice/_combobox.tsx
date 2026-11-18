@@ -7,6 +7,7 @@ import { Command as CommandPrimitive } from "cmdk"
 import { Icon } from "../../icons/icon"
 import { cn } from "../../lib/utils"
 import { useTranslation } from "../../providers/onu-provider"
+import { transliterate } from "../../thaana/convert"
 import { useThaanaField, type ThaanaProp } from "../../thaana/use-thaana-field"
 import { Badge } from "../../ui/badge"
 import { Button } from "../../ui/button"
@@ -274,9 +275,10 @@ export function ComboboxCore({
       e.preventDefault()
       setOpen(true)
     } else if (e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey) {
-      // Typing on the closed field starts a search.
+      // Typing on the closed field starts a search, in Thaana when the search field types Thaana.
       e.preventDefault()
-      onQueryChange(e.key)
+      const thaanaOn = !!thaana && (typeof thaana !== "object" || thaana.defaultEnabled !== false)
+      onQueryChange(thaanaOn ? transliterate(e.key, typeof thaana === "object" ? thaana.keymap : undefined) : e.key)
       setOpen(true)
     } else if ((e.key === "Backspace" || e.key === "Delete") && clearable && !required && selected.length) {
       e.preventDefault()
