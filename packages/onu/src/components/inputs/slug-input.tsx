@@ -21,7 +21,11 @@ export { thaanaToLatin }
 
 export interface ToSlugOptions {
   separator?: string
-  /** Keep a trailing separator, for normalising while the user types. */
+  /**
+   * Keep a word break at the end (a trailing space, the separator or any other
+   * character that would become one) as a trailing separator, for normalising
+   * while the user types.
+   */
   preserveTrailing?: boolean
 }
 
@@ -31,7 +35,13 @@ export interface ToSlugOptions {
  * symbols and spacing.
  */
 export function toSlug(text: string, { separator = "-", preserveTrailing = false }: ToSlugOptions = {}): string {
-  return slugify(thaanaToLatin(text), { separator, preserveTrailingDash: preserveTrailing && separator === "-" })
+  const latin = thaanaToLatin(text)
+  const slug = slugify(latin, { separator })
+  // The text ends in a word break if one more letter would land after a separator.
+  if (preserveTrailing && slug && slugify(`${latin}a`, { separator }) === `${slug}${separator}a`) {
+    return slug + separator
+  }
+  return slug
 }
 
 export interface SlugInputProps extends Omit<
