@@ -159,30 +159,32 @@ export function Wizard({
     return "upcoming"
   }
 
+  // Busy from the first click until validation and, on the last step, `onComplete` have settled.
+  // The ref also blocks a second call made before the busy state has rendered.
+  const busy = React.useRef(false)
   const next = async () => {
-    if (validating) return false
+    if (busy.current) return false
+    busy.current = true
     setValidating(true)
-    let ok = true
     try {
+      let ok = true
       if (current.validate) ok = await current.validate()
       if (ok && onValidateStep) ok = await onValidateStep(index, current)
+      setFailed((prev) => {
+        const nextSet = new Set(prev)
+        if (ok) nextSet.delete(index)
+        else nextSet.add(index)
+        return nextSet
+      })
+      if (!ok) return false
+      setCompleted((prev) => new Set(prev).add(index))
+      if (index === total - 1) await onComplete?.()
+      else change(index + 1)
+      return true
     } finally {
+      busy.current = false
       setValidating(false)
     }
-    setFailed((prev) => {
-      const nextSet = new Set(prev)
-      if (ok) nextSet.delete(index)
-      else nextSet.add(index)
-      return nextSet
-    })
-    if (!ok) return false
-    setCompleted((prev) => new Set(prev).add(index))
-    if (index === total - 1) {
-      await onComplete?.()
-    } else {
-      change(index + 1)
-    }
-    return true
   }
 
   const back = () => {
