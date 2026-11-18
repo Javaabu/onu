@@ -33,6 +33,7 @@
   "files": [
     "dist",
     "src/styles",
+    "!src/**/*.test.*",
     "docs",
     "llms.txt",
     "llms-full.txt",
