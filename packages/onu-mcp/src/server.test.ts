@@ -1,10 +1,10 @@
-import { mkdtempSync, rmSync } from "node:fs"
+import { cpSync, mkdtempSync, rmSync, unlinkSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import path from "node:path"
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js"
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js"
-import { afterAll, beforeAll, describe, expect, it } from "vitest"
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest"
 
 import { writeLlms } from "../../../scripts/llms.mjs"
 import { findDoc, findProjectDocs, loadDocs, searchDocs, type Docs } from "./docs.js"
@@ -74,6 +74,61 @@ describe("searchDocs", () => {
 
 describe("findProjectDocs", () => {
   it("finds nothing outside a project that installs Onu", () => expect(findProjectDocs(tmpdir())).toBeUndefined())
+})
+
+describe("loadDocs", () => {
+  const bundled = () => path.join(out, "docs")
+  const projectCopy = () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "onu-mcp-project-"))
+    cpSync(bundled(), dir, { recursive: true })
+    return dir
+  }
+  let stderr: ReturnType<typeof vi.spyOn>
+  beforeAll(() => {
+    stderr = vi.spyOn(console, "error").mockImplementation(() => {})
+  })
+  afterEach(() => {
+    stderr.mockClear()
+    vi.unstubAllEnvs()
+  })
+  afterAll(() => stderr.mockRestore())
+
+  it("falls back to the bundled docs when the folder doesn't exist", () => {
+    const loaded = loadDocs({ dir: path.join(out, "no-such-folder"), bundled: bundled() })
+    expect(loaded.source).toBe("bundled")
+    expect(loaded.pages.length).toBe(docs.pages.length)
+    expect(stderr).toHaveBeenCalledWith(expect.stringContaining("no-such-folder"))
+  })
+
+  it("falls back to the bundled docs when index.json is malformed", () => {
+    const dir = projectCopy()
+    writeFileSync(path.join(dir, "index.json"), "{ not json")
+    expect(loadDocs({ dir, bundled: bundled() }).source).toBe("bundled")
+    expect(stderr).toHaveBeenCalledWith(expect.stringContaining("index.json"))
+    rmSync(dir, { recursive: true, force: true })
+  })
+
+  it("falls back to the bundled docs when a page is missing", () => {
+    const dir = projectCopy()
+    unlinkSync(path.join(dir, "text-inputs/password-input.md"))
+    const loaded = loadDocs({ dir, bundled: bundled() })
+    expect(loaded.source).toBe("bundled")
+    expect(searchDocs(loaded, "password").length).toBeGreaterThan(0)
+    expect(stderr).toHaveBeenCalledWith(expect.stringContaining("password-input.md"))
+    rmSync(dir, { recursive: true, force: true })
+  })
+
+  it("treats an empty ONU_DOCS_DIR as unset", () => {
+    vi.stubEnv("ONU_DOCS_DIR", "")
+    const loaded = loadDocs({ cwd: tmpdir(), bundled: bundled() })
+    expect(loaded.source).toBe("bundled")
+    expect(loaded.dir).toBe(bundled())
+  })
+
+  it("reports nothing when the project docs load", () => {
+    expect(loadDocs({ dir: bundled(), bundled: bundled() }).source).toBe("project")
+    expect(stderr).not.toHaveBeenCalled()
+  })
 })
 
 describe("server", () => {

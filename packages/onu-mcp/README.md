@@ -2,7 +2,7 @@
 
 A [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI assistants the docs of [Onu](https://github.com/Javaabu/onu) (`@javaabu/onu`), Javaabu's React UI library, and the rules for writing Onu code.
 
-It reads the docs of the `@javaabu/onu` installed in your project (`node_modules/@javaabu/onu/docs`, looked up from the folder the assistant runs in and its parents), so answers match your version. Without one, it uses the docs it was published with. `ONU_DOCS_DIR` points it at another folder.
+It reads the docs of the `@javaabu/onu` installed in your project (`node_modules/@javaabu/onu/docs`, looked up from the folder the assistant runs in and its parents), so answers match your version. Without one, it uses the docs it was published with. `ONU_DOCS_DIR` points it at another folder. If those docs don't load (a wrong folder, a broken `index.json`, a missing page), it warns on stderr and uses the docs it was published with.
 
 ## Tools
 

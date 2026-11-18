@@ -51,19 +51,49 @@ export function findProjectDocs(from: string): string | undefined {
 
 /**
  * Loads the docs, preferring those of the version the project has installed
- * (`ONU_DOCS_DIR`, then `node_modules/@javaabu/onu/docs` from `cwd` up), and
- * falling back to the copy bundled with this package.
+ * (`dir`, then `ONU_DOCS_DIR`, then `node_modules/@javaabu/onu/docs` from `cwd`
+ * up). If there are none, or they don't load (a missing folder, a malformed
+ * `index.json`, a missing page), it uses the copy bundled with this package,
+ * with a warning on stderr.
  */
-export function loadDocs({ cwd = process.cwd(), dir }: { cwd?: string; dir?: string } = {}): Docs {
-  const projectDir = dir ?? process.env.ONU_DOCS_DIR ?? findProjectDocs(cwd)
-  const docsDir = projectDir ?? bundledDir
-  const index = JSON.parse(readFileSync(path.join(docsDir, "index.json"), "utf8")) as DocsIndex
+export function loadDocs({
+  cwd = process.cwd(),
+  dir,
+  bundled = bundledDir,
+}: { cwd?: string; dir?: string; bundled?: string } = {}): Docs {
+  const projectDir = dir || process.env.ONU_DOCS_DIR || findProjectDocs(cwd)
+  if (projectDir) {
+    try {
+      return openDocs(projectDir, "project")
+    } catch (error) {
+      // stdout carries the MCP protocol, so warn on stderr.
+      console.error(
+        `onu-mcp: can't load the docs in ${projectDir} (${error instanceof Error ? error.message : String(error)}); using the bundled docs instead`,
+      )
+    }
+  }
+  return openDocs(bundled, "bundled")
+}
+
+/** Reads `index.json` in `docsDir` and checks that every page it lists is there. */
+function openDocs(docsDir: string, source: Docs["source"]): Docs {
+  const indexPath = path.join(docsDir, "index.json")
+  let index: DocsIndex
+  try {
+    index = JSON.parse(readFileSync(indexPath, "utf8")) as DocsIndex
+  } catch (error) {
+    throw new Error(`${indexPath}: ${error instanceof Error ? error.message : String(error)}`, { cause: error })
+  }
+  if (!Array.isArray(index?.sections)) throw new Error(`${indexPath} has no sections`)
+  const pages = index.sections.flatMap((s) => s.pages ?? [])
+  const missing = pages.map((p) => path.join(docsDir, `${p.path}.md`)).find((file) => !existsSync(file))
+  if (missing) throw new Error(`${missing} is missing`)
   const cache = new Map<string, string>()
   return {
     index,
-    source: projectDir ? "project" : "bundled",
+    source,
     dir: docsDir,
-    pages: index.sections.flatMap((s) => s.pages),
+    pages,
     read(page) {
       let content = cache.get(page.path)
       if (content === undefined) {
